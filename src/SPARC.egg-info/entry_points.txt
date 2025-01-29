@@ -1,0 +1,2 @@
+[console_scripts]
+sparc = main:main

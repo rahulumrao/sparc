@@ -1,0 +1,8 @@
+README.md
+setup.py
+src/sparc.egg-info/PKG-INFO
+src/sparc.egg-info/SOURCES.txt
+src/sparc.egg-info/dependency_links.txt
+src/sparc.egg-info/entry_points.txt
+src/sparc.egg-info/requires.txt
+src/sparc.egg-info/top_level.txt
