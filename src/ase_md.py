@@ -1,6 +1,8 @@
+#! ase_md.py
 import os
-import sys
+import subprocess
 import numpy as np
+import dpdata
 from ase import Atoms
 import ase.units
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
@@ -53,7 +55,7 @@ def NoseNVT(atoms, timestep = 1 * ase.units.fs, temperature=300, tdamp=100 * ase
 
     return dyn
 
-def run_md(system, dyn, steps, pace, log_filename, trajfile='md.traj'):
+def run_md(system, dyn, steps, pace, log_filename, trajfile):
     """
         Run ab-initio molecular dynamics simulation for VASP, and setup logging save data at specified intervals.
 
@@ -88,8 +90,7 @@ def run_md(system, dyn, steps, pace, log_filename, trajfile='md.traj'):
     # Run the MD simulation for the specified number of steps.
     dyn.run(steps)
     
-    
-def run_Ase_DPMD(system, dyn, steps, pace, log_filename, trajfile='dpmd.traj'):
+def run_Ase_DPMD(system, dyn, steps, pace, log_filename, trajfile):
     """
         Run DeepPotential molecular dynamics simulation, and setup logging save data at specified intervals.
 
@@ -107,7 +108,7 @@ def run_Ase_DPMD(system, dyn, steps, pace, log_filename, trajfile='dpmd.traj'):
     # dyn.attach(lambda: wrap_positions(apos=system), interval=pace)  # Wrap around periodic boundaries
     dyn.attach(lambda: log_md_setup(dyn, system), interval=pace)
     dyn.attach(lambda: save_xyz(system, trajfile), interval=pace)
-    
+    #
     logger = MDLogger(
         dyn=dyn, 
         atoms=system, 
@@ -123,6 +124,11 @@ def run_Ase_DPMD(system, dyn, steps, pace, log_filename, trajfile='dpmd.traj'):
     # Run the MD simulation for the specified number of md_steps.
     dyn.run(steps)
     
+    
+def lammps_md(system, model_path, model_name):
+    # RUN the MD simulation for the specified number of md_steps
+    run_command = (['lmp', '-i', 'in.lammps'])
+    subprocess.run(run_command, check=True)
 #===================================================================================================#
 #                                     END OF FILE 
 #===================================================================================================#

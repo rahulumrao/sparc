@@ -16,6 +16,7 @@ from src.plumed_wrapper import modify_forces
 from src.data_processing import get_data
 from src.utils import log_md_setup, save_xyz, wrap_positions
 from src.dpmd_setup import setup_DeepPotential
+from src.active_learning import QueryByCommittee
 #!==============================================================!
 
 '''
@@ -48,44 +49,54 @@ def main():
     # Initialize variables
     timestep = config['md_simulation']['timestep_fs'] * ase.units.fs
     temperature = config['md_simulation']['temperature']  # Target temperature in Kelvin
-         
-    # Set up MD simulation
-    dyn_nose = NoseNVT(
-        atoms=system, 
-        timestep=timestep,
-        tdamp=config['md_simulation']['tdamp'] * ase.units.fs,
-        temperature=temperature)
+    DftMDSteps = config['general']['md_steps']
     
-    # Check if Plumed is to be wrapped with AIMD run
-    plumed_is = config['md_simulation']['use_plumed']
-    # Plumed wrapper function for AIMD run
-    if (plumed_is):
-        print("\n========================================================================")
-        print("               PLUMED IS CALLED FOR MD SIMULATION. !")
-        print("========================================================================")
-        # plumed_calc = modify_forces(
-        # calculator=vasp_calc, 
-        # system=system, timestep=timestep, 
-        # temperature=temperature, 
-        # kT=config['plumed']['kT'], 
-        # plumed_input=config['plumed']['input_file'])
-        system.calc = modify_forces(
-        calculator=vasp_calc, 
-        system=system, timestep=timestep, 
-        temperature=temperature, 
-        kT=config['plumed']['kT'], 
-        plumed_input=config['plumed']['input_file'])
+    if DftMDSteps <= 0:
+        dftmd_is = False
     else:
-        system.calc = vasp_calc
-   
-    # Run MD simulation
-    run_md(
-        system=system, 
-        dyn=dyn_nose, 
-        steps=config['general']['md_steps'], 
-        pace=config['general']['log_frequency'], 
-        log_filename=config['output']['log_file'],
-        trajfile=config['output']['aimdtraj_file'])
+        dftmd_is = True
+    # Set up MD simulation
+    if (dftmd_is):
+        # Only when it is True
+        print("\n========================================================================")
+        print(f"\n ! ab-initio MD Simulations will be performed at Temp.: {temperature}K !")
+        print("\n========================================================================")
+        dyn_nose = NoseNVT(
+            atoms=system, 
+            timestep=timestep,
+            tdamp=config['md_simulation']['tdamp'] * ase.units.fs,
+            temperature=temperature)
+        
+        # Check if Plumed is to be wrapped with AIMD run
+        plumed_is = config['md_simulation']['use_plumed']
+        # Plumed wrapper function for AIMD run
+        if (plumed_is):
+            print("\n========================================================================")
+            print("               PLUMED IS CALLED FOR MD SIMULATION. !")
+            print("========================================================================")
+            # plumed_calc = modify_forces(
+            # calculator=vasp_calc, 
+            # system=system, timestep=timestep, 
+            # temperature=temperature, 
+            # kT=config['plumed']['kT'], 
+            # plumed_input=config['plumed']['input_file'])
+            system.calc = modify_forces(
+            calculator=vasp_calc, 
+            system=system, timestep=timestep, 
+            temperature=temperature, 
+            kT=config['plumed']['kT'], 
+            plumed_input=config['plumed']['input_file'])
+        else:
+            system.calc = vasp_calc
+    
+        # Run MD simulation
+        run_md(
+            system=system, 
+            dyn=dyn_nose, 
+            steps=DftMDSteps, 
+            pace=config['general']['log_frequency'], 
+            log_filename=config['output']['log_file'],
+            trajfile=config['output']['aimdtraj_file'])
     
     # Run DeepMD training after MD run finished
     training_is = config['deepmd_setup']['training']
@@ -100,8 +111,9 @@ def main():
                  dir_name=deepmd_dir, 
                  skip_min=0, skip_max=None)
         deepmd_training(
-            training_dir=config['deepmd_setup']['train_dir'], 
-            input_file=config['deepmd_setup']['input_file']) #'../input.json')
+            training_dir=config['deepmd_setup']['train_dir'],
+            num_models=config['deepmd_setup']['num_models'], 
+            input_file=config['deepmd_setup']['input_file']) 
     
     # If MD with Deep potential is True
     dpmd_run_is = config['deepmd_setup']['MdSimulation']
@@ -126,14 +138,27 @@ def main():
         # logger = MDLogger(dyn_dp, dp_calc, 'dpmd.log', header=True, stress=False, peratom=False, mode="w")
         # dyn_dp.attach(logger, interval=5)
         # dyn_dp.run(100)
+        ########################################################################
+        # ASE DeepPotential Molecular Dynamics
+        MDsteps=config['deepmd_setup']['md_steps'],
+        writePace=config['deepmd_setup']['log_frequency']
+        # print(MDsteps[0], writePace)
+        ######################################################################## 
+        
         run_Ase_DPMD(
             system=dp_calc,
             dyn=dyn_dp,
-            steps=config['deepmd_setup']['md_steps'],
-            pace=config['deepmd_setup']['log_frequency'],
+            steps=MDsteps[0],
+            pace=writePace,
             log_filename=config['deepmd_setup']['log_file'],
             trajfile=config['output']['dptraj_file'])
-    
+        
+        # Run Active Learning
+        QueryByCommittee(trajfile=config['output']['dptraj_file'], 
+                         model_path=config['deepmd_setup']['train_dir'], 
+                         num_models=config['deepmd_setup']['num_models'], 
+                         data_path=config['deepmd_setup']['dpmd_dir'])
+                        
 if __name__ == '__main__':
     main()
     # parser = argparse.ArgumentParser(description='Run AIMD and DeepMD simulations.')

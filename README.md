@@ -11,10 +11,12 @@ SPARC is a open-source python code for building meachine learned interatomic pot
 
 ## Software Requirements
 
+* Deepmd-kit [2.2.10]
 * VASP package
 * Python 3
 * ASE (Atomic Simulation Environment)
 * Plumed
+* MDAnalysis
 * MPI library
 
 ## Installation
@@ -42,5 +44,11 @@ export VASP_PP_PATH=/path/to/vasp//POTCAR_FILES
 sparc -i input.yaml
 ```
 
+
+> **_IMPORTANT_** :: There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check the [documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.
+
+> **_NOTE_** :: Module for the labelling of candidates is implimented.
+
+> **_Next_Step_** :: Run VASP calculation for the labelled candidates and append data, then re-train the models.
 
 
