@@ -10,13 +10,13 @@
 	    "neuron":		[25, 50, 100],
 	    "resnet_dt":	false,
 	    "axis_neuron":	16,
-	    "seed":		13245,
+	    "seed":		SEED,
 	    "_comment":		" that's all"
 	},
 	"fitting_net" : {
 	    "neuron":		[120, 120, 120],
 	    "resnet_dt":	true,
-	    "seed":		13245,
+	    "seed":		SEED,
 	    "_comment":		" that's all"
 	},
 	"_comment":	" that's all"
@@ -54,7 +54,7 @@
 	    "_comment":		"that's all"
 	},
 	"numb_steps":	500000,
-	"seed":		132545,
+	"seed":		SEED,
 	"disp_file":	"lcurve.out",
 	"disp_freq":	1000,
 	"save_freq":	10000,
