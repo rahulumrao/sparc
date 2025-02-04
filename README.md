@@ -47,6 +47,7 @@ sparc -i input.yaml
 
 > **_IMPORTANT_** :: There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check the [documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.
 
+
 > *_NOTE_* :: Activel Learning with labelling candidates is implemented.
 
 > **_Next_Step_** :: Refine code and implement other DFT calculators.
