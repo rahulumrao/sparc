@@ -1,20 +1,18 @@
 import yaml
 import sys
 
-def load_config(input_file="input.yaml"):
-    """
-        Reads the input configuration from a YAML file and sets up 
-        the simulation parameters for SPARC.
+def load_config(input_file: str = "input.yaml") -> dict:
+    """Load and validate SPARC configuration from YAML file.
+    
+    Args:
+        input_file: Path to YAML configuration file
         
-        Args:
-        -----
-        input_file: str
-            Path to the YAML file.
-            
-        Returns:
-        --------
-            config: dict
-            A dictionary containing the input configuration.
+    Returns:
+        Dictionary containing validated configuration parameters
+        
+    Raises:
+        ValueError: If required parameters are missing
+        yaml.YAMLError: If YAML file is invalid
     """
     with open(input_file, "r") as file:
         config = yaml.safe_load(file)
@@ -50,8 +48,15 @@ def load_config(input_file="input.yaml"):
     config['md_simulation']['use_plumed'] = config['md_simulation'].get('use_plumed', False)
     config['plumed'] = config.get('plumed', {})
     config['plumed']['kT'] = config['plumed'].get('kT', 2.5)
-    config['plumed']['input_file'] = config['plumed'].get('input_file', 'plumed.dat')    
-            
+    config['plumed']['input_file'] = config['plumed'].get('input_file', 'plumed.dat') 
+    
+    # Add defaults for active learning and model_dev section
+    config['active_learning'] = config.get('active_learning', False)
+    config['model_dev'] = config.get('model_dev', {})
+    # Only set model_dev defaults if active_learning is True
+    if config['active_learning']:
+        config['model_dev']['f_min_dev'] = config['model_dev'].get('f_min_dev', 0.05)
+        config['model_dev']['f_max_dev'] = config['model_dev'].get('f_max_dev', 0.20)            
     
     return config
 

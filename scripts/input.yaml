@@ -4,7 +4,7 @@
 general:
  structure_file: "POSCAR" # Input structure
  md_steps: 0     # Number of MD Steps
- log_frequency: 5     # Interval for MD log and save trajectories
+ log_frequency: 1     # Interval for MD log and save trajectories
 
 # DFT calculator settings
 dft_calculator:
@@ -40,13 +40,20 @@ deepmd_setup:
  input_file: "input.json"    # Input file for DeepMD training
  skip_min: 0    # Minimum frames to skip
  skip_max: null    # Maximum frames to skip
- MdSimulation: True 
- model_name: "frozen_model.pb"
+ MdSimulation: True
+ model_name: "../../frozen_model_1.pb"
+ num_models: 2
  timestep_fs: 1.0
- md_steps: 5000
+ md_steps: 100
  log_file: "dpmd.log"
  log_frequency: 5
  use_plumed: False
+
+# Active Learning
+active_learning: True 
+model_dev:
+ f_min_dev: 0.1
+ f_max_dev: 0.8
 
 # File output settings
 output:

@@ -11,6 +11,7 @@ setup(
         "scipy",
         "dpdata",
         "deepmd-kit",
+        "pytest",
     ],
     author="Rahul Verma",
     author_email="rverma7@ncsu.edu",

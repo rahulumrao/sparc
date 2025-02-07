@@ -3,10 +3,8 @@ import os
 import logging
 import subprocess
 import random
-import datetime
 import json
-import shutil
-import sys
+from tqdm import tqdm
 #!==============================================================!
 """
     This module contains the function for DeepMD model training.
@@ -43,7 +41,28 @@ def update_seed(data):
     _update_recursively(data)
     return data
 
-def deepmd_training(training_dir, num_models, input_file='input.json'):
+def deepmd_training(training_dir: str, num_models: int, input_file: str = 'input.json'):
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    
+    # Clear any existing handlers first
+    logger.handlers.clear()
+    
+    # Add file handler
+    fh = logging.FileHandler('deepmd_training.log')
+    fh.setLevel(logging.INFO)
+    
+    # Add console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    
+    # Add formatters
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    
+    logger.addHandler(fh)
+    logger.addHandler(ch)
     
     # Save the current working directory to restor later
     original_dir = os.getcwd()
@@ -64,7 +83,7 @@ def deepmd_training(training_dir, num_models, input_file='input.json'):
     print(f"          DEEPMD WILL TRAIN {num_models} MODELS !")
     print("========================================================================")
     # Loop through the required number of models
-    for i in range(1, num_models + 1):
+    for i in tqdm(range(1, num_models + 1), desc="Training models"):
         #
         # Find the next available folder number inside 'training_sir'
         training_folders = [f for f in os.listdir(base_dir) if f.startswith('training_')]
@@ -92,7 +111,7 @@ def deepmd_training(training_dir, num_models, input_file='input.json'):
             # Copy the input file to the training directory
             # shutil.copy(input_path, training_input)
             os.chdir(dir_name)
-            logging.info(f'Training directory path: {os.getcwd()}')
+            logger.info(f'Training directory path: {os.getcwd()}')
 
             # Load the JSON configuration file
             with open(input_path, 'r') as f:
@@ -107,29 +126,29 @@ def deepmd_training(training_dir, num_models, input_file='input.json'):
             # sys.argv = ['dp', 'train', input_path]
             # main()                                                      # Run DeepMD training
             subprocess.run(['dp', 'train', input_file], check=True)
-            logging.info("Training completed successfully !")
+            logger.info("Training completed successfully !")
             
             # Freeze the trained model (default: "frozen_model.pb")
             # sys.argv = ['dp', 'freeze']
             # main()                                                      # Freeze model
             frozen_model_name = f"frozen_model_{next_folder_number}.pb"
             subprocess.run(['dp', 'freeze', '-o', frozen_model_name], check=True)
-            logging.info("Model frozen successfully !")
+            logger.info("Model frozen successfully !")
             
             # Compress the frozen model
             # sys.argv = ['dp', 'compress', '-t', {input_path}]
             # main()                                                      # Compress model
             compressed_model = f"frozen_model_compressed_{next_folder_number}.pb"
             subprocess.run(['dp', 'compress', '-t', input_file, '-i', frozen_model_name, '-o', compressed_model], check=True)
-            logging.info("Model compressed successfully !")
+            logger.info("Model compressed successfully !")
 
         except Exception as e:
             # Log any errors that occur during training, freezing, or compression
-            logging.error(f"An error occurred during training: {str(e)}")
+            logger.error(f"An error occurred during training: {str(e)}")
         finally:
             # Change back to the original working directory
             os.chdir(original_dir)
-        
+        return frozen_model_name
 # #===================================================================================================#
 # #                                     END OF FILE 
 # #===================================================================================================#        

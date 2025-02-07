@@ -1,5 +1,6 @@
 import os
 from ase.calculators.vasp import Vasp
+from pathlib import Path
 #===================================================================================================#
 def setup_dft_calculator(input_config):
     """
@@ -33,6 +34,15 @@ def setup_dft_calculator(input_config):
         # If an executable command is provided, override the default executable path
         if (input_config['dft_calculator']['exe_command']) is not None:
             exe_run = input_config['dft_calculator']['exe_command']
+        
+        # Validate path
+        exe_path = input_config['dft_calculator']['exe_path']
+        if not os.path.isabs(exe_path):
+            raise ValueError("Executable path must be absolute")
+        
+        exe_path = Path(exe_path).resolve()
+        if not exe_path.exists():
+            raise FileNotFoundError(f"Executable not found: {exe_path}")
         
         # Set up the VASP calculator with the necessary parameters                       
         vasp_calc = Vasp(

@@ -13,7 +13,7 @@ SPARC is a open-source python code for building meachine learned interatomic pot
 
 * Deepmd-kit [2.2.10]
 * VASP package
-* Python 3
+* Python 3.xx
 * ASE (Atomic Simulation Environment)
 * Plumed
 * MPI library (for VASP)

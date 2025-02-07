@@ -8,82 +8,105 @@ from ase.io.trajectory import TrajectoryWriter
 """
 def log_md_setup(dyn, atoms, filename='AseMolDyn.log', write_dist=False):
     """
-        Logs the details of MD simulation.
+    Log molecular dynamics simulation details including energies and temperature.
 
     Args:
-        dyn: dynamics object
-        atoms: ASE Atoms object
-        filename (str): Name of the file to write the MD log (default: 'AseMolDyn.log').
-        write_dist (bool): Flag to indicate whether to log the distance between atoms (default: False).
+        dyn: ASE dynamics object
+            The molecular dynamics simulation object
+        atoms: ase.Atoms
+            The atomic system being simulated
+        filename: str, optional
+            Path to the MD log file (default: 'AseMolDyn.log')
+        write_dist: bool, optional
+            Whether to log distance between atoms 0 and 4 (default: False)
     """
-    # Get potential energy (Epot) from the system; ensure it's a single value if it's an array
+    # Get energies and ensure they're scalar values
     epot = atoms.get_potential_energy()
     if isinstance(epot, (list, np.ndarray)):
-        epot = epot[0]  # array on 1 element
-
-    # Get kinetic energy (Ekin)
+        epot = epot[0]
     ekin = atoms.get_kinetic_energy()
-    
-    # Get the current simulation step
-    step = dyn.get_number_of_steps()
-    
-    # Example: Get the distance between two atoms (0 and 4)
-    distance = atoms.get_distance(0, 4, mic=True)  # Example distance, can be modified
-    
-    # Get the temperature of the system
-    temp = float(atoms.get_temperature())
-    
-    # Calculate total energy
     total = epot + ekin
     
+    # Get other system properties
+    step = dyn.get_number_of_steps()
+    temp = float(atoms.get_temperature())
+    
+    # Print current step info to console
     print(f'Steps: {step}, Epot: {epot:.6f}, Ekin: {ekin:.6f}, Temp: {temp:.2f}')
     
-    # Open the log file in append mode and write 
-    with open(filename, 'a') as enr_file:
+    # Write to log file using MDLogger context manager
+    with MDLogger(filename) as log:
         if step == 0:
-            enr_file.write(f"# {'Steps':<6} {'Epot':<10} {'Ekin':<10} {'Total':<10} {'Temp':<6}\n")
-        enr_file.write(f"{float(step):<8} {epot:<10.6f} {ekin:<10.6f} {total:<10.6f} {temp:<6.2f}\n")
-        
-        if (write_dist):
-            with open('dist.dat', 'a') as dist_file:
-                dist_file.write(f"Step: {step}, Distance: {distance:.6f}\n")
-                
+            log.file.write(f"# {'Steps':<6} {'Epot':<10} {'Ekin':<10} {'Total':<10} {'Temp':<6}\n")
+        log.file.write(f"{float(step):<8} {epot:<10.6f} {ekin:<10.6f} {total:<10.6f} {temp:<6.2f}\n")
+    
+    # Optionally log atomic distances using MDLogger
+    if write_dist:
+        distance = atoms.get_distance(0, 4, mic=True)
+        with MDLogger('dist.dat') as dist_log:
+            dist_log.file.write(f"Step: {step}, Distance: {distance:.6f}\n")
+
 def wrap_positions(apos):
     """
-        Wraps the positions of atoms within the periodic boundary conditions (PBC).
-        
+    Wrap atomic positions within periodic boundary conditions.
+
     Args:
-    -----
-        apos: The ASE Atoms object.
+        apos: ase.Atoms
+            The atomic system to wrap
 
     Returns:
-    --------
-        Atoms object, with positions wrapped within the PBC.        
+        ase.Atoms: System with wrapped positions
     """
     return apos.wrap()
                 
-def save_xyz(atoms, trajfile):
+def save_xyz(atoms, trajfile, write_mode):
     """
-        Saves the current atomic configuration (positions, velocities, etc.) to an extened XYZ file.
+    Save atomic configuration to trajectory and XYZ files.
 
     Args:
-    -----
-        atoms: ASE Atoms object.
-        trajfile (str): Name of the trajectory file.
+        atoms: ase.Atoms
+            The atomic system to save
+        trajfile: str
+            Path to the trajectory file
+    
+    Note:
+        The 'stress' property is excluded when PLUMED is active since it's not supported
     """
-    # List of properties to include in the trajectory file
-    # names = ['energy', 'forces', 'coordinates', 'velocities', 'stress', 'cell', 'pbc']
-    # !<NOTE>! The 'stress' property is not supported in the ASE TrajectoryWriter when PLUMED is called
+    # Properties to save in trajectory
+    properties = ['energy', 'forces', 'coordinates', 'velocities', 'cell', 'pbc']
     
-    names = ['energy', 'forces', 'coordinates', 'velocities', 'cell', 'pbc']
-    
-    # Use the ASE TrajectoryWriter to write the trajectory file
-    trr = TrajectoryWriter(filename=f'{trajfile}', mode='a' ,atoms=wrap_positions(atoms), properties=names)
+    # Write to trajectory file
+    wrapped_atoms = wrap_positions(atoms)
+    trr = TrajectoryWriter(
+        filename=trajfile,
+        mode=write_mode,
+        atoms=wrapped_atoms,
+        properties=properties
+    )
     trr.write(atoms)
     
-    # Optionally, save the atomic configuration to a separate XYZ file
+    # Save additional XYZ format
     write('AseTraj.xyz', atoms, append=True)
     
 #===================================================================================================#
 #                                     END OF FILE 
 #===================================================================================================#        
+
+# Add context managers for file handling
+class MDLogger:
+    """
+    Context manager for handling MD log files.
+    
+    Args:
+        filename: str
+            Path to the log file
+    """
+    def __init__(self, filename):
+        self.filename = filename
+        
+    def __enter__(self):
+        self.file = open(self.filename, 'a')
+        return self
+        
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.file.close()        
