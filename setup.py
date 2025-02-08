@@ -1,4 +1,24 @@
 from setuptools import setup, find_packages
+import subprocess
+import sys
+
+def has_cuda():
+    """Check if CUDA is available on the system"""
+    try:
+        # Try to run nvidia-smi to check for CUDA
+        result = subprocess.run(['nvidia-smi'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return result.returncode == 0
+    except FileNotFoundError:
+        return False
+
+# Determine which deepmd-kit version to install
+if has_cuda():
+    # For systems with CUDA, install GPU version
+    deepmd_requirement = "deepmd-kit[gpu,cu12,lmp]"  # Using CUDA 12 as default
+else:
+    print("\033[93mWarning: No GPU detected. Installing CPU-only version of deepmd-kit.\033[0m")
+    # For systems without CUDA, install CPU version
+    deepmd_requirement = "deepmd-kit[cpu,lmp]"
 
 setup(
     name="sparc",
@@ -10,7 +30,7 @@ setup(
         "pandas",
         "scipy",
         "dpdata",
-        "deepmd-kit",
+        deepmd_requirement,  
         "pytest",
     ],
     author="Rahul Verma",
