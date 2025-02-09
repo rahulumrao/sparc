@@ -23,9 +23,10 @@ def setup_DeepPotential(atoms, model_path, model_name="frozen_model.pb"):
     """
     # Construct full path to model file
     dp_model = os.path.join(model_path, model_name)
+    dp_calc = DP(model=dp_model)
     
     # Create atoms object with DeepPotential calculator
-    dp_system = Atoms(atoms, calculator=DP(model=dp_model))
+    dp_system = Atoms(atoms, calculator=dp_calc)
     
     try:
         # Test calculator by computing energy and forces
@@ -47,4 +48,4 @@ def setup_DeepPotential(atoms, model_path, model_name="frozen_model.pb"):
         print(f"Details: {str(e)}")
         print("=" * 72)
     
-    return dp_system
+    return dp_system, dp_calc

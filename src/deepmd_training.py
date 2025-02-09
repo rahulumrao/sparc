@@ -4,7 +4,6 @@ import logging
 import subprocess
 import random
 import json
-from tqdm import tqdm
 #!==============================================================!
 """
     This module contains the function for DeepMD model training.
@@ -83,7 +82,7 @@ def deepmd_training(training_dir: str, num_models: int, input_file: str = 'input
     print(f"          DEEPMD WILL TRAIN {num_models} MODELS !")
     print("========================================================================")
     # Loop through the required number of models
-    for i in tqdm(range(1, num_models + 1), desc="Training models"):
+    for i in range(1, num_models + 1):
         #
         # Find the next available folder number inside 'training_sir'
         training_folders = [f for f in os.listdir(base_dir) if f.startswith('training_')]
@@ -95,7 +94,7 @@ def deepmd_training(training_dir: str, num_models: int, input_file: str = 'input
         print("\n========================================================================")
         print(f"  RUNNING TRAINING IN FOLDER ({dir_name}) !")
         print("========================================================================\n")
-        #
+        
         try:
             # Create the training directory if it doesn't already exist
             os.makedirs(dir_name, exist_ok=True)
@@ -148,7 +147,7 @@ def deepmd_training(training_dir: str, num_models: int, input_file: str = 'input
         finally:
             # Change back to the original working directory
             os.chdir(original_dir)
-        return frozen_model_name
+    return frozen_model_name
 # #===================================================================================================#
 # #                                     END OF FILE 
 # #===================================================================================================#        

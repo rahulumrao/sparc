@@ -98,7 +98,8 @@ def main():
             calculator=vasp_calc, 
             system=system, timestep=timestep, 
             temperature=temperature, 
-            kT=config['plumed']['kT'], 
+            kT=config['plumed']['kT'],
+	        restart=config['plumed']['restart'], 
             plumed_input=config['plumed']['input_file'])
         else:
             system.calc = vasp_calc
@@ -137,22 +138,47 @@ def main():
     if dpmd_run_is:
         # Setup DeepMD calculator
         dp_path = config['deepmd_setup']['train_dir']
-        dp_names = "training_1/frozen_model_1.pb" #config['deepmd_setup']['model_name']
-        dp_calc = setup_DeepPotential(atoms=system, model_path=dp_path, model_name=dp_names)
-        original_system.calc = dp_calc
-        
+        dp_model = "training_1/frozen_model_1.pb" #config['deepmd_setup']['model_name']
+        dp_system = original_system
+        dp_atoms, dp_calc = setup_DeepPotential(
+                            atoms=dp_system, 
+                            model_path=dp_path, 
+                            model_name=dp_model)
+
         # Configure and run DPMD
         dyn_dp = NoseNVT(
-            atoms=dp_calc, 
-            timestep=timestep,
+            atoms=dp_atoms, 
+            timestep=config['deepmd_setup']['timestep_fs'] * ase.units.fs,
             tdamp=config['md_simulation']['tdamp'] * ase.units.fs, 
             temperature=temperature)
         
         MDsteps = config['deepmd_setup']['md_steps']
         writePace = config['deepmd_setup']['log_frequency']
         
+        dp_plumed_is = config['deepmd_setup']['use_plumed']
+        # Configure PLUMED if enabled
+        if (dp_plumed_is):
+            print("\n========================================================================")
+            print("               PLUMED IS CALLED FOR DPMD SIMULATION. !")
+            print("========================================================================")
+            #
+            dp_atoms.calc = modify_forces(
+            calculator=dp_calc, 
+            system=dp_atoms, 
+            timestep=timestep, 
+            temperature=temperature, 
+            kT=config['plumed']['kT'],
+            restart=config['plumed']['restart'], 
+            plumed_input=config['plumed']['input_file'])
+        else:
+            dp_atoms.calc = dp_calc
+            
+        # print("DPMD Calculator: ",system.calc,'\n', dp_calc)
+        # sys.exit()
+        
+        # dp_system.calc = dp_calc
         run_Ase_DPMD(
-            system=dp_calc,
+            system=dp_atoms,
             dyn=dyn_dp,
             steps=MDsteps,
             pace=writePace,
@@ -180,7 +206,7 @@ def main():
         else:
             print(f"Candidates found for labelling: {candidate_found_is}")
     #=======================================================================================
-    #               Active Learning Protocol Strating from here !                          #
+    # SECTION 4: Active Learning Protocol Strating from here !                          #
     #=======================================================================================
     # Run DeepMD training after MD run finished
     #=======================================================================================
@@ -243,14 +269,24 @@ def main():
                 input_file=config['deepmd_setup']['input_file']) 
 
             print("\n{}".format("Setting up DeepPotential Calculator".center(72)))
+            #--------------------------------------------------------------------------------------#
             # Set DeepPotential calculator
-            dp_calc = setup_DeepPotential(atoms=system, model_path=parent_dir, model_name=latest_models[0])
-            original_system.calc = dp_calc
+            #--------------------------------------------------------------------------------------#
+            dp_system = original_system
+            dp_atoms, dp_calc = setup_DeepPotential(
+                                atoms=dp_system, 
+                                model_path=parent_dir, 
+                                model_name=latest_models[0])
+            
+            # original_system.calc = dp_calc
 
             # DeepMD Simulation
             print("\n{}".format("Initializing DeepMD Simulation".center(72)))
+            #--------------------------------------------------------------------------------------#
+            # Set Nose-Hoover Chain NVT Dynamics
+            #--------------------------------------------------------------------------------------#
             dyn_dp = NoseNVT(
-                atoms=dp_calc, 
+                atoms=dp_atoms, 
                 timestep=timestep,
                 tdamp=config['md_simulation']['tdamp'] * ase.units.fs, 
                 temperature=temperature)
@@ -259,9 +295,27 @@ def main():
             writePace = config['deepmd_setup']['log_frequency']
             dp_traj_file = f"Iter{iter}_{config['output']['dptraj_file']}"
             
+            dp_plumed_is = config['deepmd_setup']['use_plumed']
+            # Configure PLUMED if enabled
+            if (dp_plumed_is):
+                print("\n========================================================================")
+                print("               PLUMED IS CALLED FOR DPMD SIMULATION. !")
+                print("========================================================================")
+                #
+                dp_atoms.calc = modify_forces(
+                calculator=dp_calc, 
+                system=dp_atoms, 
+                timestep=timestep, 
+                temperature=temperature, 
+                kT=config['plumed']['kT'],
+                restart=config['plumed']['restart'], 
+                plumed_input=config['plumed']['input_file'])
+            else:
+                dp_atoms.calc = dp_calc
+            
             # Perform DeepPotential MD siulation with re-trained model
             run_Ase_DPMD(
-                system=dp_calc,
+                system=dp_atoms,
                 dyn=dyn_dp,
                 steps=MDsteps,
                 pace=writePace,
