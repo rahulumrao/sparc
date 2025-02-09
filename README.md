@@ -101,8 +101,9 @@ This project is licensed under the MIT License.
 
 <!-- ## Support -->
 
-<!-- ## Contributing -->
+## Contributing
 
+Contributions are welcome! Please feel free to submit a Pull Request.
 ---
 > [!WARNING]
-> This package is under active development. Features and APIs may change. Contributions are welcome!
+> This package is under active development. Features and APIs may change.
