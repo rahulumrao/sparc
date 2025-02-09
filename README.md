@@ -104,6 +104,7 @@ This project is licensed under the MIT License.
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
 ---
 > [!WARNING]
 > This package is under active development. Features and APIs may change.
