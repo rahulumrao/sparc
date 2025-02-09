@@ -99,9 +99,9 @@ See `scripts/input.yaml` for a complete configuration template.
 
 This project is licensed under the MIT License.
 
-## Support
+<!-- ## Support -->
 
-## Contributing
+<!-- ## Contributing -->
 
 ---
 **Note**: This package is under active development. Features and APIs may change. Contributions are welcome!
