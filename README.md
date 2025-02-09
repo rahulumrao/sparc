@@ -1,58 +1,107 @@
-## SPARC - Smart Potential with Atomistic Rare Events and Continious Learning
+# SPARC
 
-<!-- <p align="center">
-  <img width="527" height="527" src="docs/SPARC.jpeg?raw=true">
-</p> -->
+**S**mart **P**otential with **A**tomistic **R**are Events and **C**ontinuous Learning
 
- <!-- #src="https://github.com/rahulumrao/sparc/docs/SPARC.jpeg?raw=true"> -->
+## Overview
 
-SPARC is a open-source python code for building meachine learned interatomic potentials on the fly.
+SPARC is an open-source Python package that implements an active learning workflow for developing accurate machine learning potentials. It automates the process of running quantum mechanical calculations, training ML models, and identifying new structures that need quantum mechanical labeling.
 
+## Key Features
 
-## Software Requirements
+- Ab initio Molecular Dynamics (AIMD) using VASP
+- Machine learning potential training with DeepMD-kit
+- Deep Potential Molecular Dynamics (DPMD) simulations
+- Active learning for continuous model improvement
+- Enhanced sampling with PLUMED integration
 
-* Deepmd-kit [2.2.10]
-* VASP package
-* Python 3.xx
-* ASE (Atomic Simulation Environment)
-* Plumed
-* MPI library (for VASP)
+## Requirements
+
+### Core Dependencies
+- Python 3.xx
+- DeepMD-kit 2.2.10
+- ASE (Atomic Simulation Environment)
+- VASP (for DFT calculations)
+- PLUMED (for enhanced sampling)
+- MPI library
+
+### Python Package Dependencies
+- numpy
+- pandas
+- dpdata
 
 ## Installation
 
-Create conda environment :
-
+1. Create and activate a conda environment:
 ```bash
-conda create -n $ENV_NAME python==$PYTHON_VERSION
-conda activate $ENV_NAME
-
-conda install conda-forge py-plumed
+conda create -n sparc python=3.10
+conda activate sparc
 ```
-> **_NOTE:_** Remember to change the $ENV_NAME (environment name) according to your conda environment name.
 
-Download repository and install package :
+2. Install PLUMED:
+```bash
+conda install -c conda-forge py-plumed
+```
+
+4. Clone and install SPARC:
 ```bash
 git clone https://github.com/rahulumrao/sparc.git
 cd sparc
 pip install .
 ```
 
-## Usage
+## Quick Start
+
+1. Set up VASP POTCAR files path:
 ```bash
-export VASP_PP_PATH=/path/to/vasp//POTCAR_FILES
-sparc -i input.yaml
+export VASP_PP_PATH=/path/to/vasp/potcar_files
 ```
 
+2. Create an input file (see example below)
 
-> **_IMPORTANT_** :: There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check the [documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.
+### Example Input File
+```yaml
+general:
+  structure_file: "POSCAR"
+  md_steps: 1000
+  log_frequency: 10
 
+md_simulation:
+  thermostat: "Nose"
+  temperature: 300.0
+  timestep_fs: 1.0
 
-> [!Note]  
-> Activel Learning with labelling candidates is implemented.
+dft_calculator:
+  name: "VASP"
+  exe_path: "/path/to/vasp"
+  exe_name: "vasp_std"
+```
+
+See `scripts/input.yaml` for a complete configuration template.
+
+## Current Status
+
+- ✅ Active learning with candidate labeling implemented
+- 🚧 Code refinement in progress
+- 🚧 Support for additional DFT calculators planned
+- 📝 Documentation under development
+
 
 > [!IMPORTANT]  
-> Code refinment and implement other DFT calculators.
+> There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check [documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.
 
-> [!Warning]
-> The code is under development and the documentation is not yet complete.
+## Limitations
 
+- Currently only supports DeepMD-kit 2.2.10 (newer versions not yet supported)
+- Limited to VASP for DFT calculations
+- Documentation is still being developed
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+## Contributing
+
+---
+**Note**: This package is under active development. Features and APIs may change. Contributions are welcome!

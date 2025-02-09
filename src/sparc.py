@@ -2,13 +2,18 @@
 """
 SPARC (Structure Prediction and Active Learning with ReaxFF and DFT Calculations)
 
-This is the main script that orchestrates:
-1. Ab initio Molecular Dynamics (AIMD) simulations
-2. DeepMD model training
-3. Deep Potential Molecular Dynamics (DPMD)
-4. Active Learning cycles for model improvement
+A Python package for automated molecular dynamics simulations with active learning.
 
-The workflow can be configured through a YAML input file.
+Key Features:
+1. Ab initio Molecular Dynamics (AIMD) with VASP
+2. DeepMD model training for machine learning potentials
+3. Deep Potential Molecular Dynamics (DPMD) simulations
+4. Active Learning cycles for continuous model improvement
+
+Usage:
+    python sparc.py -i input.yaml
+
+The workflow is configured through a YAML input file. See examples/input.yaml for a template.
 """
 
 #===================================================================================================#
