@@ -14,11 +14,11 @@ def has_cuda():
 # Determine which deepmd-kit version to install
 if has_cuda():
     # For systems with CUDA, install GPU version
-    deepmd_requirement = "deepmd-kit[gpu,cu12,lmp]"  # Using CUDA 12 as default
+    deepmd_requirement = "deepmd-kit[gpu,cu12,lmp]==2.2.10"  # Using CUDA 12 as default
 else:
     print("\033[93mWarning: No GPU detected. Installing CPU-only version of deepmd-kit.\033[0m")
     # For systems without CUDA, install CPU version
-    deepmd_requirement = "deepmd-kit[cpu,lmp]"
+    deepmd_requirement = "deepmd-kit[cpu,lmp]==2.2.10"
 
 setup(
     name="sparc",

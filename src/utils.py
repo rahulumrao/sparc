@@ -73,14 +73,16 @@ def save_xyz(atoms, trajfile, write_mode):
         The 'stress' property is excluded when PLUMED is active since it's not supported
     """
     # Properties to save in trajectory
-    properties = ['energy', 'forces', 'coordinates', 'velocities', 'cell', 'pbc']
+    # properties = ['energy', 'forces', 'coordinates', 'velocities', 'cell', 'pbc']
+    properties = ['energy', 'forces', 'coordinates', 'cell', 'pbc']
     
     # Write to trajectory file
-    wrapped_atoms = wrap_positions(atoms)
+    # wrapped_atoms = wrap_positions(atoms)
+    atoms.wrap()
     trr = TrajectoryWriter(
         filename=trajfile,
         mode=write_mode,
-        atoms=wrapped_atoms,
+        atoms=atoms,
         properties=properties
     )
     trr.write(atoms)
