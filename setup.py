@@ -2,6 +2,15 @@ from setuptools import setup, find_packages
 import subprocess
 import sys
 
+def build_docs():
+    """Build the documentation."""
+    try:
+        subprocess.run(['make', 'html'], cwd='docs', check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error building documentation: {e}")
+        sys.exit(1)
+
+
 def has_cuda():
     """Check if CUDA is available on the system"""
     try:
@@ -53,5 +62,11 @@ setup(
         "console_scripts": [
             "sparc = src.sparc:main",
         ],
+    },
+    extras_require={
+        "docs": ["sphinx", "sphinx-rtd-theme", "sphinx-autodoc-typehints"],
+    },
+    cmdclass={
+        "build_docs": build_docs,
     },
 )

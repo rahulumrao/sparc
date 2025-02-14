@@ -91,7 +91,8 @@ def main():
             atoms=system, 
             timestep=timestep,
             tdamp=config['md_simulation']['tdamp'] * ase.units.fs,
-            temperature=temperature)
+            temperature=temperature,
+            restart=config['md_simulation']['restart'])
         
         # Configure PLUMED if enabled
         if (plumed_is):
@@ -155,7 +156,8 @@ def main():
             atoms=dp_atoms, 
             timestep=config['deepmd_setup']['timestep_fs'] * ase.units.fs,
             tdamp=config['md_simulation']['tdamp'] * ase.units.fs, 
-            temperature=temperature)
+            temperature=temperature
+            )
         
         MDsteps = config['deepmd_setup']['md_steps']
         writePace = config['deepmd_setup']['log_frequency']
@@ -164,17 +166,21 @@ def main():
         # Configure PLUMED if enabled
         if (dp_plumed_is):
             print("\n========================================================================")
-            print("               PLUMED IS CALLED FOR DPMD SIMULATION. !")
+            print("               PLUMED IS CALLED FOR DPMD SIMULATION !")
             print("========================================================================")
-            #
+            
+            # Get PLUMED input file - use default if not specified
+            plumed_file = config['deepmd_setup'].get('plumed_file', 'plumed.dat')
+            print(f"Using PLUMED input file: {plumed_file}")
+            
             dp_atoms.calc = modify_forces(
-            calculator=dp_calc, 
-            system=dp_atoms, 
-            timestep=timestep, 
-            temperature=temperature, 
-            kT=config['plumed']['kT'],
-            restart=config['plumed']['restart'], 
-            plumed_input=config['plumed']['input_file'])
+                calculator=dp_calc, 
+                system=dp_atoms, 
+                timestep=timestep, 
+                temperature=temperature, 
+                kT=config['plumed']['kT'],
+                restart=config['plumed']['restart'], 
+                plumed_input=plumed_file)
         else:
             dp_atoms.calc = dp_calc
             
@@ -211,7 +217,7 @@ def main():
         else:
             print(f"Candidates found for labelling: {candidate_found_is}")
     #=======================================================================================
-    # SECTION 4: Active Learning Protocol Strating from here !                          #
+    # SECTION 4: Active Learning Protocol Strating from here !                             #
     #=======================================================================================
     # Run DeepMD training after MD run finished
     #=======================================================================================
@@ -248,16 +254,16 @@ def main():
                 run_aimd(
                     system=poscar_, 
                     dyn=NoseNVT(
-                        atoms=poscar_, 
-                        timestep=timestep,
-                        tdamp=config['md_simulation']['tdamp'] * ase.units.fs,
-                        temperature=0),
-                    steps=0, 
-                    pace=1, 
-                    log_filename=f"Iter{iter}_{config['output']['log_file']}",
-                    trajfile=config['output']['aimdtraj_file'],
-                    header=header,
-                    mode='a')
+                            atoms=poscar_, 
+                            timestep=timestep,
+                            tdamp=config['md_simulation']['tdamp'] * ase.units.fs,
+                            temperature=0),
+                        steps=0, 
+                        pace=1, 
+                        log_filename=f"Iter{iter}_{config['output']['log_file']}",
+                        trajfile=config['output']['aimdtraj_file'],
+                        header=header,
+                        mode='a')
             
             # Retrain DeepMD models
             print("\nProcessing data for DeepMD training")
@@ -294,7 +300,8 @@ def main():
                 atoms=dp_atoms, 
                 timestep=timestep,
                 tdamp=config['md_simulation']['tdamp'] * ase.units.fs, 
-                temperature=temperature)
+                temperature=temperature
+                )
             
             MDsteps = config['deepmd_setup']['md_steps']
             writePace = config['deepmd_setup']['log_frequency']
@@ -304,17 +311,21 @@ def main():
             # Configure PLUMED if enabled
             if (dp_plumed_is):
                 print("\n========================================================================")
-                print("               PLUMED IS CALLED FOR DPMD SIMULATION. !")
+                print("               PLUMED IS CALLED FOR DPMD SIMULATION !")
                 print("========================================================================")
-                #
+                
+                # Get PLUMED input file - use default if not specified
+                plumed_file = config['deepmd_setup'].get('plumed_file', 'plumed.dat')
+                print(f"Using PLUMED input file: {plumed_file}")
+                
                 dp_atoms.calc = modify_forces(
-                calculator=dp_calc, 
-                system=dp_atoms, 
-                timestep=timestep, 
-                temperature=temperature, 
-                kT=config['plumed']['kT'],
-                restart=config['plumed']['restart'], 
-                plumed_input=config['plumed']['input_file'])
+                    calculator=dp_calc, 
+                    system=dp_atoms, 
+                    timestep=timestep, 
+                    temperature=temperature, 
+                    kT=config['plumed']['kT'],
+                    restart=config['plumed']['restart'], 
+                    plumed_input=plumed_file)
             else:
                 dp_atoms.calc = dp_calc
             
@@ -330,13 +341,13 @@ def main():
             
             # Check for new candidates
             candidate_found_is, labelled_files, latest_models = QueryByCommittee(
-                trajfile=dp_traj_file, 
-                model_path=config['deepmd_setup']['train_dir'], 
-                num_models=config['deepmd_setup']['num_models'], 
-                data_path=config['deepmd_setup']['dpmd_dir'],
-                min_lim=config['model_dev']['f_min_dev'],
-                max_lim=config['model_dev']['f_max_dev'],
-                iteration=iter)
+                                                                    trajfile=dp_traj_file, 
+                                                                    model_path=config['deepmd_setup']['train_dir'], 
+                                                                    num_models=config['deepmd_setup']['num_models'], 
+                                                                    data_path=config['deepmd_setup']['dpmd_dir'],
+                                                                    min_lim=config['model_dev']['f_min_dev'],
+                                                                    max_lim=config['model_dev']['f_max_dev'],
+                                                                    iteration=iter)
             
             if not candidate_found_is:
                 print("\n========================================================================")

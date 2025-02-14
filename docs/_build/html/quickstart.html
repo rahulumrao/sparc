@@ -1,0 +1,210 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Start Guide &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api/index.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/md.html#module-src.ase_md">ASE MD Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/md.html#src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/md.html#src.ase_md.lammps_md"><code class="docutils literal notranslate"><span class="pre">lammps_md()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/md.html#src.ase_md.run_Ase_DPMD"><code class="docutils literal notranslate"><span class="pre">run_Ase_DPMD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/md.html#src.ase_md.run_aimd"><code class="docutils literal notranslate"><span class="pre">run_aimd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/md.html#module-src.vasp_setup">VASP Setup</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/md.html#src.vasp_setup.setup_dft_calculator"><code class="docutils literal notranslate"><span class="pre">setup_dft_calculator()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/md.html#module-src.plumed_wrapper">PLUMED Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/md.html#src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quick Start Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quick-start-guide">
+<h1>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading"></a></h1>
+<p>This guide will help you get started with SPARC quickly.</p>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Create an input YAML file (see example below)</p></li>
+<li><p>Run SPARC with your input file</p></li>
+</ol>
+</section>
+<section id="example-input-file">
+<h2>Example Input File<a class="headerlink" href="#example-input-file" title="Link to this heading"></a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">general</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;POSCAR&quot;</span>
+<span class="w">  </span><span class="nt">md_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">  </span><span class="nt">log_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="nt">md_simulation</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span>
+<span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
+<span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+
+<span class="nt">dft_calculator</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;VASP&quot;</span>
+<span class="w">  </span><span class="nt">exe_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/path/to/vasp&quot;</span>
+<span class="w">  </span><span class="nt">exe_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;vasp_std&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="running-a-simulation">
+<h2>Running a Simulation<a class="headerlink" href="#running-a-simulation" title="Link to this heading"></a></h2>
+<p>To run a simulation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>sparc.py<span class="w"> </span>-i<span class="w"> </span>input.yaml
+</pre></div>
+</div>
+</section>
+<section id="core-components">
+<h2>Core Components<a class="headerlink" href="#core-components" title="Link to this heading"></a></h2>
+<section id="md-simulation">
+<h3>1. MD Simulation<a class="headerlink" href="#md-simulation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Supports both <em>ab initio</em> MD (VASP) and DeepPotential MD</p></li>
+<li><p>NVT ensemble with Nose-Hoover thermostat</p></li>
+<li><p>Checkpoint/restart capabilities</p></li>
+<li><p>Optional PLUMED integration</p></li>
+</ul>
+</section>
+<section id="deepmd-training">
+<h3>2. DeepMD Training<a class="headerlink" href="#deepmd-training" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Automated model training</p></li>
+<li><p>Multiple model generation</p></li>
+<li><p>Configurable network architecture</p></li>
+</ul>
+</section>
+<section id="active-learning">
+<h3>3. Active Learning<a class="headerlink" href="#active-learning" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Query by Committee approach</p></li>
+<li><p>Force-based deviation metrics</p></li>
+<li><p>Automated structure labeling</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

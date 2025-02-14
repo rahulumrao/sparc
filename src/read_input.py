@@ -45,6 +45,7 @@ def load_config(input_file: str = "input.yaml") -> dict:
     config['md_simulation']['tdamp'] = config['md_simulation'].get('tdamp', 100)
     config['md_simulation']['timestep_fs'] = config['md_simulation'].get('timestep_fs', 1.0)
     config['md_simulation']['temperature'] = config['md_simulation'].get('temperature', 300.0)
+    config['md_simulation']['restart'] = config['md_simulation'].get('restart', False)
     config['md_simulation']['use_plumed'] = config['md_simulation'].get('use_plumed', False)
     config['plumed'] = config.get('plumed', {})
     config['plumed']['kT'] = config['plumed'].get('kT', 2.5)

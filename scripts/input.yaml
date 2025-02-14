@@ -4,7 +4,7 @@
 general:
  structure_file: "POSCAR" # Input structure
  md_steps: 0     # Number of MD Steps
- log_frequency: 1     # Interval for MD log and save trajectories
+ log_frequency: 4     # Interval for MD log and save trajectories
 
 # DFT calculator settings
 dft_calculator:
@@ -15,7 +15,7 @@ dft_calculator:
  ediff: 1e-5    # Energy convergance criteria
  exe_name: "vasp_std"      # executable name
  exe_path: "/home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin"
- exe_command: "mpirun -np 2 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"    # MPI command for parallel execution
+ exe_command: "mpirun -np 8 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"    # MPI command for parallel execution
 
 # ASE MD simulation settings
 md_simulation:
@@ -24,12 +24,14 @@ md_simulation:
  tdamp: 2.0    # Damping parameter for thermostat
  timestep_fs: 1.0    # TimeStep for MD simulation
  temperature: 300    # Temperature in Kelvin
- use_plumed: False   # Use PLUMED for MD simulation
+ restart: False      # Whether to restart MD simulation from checkpoint
+ use_plumed: True   # Use PLUMED for MD simulation
 
 # Plumed settings
 plumed:
  input_file: "plumed.dat"    # PLUMED input file
- kT: 2.5       # kT value PLUMED units
+ restart: True 
+ kT: 0.02585 #eV       # kT value PLUMED units
 
 # Deepmd training settings
 deepmd_setup:
@@ -41,23 +43,23 @@ deepmd_setup:
  skip_min: 0    # Minimum frames to skip
  skip_max: null    # Maximum frames to skip
  MdSimulation: True
- model_name: "../../frozen_model_1.pb"
  num_models: 2
  timestep_fs: 1.0
- md_steps: 100
+ md_steps: 2000
  log_file: "dpmd.log"
  log_frequency: 5
- use_plumed: False
+ use_plumed: True
+ plumed_file: "plumed.dat"  # Optional: defaults to "plumed.dat" if not specified
 
 # Active Learning
-active_learning: True 
+active_learning: False 
 model_dev:
  f_min_dev: 0.1
  f_max_dev: 0.8
 
 # File output settings
 output:
- log_file: "AseMD.log"      # Log file of MD simulation
- xyz_file: "AseTraj.xyz"      # XYZ  trajectory file
-#  aimdtraj_file: "md.traj"      # ASE AIMDtrajectory file
-#  dptraj_file: "dpmd.traj"      # ASE DeepMD trajectory file
+ log_file: "AseMD.log"        # Log file of MD simulation
+ xyz_file: "AseTraj.xyz"      # XYZ trajectory file for AIMD run
+ aimdtraj_file: "AseMD.traj"  # ASE trajectory file for AIMD run
+ dptraj_file: "dpmd.traj"     # ASE DeepMD trajectory file

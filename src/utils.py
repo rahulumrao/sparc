@@ -1,6 +1,7 @@
 import numpy as np
 from ase.io import write
 from ase.io.trajectory import TrajectoryWriter
+import pickle
 #===================================================================================================
 """
     Function is called to log the dynamics. It write the potential energy (Epot), kinetic energy (Ekin),
@@ -90,10 +91,6 @@ def save_xyz(atoms, trajfile, write_mode):
     # Save additional XYZ format
     write('AseTraj.xyz', atoms, append=True)
     
-#===================================================================================================#
-#                                     END OF FILE 
-#===================================================================================================#        
-
 # Add context managers for file handling
 class MDLogger:
     """
@@ -112,3 +109,43 @@ class MDLogger:
         
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.file.close()        
+        
+def save_md_checkpoint(dyn, atoms, filename='md_checkpoint.pkl'):
+    """
+    Save molecular dynamics checkpoint to resume later.
+    
+    Args:
+        dyn: ASE dynamics object
+        atoms: ASE atoms object
+        filename: str, checkpoint filename (default: 'md_checkpoint.pkl')
+    """
+    state = {
+        'positions': atoms.get_positions(),
+        'velocities': atoms.get_velocities(),
+        'cell': atoms.get_cell(),
+        'pbc': atoms.get_pbc(),
+        'numbers': atoms.get_atomic_numbers(),
+        'step': dyn.get_number_of_steps(),
+        'momenta': dyn.atoms.get_momenta()
+    }
+    
+    with open(filename, 'wb') as f:
+        pickle.dump(state, f)
+        
+def load_md_checkpoint(filename='md_checkpoint.pkl'):
+    """
+    Load molecular dynamics checkpoint.
+    
+    Args:
+        filename: str, checkpoint filename
+        
+    Returns:
+        dict: Checkpoint state dictionary
+    """
+    with open(filename, 'rb') as f:
+        return pickle.load(f)
+
+#===================================================================================================#
+#                                     END OF FILE 
+#===================================================================================================#        
+        

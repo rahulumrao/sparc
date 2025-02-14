@@ -78,6 +78,45 @@ dft_calculator:
 
 See `scripts/input.yaml` for a complete configuration template.
 
+
+## Core Components
+
+### 1. MD Simulation
+- Supports both _ab initio_ MD (VASP) and DeepPotential MD
+- NVT ensemble with Nose-Hoover thermostat
+- Checkpoint/restart capabilities
+- Optional PLUMED integration for enhanced sampling
+
+### 2. DeepMD Training
+- Automated model training
+- Multiple model generation for labelling
+- Configurable network architecture and training parameters
+
+### 3. Active Learning
+- Query by Committee approach for structure selection
+- Force-based deviation metrics
+- Automated structure labeling and retraining
+
+## Workflow
+
+1. **Initial AIMD**
+   - Runs ab initio MD using VASP
+   - Generates training data
+
+2. **DeepMD Training**
+   - Processes AIMD trajectories
+   - Trains multiple DeepMD models
+   - Freezes and compresses models
+
+3. **DPMD Simulation**
+   - Runs MD using trained DeepPotential models
+   - Monitors force deviations
+
+4. **Active Learning**
+   - Identifies structures for labeling
+   - Performs DFT calculations on selected structures
+   - Retrains models with expanded dataset
+
 ## Current Status
 
 - ✅ Active learning with candidate labeling implemented

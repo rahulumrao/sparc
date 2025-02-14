@@ -8,11 +8,11 @@ import ase.units
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.nose_hoover_chain import NoseHooverChainNVT
 from ase.md import MDLogger
-
 #---------------------------------------------------------------------------------------------------#
-from src.utils import log_md_setup, save_xyz, wrap_positions  # Import these functions from utils module
+from src.utils import log_md_setup, save_xyz, wrap_positions, load_md_checkpoint, save_md_checkpoint  # Import these functions from utils module
 #===================================================================================================#
-def NoseNVT(atoms, timestep = 1 * ase.units.fs, temperature=300, tdamp=100 * ase.units.fs):
+def NoseNVT(atoms, timestep=1 * ase.units.fs, temperature=300, tdamp=100 * ase.units.fs, 
+            restart=False):
     """
     Nose-Hoover(constant N, V, T) molecular dynamics simulation setup.
       
@@ -22,6 +22,7 @@ def NoseNVT(atoms, timestep = 1 * ase.units.fs, temperature=300, tdamp=100 * ase
         timestep (float): Timestep for MD simulation in fs.
         temperature (float): Target Temperature in Kelvin (K).
         tdamp (float): Damping time for Nose-Hoover thermostat in fs (ase units).
+        restart (bool): Whether to restart from checkpoint (default: False)
         
     Returns:
     --------
@@ -31,34 +32,56 @@ def NoseNVT(atoms, timestep = 1 * ase.units.fs, temperature=300, tdamp=100 * ase
     
     ..code-block:: python
 
-        NoseNVT = NoseHoover(
-            atoms=atoms, 
-            timestep=1 * ase.units.fs,
-            temperature=300,
-            tdamp=10 * ase.units.fs
-            )
+        # New simulation
+        dyn = NoseNVT(atoms=atoms, temperature=300)
+        
+        # Restart simulation
+        dyn = NoseNVT(atoms=atoms, temperature=300, restart=True)
     """
     
-    # Set initial velocities according to the traget temperature
-    MaxwellBoltzmannDistribution(atoms, 
-                                 temperature_K=temperature, 
-                                 force_temp=True)
-     
-    # If you lile to get the identical distribution :  rng=np.random.RandomState(100))
+    checkpoint_file = 'md_checkpoint.pkl'  # Default checkpoint filename
     
-    # Create the NoseHooverChainNVT dynamics object
-    dyn = NoseHooverChainNVT(
-        atoms=atoms, 
-        timestep=timestep, 
-        temperature_K=temperature, 
-        tdamp=tdamp, 
-        trajectory=None)
-
+    if restart and os.path.exists(checkpoint_file):
+        print(f"\nRestarting simulation from checkpoint: {checkpoint_file}")
+        # Load state from checkpoint
+        state = load_md_checkpoint()  # Uses default filename
+        atoms.set_positions(state['positions'])
+        atoms.set_velocities(state['velocities'])
+        atoms.set_cell(state['cell'])
+        atoms.set_pbc(state['pbc'])
+        atoms.set_atomic_numbers(state['numbers'])
+        atoms.set_momenta(state['momenta'])
+        
+        # Create the NoseHooverChainNVT dynamics object
+        dyn = NoseHooverChainNVT(
+            atoms=atoms, 
+            timestep=timestep, 
+            temperature_K=temperature, 
+            tdamp=tdamp, 
+            trajectory=None)
+        
+        # Restore the step number
+        dyn.nsteps = state['step']  # Set the step counter
+        
+    else:
+        if restart:
+            print(f"\nWarning: Checkpoint file {checkpoint_file} not found. Starting new simulation.")
+        # Set initial velocities for new simulation
+        MaxwellBoltzmannDistribution(atoms, temperature_K=temperature, force_temp=True)
+        
+        # Create new dynamics object
+        dyn = NoseHooverChainNVT(
+            atoms=atoms, 
+            timestep=timestep, 
+            temperature_K=temperature, 
+            tdamp=tdamp, 
+            trajectory=None)
+    
     return dyn
 
 def run_aimd(system, dyn, steps, pace, log_filename, trajfile, header=True, mode="a"):
     """
-        Run ab-initio molecular dynamics simulation for VASP, and setup logging save data at specified intervals.
+    Run ab-initio molecular dynamics simulation for VASP, and setup logging save data at specified intervals.
 
     Args:
     -----
@@ -68,18 +91,26 @@ def run_aimd(system, dyn, steps, pace, log_filename, trajfile, header=True, mode
         pace (int): Frequency of logging and data saving.
         log_filename (str): logfile for MD data.
         trajfile (str): trajectory filename (default: 'AseMD.traj').
+        header (bool): Whether to write header in log file (default: True)
         mode (str): 'w' or 'a' for writing or appending to the trajectory file.
     """
     
-    # Attach various functions to the dynamics object for handeling different tasks
-    # dyn.attach(lambda: wrap_positions(system), interval=1)  # Wrap around periodic boundaries
     if (steps > 0):
         print("\n========================================================================")
         print("{}".format("Starting Molecular Dynamics Simulation".center(72)))
         print("========================================================================")
-    #
+    
+    # Attach checkpoint saving using default filename
+    dyn.attach(lambda: save_md_checkpoint(dyn, system), interval=pace)
+    
+    # Attach various functions to the dynamics object for handling different tasks
+    # dyn.attach(lambda: wrap_positions(system), interval=1)  # Wrap around periodic boundaries
+    # dyn.attach(lambda: MolecularDynamics.checkpoint(dyn, 'md.checkpoint', interval=pace))
     dyn.attach(lambda: log_md_setup(dyn, system), interval=pace)
     dyn.attach(lambda: save_xyz(system, trajfile, mode), interval=pace)
+    
+    # Only write header if it's a new simulation (not a restart) and header is True
+    write_header = header and dyn.get_number_of_steps() == 0
     
     logger = MDLogger(
         dyn=dyn, 

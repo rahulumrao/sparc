@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.vasp_setup &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/md.html#module-src.ase_md">ASE MD Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/md.html#src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/md.html#src.ase_md.lammps_md"><code class="docutils literal notranslate"><span class="pre">lammps_md()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/md.html#src.ase_md.run_Ase_DPMD"><code class="docutils literal notranslate"><span class="pre">run_Ase_DPMD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/md.html#src.ase_md.run_aimd"><code class="docutils literal notranslate"><span class="pre">run_aimd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/md.html#module-src.vasp_setup">VASP Setup</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/md.html#src.vasp_setup.setup_dft_calculator"><code class="docutils literal notranslate"><span class="pre">setup_dft_calculator()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/md.html#module-src.plumed_wrapper">PLUMED Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/md.html#src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.vasp_setup</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.vasp_setup</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.vasp</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vasp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="c1">#===================================================================================================#</span>
+<div class="viewcode-block" id="setup_dft_calculator">
+<a class="viewcode-back" href="../../api/md.html#src.vasp_setup.setup_dft_calculator">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_dft_calculator</span><span class="p">(</span><span class="n">input_config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function setup the DFT calculator for ASE atom object,</span>
+<span class="sd">        Currently supports the VASP calculator but will be updated for others as well.</span>
+<span class="sd">        Checkout the ASE documentation for more details, see:</span>
+<span class="sd">        https://wiki.fysik.dtu.dk/ase/ase/calculators/calculators.html#module-ase.calculators.</span>
+<span class="sd">        </span>
+<span class="sd">    Args:</span>
+<span class="sd">    -----</span>
+<span class="sd">        input_config (dict): Dictionary containing the configuration for setting up the DFT calculator. </span>
+<span class="sd">        This should include paths, parameters, and the calculator name.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">        vasp_calc: ASE Vasp object configured for DFT calculations.                </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Name of the DFT calculator</span>
+    <span class="n">dft_calc</span> <span class="o">=</span> <span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+    
+    <span class="c1"># Set up VASP calculator for DFT calculations</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">dft_calc</span> <span class="o">==</span> <span class="s2">&quot;VASP&quot;</span><span class="p">):</span>
+        <span class="c1"># Set Environment for VASP</span>
+        <span class="c1"># example: command=&#39;mpiexec -np 2 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std&#39;,</span>
+        <span class="c1"># Construct the full path for the VASP executable using the provided path and name</span>
+        <span class="n">exe_run</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;exe_path&#39;</span><span class="p">],</span>
+            <span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;exe_name&#39;</span><span class="p">])</span>
+        
+        <span class="c1"># If an executable command is provided, override the default executable path</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;exe_command&#39;</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exe_run</span> <span class="o">=</span> <span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;exe_command&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># Validate path</span>
+        <span class="n">exe_path</span> <span class="o">=</span> <span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;exe_path&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">exe_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Executable path must be absolute&quot;</span><span class="p">)</span>
+        
+        <span class="n">exe_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">exe_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exe_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executable not found: </span><span class="si">{</span><span class="n">exe_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Set up the VASP calculator with the necessary parameters                       </span>
+        <span class="n">vasp_calc</span> <span class="o">=</span> <span class="n">Vasp</span><span class="p">(</span>
+            <span class="n">prec</span><span class="o">=</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;prec&#39;</span><span class="p">],</span>    <span class="c1"># Precision of the calculation</span>
+            <span class="n">encut</span><span class="o">=</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;encut&#39;</span><span class="p">],</span>  <span class="c1"># Plane-Wave Energy cutoff</span>
+            <span class="n">endiff</span><span class="o">=</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;ediff&#39;</span><span class="p">],</span> <span class="c1"># Convergence criteria</span>
+            <span class="n">xc</span><span class="o">=</span><span class="s1">&#39;PBE&#39;</span><span class="p">,</span>                                       <span class="c1"># Exchange-Correlation functional</span>
+            <span class="n">pp</span><span class="o">=</span><span class="s1">&#39;PBE&#39;</span><span class="p">,</span>                                       <span class="c1"># Pseudopotential functional</span>
+            <span class="n">gamma</span><span class="o">=</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">][</span><span class="s1">&#39;kgamma&#39;</span><span class="p">],</span> <span class="c1"># Gamma point</span>
+            <span class="n">directory</span><span class="o">=</span><span class="s1">&#39;vasp&#39;</span><span class="p">,</span>                               <span class="c1"># Directory to write the files</span>
+            <span class="n">command</span><span class="o">=</span><span class="n">exe_run</span><span class="p">,</span>                                <span class="c1"># VASP executable command</span>
+        <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">vasp_calc</span></div>
+
+
+<span class="c1">#===================================================================================================#</span>
+<span class="c1">#                                     END OF FILE </span>
+<span class="c1">#===================================================================================================#        </span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
