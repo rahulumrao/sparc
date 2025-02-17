@@ -16,7 +16,7 @@ from ase import Atoms
 from ase.io import read, write
 
 #===================================================================================================#
-def labelling(trajfile, outfile, min_lim, max_lim):
+def labelling(trajfile, outfile, min_lim, max_lim, output_dir=None):
     """
     Select and extract structures for labeling based on force deviations.
     
@@ -25,11 +25,10 @@ def labelling(trajfile, outfile, min_lim, max_lim):
         outfile: Path to model deviation output file
         min_lim: Minimum force deviation threshold (eV/Å)
         max_lim: Maximum force deviation threshold (eV/Å)
+        output_dir: Path to directory for saving POSCAR files (default: None)
     
     Returns:
         tuple: (candidate_found, labelled_files)
-            - candidate_found: Boolean indicating if candidates were found
-            - labelled_files: List of paths to generated POSCAR files
     """
     # Read trajectory file
     dptraj = read(trajfile, index=':')
@@ -56,17 +55,15 @@ def labelling(trajfile, outfile, min_lim, max_lim):
         print(f"Found {len(candidates)} candidates for labelling within range [{min_lim:.2f}, {max_lim:.2f}] eV/Å")
         print("=" * 90 + "\n")
         
-        # Process each candidate structure
-        # [Added new]  
-        labelling_dir = 'poscar_files'
-        if os.path.exists(labelling_dir):
-            shutil.rmtree(labelling_dir)
-        os.makedirs(labelling_dir)
-        # 
+        # Use provided output directory or create default
+        if output_dir is None:
+            output_dir = 'poscar_files'
+        os.makedirs(output_dir, exist_ok=True)
         
+        # Process each candidate structure
         for serial, (_, candidate) in enumerate(candidates.iterrows(), start=1):
             frame_index = int(candidate['step'])
-            serial_dir = os.path.join(labelling_dir, f"{serial}")
+            serial_dir = os.path.join(output_dir, f"{serial:04d}")
             os.makedirs(serial_dir, exist_ok=True)
             
             poscar_filename = os.path.join(serial_dir, "POSCAR")

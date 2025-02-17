@@ -9,7 +9,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.nose_hoover_chain import NoseHooverChainNVT
 from ase.md import MDLogger
 #---------------------------------------------------------------------------------------------------#
-from src.utils import log_md_setup, save_xyz, wrap_positions, load_md_checkpoint, save_md_checkpoint  # Import these functions from utils module
+from src.utils import log_md_setup, save_xyz, load_md_checkpoint, save_md_checkpoint  # Import these functions from utils module
 #===================================================================================================#
 def NoseNVT(atoms, timestep=1 * ase.units.fs, temperature=300, tdamp=100 * ase.units.fs, 
             restart=False):
@@ -79,7 +79,7 @@ def NoseNVT(atoms, timestep=1 * ase.units.fs, temperature=300, tdamp=100 * ase.u
     
     return dyn
 
-def run_aimd(system, dyn, steps, pace, log_filename, trajfile, header=True, mode="a"):
+def run_aimd(system, dyn, steps, pace, log_filename, trajfile, dir_name, header=True, mode="a"):
     """
     Run ab-initio molecular dynamics simulation for VASP, and setup logging save data at specified intervals.
 
@@ -94,7 +94,6 @@ def run_aimd(system, dyn, steps, pace, log_filename, trajfile, header=True, mode
         header (bool): Whether to write header in log file (default: True)
         mode (str): 'w' or 'a' for writing or appending to the trajectory file.
     """
-    
     if (steps > 0):
         print("\n========================================================================")
         print("{}".format("Starting Molecular Dynamics Simulation".center(72)))
@@ -103,11 +102,9 @@ def run_aimd(system, dyn, steps, pace, log_filename, trajfile, header=True, mode
     # Attach checkpoint saving using default filename
     dyn.attach(lambda: save_md_checkpoint(dyn, system), interval=pace)
     
-    # Attach various functions to the dynamics object for handling different tasks
-    # dyn.attach(lambda: wrap_positions(system), interval=1)  # Wrap around periodic boundaries
-    # dyn.attach(lambda: MolecularDynamics.checkpoint(dyn, 'md.checkpoint', interval=pace))
-    dyn.attach(lambda: log_md_setup(dyn, system), interval=pace)
-    dyn.attach(lambda: save_xyz(system, trajfile, mode), interval=pace)
+    # Attach various functions to the dynamics object
+    dyn.attach(lambda: log_md_setup(dyn, system, dir_name), interval=pace)
+    dyn.attach(lambda: save_xyz(system, trajfile, mode, dir_name), interval=pace)
     
     # Only write header if it's a new simulation (not a restart) and header is True
     write_header = header and dyn.get_number_of_steps() == 0
@@ -115,19 +112,16 @@ def run_aimd(system, dyn, steps, pace, log_filename, trajfile, header=True, mode
     logger = MDLogger(
         dyn=dyn, 
         atoms=system, 
-        logfile=log_filename, 
-        header=header,                # Include the header in the log file
+        logfile=f"{dir_name}/{log_filename}",
+        header=header,
         stress=False,       
-        peratom=False,              # Write per/atom energies
+        peratom=False,
         mode=mode)
     
-    # Attach the logger to the dynamics object
     dyn.attach(logger, interval=pace)
-    
-    # Run the MD simulation for the specified number of steps.
     dyn.run(steps)
-    
-def run_Ase_DPMD(system, dyn, steps, pace, log_filename, trajfile):
+
+def run_Ase_DPMD(system, dyn, steps, pace, log_filename, trajfile, dir_name):
     """
         Run DeepPotential molecular dynamics simulation, and setup logging save data at specified intervals.
 
@@ -145,21 +139,19 @@ def run_Ase_DPMD(system, dyn, steps, pace, log_filename, trajfile):
     print("{}".format("Initializing DeepPotential MD Simulation".center(72)))
     print("========================================================================")
 
-    # Attach various functions to the dynamics object for handeling different tasks
-    # dyn.attach(lambda: wrap_positions(apos=system), interval=pace)  # Wrap around periodic boundaries
-    dyn.attach(lambda: log_md_setup(dyn, system), interval=pace)
-    dyn.attach(lambda: save_xyz(system, trajfile, 'a'), interval=pace)
-    #
+    # Attach various functions to the dynamics object
+    dyn.attach(lambda: log_md_setup(dyn, system, dir_name), interval=pace)
+    dyn.attach(lambda: save_xyz(system, trajfile, 'a', dir_name), interval=pace)
+    
     logger = MDLogger(
         dyn=dyn, 
         atoms=system, 
-        logfile=log_filename, 
+        logfile=f"{dir_name}/{log_filename}",
         header=True, 
         stress=False, 
         peratom=False, 
         mode='a')
     
-    # Attach the logger to the dynamics object
     dyn.attach(logger, interval=pace)
     
     # Run the MD simulation for the specified number of md_steps.

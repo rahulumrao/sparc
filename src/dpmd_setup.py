@@ -35,7 +35,7 @@ def setup_DeepPotential(atoms, model_path, model_name="frozen_model.pb"):
         
         if potential_energy is not None and forces is not None:
             print("\n" + "=" * 72)
-            print("DeepPotential model successfully loaded and tested")
+            print(f"DeepPotential model successfully loaded and tested: {dp_model}")
             print("=" * 72)
         else:
             print("\n" + "=" * 72)

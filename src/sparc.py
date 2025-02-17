@@ -19,15 +19,21 @@ The workflow is configured through a YAML input file. See examples/input.yaml fo
 #===================================================================================================#
 # Standard library imports
 import yaml
+import cProfile
 import os
 import sys
 import subprocess
 import argparse
+import cProfile
+import pstats
 
 # Third-party imports
 from ase.io import read, write
 import ase.units
 from ase.md import MDLogger
+
+# 
+from scripts.plot_model_devi import main as plot_model_devi
 
 # Local imports
 from src.read_input import load_config
@@ -36,10 +42,9 @@ from src.vasp_setup import setup_dft_calculator
 from src.ase_md import NoseNVT, run_aimd, run_Ase_DPMD
 from src.plumed_wrapper import modify_forces
 from src.data_processing import get_data
-from src.utils import log_md_setup, save_xyz, wrap_positions
 from src.dpmd_setup import setup_DeepPotential
 from src.active_learning import QueryByCommittee
-
+from src.utils import create_iteration_dirs, combine_trajectories
 #===================================================================================================#
 def main():
     """Main function that coordinates the entire workflow."""
@@ -49,7 +54,12 @@ def main():
     parser = argparse.ArgumentParser(description='Run AIMD and DeepMD simulations.')
     parser.add_argument("-i", "--input_file", type=str, default="input.yaml", 
                        help="Input YAML file")
+    parser.add_argument("-p", "--plot", action="store_true", help="Plot model deviation from each iteration")
     args = parser.parse_args()
+    
+    if args.plot:
+        plot_model_devi()
+        sys.exit()
     
     try:
         yaml_config = load_config(args.input_file)
@@ -70,14 +80,14 @@ def main():
     original_system = system
     
     # Set up DFT calculator
-    vasp_calc = setup_dft_calculator(config)
+    vasp_calc = setup_dft_calculator(config, True)
     
     # Initialize simulation parameters
     timestep = config['md_simulation']['timestep_fs'] * ase.units.fs
     temperature = config['md_simulation']['temperature']
     DftMDSteps = config['general']['md_steps']
     plumed_is = config['md_simulation']['use_plumed']
-    
+    iter_structure = create_iteration_dirs(iter_num=0)        # Create iteration directory structure 
     #--------------------------------------------------------------------------------------#
     # SECTION 1: Ab initio Molecular Dynamics (AIMD)
     #--------------------------------------------------------------------------------------#
@@ -117,7 +127,8 @@ def main():
             steps=DftMDSteps, 
             pace=config['general']['log_frequency'], 
             log_filename=config['output']['log_file'],
-            trajfile=config['output']['aimdtraj_file'])
+            trajfile=config['output']['aimdtraj_file'],
+            dir_name=iter_structure['dft_dir'])
     
     #--------------------------------------------------------------------------------------#
     # SECTION 2: DeepMD Training
@@ -126,14 +137,15 @@ def main():
     if training_is:
         # Process AIMD trajectory for training
         get_data(
-            ase_traj=config['output']['aimdtraj_file'], 
+            ase_traj=iter_structure['dft_dir'] / config['output']['aimdtraj_file'], 
             dir_name=config['deepmd_setup']['data_dir'], 
             skip_min=0, 
             skip_max=None)
         
         # Train DeepMD models
         deepmd_training(
-            training_dir=config['deepmd_setup']['train_dir'],
+            active_learning=False,
+            training_dir=iter_structure['train_dir'],
             num_models=config['deepmd_setup']['num_models'], 
             input_file=config['deepmd_setup']['input_file'])
     
@@ -143,7 +155,7 @@ def main():
     dpmd_run_is = config['deepmd_setup']['MdSimulation']
     if dpmd_run_is:
         # Setup DeepMD calculator
-        dp_path = config['deepmd_setup']['train_dir']
+        dp_path = iter_structure['train_dir'] #config['deepmd_setup']['train_dir']
         dp_model = "training_1/frozen_model_1.pb" #config['deepmd_setup']['model_name']
         dp_system = original_system
         dp_atoms, dp_calc = setup_DeepPotential(
@@ -194,24 +206,25 @@ def main():
             steps=MDsteps,
             pace=writePace,
             log_filename=config['deepmd_setup']['log_file'],
-            trajfile=config['output']['dptraj_file']
+            trajfile=config['output']['dptraj_file'],
+            dir_name=iter_structure['dpmd_dir']
             )
         
         # Check for structures requiring labeling
         candidate_found_is, labelled_files, latest_models = QueryByCommittee(
-            trajfile=config['output']['dptraj_file'], 
-            model_path=config['deepmd_setup']['train_dir'], 
-            num_models=config['deepmd_setup']['num_models'], 
-            data_path=config['deepmd_setup']['dpmd_dir'],
+            trajfile=iter_structure['dpmd_dir'] / config['output']['dptraj_file'], 
+            model_path=iter_structure['train_dir'], 
+            num_models=config['deepmd_setup']['num_models'],
             min_lim=config['model_dev']['f_min_dev'],
             max_lim=config['model_dev']['f_max_dev'],
+            dpmd_data_path=iter_structure['dpmd_dir'],
             iteration=0)
             
         if not candidate_found_is:
             print("\n========================================================================")
             print("!                No More Candidates Found for Labelling                !")
             print("!                 End of Active Learning Loop                          !")
-            print(f"!       Any of the Latest Models can be Used for MD Simulation         !")
+            print(f"!     Any one of the Latest Models can be Used for MD Simulation       !")
             print("========================================================================")
             return  # Use return instead of break to exit the function
         else:
@@ -234,7 +247,7 @@ def main():
             # # Process candidates for labeling
             # num_candidates = len(labelled_files)
             # print(f"\nProcessing {num_candidates} candidate structures")
-            
+            iter_structure = create_iteration_dirs(iter_num=iter)   # Create iteration directory structure 
             # Label candidates with DFT
             for idx, files in enumerate(labelled_files[1:], start=1):
                 if not os.path.exists(files):
@@ -243,7 +256,7 @@ def main():
                 
                 # Run DFT calculations
                 poscar_ = read(files, format='vasp')
-                poscar_.calc = setup_dft_calculator(config)
+                poscar_.calc = setup_dft_calculator(config, False)
                 
                 # Run AIMD for each labelled structure
                 header = True if idx == 0 else False
@@ -262,22 +275,26 @@ def main():
                         pace=1, 
                         log_filename=f"Iter{iter}_{config['output']['log_file']}",
                         trajfile=config['output']['aimdtraj_file'],
+                        dir_name=iter_structure['dft_dir'],
                         header=header,
                         mode='a')
             
             # Retrain DeepMD models
             print("\nProcessing data for DeepMD training")
+            combined_traj = combine_trajectories(
+                trajfilename=config['output']['aimdtraj_file'],
+                current_iter=iter_structure['iter_num'])
             get_data(
-                ase_traj=config['output']['aimdtraj_file'], 
+                ase_traj=combined_traj, 
                 dir_name=config['deepmd_setup']['data_dir'], 
                 skip_min=0, 
                 skip_max=None)
             
             print("\nStarting DeepMD training")
-            deepmd_training(
-                training_dir=config['deepmd_setup']['train_dir'],
+            deepmd_training(active_learning=True,
+                training_dir=iter_structure['train_dir'],
                 num_models=config['deepmd_setup']['num_models'], 
-                input_file=config['deepmd_setup']['input_file']) 
+                input_file=config['deepmd_setup']['input_file'])
 
             print("\n{}".format("Setting up DeepPotential Calculator".center(72)))
             #--------------------------------------------------------------------------------------#
@@ -305,7 +322,7 @@ def main():
             
             MDsteps = config['deepmd_setup']['md_steps']
             writePace = config['deepmd_setup']['log_frequency']
-            dp_traj_file = f"Iter{iter}_{config['output']['dptraj_file']}"
+            # dp_traj_file = f"Iter{iter}_{config['output']['dptraj_file']}"
             
             dp_plumed_is = config['deepmd_setup']['use_plumed']
             # Configure PLUMED if enabled
@@ -336,18 +353,19 @@ def main():
                 steps=MDsteps,
                 pace=writePace,
                 log_filename=f"Iter{iter}_{config['deepmd_setup']['log_file']}",
-                trajfile=dp_traj_file,
+                trajfile=config['output']['dptraj_file'], #dp_traj_file,
+                dir_name=iter_structure['dpmd_dir']
                 )
             
             # Check for new candidates
             candidate_found_is, labelled_files, latest_models = QueryByCommittee(
-                                                                    trajfile=dp_traj_file, 
-                                                                    model_path=config['deepmd_setup']['train_dir'], 
-                                                                    num_models=config['deepmd_setup']['num_models'], 
-                                                                    data_path=config['deepmd_setup']['dpmd_dir'],
-                                                                    min_lim=config['model_dev']['f_min_dev'],
-                                                                    max_lim=config['model_dev']['f_max_dev'],
-                                                                    iteration=iter)
+                    trajfile=iter_structure['dpmd_dir'] / config['output']['dptraj_file'], 
+                    model_path=iter_structure['train_dir'], 
+                    num_models=config['deepmd_setup']['num_models'], 
+                    min_lim=config['model_dev']['f_min_dev'],
+                    max_lim=config['model_dev']['f_max_dev'],
+                    dpmd_data_path=iter_structure['dpmd_dir'],
+                    iteration=iter)
             
             if not candidate_found_is:
                 print("\n========================================================================")
@@ -371,7 +389,11 @@ def main():
             raise ValueError(f"Missing required parameter: {param}")
 
 if __name__ == '__main__':
-    main()
+    with cProfile.Profile() as pr:
+        main()
+    stats = pstats.Stats(pr)
+    stats.sort_stats(pstats.SortKey.TIME)
+    stats.dump_stats(filename='sparc.prof')
 
 #===================================================================================================#
 #                                     END OF FILE 

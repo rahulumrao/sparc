@@ -1,63 +1,89 @@
 import os
 from ase.calculators.vasp import Vasp
 from pathlib import Path
+from src.read_incar import parse_incar
 #===================================================================================================#
-def setup_dft_calculator(input_config):
+def setup_dft_calculator(input_config, print_screen):
     """
-        This function setup the DFT calculator for ASE atom object,
-        Currently supports the VASP calculator but will be updated for others as well.
-        Checkout the ASE documentation for more details, see:
-        https://wiki.fysik.dtu.dk/ase/ase/calculators/calculators.html#module-ase.calculators.
-        
-    Args:
-    -----
-        input_config (dict): Dictionary containing the configuration for setting up the DFT calculator. 
-        This should include paths, parameters, and the calculator name.
-        
-    Returns:
-    --------
-        vasp_calc: ASE Vasp object configured for DFT calculations.                
+    Setup the DFT calculator for ASE atom object.
+    Currently supports the VASP calculator with extensive parameter options.
     
+    Args:
+        input_config (dict): Dictionary containing the configuration for setting up the DFT calculator.
+            This should include paths, parameters, and the calculator name.
+            The parameters in input_config['dft_calculator'] are passed directly to ASE's VASP calculator.
+            
+    Returns:
+        vasp_calc: ASE Vasp object configured for DFT calculations.
+        
+    Raises:
+        ValueError: If required parameters are missing or invalid
+        FileNotFoundError: If VASP executable or INCAR file is not found
     """
     # Name of the DFT calculator
     dft_calc = input_config['dft_calculator']['name']
     
     # Set up VASP calculator for DFT calculations
     if (dft_calc == "VASP"):
-        # Set Environment for VASP
-        # example: command='mpiexec -np 2 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std',
-        # Construct the full path for the VASP executable using the provided path and name
-        exe_run = os.path.join(
-            input_config['dft_calculator']['exe_path'],
-            input_config['dft_calculator']['exe_name'])
+        # Validate required parameters
+        required_params = ['exe_command', 'prec', 'kgamma', 'incar_file']
+        for param in required_params:
+            if param not in input_config['dft_calculator']:
+                raise ValueError(f"{param} must be provided in dft_calculator config")
         
-        # If an executable command is provided, override the default executable path
-        if (input_config['dft_calculator']['exe_command']) is not None:
-            exe_run = input_config['dft_calculator']['exe_command']
+        exe_run = input_config['dft_calculator']['exe_command']
         
-        # Validate path
-        exe_path = input_config['dft_calculator']['exe_path']
-        if not os.path.isabs(exe_path):
-            raise ValueError("Executable path must be absolute")
+        # Extract and validate VASP executable path
+        vasp_exe = exe_run.split()[-1]
+        vasp_path = Path(vasp_exe)
+        if not vasp_path.is_absolute():
+            raise ValueError(f"VASP executable path must be absolute: {vasp_exe}")
+        if not vasp_path.exists():
+            raise FileNotFoundError(f"VASP executable not found: {vasp_exe}")
+            
+        # Validate INCAR file path
+        incar_path = Path(input_config['dft_calculator']['incar_file'])
+        if not incar_path.exists():
+            raise FileNotFoundError(f"INCAR file not found: {incar_path}")
+        #---------------------------------------------------------------------------------------------#
+        # Parse INCAR parameters
+        incar_params = parse_incar(str(incar_path))
+        if print_screen:
+            # Print the INCAR parameters in a box
+            print("\n" + "="*50)
+            print("              INCAR PARAMETERS                ")
+            print("="*50)
+            # Find the length of the longest key for alignment
+            max_key_length = max(len(key) for key in incar_params.keys())
+            for key, value in incar_params.items():
+                # 
+                padded_key = f"{key.upper():<{max_key_length}}"
+                print(f"  {padded_key} : {value}")
+            print("="*50 + "\n")
+        #---------------------------------------------------------------------------------------------#
+        # Set gamma based on kgamma
+        gamma_point = not input_config['dft_calculator'].get('kgamma', False)   
         
-        exe_path = Path(exe_path).resolve()
-        if not exe_path.exists():
-            raise FileNotFoundError(f"Executable not found: {exe_path}")
+        # Get working directory from config or use default
+        vasp_dir = input_config['dft_calculator'].get('directory', 'vasp')
         
-        # Set up the VASP calculator with the necessary parameters                       
+        # Get exchange-correlation and pseudopotential settings
+        xc_functional = input_config['dft_calculator'].get('xc', 'PBE')
+        pseudopotential = input_config['dft_calculator'].get('pp', 'PBE')
+        
         vasp_calc = Vasp(
-            prec=input_config['dft_calculator']['prec'],    # Precision of the calculation
-            encut=input_config['dft_calculator']['encut'],  # Plane-Wave Energy cutoff
-            endiff=input_config['dft_calculator']['ediff'], # Convergence criteria
-            xc='PBE',                                       # Exchange-Correlation functional
-            pp='PBE',                                       # Pseudopotential functional
-            gamma=input_config['dft_calculator']['kgamma'], # Gamma point
-            directory='vasp',                               # Directory to write the files
-            command=exe_run,                                # VASP executable command
-        )
+            prec=input_config['dft_calculator']['prec'],
+            kgamma=input_config['dft_calculator']['kgamma'],
+            gamma=gamma_point,
+            xc=xc_functional,
+            pp=pseudopotential,
+            directory=vasp_dir,  # Use configurable directory
+            command=exe_run,
+            **incar_params)
+    else:
+        raise ValueError(f"Unsupported DFT calculator: {dft_calc}. Currently only VASP is supported.")
     
     return vasp_calc
-
 #===================================================================================================#
 #                                     END OF FILE 
 #===================================================================================================#        

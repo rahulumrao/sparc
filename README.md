@@ -4,24 +4,24 @@
 
 ## Overview
 
-SPARC is an open-source Python package that implements an active learning workflow for developing accurate machine learning potentials. It automates the process of running quantum mechanical calculations, training ML models, and identifying new structures that need quantum mechanical labeling.
+SPARC is an open-source Python package that implements an active learning workflow for developing reactive machine learning potentials. It automates the process of running _ab-initio_ calculations, training ML models, and identifying new structures that need quantum mechanical labeling.
 
 ## Key Features
 
-- Ab initio Molecular Dynamics (AIMD) using VASP
-- Machine learning potential training with DeepMD-kit
+- Ab initio Molecular Dynamics (AIMD) using [VASP](https://www.vasp.at/)
+- Machine learning potential training with [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit)
 - Deep Potential Molecular Dynamics (DPMD) simulations
 - Active learning for continuous model improvement
-- Enhanced sampling with PLUMED integration
+- Reactive trajectory generation with [PLUMED](https://www.plumed.org/) integration
 
 ## Requirements
 
 ### Core Dependencies
 - Python 3.xx
-- DeepMD-kit 2.2.10
-- ASE (Atomic Simulation Environment)
-- VASP (for DFT calculations)
-- PLUMED (for enhanced sampling)
+- [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit) 2.2.10
+- [ASE](https://wiki.fysik.dtu.dk/ase/) (Atomic Simulation Environment)
+- [VASP](https://www.vasp.at/) (for DFT calculations)
+- [PLUMED](https://www.plumed.org/) (for enhanced sampling)
 - MPI library
 
 ### Python Package Dependencies
@@ -82,7 +82,7 @@ See `scripts/input.yaml` for a complete configuration template.
 ## Core Components
 
 ### 1. MD Simulation
-- Supports both _ab initio_ MD (VASP) and DeepPotential MD
+- Supports both _ab initio_ and DeepPotential Molecular Dynamics wihtin ASE
 - NVT ensemble with Nose-Hoover thermostat
 - Checkpoint/restart capabilities
 - Optional PLUMED integration for enhanced sampling
@@ -124,6 +124,24 @@ See `scripts/input.yaml` for a complete configuration template.
 - 🚧 Support for additional DFT calculators planned
 - 📝 Documentation under development
 
+## Directory Structure
+```bash
+>> Project Root
+├── INCAR
+├── input.json
+├── input.yaml
+├──── Dataset
+│      └── training_data
+│      └── validation_data
+├── iter_000000
+│   ├── 00.dft
+│   ├── 01.train
+│   └── 02.dpmd
+├── iter_000001
+    ├── 00.dft
+    ├── 01.train
+    └── 02.dpmd
+```
 
 > [!IMPORTANT]  
 > There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check [documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.

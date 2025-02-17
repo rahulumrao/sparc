@@ -9,13 +9,10 @@ general:
 # DFT calculator settings
 dft_calculator:
  name: "VASP"    # DFT package name
- encut: 300    # Plane-wave energy cutoff in eV
- prec: 'Normal'    # Precision level
+ prec: "Normal"    # Precision level
  kgamma: True    # Gamma point calculation
- ediff: 1e-5    # Energy convergance criteria
- exe_name: "vasp_std"      # executable name
- exe_path: "/home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin"
- exe_command: "mpirun -np 8 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"    # MPI command for parallel execution
+ incar_file: "INCAR"    # Path to INCAR file
+ exe_command: "mpirun -np 8 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"    # Full command to run VASP with MPI
 
 # ASE MD simulation settings
 md_simulation:

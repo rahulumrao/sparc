@@ -4,6 +4,7 @@ import logging
 import subprocess
 import random
 import json
+import sys
 #!==============================================================!
 """
     This module contains the function for DeepMD model training.
@@ -39,8 +40,10 @@ def update_seed(data):
     
     _update_recursively(data)
     return data
-
-def deepmd_training(training_dir: str, num_models: int, input_file: str = 'input.json'):
+#---------------------------------------------------------------------------------------------------#
+# DeePMD Training Function 
+#---------------------------------------------------------------------------------------------------#
+def deepmd_training(active_learning: bool, training_dir: str, num_models: int, input_file: str = 'input.json'):
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     
@@ -70,7 +73,8 @@ def deepmd_training(training_dir: str, num_models: int, input_file: str = 'input
     base_dir = training_dir
     # Create base directory if it doesn't exist
     os.makedirs(base_dir, exist_ok=True)
-     
+    # print(f"Training directory: {base_dir}")
+    # sys.exit()
     # Check if the number of models is at least 2
     if num_models < 2:
         raise ValueError("The number of models must be at least 2.")

@@ -2,12 +2,47 @@ import numpy as np
 from ase.io import write
 from ase.io.trajectory import TrajectoryWriter
 import pickle
+from pathlib import Path
+from ase.io import read, write    
 #===================================================================================================
 """
     Function is called to log the dynamics. It write the potential energy (Epot), kinetic energy (Ekin),
     total energy (Epot + Ekin), and temperature (Temp) of the system..
 """
-def log_md_setup(dyn, atoms, filename='AseMolDyn.log', write_dist=False):
+#---------------------------------------------------------------------------------------------------#   
+def create_iteration_dirs(iter_num):
+    """Create iteration directory structure."""
+    iter_name = f"iter_{iter_num:06d}"
+    iter_dir = Path(iter_name)
+    iter_dir.mkdir(exist_ok=True)
+    
+    # Create subdirectories with new naming
+    dft_dir = iter_dir/"00.dft"      # DFT calculations (VASP)
+    train_dir = iter_dir/"01.train"   # DeepMD training
+    dpmd_dir = iter_dir/"02.dpmd"     # DeepMD runs and model deviation
+    
+    # Print iteration information
+    print("\n" + "="*72)
+    print(f"Creating directories for Iteration: {iter_num:06d}")
+    print("="*72)
+    print(f"├── {iter_name}/")
+    print(f"│   ├── {dft_dir.name}/")
+    print(f"│   ├── {train_dir.name}/")
+    print(f"│   └── {dpmd_dir.name}/")
+    print("="*72 + "\n")
+    
+    for folder in [dft_dir, train_dir, dpmd_dir]:
+        folder.mkdir(exist_ok=True)
+        
+    return {
+        'iter_num': iter_num,
+        'iter_dir': iter_dir,
+        'dft_dir': dft_dir,
+        'train_dir': train_dir,
+        'dpmd_dir': dpmd_dir
+    }
+#---------------------------------------------------------------------------------------------------#   
+def log_md_setup(dyn, atoms, dir_name, write_dist=False):
     """
     Log molecular dynamics simulation details including energies and temperature.
 
@@ -16,8 +51,8 @@ def log_md_setup(dyn, atoms, filename='AseMolDyn.log', write_dist=False):
             The molecular dynamics simulation object
         atoms: ase.Atoms
             The atomic system being simulated
-        filename: str, optional
-            Path to the MD log file (default: 'AseMolDyn.log')
+        dir_name: str
+            Directory path for log files
         write_dist: bool, optional
             Whether to log distance between atoms 0 and 4 (default: False)
     """
@@ -32,11 +67,11 @@ def log_md_setup(dyn, atoms, filename='AseMolDyn.log', write_dist=False):
     step = dyn.get_number_of_steps()
     temp = float(atoms.get_temperature())
     
-    # Print current step info to console
+    # Print current step info to the console
     print(f'Steps: {step}, Epot: {epot:.6f}, Ekin: {ekin:.6f}, Temp: {temp:.2f}')
     
     # Write to log file using MDLogger context manager
-    with MDLogger(filename) as log:
+    with MDLogger(f"{dir_name}/AseMolDyn.log") as log:
         if step == 0:
             log.file.write(f"# {'Steps':<6} {'Epot':<10} {'Ekin':<10} {'Total':<10} {'Temp':<6}\n")
         log.file.write(f"{float(step):<8} {epot:<10.6f} {ekin:<10.6f} {total:<10.6f} {temp:<6.2f}\n")
@@ -44,23 +79,11 @@ def log_md_setup(dyn, atoms, filename='AseMolDyn.log', write_dist=False):
     # Optionally log atomic distances using MDLogger
     if write_dist:
         distance = atoms.get_distance(0, 4, mic=True)
-        with MDLogger('dist.dat') as dist_log:
+        with MDLogger(f"{dir_name}/dist.dat") as dist_log:
             dist_log.file.write(f"Step: {step}, Distance: {distance:.6f}\n")
 
-def wrap_positions(apos):
-    """
-    Wrap atomic positions within periodic boundary conditions.
-
-    Args:
-        apos: ase.Atoms
-            The atomic system to wrap
-
-    Returns:
-        ase.Atoms: System with wrapped positions
-    """
-    return apos.wrap()
-                
-def save_xyz(atoms, trajfile, write_mode):
+#---------------------------------------------------------------------------------------------------#                
+def save_xyz(atoms, trajfile, write_mode, dir_name):
     """
     Save atomic configuration to trajectory and XYZ files.
 
@@ -79,9 +102,15 @@ def save_xyz(atoms, trajfile, write_mode):
     
     # Write to trajectory file
     # wrapped_atoms = wrap_positions(atoms)
-    atoms.wrap()
+    atoms.center()
+    atoms.wrap()    
+    
+    # Write trajectory and XYZ files to specified directory
+    traj_file = f"{dir_name}/{trajfile}"
+    xyz_file = f"{dir_name}/AseTraj.xyz"
+    
     trr = TrajectoryWriter(
-        filename=trajfile,
+        filename=traj_file,
         mode=write_mode,
         atoms=atoms,
         properties=properties
@@ -89,8 +118,8 @@ def save_xyz(atoms, trajfile, write_mode):
     trr.write(atoms)
     
     # Save additional XYZ format
-    write('AseTraj.xyz', atoms, append=True)
-    
+    write(xyz_file, atoms, append=True)
+#---------------------------------------------------------------------------------------------------#
 # Add context managers for file handling
 class MDLogger:
     """
@@ -145,7 +174,44 @@ def load_md_checkpoint(filename='md_checkpoint.pkl'):
     with open(filename, 'rb') as f:
         return pickle.load(f)
 
+#---------------------------------------------------------------------------------------------------#
+def combine_trajectories(trajfilename, current_iter):
+    """
+    Combine trajectory files from all previous iterations and current iteration.
+    
+    Args:
+        trajfilename (str): Name of the trajectory file to combine
+        iter_dir (Path): Path to the current iteration directory
+        current_iter (int): Current iteration number
+        
+    Returns:
+        str: Path to combined trajectory file
+    """
+    # Create a list to store all trajectories
+    all_frames = []
+    
+    # Read trajectories from previous iterations
+    for i in range(current_iter + 1):
+        iter_name = f"iter_{i:06d}"
+        dft_traj = Path(iter_name) / "00.dft" / trajfilename
+        if dft_traj.exists():
+            frames = read(dft_traj, index=':')
+            all_frames.extend(frames)
+            print(f"Added {len(frames)} frames from iteration {i}")
+    
+    if not all_frames:
+        raise ValueError("No trajectory data found from any iteration")
+        
+    # Write combined trajectory
+    # combined_traj = iter_dir / "TrajCombined.traj"
+    combined_traj =  "TrajCombined.traj"
+    write(str(combined_traj), all_frames)
+    print(f"\nCombined trajectory contains {len(all_frames)} frames")
+    
+    return str(combined_traj)   
 #===================================================================================================#
 #                                     END OF FILE 
 #===================================================================================================#        
+
+     
         

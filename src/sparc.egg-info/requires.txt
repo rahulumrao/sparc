@@ -1,6 +1,0 @@
-ase
-numpy
-pandas
-scipy
-dpdata
-deepmd-kit
