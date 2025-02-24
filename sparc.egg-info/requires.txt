@@ -1,0 +1,12 @@
+ase
+numpy
+pandas
+scipy
+dpdata
+deepmd-kit[cu12,gpu,lmp]==2.2.10
+pytest
+
+[docs]
+sphinx
+sphinx-rtd-theme
+sphinx-autodoc-typehints

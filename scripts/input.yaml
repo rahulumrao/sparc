@@ -1,62 +1,70 @@
-# YAML configuration file for SPARC pacakge
+# YAML configuration file for SPARC package
 
-# General setings
+# General settings
 general:
- structure_file: "POSCAR" # Input structure
- md_steps: 0     # Number of MD Steps
- log_frequency: 4     # Interval for MD log and save trajectories
+  structure_file: "POSCAR"  # Input structure
+  md_steps: 0                # Number of MD Steps
+  log_frequency: 4           # Interval for MD log and save trajectories
 
 # DFT calculator settings
 dft_calculator:
- name: "VASP"    # DFT package name
- prec: "Normal"    # Precision level
- kgamma: True    # Gamma point calculation
- incar_file: "INCAR"    # Path to INCAR file
- exe_command: "mpirun -np 8 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"    # Full command to run VASP with MPI
+  name: "VASP"               # DFT package name
+  prec: "Normal"             # Precision level
+  kgamma: True               # Gamma point calculation
+  incar_file: "INCAR"       # Path to INCAR file
+  exe_command: "mpirun -np 8 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"  # Full command to run VASP with MPI
 
 # ASE MD simulation settings
 md_simulation:
- ensemble: "NVT"    # Ensemble for MD simulation
- thermostat: "Nose"      # Thermostat type (nose-Hoover)
- tdamp: 2.0    # Damping parameter for thermostat
- timestep_fs: 1.0    # TimeStep for MD simulation
- temperature: 300    # Temperature in Kelvin
- restart: False      # Whether to restart MD simulation from checkpoint
- use_plumed: True   # Use PLUMED for MD simulation
+  ensemble: "NVT"           # Ensemble for MD simulation
+  thermostat: "Nose"        # Thermostat type (nose-Hoover)
+  tdamp: 2.0                # Damping parameter for thermostat
+  timestep_fs: 1.0          # TimeStep for MD simulation
+  temperature: 300          # Temperature in Kelvin
+  restart: False            # Whether to restart MD simulation from checkpoint
+  use_plumed: True          # Use PLUMED for MD simulation
 
 # Plumed settings
 plumed:
- input_file: "plumed.dat"    # PLUMED input file
- restart: True 
- kT: 0.02585 #eV       # kT value PLUMED units
+  input_file: "plumed.dat"  # PLUMED input file
+  restart: True 
+  kT: 0.02585                # kT value PLUMED units
 
-# Deepmd training settings
+# DeepMD training settings
 deepmd_setup:
- training: False    # Enable Deep potential training
- data_dir: "DeePMD_training/00.data"    # Path to store training and validation data
- train_dir: "DeePMD_training/01.train"    # Path to run Deep potential training
- dpmd_dir: "DeePMD_training/02.mdrun"    # Path to run Deep potential training
- input_file: "input.json"    # Input file for DeepMD training
- skip_min: 0    # Minimum frames to skip
- skip_max: null    # Maximum frames to skip
- MdSimulation: True
- num_models: 2
- timestep_fs: 1.0
- md_steps: 2000
- log_file: "dpmd.log"
- log_frequency: 5
- use_plumed: True
- plumed_file: "plumed.dat"  # Optional: defaults to "plumed.dat" if not specified
+  training: False            # Enable Deep potential training
+  data_dir: "DeePMD_training/00.data"  # Path to store training and validation data
+  input_file: "input.json"  # Input file for DeepMD training
+  skip_min: 0               # Minimum frames to skip
+  skip_max: null            # Maximum frames to skip
+  MdSimulation: True
+  num_models: 2
+  timestep_fs: 1.0
+  md_steps: 2000
+  log_file: "dpmd.log"
+  log_frequency: 5
+  use_plumed: True
+  plumed_file: "plumed.dat"  # Optional: defaults to "plumed.dat" if not specified
 
 # Active Learning
 active_learning: False 
 model_dev:
- f_min_dev: 0.1
- f_max_dev: 0.8
+  f_min_dev: 0.1
+  f_max_dev: 0.8
+
+# Distance checks (optional)
+distance_metrics:
+  - pair: [0, 1]
+    max_distance: 5.0  # Maximum allowed distance in Angstroms
+  - pair: [1, 2]
+    max_distance: 4.5  # Maximum allowed distance in Angstroms
+  - pair: [0, 2]
+    max_distance: 6.0  # Maximum allowed distance in Angstroms
+# If you want to skip distance checks, you can comment out or remove this section.
 
 # File output settings
 output:
- log_file: "AseMD.log"        # Log file of MD simulation
- xyz_file: "AseTraj.xyz"      # XYZ trajectory file for AIMD run
- aimdtraj_file: "AseMD.traj"  # ASE trajectory file for AIMD run
- dptraj_file: "dpmd.traj"     # ASE DeepMD trajectory file
+  log_file: "AseMD.log"        # Log file of MD simulation
+  xyz_file: "AseTraj.xyz"      # XYZ trajectory file for AIMD run
+  aimdtraj_file: "AseMD.traj"  # ASE trajectory file for AIMD run
+  dptraj_file: "dpmd.traj"     # ASE DeepMD trajectory file
