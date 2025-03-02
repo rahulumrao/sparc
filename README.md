@@ -46,6 +46,8 @@ pip install cython  # Required for Python wrapper
 
 make -j$(nproc) && make install
 ```
+[!NOTE] Read the [installation page](https://www.plumed.org/doc-v2.9/user-doc/html/_installation.html) for more details.
+
 
 If you don't want to use additional modules in PLUMED then you can skip the manual installation (above) and install from `conda-forge`.
 ```bash
