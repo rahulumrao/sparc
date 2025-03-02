@@ -23,7 +23,7 @@ def has_cuda():
 # Determine which deepmd-kit version to install
 if has_cuda():
     # For systems with CUDA, install GPU version
-    deepmd_requirement = "deepmd-kit[gpu,cu12,lmp]==2.2.10"  # Using CUDA 12 as default
+    deepmd_requirement = "deepmd-kit[gpu,lmp]==2.2.10"  # Using CUDA 12 as default
 else:
     print("\033[93mWarning: No GPU detected. Installing CPU-only version of deepmd-kit.\033[0m")
     # For systems without CUDA, install CPU version
@@ -34,7 +34,7 @@ setup(
     version="0.1",
     packages=find_packages(include=["src"]),
     install_requires=[
-        "ase",
+        "ase==3.25.0b1",
         "numpy",
         "pandas",
         "scipy",

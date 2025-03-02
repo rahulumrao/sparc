@@ -11,7 +11,7 @@ dft_calculator:
   name: "VASP"               # DFT package name
   prec: "Normal"             # Precision level
   kgamma: True               # Gamma point calculation
-  incar_file: "INCAR"       # Path to INCAR file
+  incar_file: "INCAR"        # Path to INCAR file
   exe_command: "mpirun -np 8 /home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"  # Full command to run VASP with MPI
 
 # ASE MD simulation settings
@@ -30,7 +30,7 @@ plumed:
   restart: True 
   kT: 0.02585                # kT value PLUMED units
 
-# DeepMD training settings
+# DeepMD settings
 deepmd_setup:
   training: False            # Enable Deep potential training
   data_dir: "DeePMD_training/00.data"  # Path to store training and validation data
@@ -38,12 +38,12 @@ deepmd_setup:
   skip_min: 0               # Minimum frames to skip
   skip_max: null            # Maximum frames to skip
   MdSimulation: True
-  num_models: 2
-  timestep_fs: 1.0
-  md_steps: 2000
-  log_file: "dpmd.log"
+  num_models: 2             # Number of models to be trained
+  timestep_fs: 1.0          # Timestep
+  md_steps: 2000            # MLP-MD steps
+  log_file: "dpmd.log"  
   log_frequency: 5
-  use_plumed: True
+  use_plumed: True           # Default: False
   plumed_file: "plumed.dat"  # Optional: defaults to "plumed.dat" if not specified
 
 # Active Learning
@@ -52,7 +52,7 @@ model_dev:
   f_min_dev: 0.1
   f_max_dev: 0.8
 
-# Distance checks (optional)
+# check metrics (optional)
 distance_metrics:
   - pair: [0, 1]
     max_distance: 5.0  # Maximum allowed distance in Angstroms

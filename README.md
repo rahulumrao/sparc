@@ -38,11 +38,21 @@ conda activate sparc
 ```
 
 2. Install PLUMED:
+
+Download [PLUMED](https://www.plumed.org/download) package from the website, and install with the following flags:
+```bash
+pip install cython  # Required for Python wrapper
+./configure --enable-mpi=no --enable-modules=all PYTHON_BIN=$(which python) --prefix=$CONDA_PREFIX
+
+make -j$(nproc) && make install
+```
+
+If you don't want to use additional modules in PLUMED then you can skip the manual installation (above) and install from `conda-forge`.
 ```bash
 conda install -c conda-forge py-plumed
 ```
 
-4. Clone and install SPARC:
+3. Clone and install SPARC:
 ```bash
 git clone https://github.com/rahulumrao/sparc.git
 cd sparc
@@ -56,7 +66,14 @@ pip install .
 export VASP_PP_PATH=/path/to/vasp/potcar_files
 ```
 
-2. Create an input file (see example below)
+2. If you have installed PLUMED manually (skip if you used `conda-forge`), you also need to set the environment before running the code:
+
+```bash
+export PLUMED_KERNEL="$CONDA_PREFIX/lib/libplumedKernel.so"
+export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
+```
+
+3. Create an input file (see example below)
 
 ### Example Input File
 ```yaml
