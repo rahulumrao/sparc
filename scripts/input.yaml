@@ -37,29 +37,31 @@ deepmd_setup:
   input_file: "input.json"  # Input file for DeepMD training
   skip_min: 0               # Minimum frames to skip
   skip_max: null            # Maximum frames to skip
-  MdSimulation: True
   num_models: 2             # Number of models to be trained
+  MdSimulation: True
   timestep_fs: 1.0          # Timestep
   md_steps: 2000            # MLP-MD steps
+  multiple_run: 5           # Run multiple MD-MLP run starting with different velocities
   log_file: "dpmd.log"  
   log_frequency: 5
   use_plumed: True           # Default: False
   plumed_file: "plumed.dat"  # Optional: defaults to "plumed.dat" if not specified
 
 # Active Learning
-active_learning: False 
+active_learning: False
+iteration: 10
 model_dev:
   f_min_dev: 0.1
   f_max_dev: 0.8
 
 # check metrics (optional)
 distance_metrics:
-  - pair: [0, 1]
+  - pair: [0, 3]
+    min_distance: 1.2  # Minimum allowed distance in Angstroms
     max_distance: 5.0  # Maximum allowed distance in Angstroms
-  - pair: [1, 2]
-    max_distance: 4.5  # Maximum allowed distance in Angstroms
-  - pair: [0, 2]
-    max_distance: 6.0  # Maximum allowed distance in Angstroms
+  - pair: [0, 1]
+    min_distance: 1.2  # Minimum allowed distance in Angstroms
+    max_distance: 2.0  # Maximum allowed distance in Angstroms
 # If you want to skip distance checks, you can comment out or remove this section.
 
 # File output settings

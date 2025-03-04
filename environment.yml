@@ -1,0 +1,10 @@
+name: sparc_env
+channels:
+  - https://conda.deepmodeling.com
+  - defaults
+dependencies:
+  - python=3.10.13
+  - deepmd-kit=2.2.10=*gpu
+  - libdeepmd=2.2.10=*gpu
+  - lammps
+  - horovod

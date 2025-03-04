@@ -5,6 +5,7 @@ import pickle
 from pathlib import Path
 from ase.io import read, write    
 import os
+import glob
 from ase.geometry import get_angles
 #===================================================================================================
 """
@@ -226,6 +227,13 @@ def save_progress(iteration, progress_file='progress.txt'):
     with open(progress_file, 'w') as f:
         f.write(f"{iteration}")    
 
+def remove_backup_files(file_ext="bck.*"):
+    backup_files = glob.glob(file_ext)
+    for file in backup_files:
+        os.remove(file)
+    # print("REMOVING BACKUP FILES GENERATED FROM PLUMED")
+    
+
 def check_physical_limits(atoms, distance_metrics):
     """
     Check if any distances exceed physical limits.
@@ -241,18 +249,20 @@ def check_physical_limits(atoms, distance_metrics):
     """
     for check in distance_metrics:
         atom1, atom2 = check['pair']
+        min_distance = check['min_distance']
         max_distance = check['max_distance']
         distance = atoms.get_distance(atom1, atom2)
-        if distance > max_distance:
+        if distance < min_distance or distance > max_distance:
             # Get chemical symbols for the atoms
             symbol1 = atoms.get_chemical_symbols()[atom1]
             symbol2 = atoms.get_chemical_symbols()[atom2]
             
             print("\n" + "=" * 50)
-            print("  WARNING: DISTANCE EXCEEDED  ")
+            print("  WARNING: DISTANCE CHANGED BEYOND PHYSICAL LIMIT ")
             print("-" * 50)
             print(f"  ATOMS: {symbol1} ({atom1}) -- {symbol2} ({atom2})  ")
-            print(f"  MEASURED: {distance:.2f} Å   (LIMIT: {max_distance:.2f} Å)  ")
+            print(f"  MEASURED: {distance:.2f} Å   (MIN. LIMIT: {min_distance:.2f} Å)  ")
+            print(f"  MEASURED: {distance:.2f} Å   (MAX. LIMIT: {max_distance:.2f} Å)  ")
             print("=" * 50 + "\n")
 
             return True

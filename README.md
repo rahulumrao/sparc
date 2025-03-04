@@ -36,23 +36,12 @@ SPARC is an open-source Python package that implements an active learning workfl
 conda create -n sparc python=3.10
 conda activate sparc
 ```
-
-2. Install PLUMED:
-
-Download [PLUMED](https://www.plumed.org/download) package from the website, and install with the following flags:
+2. Install [Deepmd-kit](https://docs.deepmodeling.com/projects/deepmd/en/r2/getting-started/install.html) from `conda`:
 ```bash
-pip install cython  # Required for Python wrapper
-./configure --enable-mpi=no --enable-modules=all PYTHON_BIN=$(which python) --prefix=$CONDA_PREFIX
-
-make -j$(nproc) && make install
+conda install deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults
 ```
-[!NOTE] Read the [installation page](https://www.plumed.org/doc-v2.9/user-doc/html/_installation.html) for more details.
 
-
-If you don't want to use additional modules in PLUMED then you can skip the manual installation (above) and install from `conda-forge`.
-```bash
-conda install -c conda-forge py-plumed
-```
+<!-- # conda create -n cuda_test deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults -->
 
 3. Clone and install SPARC:
 ```bash
@@ -60,6 +49,26 @@ git clone https://github.com/rahulumrao/sparc.git
 cd sparc
 pip install .
 ```
+[!Note] Some Collective Variables (CVs), such as Generic CVs (e.g., SPRINT), are part of the `additional module` and are not included in a standard PLUMED installation. To enable them, we need to manually install PLUMED and wrap with Python:
+
+4. Install PLUMED:
+
+Download [PLUMED](https://www.plumed.org/download) package from the website, and install with the following flags:
+```bash
+./configure --enable-mpi=no --enable-modules=all PYTHON_BIN=$(which python) --prefix=$CONDA_PREFIX
+
+make -j$(nproc) && make install
+```
+> Refer to the official [PLUMED installation page](https://www.plumed.org/doc-v2.9/user-doc/html/_installation.html) for more details.
+
+
+If you **don’t need additional modules**, you can skip the manual installation and install PLUMED directly from `conda-forge`.
+```bash
+conda install -c conda-forge py-plumed
+```
+
+
+
 
 ## Quick Start
 
@@ -170,6 +179,9 @@ See `scripts/input.yaml` for a complete configuration template.
 - Currently only supports DeepMD-kit 2.2.10 (newer versions not yet supported)
 - Limited to VASP for DFT calculations
 - Documentation is still being developed
+
+## Known Issue
+- Deepmd-kit `pip` installation does not install tensorflow-cuda libraries correctly to detect GPU.
 
 ## License
 

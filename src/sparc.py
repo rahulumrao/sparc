@@ -44,7 +44,7 @@ from src.plumed_wrapper import modify_forces
 from src.data_processing import get_data
 from src.dpmd_setup import setup_DeepPotential
 from src.active_learning import QueryByCommittee
-from src.utils import create_iteration_dirs, combine_trajectories, load_progress, save_progress
+from src.utils import create_iteration_dirs, combine_trajectories, load_progress, save_progress, remove_backup_files
 #===================================================================================================#
 def main():
     """Main function that coordinates the entire workflow."""
@@ -129,7 +129,6 @@ def main():
             log_filename=config['output']['log_file'],
             trajfile=config['output']['aimdtraj_file'],
             dir_name=iter_structure['dft_dir'])
-    
     #--------------------------------------------------------------------------------------#
     # SECTION 2: DeepMD Training
     #--------------------------------------------------------------------------------------#
@@ -154,61 +153,64 @@ def main():
     #--------------------------------------------------------------------------------------#
     dpmd_run_is = config['deepmd_setup']['MdSimulation']
     if dpmd_run_is:
+        n_sample = config['deepmd_setup'].get('multiple_run', 1)
+        print("\n========================================================================")
+        print("      MULTIPLE SAPMLE MD-SIMULATION STARTING FROM SAME CONFIGURATION!")
+        print("========================================================================")
+        for i in range(n_sample):
         # Setup DeepMD calculator
-        dp_path = iter_structure['train_dir'] #config['deepmd_setup']['train_dir']
-        dp_model = "training_1/frozen_model_1.pb" #config['deepmd_setup']['model_name']
-        dp_system = original_system
-        dp_atoms, dp_calc = setup_DeepPotential(
-                            atoms=dp_system, 
-                            model_path=dp_path, 
-                            model_name=dp_model)
+            dp_path = iter_structure['train_dir'] #config['deepmd_setup']['train_dir']
+            dp_model = "training_1/frozen_model_1.pb" #config['deepmd_setup']['model_name']
+            dp_system = original_system
+            dp_atoms, dp_calc = setup_DeepPotential(
+                                atoms=dp_system, 
+                                model_path=dp_path, 
+                                model_name=dp_model)
 
-        # Configure and run DPMD
-        dyn_dp = NoseNVT(
-            atoms=dp_atoms, 
-            timestep=config['deepmd_setup']['timestep_fs'] * ase.units.fs,
-            tdamp=config['md_simulation']['tdamp'] * ase.units.fs, 
-            temperature=temperature
-            )
-        
-        MDsteps = config['deepmd_setup']['md_steps']
-        writePace = config['deepmd_setup']['log_frequency']
-        
-        dp_plumed_is = config['deepmd_setup']['use_plumed']
-        # Configure PLUMED if enabled
-        if (dp_plumed_is):
-            print("\n========================================================================")
-            print("               PLUMED IS CALLED FOR DPMD SIMULATION !")
-            print("========================================================================")
+            # Configure and run DPMD
+            dyn_dp = NoseNVT(
+                atoms=dp_atoms, 
+                timestep=config['deepmd_setup']['timestep_fs'] * ase.units.fs,
+                tdamp=config['md_simulation']['tdamp'] * ase.units.fs, 
+                temperature=temperature
+                )
             
-            # Get PLUMED input file - use default if not specified
-            plumed_file = config['deepmd_setup'].get('plumed_file', 'plumed.dat')
-            print(f"Using PLUMED input file: {plumed_file}")
+            MDsteps = config['deepmd_setup']['md_steps']
+            writePace = config['deepmd_setup']['log_frequency']
             
-            dp_atoms.calc = modify_forces(
-                calculator=dp_calc, 
-                system=dp_atoms, 
-                timestep=timestep, 
-                temperature=temperature, 
-                kT=config['plumed']['kT'],
-                restart=config['plumed']['restart'], 
-                plumed_input=plumed_file)
-        else:
-            dp_atoms.calc = dp_calc
-            
-        # print("DPMD Calculator: ",system.calc,'\n', dp_calc)
-        # sys.exit()
-        
-        # dp_system.calc = dp_calc
-        run_Ase_DPMD(
-            system=dp_atoms,
-            dyn=dyn_dp,
-            steps=MDsteps,
-            pace=writePace,
-            log_filename=config['deepmd_setup']['log_file'],
-            trajfile=config['output']['dptraj_file'],
-            dir_name=iter_structure['dpmd_dir'],
-            distance_metrics=config['distance_metrics']  # Pass the user-provided distance metrics
+            dp_plumed_is = config['deepmd_setup']['use_plumed']
+            # Configure PLUMED if enabled
+            if (dp_plumed_is):
+                print("\n========================================================================")
+                print("               PLUMED IS CALLED FOR DPMD SIMULATION !")
+                print("========================================================================")
+                
+                # Get PLUMED input file - use default if not specified
+                plumed_file = config['deepmd_setup'].get('plumed_file', 'plumed.dat')
+                print(f"Using PLUMED input file: {plumed_file}")
+                remove_backup_files(file_ext="bck.*")
+                dp_atoms.calc = modify_forces(
+                    calculator=dp_calc, 
+                    system=dp_atoms, 
+                    timestep=timestep, 
+                    temperature=temperature, 
+                    kT=config['plumed']['kT'],
+                    restart=config['plumed']['restart'], 
+                    plumed_input=plumed_file)
+            else:
+                dp_atoms.calc = dp_calc
+                
+            # print("DPMD Calculator: ",system.calc,'\n', dp_calc)
+            # sys.exit()
+            run_Ase_DPMD(
+                system=dp_atoms,
+                dyn=dyn_dp,
+                steps=MDsteps,
+                pace=writePace,
+                log_filename=config['deepmd_setup']['log_file'],
+                trajfile=config['output']['dptraj_file'],
+                dir_name=iter_structure['dpmd_dir'],
+                distance_metrics=config['distance_metrics']  # Pass the user-provided distance metrics
         )
         
         # Check for structures requiring labeling
@@ -239,11 +241,14 @@ def main():
 
     # Active Learning Loop
     learning_is = config['active_learning']
-    print(f"\nActive Learning Protocol is set to: {learning_is}")
+    al_iter = config['iteration']
 
     if learning_is:
+        print("=" * 72)
+        print(f"{'Active Learning Protocol is set to: ' + str(learning_is):^{72}}")
+        print(f"{'Total AL Iterations will be run: ' + str(al_iter):^{72}}")
         iter = start_iteration  # Start from the last completed iteration
-        while candidate_found_is:
+        while candidate_found_is and iter < al_iter:
             print("\n========================================================================")
             print("{}".format(f"Starting Iteration {iter}".center(72)))
             print("========================================================================")
@@ -251,7 +256,8 @@ def main():
             iter_structure = create_iteration_dirs(iter_num=iter)   # Create iteration directory structure 
             
             # Process candidates for labeling
-            for idx, files in enumerate(labelled_files[1:], start=1):
+            # for idx, files in enumerate(labelled_files[1:], start=1):
+            for idx, files in enumerate(labelled_files, start=1):
                 if not os.path.exists(files):
                     print(f"Warning: Candidate file {files} not found, skipping...")
                     continue
@@ -302,62 +308,68 @@ def main():
             #--------------------------------------------------------------------------------------#
             # Set DeepPotential calculator
             #--------------------------------------------------------------------------------------#
-            dp_system = original_system
-            dp_atoms, dp_calc = setup_DeepPotential(
-                                atoms=dp_system, 
-                                model_path=parent_dir, 
-                                model_name=latest_models[0])
-            
-            # original_system.calc = dp_calc
+            n_sample = config['deepmd_setup'].get('multiple_run', 1)
+            print("\n========================================================================")
+            print("      MULTIPLE SAPMLE MD-SIMULATION STARTING FROM SAME CONFIGURATION!")
+            print("========================================================================")
+            for i in range(n_sample):
+                dp_system = original_system
+                dp_atoms, dp_calc = setup_DeepPotential(
+                                    atoms=dp_system, 
+                                    model_path=parent_dir, 
+                                    model_name=latest_models[0])
+                
+                # original_system.calc = dp_calc
 
-            # DeepMD Simulation
-            print("\n{}".format("Initializing DeepMD Simulation".center(72)))
-            #--------------------------------------------------------------------------------------#
-            # Set Nose-Hoover Chain NVT Dynamics
-            #--------------------------------------------------------------------------------------#
-            dyn_dp = NoseNVT(
-                atoms=dp_atoms, 
-                timestep=timestep,
-                tdamp=config['md_simulation']['tdamp'] * ase.units.fs, 
-                temperature=temperature
-                )
-            
-            MDsteps = config['deepmd_setup']['md_steps']
-            writePace = config['deepmd_setup']['log_frequency']
-            # dp_traj_file = f"Iter{iter}_{config['output']['dptraj_file']}"
-            
-            dp_plumed_is = config['deepmd_setup']['use_plumed']
-            # Configure PLUMED if enabled
-            if (dp_plumed_is):
-                print("\n========================================================================")
-                print("               PLUMED IS CALLED FOR DPMD SIMULATION !")
-                print("========================================================================")
+                # DeepMD Simulation
+                print("\n{}".format("Initializing DeepMD Simulation".center(72)))
+                #--------------------------------------------------------------------------------------#
+                # Set Nose-Hoover Chain NVT Dynamics
+                #--------------------------------------------------------------------------------------#
+                dyn_dp = NoseNVT(
+                    atoms=dp_atoms, 
+                    timestep=timestep,
+                    tdamp=config['md_simulation']['tdamp'] * ase.units.fs, 
+                    temperature=temperature
+                    )
                 
-                # Get PLUMED input file - use default if not specified
-                plumed_file = config['deepmd_setup'].get('plumed_file', 'plumed.dat')
-                print(f"Using PLUMED input file: {plumed_file}")
+                MDsteps = config['deepmd_setup']['md_steps']
+                writePace = config['deepmd_setup']['log_frequency']
+                # dp_traj_file = f"Iter{iter}_{config['output']['dptraj_file']}"
                 
-                dp_atoms.calc = modify_forces(
-                    calculator=dp_calc, 
-                    system=dp_atoms, 
-                    timestep=timestep, 
-                    temperature=temperature, 
-                    kT=config['plumed']['kT'],
-                    restart=config['plumed']['restart'], 
-                    plumed_input=plumed_file)
-            else:
-                dp_atoms.calc = dp_calc
-            
-            # Perform DeepPotential MD siulation with re-trained model
-            run_Ase_DPMD(
-                system=dp_atoms,
-                dyn=dyn_dp,
-                steps=MDsteps,
-                pace=writePace,
-                log_filename=f"Iter{iter}_{config['deepmd_setup']['log_file']}",
-                trajfile=config['output']['dptraj_file'], #dp_traj_file,
-                dir_name=iter_structure['dpmd_dir'],
-                distance_metrics=config['distance_metrics']  # Pass the user-provided distance metrics
+                dp_plumed_is = config['deepmd_setup']['use_plumed']
+                # Configure PLUMED if enabled
+                if (dp_plumed_is):
+                    print("\n========================================================================")
+                    print("               PLUMED IS CALLED FOR DPMD SIMULATION !")
+                    print("========================================================================")
+                    
+                    # Get PLUMED input file - use default if not specified
+                    plumed_file = config['deepmd_setup'].get('plumed_file', 'plumed.dat')
+                    print(f"Using PLUMED input file: {plumed_file}")
+                    
+                    dp_atoms.calc = modify_forces(
+                        calculator=dp_calc, 
+                        system=dp_atoms, 
+                        timestep=timestep, 
+                        temperature=temperature, 
+                        kT=config['plumed']['kT'],
+                        restart=config['plumed']['restart'], 
+                        plumed_input=plumed_file)
+                else:
+                    dp_atoms.calc = dp_calc
+                
+                # Perform DeepPotential MD siulation with re-trained model
+
+                run_Ase_DPMD(
+                    system=dp_atoms,
+                    dyn=dyn_dp,
+                    steps=MDsteps,
+                    pace=writePace,
+                    log_filename=f"Iter{iter}_{config['deepmd_setup']['log_file']}",
+                    trajfile=config['output']['dptraj_file'], #dp_traj_file,
+                    dir_name=iter_structure['dpmd_dir'],
+                    distance_metrics=config['distance_metrics']  # Pass the user-provided distance metrics
             )
             
             # Check for new candidates
