@@ -49,11 +49,11 @@ git clone https://github.com/rahulumrao/sparc.git
 cd sparc
 pip install .
 ```
-[!Note] Some Collective Variables (CVs), such as Generic CVs (e.g., SPRINT), are part of the `additional module` and are not included in a standard PLUMED installation. To enable them, we need to manually install PLUMED and wrap with Python:
+> [!Note] Some Collective Variables (CVs), such as Generic CVs (e.g., SPRINT), are part of the `additional module` and are not included in a standard PLUMED installation. To enable them, we need to manually install PLUMED and wrap with Python:
 
 4. Install PLUMED:
 
-Download [PLUMED](https://www.plumed.org/download) package from the website, and install with the following flags:
+Download [PLUMED](https://www.plumed.org/download) package from the website, and install with the following flags (make sure conda env is active):
 ```bash
 ./configure --enable-mpi=no --enable-modules=all PYTHON_BIN=$(which python) --prefix=$CONDA_PREFIX
 
