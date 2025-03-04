@@ -49,7 +49,8 @@ git clone https://github.com/rahulumrao/sparc.git
 cd sparc
 pip install .
 ```
-> [!Note] Some Collective Variables (CVs), such as Generic CVs (e.g., SPRINT), are part of the `additional module` and are not included in a standard PLUMED installation. To enable them, we need to manually install PLUMED and wrap with Python:
+> [!Note]
+>  Some Collective Variables (CVs), such as Generic CVs (e.g., SPRINT), are part of the `additional module` and are not included in a standard PLUMED installation. To enable them, we need to manually install PLUMED and wrap with Python:
 
 4. Install PLUMED:
 
@@ -181,7 +182,8 @@ See `scripts/input.yaml` for a complete configuration template.
 - Documentation is still being developed
 
 ## Known Issue
-- Deepmd-kit `pip` installation does not install tensorflow-cuda libraries correctly to detect GPU.
+> [!IMPORTANT]  
+> - Deepmd-kit `pip` installation does not install tensorflow-cuda libraries correctly to detect GPU.
 
 ## License
 
