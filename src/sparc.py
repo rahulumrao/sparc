@@ -155,7 +155,7 @@ def main():
     if dpmd_run_is:
         n_sample = config['deepmd_setup'].get('multiple_run', 1)
         print("\n========================================================================")
-        print("      MULTIPLE SAPMLE MD-SIMULATION STARTING FROM SAME CONFIGURATION!")
+        print("      MULTIPLE MLP-MD SIMULATION STARTING FROM SAME CONFIGURATION!")
         print("========================================================================")
         for i in range(n_sample):
         # Setup DeepMD calculator
@@ -182,7 +182,7 @@ def main():
             # Configure PLUMED if enabled
             if (dp_plumed_is):
                 print("\n========================================================================")
-                print("               PLUMED IS CALLED FOR DPMD SIMULATION !")
+                print(f"    Sim:[{i}]       PLUMED IS CALLED FOR DPMD SIMULATION !")
                 print("========================================================================")
                 
                 # Get PLUMED input file - use default if not specified

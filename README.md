@@ -90,19 +90,28 @@ export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
 ### Example Input File
 ```yaml
 general:
-  structure_file: "POSCAR"
-  md_steps: 1000
-  log_frequency: 10
+  structure_file: "POSCAR"   # Input structure
+  md_steps: 10               # Number of MD Steps
+  log_frequency: 4           # Interval for MD log and save trajectories
 
 md_simulation:
-  thermostat: "Nose"
-  temperature: 300.0
-  timestep_fs: 1.0
+  ensemble: "NVT"           # Ensemble for MD simulation
+  thermostat: "Nose"        # Thermostat type (nose-Hoover)
+  timestep_fs: 1.0          # TimeStep for MD simulation
+  temperature: 300          # Temperature in Kelvin
 
 dft_calculator:
-  name: "VASP"
-  exe_path: "/path/to/vasp"
-  exe_name: "vasp_std"
+  name: "VASP"               # DFT package name
+  prec: "Normal"             # Precision level
+  kgamma: True               # Gamma point calculation
+  incar_file: "INCAR"        # Path/Name of VASP input file
+
+# Active Learning
+active_learning: False
+iteration: 10
+model_dev:
+  f_min_dev: 0.1
+  f_max_dev: 0.8
 ```
 
 See `scripts/input.yaml` for a complete configuration template.
@@ -111,7 +120,7 @@ See `scripts/input.yaml` for a complete configuration template.
 ## Core Components
 
 ### 1. MD Simulation
-- Supports both _ab initio_ and DeepPotential Molecular Dynamics wihtin ASE
+- Supports both _ab initio_ and DeepPotential Molecular Dynamics within ASE
 - NVT ensemble with Nose-Hoover thermostat
 - Checkpoint/restart capabilities
 - Optional PLUMED integration for enhanced sampling
@@ -129,22 +138,21 @@ See `scripts/input.yaml` for a complete configuration template.
 ## Workflow
 
 1. **Initial AIMD**
-   - Runs ab initio MD using VASP
-   - Generates training data
+   - Data generation *ab initio* MD using VASP
 
 2. **DeepMD Training**
-   - Processes AIMD trajectories
-   - Trains multiple DeepMD models
-   - Freezes and compresses models
+   - Process AIMD trajectories
+   - Train multiple DeepMD models
+   - Freeze and compresses models
 
 3. **DPMD Simulation**
-   - Runs MD using trained DeepPotential models
-   - Monitors force deviations
+   - Run MLP-MD using trained DeepPotential models
+   - Monitor force deviations
 
 4. **Active Learning**
    - Identifies structures for labeling
-   - Performs DFT calculations on selected structures
-   - Retrains models with expanded dataset
+   - Performs DFT calculations (labelling) on selected structures
+   - Retrain models with expanded dataset
 
 ## Current Status
 
