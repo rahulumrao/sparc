@@ -23,17 +23,23 @@ import sys
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Replace all occurreny somces of SEED with the generated random number
-def update_seed(data):
+def update_json(data, datadir, atom_types):
     # Generate random seed once at the start to use the same value for all 'seed' fields
     random_number = random.randint(100000, 999999)
     
     def _update_recursively(data):
         if isinstance(data, dict):
             for key, value in data.items():
-                if isinstance(value, (dict, list)):
-                    _update_recursively(value)
-                elif key == 'seed':
+                if key == 'seed':
                     data[key] = random_number
+                elif key == 'type_map':
+                    data[key] = atom_types
+                elif key == 'training_data' and isinstance(value, dict):
+                    value['systems'] = [os.path.join(datadir, 'training_data')]
+                elif key == 'validation_data' and isinstance(value, dict):
+                    value['systems'] = [os.path.join(datadir, 'validation_data')]
+                elif isinstance(value, (dict, list)):
+                    _update_recursively(value)
         elif isinstance(data, list):
             for item in data:
                 _update_recursively(item)
@@ -43,7 +49,7 @@ def update_seed(data):
 #---------------------------------------------------------------------------------------------------#
 # DeePMD Training Function 
 #---------------------------------------------------------------------------------------------------#
-def deepmd_training(active_learning: bool, training_dir: str, num_models: int, input_file: str = 'input.json'):
+def deepmd_training(active_learning: bool, datadir: str, atom_types:list, training_dir: str, num_models: int, input_file: str = 'input.json'):
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     
@@ -115,8 +121,9 @@ def deepmd_training(active_learning: bool, training_dir: str, num_models: int, i
             # Load the JSON configuration file
             with open(input_path, 'r') as f:
                 config_data = json.load(f)
-                update_seed(config_data)
-            
+                update_json(config_data, datadir, atom_types)
+
+                
             # Write the updated data back to the file
             with open(input_file, 'w') as f:
                 json.dump(config_data, f, indent=4) 

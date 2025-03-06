@@ -74,7 +74,8 @@ def main():
     parent_dir = os.getcwd()
     
     # Read and prepare atomic structure
-    system = read(config['general']['structure_file'])
+    system = read(config['general']['structure_file']) #poscar 
+    atom_types = list(dict.fromkeys(system.get_chemical_symbols()))
     system.set_pbc([True, True, True])
     system.center()
     original_system = system
@@ -133,11 +134,12 @@ def main():
     # SECTION 2: DeepMD Training
     #--------------------------------------------------------------------------------------#
     training_is = config['deepmd_setup']['training']
+    datadir = config['deepmd_setup']['data_dir']
     if training_is:
         # Process AIMD trajectory for training
         get_data(
             ase_traj=iter_structure['dft_dir'] / config['output']['aimdtraj_file'], 
-            dir_name=config['deepmd_setup']['data_dir'], 
+            dir_name=datadir, 
             skip_min=0, 
             skip_max=None)
         
@@ -146,7 +148,9 @@ def main():
             active_learning=False,
             training_dir=iter_structure['train_dir'],
             num_models=config['deepmd_setup']['num_models'], 
-            input_file=config['deepmd_setup']['input_file'])
+            input_file=config['deepmd_setup']['input_file'],
+            datadir=datadir,
+            atom_type=atom_types)
     
     #--------------------------------------------------------------------------------------#
     # SECTION 3: Deep Potential Molecular Dynamics
@@ -302,7 +306,9 @@ def main():
             deepmd_training(active_learning=True,
                 training_dir=iter_structure['train_dir'],
                 num_models=config['deepmd_setup']['num_models'], 
-                input_file=config['deepmd_setup']['input_file'])
+                input_file=config['deepmd_setup']['input_file'],
+                datadir=datadir,
+                atom_type=atom_types)
 
             print("\n{}".format("Setting up DeepPotential Calculator".center(72)))
             #--------------------------------------------------------------------------------------#
