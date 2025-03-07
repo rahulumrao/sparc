@@ -134,7 +134,7 @@ def main():
     # SECTION 2: DeepMD Training
     #--------------------------------------------------------------------------------------#
     training_is = config['deepmd_setup']['training']
-    datadir = config['deepmd_setup']['data_dir']
+    datadir = os.path.join(parent_dir,config['deepmd_setup']['data_dir'])
     if training_is:
         # Process AIMD trajectory for training
         get_data(
