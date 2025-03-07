@@ -150,7 +150,7 @@ def main():
             num_models=config['deepmd_setup']['num_models'], 
             input_file=config['deepmd_setup']['input_file'],
             datadir=datadir,
-            atom_type=atom_types)
+            atom_types=atom_types)
     
     #--------------------------------------------------------------------------------------#
     # SECTION 3: Deep Potential Molecular Dynamics
@@ -308,7 +308,7 @@ def main():
                 num_models=config['deepmd_setup']['num_models'], 
                 input_file=config['deepmd_setup']['input_file'],
                 datadir=datadir,
-                atom_type=atom_types)
+                atom_types=atom_types)
 
             print("\n{}".format("Setting up DeepPotential Calculator".center(72)))
             #--------------------------------------------------------------------------------------#
