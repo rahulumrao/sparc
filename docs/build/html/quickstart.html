@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Start Guide &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Input File" href="yaml.html" />
+    <link rel="prev" title="SPARC Installation Guide" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#md-simulation">MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#plumed">PLUMED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deepmd">DeepMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#metric">Metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quick Start Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quick-start-guide">
+<span id="quickstart"></span><h1>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading"></a></h1>
+<p>Welcome to the Quick Start Guide for setting up and running your first simulation with SPARC.
+This guide will walk you through the basic setup, configuration, and execution steps, allowing you to quickly begin your calculation.
+Follow these simple steps to configure your environment, set up an input file.
+An example input file is provided in the Basic Usage section below.</p>
+<section id="set-environment-variables">
+<h2>Set Environment Variables:<a class="headerlink" href="#set-environment-variables" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">VASP_PP_PATH</span><span class="o">=</span>/path/to/vasp/potcar_files<span class="w">    </span><span class="c1"># POTCAR files path</span>
+</pre></div>
+</div>
+<p>If PLUMED is installed manually (skip: if used <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code>), we need to set the <code class="docutils literal notranslate"><span class="pre">plumed</span></code> environment.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PLUMED_KERNEL</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CONDA_PREFIX</span><span class="s2">/lib/libplumedKernel.so&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CONDA_PREFIX</span><span class="s2">/lib/plumed/python:</span><span class="nv">$PYTHONPATH</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">sparc</span></code> code requires a <code class="docutils literal notranslate"><span class="pre">YAML</span></code> input file.
+This file contains essential settings that define the parameters for the simulation,
+such as the structure file, the number of molecular dynamics settings, system configuration,
+and the specifics of the DFT calculator (e.g., VASP or other supported tools).</p>
+<p>An example YAML input is provided below.</p>
+</section>
+<section id="example-input-file">
+<h2>Example Input File<a class="headerlink" href="#example-input-file" title="Link to this heading"></a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">general</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;POSCAR&quot;</span>
+
+<span class="nt">md_simulation</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span>
+<span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
+<span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+
+<span class="nt">dft_calculator</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;VASP&quot;</span>
+<span class="w">  </span><span class="nt">prec</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Normal&quot;</span>
+<span class="w">  </span><span class="nt">incar_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;INCAR&quot;</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">/path/to/vasp_std&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="running-a-simulation">
+<h2>Running a Simulation<a class="headerlink" href="#running-a-simulation" title="Link to this heading"></a></h2>
+<p>Once the input file is configured, calculation is invoked with the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sparc<span class="w"> </span>-i<span class="w"> </span>input.yaml
+</pre></div>
+</div>
+</section>
+<section id="directory-structure">
+<span id="quickstart-directory"></span><h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h2>
+<p>Running the first calculation cycle, the following directory structure will be created:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt;<span class="w"> </span>Project<span class="w"> </span>Root
+├──<span class="w"> </span>POSCAR
+├──<span class="w"> </span>INCAR
+├──<span class="w"> </span>input.json
+├──<span class="w"> </span>input.yaml
+├──<span class="w"> </span>Dataset
+│<span class="w">   </span>├──<span class="w"> </span>training_data
+│<span class="w">   </span>└──<span class="w"> </span>validation_data
+├──<span class="w"> </span>iter_000000
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">00</span>.dft
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>.train
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>.dpmd
+├──<span class="w"> </span>iter_000001
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">00</span>.dft
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>.train
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>.dpmd
+</pre></div>
+</div>
+<p>This layout organizes the outputs in a structured format:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>POSCAR /  INCAR</strong>: Standard VASP structure and input file</p></li>
+<li><p><strong>input.yaml</strong>: User-defined configuration for SPARC execution.</p></li>
+<li><p><strong>input.json</strong>: User-defined configuration deepmd-kit ML trainig.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Dataset/</span></code>: Stores training and validation data for ML training.</p></li>
+<li><p><strong>iter_000000, iter_000001, …</strong>: Iteration folders containing</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">00.dft</span></code>: DFT calculations used to label selected structures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">01.train</span></code>: ML model training</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>: Molecular dynamics simulations using the trained ML potential</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>Each new iteration (e.g., <code class="docutils literal notranslate"><span class="pre">iter_000001</span></code>, <code class="docutils literal notranslate"><span class="pre">iter_000002</span></code>, …) corresponds to an <code class="docutils literal notranslate"><span class="pre">active</span> <span class="pre">learning</span> <span class="pre">cycle</span></code>,
+where the potential is refined based on new DFT data and retrained models.</p>
+<p>By default this will write all the information in an output file <code class="docutils literal notranslate"><span class="pre">sparc.log</span></code>.
+The contents of <code class="docutils literal notranslate"><span class="pre">sparc.log</span></code> will be like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">========================================================================</span>
+BEGIN<span class="w"> </span>CALCULATION<span class="w"> </span>-<span class="w"> </span><span class="m">2025</span>-04-08<span class="w"> </span><span class="m">22</span>:30:32
+<span class="o">========================================================================</span>
+
+
+<span class="w">        </span><span class="c1">######  ########     ###    ########   ######</span>
+<span class="w">        </span><span class="c1">##    ## ##     ##   ## ##   ##     ## ##    ##</span>
+<span class="w">        </span><span class="c1">##       ##     ##  ##   ##  ##     ## ##</span>
+<span class="w">        </span><span class="c1">######  ########  ##     ## ########  ##</span>
+<span class="w">              </span><span class="c1">## ##        ######### ##   ##   ##</span>
+<span class="w">        </span><span class="c1">##    ## ##        ##     ## ##    ##  ##    ##</span>
+<span class="w">        </span><span class="c1">######  ##        ##     ## ##     ##  ######</span>
+<span class="w">        </span>--v0.1.0
+
+<span class="o">========================================================================</span>
+Creating<span class="w"> </span>directories<span class="w"> </span><span class="k">for</span><span class="w"> </span>Iteration:<span class="w"> </span><span class="nv">000000</span>
+<span class="o">========================================================================</span>
+├──<span class="w"> </span>iter_000000/
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">00</span>.dft/
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>.train/
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>.dpmd/
+<span class="o">========================================================================</span>
+
+!<span class="w"> </span>ab-initio<span class="w"> </span>MD<span class="w"> </span>Simulations<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>performed<span class="w"> </span>at<span class="w"> </span>Temp.:<span class="w"> </span>300K<span class="w"> </span>!
+
+<span class="o">========================================================================</span>
+
+<span class="o">========================================================================</span>
+<span class="w">                  </span>Starting<span class="w"> </span>AIMD<span class="w"> </span>Simulation<span class="w"> </span><span class="o">[</span>Langevin<span class="o">]</span>
+<span class="o">========================================================================</span>
+Steps:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>Epot:<span class="w"> </span>-23.900369,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.193890,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">300</span>.00
+Steps:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>Epot:<span class="w"> </span>-23.868841,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.163737,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">253</span>.35
+Steps:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span>Epot:<span class="w"> </span>-23.809660,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.114040,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">176</span>.45
+Steps:<span class="w"> </span><span class="m">3</span>,<span class="w"> </span>Epot:<span class="w"> </span>-23.785705,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.095163,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">147</span>.24
+<span class="o">========================================================================</span>
+<span class="w">          </span>DEEPMD<span class="w"> </span>WILL<span class="w"> </span>TRAIN<span class="w"> </span><span class="m">2</span><span class="w"> </span>MODELS<span class="w"> </span>!
+<span class="o">========================================================================</span>
+
+<span class="o">========================================================================</span>
+RUNNING<span class="w"> </span>TRAINING<span class="w"> </span>IN<span class="w"> </span>FOLDER<span class="w"> </span><span class="o">(</span>iter_000000/01.train/training_1<span class="o">)</span><span class="w"> </span>!
+DeepMD<span class="w"> </span>Model<span class="w"> </span>Evaluation<span class="w"> </span>Results:
+------------------------------------------------------------------------
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span><span class="c1"># ---------------output of dp test---------------</span>
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span><span class="c1"># testing system : Dataset/validation_data</span>
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span><span class="c1"># number of test data : 45</span>
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Energy<span class="w"> </span>MAE<span class="w">         </span>:<span class="w"> </span><span class="m">1</span>.000640e+01<span class="w"> </span>eV
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Energy<span class="w"> </span>RMSE<span class="w">        </span>:<span class="w"> </span><span class="m">2</span>.874460e+01<span class="w"> </span>eV
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Energy<span class="w"> </span>MAE/Natoms<span class="w">  </span>:<span class="w"> </span><span class="m">2</span>.001280e+00<span class="w"> </span>eV
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Energy<span class="w"> </span>RMSE/Natoms<span class="w"> </span>:<span class="w"> </span><span class="m">5</span>.748920e+00<span class="w"> </span>eV
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Force<span class="w">  </span>MAE<span class="w">         </span>:<span class="w"> </span><span class="m">7</span>.150255e-02<span class="w"> </span>eV/A
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Force<span class="w">  </span>RMSE<span class="w">        </span>:<span class="w"> </span><span class="m">9</span>.012610e-02<span class="w"> </span>eV/A
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Virial<span class="w"> </span>MAE<span class="w">         </span>:<span class="w"> </span><span class="m">2</span>.775489e-01<span class="w"> </span>eV
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Virial<span class="w"> </span>RMSE<span class="w">        </span>:<span class="w"> </span><span class="m">3</span>.691740e-01<span class="w"> </span>eV
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Virial<span class="w"> </span>MAE/Natoms<span class="w">  </span>:<span class="w"> </span><span class="m">5</span>.550977e-02<span class="w"> </span>eV
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span>Virial<span class="w"> </span>RMSE/Natoms<span class="w"> </span>:<span class="w"> </span><span class="m">7</span>.383479e-02<span class="w"> </span>eV
+DEEPMD<span class="w"> </span>INFO<span class="w">    </span><span class="c1"># -----------------------------------------------</span>
+<span class="o">========================================================================</span>
+DeepPotential<span class="w"> </span>model<span class="w"> </span>successfully<span class="w"> </span>loaded<span class="w"> </span>and<span class="w"> </span>tested:
+iter_000000/01.train/training_1/frozen_model_1.pb
+<span class="o">========================================================================</span>
+
+<span class="o">========================================================================</span>
+<span class="w">          </span>Initializing<span class="w"> </span>DeepPotential<span class="w"> </span>MD<span class="w"> </span>Simulation<span class="w"> </span><span class="o">[</span>Langevin<span class="o">]</span>
+<span class="o">========================================================================</span>
+Steps:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>Epot:<span class="w"> </span>-29.804899,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.193890,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">300</span>.00
+Steps:<span class="w"> </span><span class="m">70</span>,<span class="w"> </span>Epot:<span class="w"> </span>-29.761078,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.145811,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">225</span>.61
+Steps:<span class="w"> </span><span class="m">140</span>,<span class="w"> </span>Epot:<span class="w"> </span>-29.791506,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.171109,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">264</span>.75
+Steps:<span class="w"> </span><span class="m">210</span>,<span class="w"> </span>Epot:<span class="w"> </span>-29.771736,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.170868,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">264</span>.38
+Steps:<span class="w"> </span><span class="m">280</span>,<span class="w"> </span>Epot:<span class="w"> </span>-29.755832,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.133304,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">206</span>.26
+Steps:<span class="w"> </span><span class="m">350</span>,<span class="w"> </span>Epot:<span class="w"> </span>-29.801518,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.177911,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">275</span>.28
+Steps:<span class="w"> </span><span class="m">420</span>,<span class="w"> </span>Epot:<span class="w"> </span>-29.736048,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.165758,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">256</span>.47
+Steps:<span class="w"> </span><span class="m">490</span>,<span class="w"> </span>Epot:<span class="w"> </span>-29.717222,<span class="w"> </span>Ekin:<span class="w"> </span><span class="m">0</span>.161525,<span class="w"> </span>Temp:<span class="w"> </span><span class="m">249</span>.92
+<span class="o">========================================================================</span>
+</pre></div>
+</div>
+</section>
+<section id="core-components">
+<h2>Core Components<a class="headerlink" href="#core-components" title="Link to this heading"></a></h2>
+<section id="md-simulation">
+<h3>1. MD Simulation<a class="headerlink" href="#md-simulation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Supports both <em>ab initio</em> MD (VASP) and DeepPotential based MD</p></li>
+<li><p>NVT ensemble with Nose-Hoover and Langevin thermostat</p></li>
+<li><p>Checkpoint/restart capabilities</p></li>
+<li><p>Seamless integration with PLUMED for PES exploration</p></li>
+</ul>
+</section>
+<section id="deepmd-training">
+<h3>2. DeepMD Training<a class="headerlink" href="#deepmd-training" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Automated training pipeline for trainig ML models</p></li>
+<li><p>Supports multi-model ensembles for uncertainty quantification</p></li>
+<li><p>Customizable neural network architecture and training hyperparameters</p></li>
+</ul>
+</section>
+<section id="active-learning">
+<h3>3. Active Learning<a class="headerlink" href="#active-learning" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Implements a <cite>Query-by-Committee</cite> (QbC) strategy for data selection</p></li>
+<li><p>Uses force deviation metrics to identify high-uncertainty configurations</p></li>
+<li><p>Automatically labels new structures with DFT and retrains ML models</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="SPARC Installation Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="yaml.html" class="btn btn-neutral float-right" title="Input File" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

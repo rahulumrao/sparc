@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sparc.src.ase_md &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#md-simulation">MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#plumed">PLUMED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#deepmd">DeepMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#metric">Metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#directory-structure">Directory structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sparc.src.ase_md</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sparc.src.ase_md</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+<span class="c1"># ase_md.py</span>
+<span class="c1"># Standard library imports</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Third party imports</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ase.units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atoms</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.verlet</span><span class="w"> </span><span class="kn">import</span> <span class="n">VelocityVerlet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.velocitydistribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaxwellBoltzmannDistribution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.nose_hoover_chain</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoseHooverChainNVT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.langevin</span><span class="w"> </span><span class="kn">import</span> <span class="n">Langevin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md</span><span class="w"> </span><span class="kn">import</span> <span class="n">MDLogger</span>
+
+<span class="c1"># Local imports</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcLog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">log_md_setup</span><span class="p">,</span>
+    <span class="n">save_xyz</span><span class="p">,</span>
+    <span class="n">save_checkpoint</span><span class="p">,</span>
+    <span class="n">load_checkpoint</span><span class="p">,</span>
+    <span class="n">check_physical_limits</span>
+<span class="p">)</span>
+<span class="c1">#===================================================================================================#</span>
+<span class="c1"># Helper Functions</span>
+<span class="c1">#===================================================================================================#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">initialize_dynamics</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">dyn_class</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">restart</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize MD dynamics, optionally restarting from a checkpoint.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atoms : ase.Atoms</span>
+<span class="sd">        The ASE Atoms object representing the system.</span>
+<span class="sd">    dyn_class : type</span>
+<span class="sd">        The MD dynamics class to use (e.g., NoseHooverChainNVT, Langevin).</span>
+<span class="sd">    timestep : float</span>
+<span class="sd">        The simulation time step in femtoseconds.</span>
+<span class="sd">    temperature : float</span>
+<span class="sd">        The target temperature in Kelvin.</span>
+<span class="sd">    restart : bool</span>
+<span class="sd">        If True, the simulation will be restarted from a checkpoint.</span>
+<span class="sd">    **kwargs : dict</span>
+<span class="sd">        Additional keyword arguments. For example, &#39;checkpoint_file&#39; (default is &#39;md_checkpoint.pkl&#39;).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dyn : instance of dyn_class</span>
+<span class="sd">        The initialized dynamics object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">checkpoint_file</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checkpoint_file&#39;</span><span class="p">,</span> <span class="s1">&#39;md_checkpoint.pkl&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">restart</span><span class="p">:</span>
+        <span class="n">atoms</span><span class="p">,</span> <span class="n">mdstep</span> <span class="o">=</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">)</span>
+        <span class="n">dyn</span> <span class="o">=</span> <span class="n">dyn_class</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span> <span class="n">temperature_K</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">dyn</span><span class="o">.</span><span class="n">nsteps</span> <span class="o">=</span> <span class="n">mdstep</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">MaxwellBoltzmannDistribution</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">temperature_K</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">force_temp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dyn</span> <span class="o">=</span> <span class="n">dyn_class</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span> <span class="n">temperature_K</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dyn</span>
+
+<span class="c1">#===================================================================================================#</span>
+<span class="c1"># Thermostat Functions</span>
+<span class="c1">#===================================================================================================#</span>
+<div class="viewcode-block" id="NoseNVT">
+<a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.NoseNVT">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">NoseNVT</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">tdamp</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up a Nose-Hoover chain NVT thermostat for MD simulation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atoms : ase.Atoms</span>
+<span class="sd">        The ASE Atoms object representing the system.</span>
+<span class="sd">    timestep : float, optional</span>
+<span class="sd">        The simulation time step in femtoseconds (default is 1 fs).</span>
+<span class="sd">    temperature : float, optional</span>
+<span class="sd">        The target temperature in Kelvin (default is 300 K).</span>
+<span class="sd">    tdamp : float, optional</span>
+<span class="sd">        The damping time for the thermostat in femtoseconds (default is 10 fs).</span>
+<span class="sd">    restart : bool, optional</span>
+<span class="sd">        If True, the simulation will be restarted from a checkpoint.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dynamics : NoseHooverChainNVT</span>
+<span class="sd">        The initialized dynamics object using the Nose-Hoover chain thermostat.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">initialize_dynamics</span><span class="p">(</span>
+        <span class="n">atoms</span><span class="p">,</span> <span class="n">NoseHooverChainNVT</span><span class="p">,</span> <span class="n">timestep</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">restart</span><span class="p">,</span> <span class="n">tdamp</span><span class="o">=</span><span class="n">tdamp</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="LangevinNVT">
+<a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.LangevinNVT">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">LangevinNVT</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">friction</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up a Langevin thermostat for NVT MD simulation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atoms : ase.Atoms</span>
+<span class="sd">        The ASE Atoms object representing the system.</span>
+<span class="sd">    timestep : float, optional</span>
+<span class="sd">        The simulation time step in femtoseconds (default is 1 fs).</span>
+<span class="sd">    temperature : float, optional</span>
+<span class="sd">        The target temperature in Kelvin (default is 300 K).</span>
+<span class="sd">    friction : float, optional</span>
+<span class="sd">        The friction coefficient for the Langevin thermostat (default is 0.01 fs^-1).</span>
+<span class="sd">    restart : bool, optional</span>
+<span class="sd">        If True, the simulation will be restarted from a checkpoint.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dynamics : Langevin</span>
+<span class="sd">        The initialized dynamics object using the Langevin thermostat.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">initialize_dynamics</span><span class="p">(</span>
+        <span class="n">atoms</span><span class="p">,</span> <span class="n">Langevin</span><span class="p">,</span> <span class="n">timestep</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">restart</span><span class="p">,</span> <span class="n">friction</span><span class="o">=</span><span class="n">friction</span> <span class="o">/</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span>
+    <span class="p">)</span></div>
+
+
+<span class="c1">#===================================================================================================#</span>
+<span class="c1"># MD Execution Functions</span>
+<span class="c1">#===================================================================================================#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ExecuteAbInitioDynamics</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">dyn</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">pace</span><span class="p">,</span> <span class="n">log_filename</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run an ab initio MD simulation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    system : ase.Atoms</span>
+<span class="sd">        The ASE Atoms object representing the system.</span>
+<span class="sd">    dyn : dynamics object</span>
+<span class="sd">        The initialized MD dynamics object.</span>
+<span class="sd">    steps : int</span>
+<span class="sd">        The number of MD steps to run.</span>
+<span class="sd">    pace : int</span>
+<span class="sd">        The interval (in steps) at which to log data and save checkpoints.</span>
+<span class="sd">    log_filename : str</span>
+<span class="sd">        The filename for the MD log file.</span>
+<span class="sd">    trajfile : str</span>
+<span class="sd">        The filename for the trajectory file.</span>
+<span class="sd">    dir_name : str</span>
+<span class="sd">        The directory where log and trajectory files will be saved.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        A label for the simulation (e.g., the thermostat type).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">steps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting AIMD Simulation [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">72</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_checkpoint</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">log_md_setup</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">MDLogger</span><span class="p">(</span>
+        <span class="n">dyn</span><span class="o">=</span><span class="n">dyn</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">system</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">log_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">peratom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span>
+    <span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+
+    <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ExecuteMlpDynamics</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">dyn</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">pace</span><span class="p">,</span> <span class="n">log_filename</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run a Deep Potential MD simulation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    system : ase.Atoms</span>
+<span class="sd">        The ASE Atoms object representing the system.</span>
+<span class="sd">    dyn : dynamics object</span>
+<span class="sd">        The initialized MD dynamics object.</span>
+<span class="sd">    steps : int</span>
+<span class="sd">        The number of MD steps to run.</span>
+<span class="sd">    pace : int</span>
+<span class="sd">        The interval (in steps) at which to log data.</span>
+<span class="sd">    log_filename : str</span>
+<span class="sd">        The filename for the MD log file.</span>
+<span class="sd">    trajfile : str</span>
+<span class="sd">        The filename for the trajectory file.</span>
+<span class="sd">    dir_name : str</span>
+<span class="sd">        The directory where log and trajectory files will be saved.</span>
+<span class="sd">    distance_metrics : dict or list</span>
+<span class="sd">        Metrics used to check physical limits during the simulation.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        A label for the simulation (e.g., the thermostat type).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing DeepPotential MD Simulation [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">72</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">log_md_setup</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">MDLogger</span><span class="p">(</span>
+        <span class="n">dyn</span><span class="o">=</span><span class="n">dyn</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">system</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">log_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">peratom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span>
+    <span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+        <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">distance_metrics</span> <span class="ow">and</span> <span class="n">check_physical_limits</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">):</span>
+            <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Physical limits exceeded. Stopping DPMD simulation.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">CalculateDFTEnergy</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">log_filename</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="n">pace</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the DFT energy and forces for a candidate structure.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    idx : int</span>
+<span class="sd">        An identifier index for the candidate.</span>
+<span class="sd">    header : bool</span>
+<span class="sd">        If True, include a header in the log.</span>
+<span class="sd">    system : ase.Atoms</span>
+<span class="sd">        The ASE Atoms object representing the candidate structure.</span>
+<span class="sd">    timestep : float</span>
+<span class="sd">        The simulation time step in femtoseconds.</span>
+<span class="sd">    log_filename : str</span>
+<span class="sd">        The filename for the energy log.</span>
+<span class="sd">    dir_name : str</span>
+<span class="sd">        The directory where log and trajectory files will be saved.</span>
+<span class="sd">    trajfile : str</span>
+<span class="sd">        The filename for the trajectory file.</span>
+<span class="sd">    pace : int, optional</span>
+<span class="sd">        The logging interval (default is 1).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dyn</span> <span class="o">=</span> <span class="n">VelocityVerlet</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">trajectory</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+
+    <span class="n">epot</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span>
+    <span class="n">epot</span> <span class="o">=</span> <span class="n">epot</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">epot</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="k">else</span> <span class="n">epot</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Candidate: </span><span class="si">{</span><span class="n">idx</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="s2"> | Epot: </span><span class="si">{</span><span class="n">epot</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> [eV]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">log</span> <span class="o">=</span> <span class="n">MDLogger</span><span class="p">(</span>
+        <span class="n">dyn</span><span class="o">=</span><span class="n">dyn</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">system</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">log_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">stress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">peratom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span>
+    <span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+
+<span class="c1">#===================================================================================================#</span>
+<span class="c1"># LAMMPS MD Execution</span>
+<span class="c1">#===================================================================================================#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lammps_md</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run a LAMMPS MD simulation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    system : ase.Atoms</span>
+<span class="sd">        The ASE Atoms object representing the system (not used directly in the call).</span>
+<span class="sd">    model_path : str</span>
+<span class="sd">        The path to the model files required by LAMMPS.</span>
+<span class="sd">    model_name : str</span>
+<span class="sd">        The name of the model to be used in the simulation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Starting LAMMPS MD Simulation&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">72</span><span class="p">))</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span>
+
+    <span class="n">run_command</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lmp&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;in.lammps&#39;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run_command</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;LAMMPS MD Simulation Completed Successfully&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">72</span><span class="p">))</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Error in LAMMPS MD Simulation&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">72</span><span class="p">))</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">72</span><span class="p">))</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span>
+
+
+<span class="c1">#===================================================================================================#</span>
+<span class="c1"># Standalone Demonstration</span>
+<span class="c1">#===================================================================================================#</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Standalone demonstration of the ase_md module.</span>
+
+<span class="sd">    This example creates a simple H2 molecule, sets up a Nose-Hoover NVT simulation,</span>
+<span class="sd">    and runs a short MD simulation for demonstration purposes. The MD log and trajectory</span>
+<span class="sd">    files are saved in the current directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ase</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atoms</span>
+
+    <span class="c1"># Create a simple diatomic molecule (H₂)</span>
+    <span class="n">atoms</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="s1">&#39;H2&#39;</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.74</span><span class="p">]])</span>
+    <span class="n">atoms</span><span class="o">.</span><span class="n">set_pbc</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+
+    <span class="c1"># Simulation parameters</span>
+    <span class="n">timestep</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># Kelvin</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">pace</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># Display a message to the user</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Running MD simulation with Nose-Hoover Thermostat...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Initialize dynamics using Nose-Hoover thermostat</span>
+    <span class="n">dyn_test</span> <span class="o">=</span> <span class="n">NoseNVT</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">tdamp</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Run the simulation (log file: demo_md.log, trajectory: demo_traj.xyz, saved in current directory)</span>
+    <span class="n">ExecuteAbInitioDynamics</span><span class="p">(</span>
+         <span class="n">system</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span>
+         <span class="n">dyn</span><span class="o">=</span><span class="n">dyn_test</span><span class="p">,</span>
+         <span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span>
+         <span class="n">pace</span><span class="o">=</span><span class="n">pace</span><span class="p">,</span>
+         <span class="n">log_filename</span><span class="o">=</span><span class="s1">&#39;md.log&#39;</span><span class="p">,</span>
+         <span class="n">trajfile</span><span class="o">=</span><span class="s1">&#39;traj.xyz&#39;</span><span class="p">,</span>
+         <span class="n">dir_name</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Nose&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Simulation completed.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1">#===================================================================================================#</span>
+<span class="c1">#                                     END OF FILE </span>
+<span class="c1">#===================================================================================================# </span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

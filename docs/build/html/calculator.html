@@ -1,0 +1,223 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DFT Calculator &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="DeepMD Setup" href="deepmd.html" />
+    <link rel="prev" title="Input File" href="yaml.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#md-simulation">MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#plumed">PLUMED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deepmd">DeepMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#metric">Metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DFT Calculator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#class-setupdftcalculator">Class : SetupDFTCalculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">dft_calculator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DFT Calculator</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/calculator.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dft-calculator">
+<h1>DFT Calculator<a class="headerlink" href="#dft-calculator" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <cite>calculator.py</cite> module is designed to set up Density Functional Theory (DFT) calculators for VASP and CP2K using ASE atom objects.
+It provides a command-line interface to configure and initialize these calculators based on a YAML configuration file.</p>
+<section id="class-setupdftcalculator">
+<h3>Class : SetupDFTCalculator<a class="headerlink" href="#class-setupdftcalculator" title="Link to this heading"></a></h3>
+<p>A class to set up DFT calculators for VASP and CP2K.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><cite>input_config</cite> (dict): Dictionary containing configuration for the DFT calculator.</p></li>
+</ul>
+<p><strong>Methods:</strong></p>
+<ul class="simple">
+<li><p><cite>vasp()</cite>: Set up the VASP calculator for ASE atom objects.</p></li>
+<li><p><cite>cp2k()</cite>: Set up the CP2K calculator for ASE atom objects.</p></li>
+</ul>
+</section>
+<section id="id1">
+<h3>dft_calculator<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Helper function to set up the DFT calculator based on configuration.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><cite>config</cite> (dict): Dictionary containing the full DFT configuration.</p></li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><p>ASE Calculator: The configured ASE calculator instance.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ensure that the VASP executable and INCAR file paths are correctly specified in the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file.
+The CP2K setup requires a user defined template file named <code class="docutils literal notranslate"><span class="pre">cp2k_template.inp</span></code></p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="yaml.html" class="btn btn-neutral float-left" title="Input File" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deepmd.html" class="btn btn-neutral float-right" title="DeepMD Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

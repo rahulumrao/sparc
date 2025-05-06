@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scientific Overview &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SPARC Installation Guide" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#md-simulation">MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#plumed">PLUMED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deepmd">DeepMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#metric">Metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">DFT Calculator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#class-setupdftcalculator">Class : SetupDFTCalculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#id1">dft_calculator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Scientific Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+  <img src="_static/sparc_logo.png" alt="SPARC Logo" style="height: 150px; object-fit: contain;">
+  <span style="font-size: 1.5em; font-weight: bold;">Welcome to SPARC's documentation!</span>
+</div><p><strong>SPARC</strong> (<strong>S</strong>mart <strong>P</strong>otential with <strong>A</strong>tomistic <strong>R</strong>are Events and <strong>C</strong>ontinuous Learning)
+is a Python package build around the <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a> wrapper that implements an automated workflow of developing machine learning potential for reactive chemical systems.
+This package is designed to work seamlessly with VASP, DeepMD-kit, and PLUMED, providing users with powerful tools
+for efficient simulation and model improvement.</p>
+<section id="scientific-overview">
+<h1>Scientific Overview<a class="headerlink" href="#scientific-overview" title="Link to this heading"></a></h1>
+<p>SPARC employs an active learning workflow to iteratively refine machine learning potentials using first-principles calculations.
+This enables users to develop highly accurate potentials for molecular dynamics simulations, which is essential for studying
+complex materials and chemical processes.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html#general-settings">General Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">DFT Calculator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#functions">Functions:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#overview">Overview</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="key-features">
+<h1>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h1>
+<p>SPARC provides the following core functionalities:</p>
+<ul class="simple">
+<li><p><strong>First-principles calculations</strong> with <a class="reference external" href="https://www.vasp.at/">VASP</a> for data generation</p></li>
+<li><p><strong>Machine learning potential training</strong> with <a class="reference external" href="https://github.com/deepmodeling/deepmd-kit">DeepMD-kit</a> package</p></li>
+<li><p><strong>Machine learning molecular dynamics (MLMD)</strong> simulations for efficient and scalable modeling</p></li>
+<li><p><strong>Active learning</strong> for continuous model improvement through iterative training and data selection</p></li>
+<li><p><strong>Potential Energy Surface Exploration</strong> through integration with <a class="reference external" href="https://www.plumed.org/">PLUMED</a></p></li>
+</ul>
+</section>
+<section id="use-cases">
+<h1>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h1>
+<p>Here are some example use cases for SPARC:</p>
+<ol class="arabic simple">
+<li><p><strong>Material Property Prediction:</strong> Use SPARC to develop accurate interatomic potentials for molecular dynamics simulations to predict the properties of new materials.</p></li>
+<li><p><strong>Chemical Reaction Pathways:</strong> Apply active learning to uncover reaction mechanisms by training a potential based on sparse, high-quality data points.</p></li>
+<li><p><strong>High-Throughput Simulations:</strong> Combine SPARC’s active learning protocol with high-throughput simulation to explore large chemical spaces efficiently.</p></li>
+</ol>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<p>For detailed installation instructions, please refer to the <a class="reference external" href="install.html">Installation Guide</a>.</p>
+<section id="indices-and-tables">
+<h2>Indices and Tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-right" title="SPARC Installation Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+# YAML configuration file for SPARC package
+
+# General settings
+general:
+  structure_file: "POSCAR"  # Input structure
+
+# DFT calculator settings
+dft_calculator:
+  name: "VASP"               # DFT package name
+  prec: "Normal"             # Precision level
+  kgamma: True               # Gamma point calculation
+  incar_file: "INCAR"        # Path to INCAR file
+  exe_command: "/home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"  # Full command to run VASP with MPI
+
+# ASE MD simulation settings
+md_simulation:
+  ensemble: "NVT"           # Ensemble for MD simulation
+  thermostat:               # Thermostat configuration as a dictionary
+    type: "Nose"            # Thermostat type (Nose-Hoover or Langevin)
+    tdamp: 2.0              # Damping parameter for Nose-Hoover thermostat
+  timestep_fs: 1.0          # TimeStep for MD simulation
+  temperature: 300          # Temperature in Kelvin
+  steps: 10                 # Number of AIMD steps
+  restart: False            # Whether to restart MD simulation from checkpoint
+  use_plumed: True          # Use PLUMED for MD simulation
+
+# Plumed settings
+plumed:
+  input_file: "plumed.dat"  # PLUMED input file
+  restart: True             # restart PLUMED
+  kT: 0.02585               # kT value PLUMED units
+
+# DeepMD settings
+deepmd_setup:
+  training: False            # Enable Deep potential training
+  data_dir: "DeePMD_training/00.data"  # Path to store training and validation data
+  input_file: "input.json"  # Input file for DeepMD training
+  skip_min: 0               # Minimum frames to skip
+  skip_max: null            # Maximum frames to skip
+  num_models: 2             # Number of models to be trained
+  MdSimulation: True        # DeepPotential MD simulation (False/True)
+  timestep_fs: 1.0          # Timestep
+  md_steps: 2000            # MLP-MD steps
+  multiple_run: 5           # Run multiple MD-MLP run starting with different velocities
+  log_frequency: 5          # Output frequency
+  use_plumed: True          # Default: False
+  plumed_file: "plumed.dat" # Optional: defaults to "plumed.dat" if not specified
+
+# Active Learning
+active_learning: False
+learning_restart: False     # Restart AL loop from last step
+iteration: 10               # Active Learning iteration steps
+model_dev:
+  f_min_dev: 0.1
+  f_max_dev: 0.8
+
+# check metrics (optional)
+distance_metrics:
+  - pair: [0, 3]
+    min_distance: 1.2  # Minimum allowed distance in Angstroms
+    max_distance: 5.0  # Maximum allowed distance in Angstroms
+  - pair: [0, 1]
+    min_distance: 1.2  # Minimum allowed distance in Angstroms
+    max_distance: 2.0  # Maximum allowed distance in Angstroms
+# If you want to skip distance checks, you can comment out or remove this section.
+
+# File output settings
+output:
+  log_file: "AseMD.log"        # Log file of MD simulation
+  xyz_file: "AseTraj.xyz"      # XYZ trajectory file for AIMD run
+  aimdtraj_file: "AseMD.traj"  # ASE trajectory file for AIMD run
+  dptraj_file: "dpmd.traj"     # ASE DeepMD trajectory file

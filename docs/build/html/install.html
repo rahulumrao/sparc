@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPARC Installation Guide &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Start Guide" href="quickstart.html" />
+    <link rel="prev" title="Scientific Overview" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#md-simulation">MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#plumed">PLUMED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deepmd">DeepMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#metric">Metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">SPARC Installation Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/install.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sparc-installation-guide">
+<span id="installtionguide"></span><h1>SPARC Installation Guide<a class="headerlink" href="#sparc-installation-guide" title="Link to this heading"></a></h1>
+<p>This guide provides step-by-step instructions to set up SPARC, an automated workflow for
+training machine learning potential for reactive chemical system
+along with its core dependencies such as DeepMD-kit, PLUMED, and VASP.</p>
+<section id="core-software-dependencies">
+<h2>Core Software Dependencies:<a class="headerlink" href="#core-software-dependencies" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python 3.9 or 3.10 (recommended)</p></li>
+<li><p>DeepMD-kit 2.2.10</p></li>
+<li><p>ASE (Atomic Simulation Environment)</p></li>
+<li><p>VASP (required for DFT calculations)</p></li>
+<li><p>PLUMED (for exploration of PES)</p></li>
+</ul>
+</section>
+<section id="python-package-dependencies">
+<h2>Python Package Dependencies:<a class="headerlink" href="#python-package-dependencies" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>numpy</p></li>
+<li><p>pandas</p></li>
+<li><p>dpdata</p></li>
+</ul>
+</section>
+<section id="step-by-step-installation">
+<h2>Step-by-Step Installation<a class="headerlink" href="#step-by-step-installation" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Create and activate a conda environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sparc<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10
+conda<span class="w"> </span>activate<span class="w"> </span>sparc
+</pre></div>
+</div>
+</li>
+<li><p>Install  <a class="reference external" href="https://docs.deepmodeling.com/projects/deepmd/en/stable/getting-started/install.html">DeepMD-kit</a>, this command installs the GPU-enabled version of DeepMD-kit:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>deepmd-kit<span class="o">=</span><span class="m">2</span>.2.10<span class="o">=</span>*gpu<span class="w"> </span><span class="nv">libdeepmd</span><span class="o">=</span><span class="m">2</span>.2.10<span class="o">=</span>*gpu<span class="w"> </span>lammps<span class="w"> </span>horovod<span class="w"> </span>-c<span class="w"> </span>https://conda.deepmodeling.com<span class="w"> </span>-c<span class="w"> </span>defaults
+</pre></div>
+</div>
+<ol class="arabic" start="3">
+<li><p>Clone and install SPARC:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/rahulumrao/sparc.git
+<span class="nb">cd</span><span class="w"> </span>sparc
+pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+</li>
+</ol>
+<ol class="arabic" id="installplumed" start="4">
+<li><p>Install PLUMED:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>py-plumed
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some Collective Variables (CVs), such as Generic CVs (e.g., <code class="docutils literal notranslate"><span class="pre">SPRINT</span></code>), are part of the additional module and are not included in a standard PLUMED installation.
+To enable them, we need to manually install PLUMED and wrap with Python.</p>
+<p>Download the <a class="reference external" href="https://www.plumed.org/download">PLUMED package</a> from the official website.
+During installation, PLUMED will detect the Python interpreter from the active <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">environment</span></code> and enable Python bindings.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./configure<span class="w"> </span>--enable-mpi<span class="o">=</span>no<span class="w"> </span>--enable-modules<span class="o">=</span>all<span class="w"> </span><span class="nv">PYTHON_BIN</span><span class="o">=</span><span class="k">$(</span>which<span class="w"> </span>python<span class="k">)</span><span class="w"> </span>--prefix<span class="o">=</span><span class="nv">$CONDA_PREFIX</span>
+
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install
+</pre></div>
+</div>
+<p>Once the installation is complete, you should see a directory named <code class="docutils literal notranslate"><span class="pre">plumed</span></code> inside the <code class="docutils literal notranslate"><span class="pre">lib</span></code> folder of your <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">environment</span></code>.</p>
+<p>To verify the installation, run the following command in the terminal:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">sparc</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">plumed</span>
+</pre></div>
+</div>
+<p>Expected output:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">fortran     patches        plumed-mklib  plumed-partial_tempering  plumed-runtime   plumed-vim2html  src</span>
+<span class="na">modulefile  plumed-config  plumed-newcv  plumed-patch              plumed-selector  scripts          vim</span>
+</pre></div>
+</div>
+<p>You can also import the module in Python to confirm installation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators</span><span class="w"> </span><span class="kn">import</span> <span class="n">plumed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">plumed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Plumed</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="environment-setup">
+<h2>Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading"></a></h2>
+<p>Set up POTCAR file path:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">VASP_PP_PATH</span><span class="o">=</span>/path/to/vasp/potcar_files
+</pre></div>
+</div>
+</section>
+<section id="verification">
+<h2>Verification<a class="headerlink" href="#verification" title="Link to this heading"></a></h2>
+<p>To verify your installation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt;<span class="w"> </span>sparc<span class="w"> </span>-h
+
+<span class="w">   </span>sparc<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">[</span>-i<span class="w"> </span>INPUT_FILE<span class="o">]</span>
+
+<span class="w">   </span>options:
+<span class="w">   </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">   </span>-i<span class="w"> </span>INPUT_FILE,<span class="w"> </span>--input_file<span class="w"> </span>INPUT_FILE
+<span class="w">                           </span>Input<span class="w"> </span>YAML<span class="w"> </span>file
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">tensorflow[and-cuda]</span></code> may not always detect the GPU due to potential configuration issues.
+To verify if TensorFlow has successfully recognized the GPU, execute the following command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">&quot;import</span> <span class="pre">tensorflow</span> <span class="pre">as</span> <span class="pre">tf;</span> <span class="pre">print(tf.config.list_physical_devices('GPU'))&quot;</span></code></p>
+<p>If the output is an empty list, check:</p>
+<ul class="simple">
+<li><p>Your NVIDIA driver and CUDA toolkit installation</p></li>
+<li><p>The CUDA version compatibility with TensorFlow</p></li>
+<li><p>That your environment variables (e.g., <cite>LD_LIBRARY_PATH</cite>) are correctly set</p></li>
+</ul>
+<p>Also, refer to the <a class="reference external" href="https://www.tensorflow.org/install/pip">TensorFlow GPU troubleshooting guide</a> for details.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Scientific Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Quick Start Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

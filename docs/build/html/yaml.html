@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Input File &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="DeepMD Setup" href="deepmd.html" />
+    <link rel="prev" title="Quick Start Guide" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#md-simulation">MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plumed">PLUMED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deepmd">DeepMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metric">Metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#directory-structure">Directory structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Input File</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/yaml.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="input-file">
+<h1>Input File<a class="headerlink" href="#input-file" title="Link to this heading"></a></h1>
+<p>SPARC input is divided in various sections for different tasks.
+Each section has some required key values and some of them are optional defined by the user.
+Since the code is independent from each seaction.
+Therefore, each task (<em>ab initio</em>, <em>MLP training</em>, <em>MLP-MD</em>, <em>Active Learning</em>) can be executed separately.
+Required/optional input for each sections is explained below.</p>
+<section id="general-settings">
+<h2>General Settings<a class="headerlink" href="#general-settings" title="Link to this heading"></a></h2>
+<p>This section requires the coordinate structure file to begin the calculation.
+Currently only <code class="docutils literal notranslate"><span class="pre">POSCAR</span></code> file format is supported.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General settings</span>
+<span class="nt">general</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;POSCAR&quot;</span><span class="w">  </span><span class="c1"># Input structure [Default]</span>
+</pre></div>
+</div>
+<section id="dft-calculator">
+<h3>DFT Calculator<a class="headerlink" href="#dft-calculator" title="Link to this heading"></a></h3>
+<p>Here, we define the parameters for the DFT calculator (e.g., VASP), and the executable command path.
+For flexibilty we have also have option to directly parse the <code class="docutils literal notranslate"><span class="pre">INCAR</span></code> file.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># DFT calculator settings</span>
+<span class="nt">dft_calculator</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;VASP&quot;</span><span class="w">               </span><span class="c1"># DFT package name         [Required]</span>
+<span class="w">  </span><span class="nt">prec</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Normal&quot;</span><span class="w">             </span><span class="c1"># Precision level          [Required]</span>
+<span class="w">  </span><span class="nt">kgamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">               </span><span class="c1"># Gamma point calculation  [Required]</span>
+<span class="w">  </span><span class="nt">incar_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;INCAR&quot;</span><span class="w">        </span><span class="c1"># Path to INCAR file       [Required]</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">/path/to/VASP/bin/vasp_std&quot;</span><span class="w">  </span><span class="c1"># Full command to run VASP with MPI [Required]</span>
+</pre></div>
+</div>
+</section>
+<section id="md-simulation">
+<h3>MD Simulation<a class="headerlink" href="#md-simulation" title="Link to this heading"></a></h3>
+<p>The settings for the molecular dynamics (MD) simulation are configured in this section,
+including the type of thermostat (Nose/Langevin), MD steps, and timestep, etc.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># ASE MD simulation settings</span>
+<span class="nt">md_simulation</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span><span class="w">           </span><span class="c1"># Ensemble for MD simulation                  [Required]</span>
+<span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span><span class="w">               </span><span class="c1"># Thermostat configuration as a dictionary    [Required]</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span><span class="w">            </span><span class="c1"># Thermostat type (Nose-Hoover or Langevin)   [Required]</span>
+<span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span><span class="w">              </span><span class="c1"># Damping parameter for Nose-Hoover thermostat  [Required]</span>
+<span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">          </span><span class="c1"># TimeStep for MD simulation                    [Optional (Default: 1.0)]</span>
+<span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span><span class="w">          </span><span class="c1"># Temperature in Kelvin                         [Optional (Default: 300)]</span>
+<span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w">                 </span><span class="c1"># Number of AIMD steps                          [Required]</span>
+<span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w">            </span><span class="c1"># Whether to restart MD simulation from a checkpoint file [Optional]</span>
+<span class="w">  </span><span class="nt">use_dft_plumed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">      </span><span class="c1"># Use PLUMED for AIMD simulation                 [Optional (Default: False)]</span>
+<span class="w">  </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed_dft.dat&quot;</span><span class="w">    </span><span class="c1"># PLUMED input file</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Both the <code class="docutils literal notranslate"><span class="pre">Nose-Hoover</span> <span class="pre">and</span> <span class="pre">Langevin</span></code> thermostats have been implemented.
+If the <code class="docutils literal notranslate"><span class="pre">Nose</span></code> thermostat is selected it requires damping <code class="docutils literal notranslate"><span class="pre">tdamp</span></code> parameter.
+Alternatively, if the <code class="docutils literal notranslate"><span class="pre">Langevin</span></code> thermostat is chosen, the <code class="docutils literal notranslate"><span class="pre">friction</span></code> parameter must be specified.
+For further details, refer to the <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/tutorials/md/md.html">Molecular Dynamics</a> section in ASE.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Nose</span>
+<span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
+
+<span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Langevin</span>
+<span class="nt">friction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="plumed">
+<h3>PLUMED<a class="headerlink" href="#plumed" title="Link to this heading"></a></h3>
+<p>In this section, the settings for PLUMED integration are defined.
+This includes the PLUMED input file and the kT value for simulations involving collective variables.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plumed settings</span>
+<span class="nt">plumed</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">             </span><span class="c1"># restart PLUMED        [Optional (Default: False)]</span>
+<span class="w">  </span><span class="nt">kT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.02585</span><span class="w">               </span><span class="c1"># kT value PLUMED units [if Plumed=True[Required]]</span>
+</pre></div>
+</div>
+</section>
+<section id="deepmd">
+<span id="deepmd-section"></span><h3>DeepMD<a class="headerlink" href="#deepmd" title="Link to this heading"></a></h3>
+<p>This section defines the settings for training a DeepMD model.
+It includes the paths to the training data and input files, as well as the number of models to generate.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># DeepMD settings</span>
+<span class="nt">deepmd_setup</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w">           </span><span class="c1"># Enable DeepPotential training  [Required]</span>
+<span class="w">  </span><span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DeePMD_training/00.data&quot;</span><span class="w">  </span><span class="c1"># Path to store training and validation data [Optional]</span>
+<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;input.json&quot;</span><span class="w">  </span><span class="c1"># Input file for DeepMD training  [Required]</span>
+<span class="w">  </span><span class="nt">skip_min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">               </span><span class="c1"># Minimum frames to skip  [Optional] exclude</span>
+<span class="w">  </span><span class="nt">skip_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">            </span><span class="c1"># Maximum frames to skip  [Optional]</span>
+<span class="w">  </span><span class="nt">num_models</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">             </span><span class="c1"># Number of models to be trained  [Required (can not be less than 2)]</span>
+<span class="w">  </span><span class="nt">MdSimulation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">        </span><span class="c1"># DeepPotential MD simulation (False/True)  [Required]</span>
+<span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">          </span><span class="c1"># Timestep (fs) [Optional (Default: 1.0)]</span>
+<span class="w">  </span><span class="nt">md_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000</span><span class="w">            </span><span class="c1"># MLP-MD steps  [Required]</span>
+<span class="w">  </span><span class="nt">multiple_run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w">           </span><span class="c1"># Run multiple MD-MLP run starting from different velocities [Optional (Default: 0)]</span>
+<span class="w">  </span><span class="nt">log_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w">          </span><span class="c1"># Output frequency  [Required]</span>
+<span class="w">  </span><span class="nt">use_plumed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">          </span><span class="c1"># Default: False  [Optional]</span>
+<span class="w">  </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed.dat&quot;</span><span class="w"> </span><span class="c1"># Optional: defaults to &quot;plumed.dat&quot; if not specified</span>
+</pre></div>
+</div>
+</section>
+<section id="active-learning">
+<h3>Active Learning<a class="headerlink" href="#active-learning" title="Link to this heading"></a></h3>
+<p>Active learning protocol is enabled by setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code>.
+This section contains the configuration how the learning loop will be executed,
+including the number of iterations and the force deviation metrics.
+AL iteration can be restarted by enabling <code class="docutils literal notranslate"><span class="pre">learning_restart</span></code> keyword, which also requires the path to the <code class="docutils literal notranslate"><span class="pre">latest</span> <span class="pre">model</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Active Learning</span>
+<span class="nt">active_learning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w">      </span><span class="c1"># [Required (Default: False)]</span>
+<span class="nt">learning_restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w">     </span><span class="c1"># Restart AL loop from last step  [Optional]</span>
+<span class="nt">latest_model</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;iter_000006/01.train/training_1/frozen_model_1.pb&#39;</span><span class="w">   </span><span class="c1"># Latest Model path to restart [Required (if above True)]</span>
+<span class="nt">iteration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w">               </span><span class="c1"># Active Learning iteration steps [Optional (default: 10)]</span>
+<span class="nt">model_dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">f_min_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w">            </span><span class="c1"># [Required]</span>
+<span class="w">  </span><span class="nt">f_max_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.8</span><span class="w">            </span><span class="c1"># [Required]</span>
+</pre></div>
+</div>
+</section>
+<section id="metric">
+<h3>Metric<a class="headerlink" href="#metric" title="Link to this heading"></a></h3>
+<p>This is a sanity check to exclude the unphysical structures when running ML/MD,
+since, the initial ML model might not have sufficient information about the potential energy surface.
+Also, when the criterian is met the MD simulation will be stopped and the code will move to the next iteration.
+This feature is fully option but recommended.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># check metrics [Optional]</span>
+<span class="nt">distance_metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pair</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">min_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.2</span><span class="w">  </span><span class="c1"># Minimum allowed distance in Angstroms</span>
+<span class="w">    </span><span class="nt">max_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5.0</span><span class="w">  </span><span class="c1"># Maximum allowed distance in Angstroms</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pair</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">min_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.2</span><span class="w">  </span><span class="c1"># Minimum allowed distance in Angstroms</span>
+<span class="w">    </span><span class="nt">max_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span><span class="w">  </span><span class="c1"># Maximum allowed distance in Angstroms</span>
+<span class="c1"># If you want to skip distance checks, you can comment out or remove this section.</span>
+</pre></div>
+</div>
+</section>
+<section id="output">
+<h3>Output<a class="headerlink" href="#output" title="Link to this heading"></a></h3>
+<p>Each iteration will log the output in a file. These filenames are default and are optional to change by user.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># File output settings</span>
+<span class="nt">output</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">log_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AseMD.log&quot;</span><span class="w">        </span><span class="c1"># Log file of MD simulation        [Optional (Default: AseMD.log)]</span>
+<span class="w">  </span><span class="nt">aimdtraj_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AseMD.traj&quot;</span><span class="w">  </span><span class="c1"># ASE trajectory file for AIMD run [Optional (Default: AseMD.traj)]</span>
+<span class="w">  </span><span class="nt">dptraj_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dpmd.traj&quot;</span><span class="w">     </span><span class="c1"># ASE DeepMD trajectory file       [Optional (Default: dpmd.traj)]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">log_file</span></code> contains the MD information, and <code class="docutils literal notranslate"><span class="pre">traj</span></code> file stores the trajectory structures.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Time<span class="o">[</span>ps<span class="o">]</span><span class="w">      </span>Etot<span class="o">[</span>eV<span class="o">]</span><span class="w">     </span>Epot<span class="o">[</span>eV<span class="o">]</span><span class="w">     </span>Ekin<span class="o">[</span>eV<span class="o">]</span><span class="w">    </span>T<span class="o">[</span>K<span class="o">]</span>
+<span class="m">0</span>.0000<span class="w">        </span>-112.0807<span class="w">    </span>-112.8950<span class="w">       </span><span class="m">0</span>.8143<span class="w">   </span><span class="m">300</span>.0
+<span class="m">0</span>.0700<span class="w">        </span>-111.6322<span class="w">    </span>-112.7149<span class="w">       </span><span class="m">1</span>.0828<span class="w">   </span><span class="m">398</span>.9
+<span class="m">0</span>.1400<span class="w">        </span>-112.4215<span class="w">    </span>-113.3518<span class="w">       </span><span class="m">0</span>.9303<span class="w">   </span><span class="m">342</span>.7
+<span class="m">0</span>.2100<span class="w">        </span>-112.9996<span class="w">    </span>-113.6775<span class="w">       </span><span class="m">0</span>.6779<span class="w">   </span><span class="m">249</span>.8
+<span class="m">0</span>.2800<span class="w">        </span>-112.6910<span class="w">    </span>-113.7220<span class="w">       </span><span class="m">1</span>.0310<span class="w">   </span><span class="m">379</span>.8
+</pre></div>
+</div>
+</section>
+<section id="directory-structure">
+<h3>Directory structure<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt;<span class="w"> </span>Project<span class="w"> </span>Root
+├──<span class="w"> </span>POSCAR
+├──<span class="w"> </span>INCAR
+├──<span class="w"> </span>input.json
+├──<span class="w"> </span>input.yaml
+├──<span class="w"> </span>Dataset
+│<span class="w">   </span>├──<span class="w"> </span>training_data
+│<span class="w">   </span>└──<span class="w"> </span>validation_data
+├──<span class="w"> </span>iter_000000
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">00</span>.dft
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>.train
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>.dpmd
+├──<span class="w"> </span>iter_000001
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">00</span>.dft
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>.train
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>.dpmd
+</pre></div>
+</div>
+<p>For detailed output see section <a class="reference internal" href="quickstart.html#quickstart-directory"><span class="std std-ref">Directory Structure</span></a>.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deepmd.html" class="btn btn-neutral float-right" title="DeepMD Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
