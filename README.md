@@ -92,14 +92,15 @@ export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
 ```yaml
 general:
   structure_file: "POSCAR"   # Input structure
-  md_steps: 10               # Number of MD Steps
-  log_frequency: 4           # Interval for MD log and save trajectories
 
 md_simulation:
   ensemble: "NVT"            # Ensemble for MD simulation
   thermostat: "Nose"         # Thermostat type (nose-Hoover)
   timestep_fs: 1.0           # TimeStep for MD simulation
+  md_steps: 10               # Number of MD Steps
   temperature: 300           # Temperature in Kelvin
+  log_frequency: 4           # Interval for MD log and save trajectories
+  use_dft_plumed: False      # Use PLUMED for MD simulation
 
 dft_calculator:
   name: "VASP"               # DFT package name
@@ -148,8 +149,8 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 ## Core Components
 
 ### 1. MD Simulation
-- Supports both _ab initio_ and DeepPotential Molecular Dynamics within ASE
-- NVT ensemble with Nose-Hoover thermostat
+- Supports both _ab initio_ and ML Molecular Dynamics within ASE
+- NVT ensemble with Nose-Hoover and Langevin thermostat
 - Checkpoint/restart capabilities
 - Optional PLUMED integration for enhanced sampling
 
@@ -166,15 +167,15 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 ## Workflow
 
 1. **Initial AIMD**
-   - Data generation *ab initio* MD using VASP
+   - Data generation *ab initio* MD using VASP/CP2K
 
-2. **DeepMD Training**
+2. **ML Potantial (MLP) Training**
    - Process AIMD trajectories
-   - Train multiple DeepMD models
+   - Train multiple ML models
    - Freeze and compresses models
 
-3. **DPMD Simulation**
-   - Run MLP-MD using trained DeepPotential models
+3. **MLP/MD Simulation**
+   - Run MLP-MD using trained potential models
    - Monitor force deviations
 
 4. **Active Learning**
@@ -187,8 +188,10 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 - ✅ Fixed Model Update in Active Learning Iterations restart with added key:
   - `learning_restart: True`
   - `latest_model: 'path/to/frozen_model.pb'`
-- ✅ Implemented Langevin Themostat 
+- ✅ Implemented Langevin Themostat
 - ✅ Structured log formatting for better readability
+- ✅ Preliminary support for the CP2K calculator implemented; full validation and testing are pending.
+- ✅ Utility tools for analysis of ML model accuracy, active learning status, and simulation properties.
 
 ## Planned Updates
 - 🚧 Code refinement in progress
