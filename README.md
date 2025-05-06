@@ -2,6 +2,10 @@
 
 **S**mart **P**otential with **A**tomistic **R**are Events and **C**ontinuous Learning
 
+<!-- ![Alt text](docs/source/sparc_logo.png) -->
+<img src="docs/source/sparc_logo.png" alt="drawing" style="width:300px;"/>
+
+
 ## Overview
 
 SPARC is an open-source Python package that implements an active learning workflow for developing reactive machine learning potentials. It automates the process of running _ab-initio_ calculations, training ML models, and identifying new structures that need quantum mechanical labeling.
