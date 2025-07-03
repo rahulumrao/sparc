@@ -37,6 +37,8 @@ complex materials and chemical processes.
    md
    DataProcess
    plumed_wrapper
+   analysis
+   workflow
    user_guide/index
    api/index
    tests/index

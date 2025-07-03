@@ -79,7 +79,12 @@ def load_config(input_file: str = "input.yaml") -> dict:
         config['deepmd_setup']['training'] = config['deepmd_setup'].get('training', False)
         config['deepmd_setup']['MdSimulation'] = config['deepmd_setup'].get('MdSimulation', False)
         config['deepmd_setup']['log_frequency'] = config['deepmd_setup'].get('log_frequency', 1)
+        config['deepmd_setup']['epot_threshold'] = config['deepmd_setup'].get('epot_threshold', 5.0)
         config['deepmd_setup']['use_plumed'] = config['deepmd_setup'].get('use_plumed', False)
+        config['deepmd_setup']['umbrella_sampling'] = config['deepmd_setup'].get('umbrella_sampling', {})
+        config['deepmd_setup']['umbrella_sampling']['enabled'] = config['deepmd_setup']['umbrella_sampling'].get('enabled', False)
+        config['deepmd_setup']['umbrella_sampling']['config_file'] = config['deepmd_setup']['umbrella_sampling'].get('config_file', 'umbrella_sampling.yaml')
+        
     # Add defaults for active learning and model_dev section
     config['active_learning'] = config.get('active_learning', False)
     config['learning_restart'] = config.get('learning_restart', False)

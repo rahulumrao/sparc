@@ -1,0 +1,95 @@
+PLUMED: PLUMED is starting
+PLUMED: Version: 2.6.6 (git: Unknown) compiled on Mar 24 2025 at 20:15:37
+PLUMED: Please cite these papers when using PLUMED [1][2]
+PLUMED: For further information see the PLUMED web page at http://www.plumed.org
+PLUMED: Root: /rs1/researchers/w/wjpfaend/rahul/MLP/sparc_CPU/lib/plumed
+PLUMED: For installed feature, see /rs1/researchers/w/wjpfaend/rahul/MLP/sparc_CPU/lib/plumed/src/config/config.txt
+PLUMED: Molecular dynamics engine: ASE
+PLUMED: Precision of reals: 8
+PLUMED: Running over 1 node
+PLUMED: Number of threads: 1
+PLUMED: Cache line size: 512
+PLUMED: Number of atoms: 8
+PLUMED: File suffix: 
+PLUMED: Timestep: 0.001000
+PLUMED: KbT: 2.494146
+PLUMED: Relevant bibliography:
+PLUMED:   [1] The PLUMED consortium, Nat. Methods 16, 670 (2019)
+PLUMED:   [2] Tribello, Bonomi, Branduardi, Camilloni, and Bussi, Comput. Phys. Commun. 185, 604 (2014)
+PLUMED: Please read and cite where appropriate!
+PLUMED: Finished setup
+PLUMED: Action DISTANCE
+PLUMED:   with label d1
+PLUMED:   between atoms 1 8
+PLUMED:   using periodic boundary conditions
+PLUMED: Action UPPER_WALLS
+PLUMED:   with label uwall
+PLUMED:   with arguments d1
+PLUMED:   added component to this action:  uwall.bias 
+PLUMED:   at 0.550000
+PLUMED:   with an offset 0.000000
+PLUMED:   with force constant 100000.000000
+PLUMED:   and exponent 2.000000
+PLUMED:   rescaled 1.000000
+PLUMED:   added component to this action:  uwall.force2 
+PLUMED: Action DENSITY
+PLUMED:   with label B
+PLUMED:   keyword SPECIES takes atoms : 1 
+PLUMED: Action DENSITY
+PLUMED:   with label H
+PLUMED:   keyword SPECIES takes atoms : 2 3 4 5 6 7 
+PLUMED: Action DENSITY
+PLUMED:   with label N
+PLUMED:   keyword SPECIES takes atoms : 8 
+PLUMED: Action CONTACT_MATRIX
+PLUMED:   with label contact_mat
+PLUMED:   Bibliography [1]
+PLUMED:   keyword ATOMS takes dynamic groups of atoms constructed from multicolvars labelled : B H N 
+PLUMED:   1 th and 1 th multicolvar groups must be within 0.8.  Using rational switching function with parameters d0=0 nn=6 mm=12
+PLUMED:   1 th and 2 th multicolvar groups must be within 0.125.  Using rational switching function with parameters d0=0 nn=6 mm=12
+PLUMED:   1 th and 3 th multicolvar groups must be within 0.222.  Using rational switching function with parameters d0=0 nn=6 mm=12
+PLUMED:   2 th and 2 th multicolvar groups must be within 0.5.  Using rational switching function with parameters d0=0 nn=6 mm=12
+PLUMED:   2 th and 3 th multicolvar groups must be within 0.125.  Using rational switching function with parameters d0=0 nn=6 mm=12
+PLUMED:   3 th and 3 th multicolvar groups must be within 0.8.  Using rational switching function with parameters d0=0 nn=6 mm=12
+PLUMED: Relevant bibliography:
+PLUMED:   [1] Tribello, Giberti, Sosso, Salvalaglio and Parrinello, J. Chem. Theory Comput. 13, 1317 (2017)
+PLUMED: Please read and cite where appropriate!
+PLUMED: Action SPRINT
+PLUMED:   with label ss
+PLUMED:   keyword MATRIX takes dynamic groups of atoms constructed from multicolvars labelled : contact_mat 
+PLUMED:   added component to this action:  ss.coord-0 
+PLUMED:   added component to this action:  ss.coord-1 
+PLUMED:   added component to this action:  ss.coord-2 
+PLUMED:   added component to this action:  ss.coord-3 
+PLUMED:   added component to this action:  ss.coord-4 
+PLUMED:   added component to this action:  ss.coord-5 
+PLUMED:   added component to this action:  ss.coord-6 
+PLUMED:   added component to this action:  ss.coord-7 
+PLUMED: Action PBMETAD
+PLUMED:   with label pb
+PLUMED:   with arguments ss.coord-0 ss.coord-7
+PLUMED:   added component to this action:  pb.bias 
+PLUMED:   Gaussian width  0.100000 0.100000  Gaussian height 2.000000
+PLUMED:   Gaussian deposition pace 1000
+PLUMED:   Gaussian files iter_000004/02.dpmd/HILLS_0 iter_000004/02.dpmd/HILLS_1 
+PLUMED:   Bibliography [1]
+PLUMED: Relevant bibliography:
+PLUMED:   [1] Pfaendtner and Bonomi. J. Chem. Theory Comput. 11, 5062 (2015)
+PLUMED: Please read and cite where appropriate!
+PLUMED: Action PRINT
+PLUMED:   with label @8
+PLUMED:   with stride 3
+PLUMED:   with arguments d1 ss.coord-0 ss.coord-1 ss.coord-2 ss.coord-3 ss.coord-4 ss.coord-5 ss.coord-6 ss.coord-7 pb.bias
+PLUMED:   on file iter_000004/02.dpmd/COLVAR
+PLUMED:   with format  %f
+PLUMED: Action FLUSH
+PLUMED:   with label @9
+PLUMED:   with stride 250
+PLUMED:                                               Cycles        Total      Average      Minumum      Maximum
+PLUMED:                                                    1   256.458070   256.458070   256.458070   256.458070
+PLUMED: 1 Prepare dependencies                        335704     1.951050     0.000006     0.000001     0.000097
+PLUMED: 2 Sharing data                                335704     3.337193     0.000010     0.000002     0.000592
+PLUMED: 3 Waiting for data                            335704     0.316995     0.000001     0.000000     0.000057
+PLUMED: 4 Calculating (forward loop)                  335704   230.301718     0.000686     0.000146     0.010914
+PLUMED: 5 Applying (backward loop)                    335704     5.108225     0.000015     0.000003     0.000139
+PLUMED: 6 Update                                      335704     8.450274     0.000025     0.000000     0.160876

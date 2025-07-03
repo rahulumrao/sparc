@@ -40,13 +40,13 @@ adjency matrix and its corresponding eigenvector, `\bf{V}`, using:
 .. Function:
 .. ~~~~~~~~~
 
-.. autofunction:: sparc.src.plumed_wrapper.modify_forces
+.. .. autofunction:: sparc.src.plumed_wrapper.modify_forces
 
 
-.. .. automodule:: sparc.src.plumed_wrapper
-..    :members:
-..    :undoc-members:
-..    :show-inheritance:
+.. automodule:: sparc.src.plumed_wrapper
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 

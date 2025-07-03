@@ -20,8 +20,15 @@ extensions = [
     'sphinx_rtd_theme',
     'sphinx.ext.intersphinx',
     'sphinx_autodoc_typehints',
-    'sphinx.ext.autosectionlabel'
+    'sphinx.ext.autosectionlabel',
+    'nbsphinx'
 ]
+
+# # Optional
+# source_suffix = {
+#     '.rst': 'restructuredtext',
+#     '.ipynb': 'nbsphinx',
+# }
 
 # Add type hint descriptions
 autodoc_typehints = "description"

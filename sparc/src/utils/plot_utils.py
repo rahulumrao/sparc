@@ -204,9 +204,9 @@ def PlotForceDeviation(root_dir=".", iteration_window="all", target_iteration=No
         dmax (float): Upper threshold for candidate force deviation (default: 0.5).
         
     Example:
-        >>> plot_force_deviation("/path/to/root", iteration_window=(2, 5))
-        >>> plot_force_deviation("/path/to/root", target_iteration=3)
-        >>> plot_force_deviation("/path/to/root", iteration_window="all")
+        >>> PlotForceDeviation("/path/to/root", iteration_window=(2, 5))
+        >>> PlotForceDeviation("/path/to/root", target_iteration=3)
+        >>> PlotForceDeviation("/path/to/root", iteration_window="all")
     """
     data_dict = {}
     
@@ -258,7 +258,7 @@ def PlotForceDeviation(root_dir=".", iteration_window="all", target_iteration=No
     # Plotting
     plt.figure(figsize=(12, 7), dpi=300)
     num_iterations = sum(len(data) for data in data_dict.values())
-    ncol = min(num_iterations, 6)  # Adjust number of legend columns dynamically
+    ncol = min(num_iterations, 5)  # Adjust number of legend columns dynamically
     
     for model, data in data_dict.items():
         for iter_num, steps, max_devi_f in sorted(data):
@@ -362,6 +362,336 @@ def PlotPotentialEnergy(root_dir=".", iteration_window="all", target_iteration=N
     plt.grid(ls='-.')
     plt.show()
 
+########################################################################################################
+# Plot Distribution of Properties
+########################################################################################################
+import os
+import glob
+import matplotlib.pyplot as plt
+from ase.io import read
+import seaborn as sns
+
+def PlotDistribution(
+    root_dir=".",
+    iteration_window="all",
+    target_iteration=None,
+    traj_filename="AseMD.traj",
+    type="line",         # Options: "line", "kde", "hist"
+    get="energy",        # "energy" or "distance:i,j"
+    **kwargs
+):
+    """
+    Plot potential energy or bond distance from ASE trajectories across iter_* folders.
+
+    This function reads trajectory files (e.g., AseMD.traj) inside `00.dft` folders located within iter_* 
+    directories, extracts either potential energy or bond distance over time, and visualizes them using 
+    line plots, KDE plots, or histograms.
+
+    Parameters:
+        root_dir (str): Root directory containing iter_* folders. Default is current directory.
+        iteration_window (tuple or str): (start, end) tuple to specify a range of iterations, or "all".
+        target_iteration (int): A specific iteration to analyze. Overrides iteration_window if given.
+        traj_filename (str): Name of the ASE-readable trajectory file (default: "AseMD.traj").
+        type (str): Type of plot to generate:
+                    - 'line': property vs. frame index
+                    - 'kde' : kernel density estimate
+                    - 'hist': histogram of property values
+        get (str): What property to extract:
+                   - "energy" : uses get_potential_energy()
+                   - "distance:i,j" : uses get_distance(i, j) between atoms i and j
+
+        **kwargs: Additional keyword arguments forwarded to the underlying matplotlib/seaborn plotting calls.
+                  Common kwargs include:
+                      color, linestyle, linewidth, marker, alpha, bins, fill, edgecolor, etc.
+
+    Example usage:
+        # Default plot: potential energy across all iterations as a line plot
+        PlotDistribution()
+
+        # Explicit energy line plot
+        PlotDistribution(get="energy", type="line")
+
+        # Bond distance between atoms 0 and 7 as KDE
+        PlotDistribution(get="distance:0,7", type="kde")
+
+        # Histogram of energies from iteration 3
+        PlotDistribution(target_iteration=3, get="energy", type="hist", bins=40, alpha=0.5)
+
+        # Customized markers for energy plot
+        PlotDistribution(get="energy", type="line", color="red", marker="x", linestyle="--")
+    """
+
+    property_dict = {}
+    is_energy = get.lower() == "energy"
+    is_distance = get.lower().startswith("distance:")
+    symbol_pair = None
+
+    if is_energy:
+        prop_label = "Potential Energy (eV)"
+    elif is_distance:
+        try:
+            i, j = map(int, get.split(":")[1].split(","))
+        except:
+            raise ValueError("For distance, use format: 'distance:i,j'")
+    else:
+        raise ValueError("get must be 'energy' or 'distance:i,j'")
+
+    iter_dirs = sorted(glob.glob(os.path.join(root_dir, "iter_*")))
+    if target_iteration is not None:
+        selected_dirs = [d for d in iter_dirs if int(d.split("_")[-1]) == target_iteration]
+    elif iteration_window == "all":
+        selected_dirs = iter_dirs
+    elif isinstance(iteration_window, tuple):
+        selected_dirs = [d for d in iter_dirs if iteration_window[0] <= int(d.split("_")[-1]) <= iteration_window[1]]
+    else:
+        raise ValueError("iteration_window must be 'all' or (start, end)")
+
+    for iter_dir in selected_dirs:
+        iter_num = int(iter_dir.split("_")[-1])
+        dpmd_dir = os.path.join(iter_dir, "00.dft")
+        traj_path = os.path.join(dpmd_dir, traj_filename)
+
+        if not os.path.isfile(traj_path):
+            print(f"Warning: {traj_filename} not found in {dpmd_dir}")
+            continue
+
+        traj = read(traj_path, index=":")
+
+        if is_distance and symbol_pair is None and len(traj) > max(i, j):
+            try:
+                symbols = traj[0].get_chemical_symbols()
+                symbol_pair = (symbols[i], symbols[j])
+            except Exception as ex:
+                print(f"  Could not extract atom symbols: {ex}")
+                symbol_pair = None
+
+        if is_energy:
+            values = [atoms.get_potential_energy() for atoms in traj]
+        elif is_distance:
+            values = [atoms.get_distance(i, j) for atoms in traj]
+
+        property_dict[iter_num] = values
+
+    if is_energy:
+        if type=='line':
+            xlabel = "Candidates"
+            ylabel = "Potential Energy (eV)"
+        elif type=='kde':
+            xlabel = "Potential Energy (eV)"
+            ylabel = "Density"
+        elif type=='hist':
+            xlabel = "Potential Energy (eV)"
+            ylabel = "P(Energy)"
+            
+    elif is_distance:
+        if symbol_pair:
+            sym_i, sym_j = symbol_pair
+            xlabel = rf"Distance [$\mathrm{{{sym_i}}}_{{{i}}}$-$\mathrm{{{sym_j}}}_{{{j}}}$] ($\rm{{\AA}}$)"
+        else:
+            xlabel = rf"Bond Distance ($\rm{{\AA}}$) between atoms {i} and {j}"
+        ylabel = "Bond Distance Distribution" if type == "hist" else "Density"
+
+    plt.figure(figsize=(12, 7), dpi=250)
+    ncol = min(len(property_dict), 6)
+
+    for iter_num, values in sorted(property_dict.items()):
+        label = f"Iter {iter_num}"
+        if type == "line":
+            plt.plot(
+                range(len(values)), values,
+                label=label,
+                marker=kwargs.get("marker", 'o'),
+                linestyle=kwargs.get("linestyle", '-'),
+                linewidth=kwargs.get("linewidth", 2),
+                markersize=kwargs.get("ms", 5),
+                alpha=kwargs.get("alpha", 0.9),
+                color=kwargs.get("color", None)
+            )
+        elif type == "kde":
+            sns.kdeplot(
+                values, label=label,
+                linewidth=kwargs.get("linewidth", 2),
+                fill=kwargs.get("fill", True),
+                alpha=kwargs.get("alpha", 0.4),
+                linestyle=kwargs.get("linestyle", '-'),
+                color=kwargs.get("color", None)
+            )
+        elif type == "hist":
+            plt.hist(
+                values, bins=kwargs.get("bins", 25),
+                edgecolor=kwargs.get("edgecolor", "black"),
+                alpha=kwargs.get("alpha", 0.7),
+                label=label,
+                color=kwargs.get("color", None)
+            )
+        else:
+            raise ValueError("type must be 'line', 'kde', or 'hist'.")
+
+    plt.xlabel(xlabel, fontsize=23)
+    plt.ylabel(ylabel if type != "line" else prop_label, fontsize=23)
+
+    if type == "line":
+        plt.xlim(0, None)
+
+    plt.xticks(fontsize=22)
+    plt.yticks(fontsize=22)
+    plt.legend(fontsize=16, loc='upper center', bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.grid(ls='-.')
+    plt.tight_layout()
+    plt.show()
+########################################################################################################
+# Plot Potential Energy Surface
+########################################################################################################
+def PlotPES(
+    root_dir=".",
+    iteration_window="all",
+    target_iteration=None,
+    traj_filename="AseMD.traj",
+    distance_pair=(0, 7),
+    type="kde",  # "kde", "heatmap", or "hexbin"
+    bins=(50, 50),
+    **kwargs
+):
+    """
+    Plot energy vs. bond distance across trajectories as a 2D KDE, heatmap, or hexbin.
+
+    Parameters:
+        root_dir (str): Root directory containing iter_* folders.
+        iteration_window (tuple or str): (start, end) or "all".
+        target_iteration (int): A specific iteration to analyze.
+        traj_filename (str): ASE-readable trajectory file inside 00.dft folders.
+        distance_pair (tuple): Atom indices (i, j) for bond distance calculation.
+        type (str): "kde", "heatmap", or "hexbin".
+        bins (tuple): Number of bins for heatmap/hexbin (x, y or just x).
+        **kwargs: Extra kwargs forwarded to seaborn/matplotlib functions.
+
+    Example usage:
+        # Default KDE plot of energy vs. bond distance between atoms 0 and 7
+        PlotPES()
+
+        # Hexbin plot with custom bin count
+        PlotPES(type="hexbin", bins=(60,))
+
+        # Heatmap from a specific iteration
+        PlotPES(target_iteration=3, type="heatmap", bins=(40, 40))
+
+        # KDE plot with a custom colormap
+        PlotPES(type="kde", cmap="mako")
+    """
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from ase.io import read
+    import glob
+    import os
+
+    i, j = distance_pair
+    x_vals, y_vals = [], []
+    total_frames = 0
+    symbol_pair = None  # To store (symbol_i, symbol_j)
+
+    # Get folders
+    iter_dirs = sorted(glob.glob(os.path.join(root_dir, "iter_*")))
+    if target_iteration is not None:
+        selected_dirs = [d for d in iter_dirs if int(d.split("_")[-1]) == target_iteration]
+    elif iteration_window == "all":
+        selected_dirs = iter_dirs
+    elif isinstance(iteration_window, tuple):
+        selected_dirs = [d for d in iter_dirs if iteration_window[0] <= int(d.split("_")[-1]) <= iteration_window[1]]
+    else:
+        raise ValueError("iteration_window must be 'all' or (start, end)")
+
+    print("Parsing iterations:")
+    for iter_dir in selected_dirs:
+        iter_num = int(iter_dir.split("_")[-1])
+        traj_path = os.path.join(iter_dir, "00.dft", traj_filename)
+        if not os.path.isfile(traj_path):
+            print(f"  Iter {iter_num:>2}: MISSING ({traj_filename})")
+            continue
+
+        traj = read(traj_path, index=":")
+        num_frames = len(traj)
+        print(f"  Iter {iter_num:>2}: {num_frames} frames")
+        total_frames += num_frames
+
+        # Get atomic symbols from the first valid trajectory only
+        if symbol_pair is None and num_frames > max(i, j):
+            try:
+                symbols = traj[0].get_chemical_symbols()
+                symbol_pair = (symbols[i], symbols[j])
+            except Exception as ex:
+                print(f"  Could not extract atom symbols: {ex}")
+                symbol_pair = None
+
+        for atoms in traj:
+            try:
+                d = atoms.get_distance(i, j)
+                e = atoms.get_potential_energy()
+                x_vals.append(d)
+                y_vals.append(e)
+            except Exception as ex:
+                print(f"    Error in {traj_path}: {ex}")
+                continue
+
+    print(f"\nTotal frames: {total_frames}")
+
+    x = np.array(x_vals)
+    y = np.array(y_vals)
+
+    # Plot setup
+    fig, ax = plt.subplots(figsize=(10, 7), dpi=250)
+
+    if type == "kde":
+        sns.kdeplot(
+            x=x, y=y, ax=ax,
+            fill=True,
+            cmap=kwargs.pop("cmap", "viridis"),
+            levels=100,
+            thresh=0.05,
+            **kwargs
+        )
+    elif type == "heatmap":
+        h = ax.hist2d(
+            x, y,
+            bins=bins,
+            cmap=kwargs.pop("cmap", "plasma"),
+            cmin=1,
+            **kwargs
+        )
+        cb = fig.colorbar(h[3], ax=ax, pad=0.01)
+        cb.set_label("Counts", fontsize=16)
+        cb.ax.tick_params(labelsize=16)
+    elif type == "hexbin":
+        cmap = kwargs.pop("cmap", "inferno")
+        gridsize = bins[0] if isinstance(bins, (tuple, list)) else bins
+        hb = ax.hexbin(
+            x, y,
+            gridsize=gridsize,
+            cmap=cmap,
+            mincnt=1,
+            linewidths=0.3,
+            **kwargs
+        )
+        cb = fig.colorbar(hb, ax=ax, pad=0.01)
+        cb.set_label("Counts", fontsize=20)
+        cb.ax.tick_params(labelsize=16)
+    else:
+        raise ValueError("plot_type must be 'kde', 'heatmap', or 'hexbin'.")
+
+    # Axis labels
+    if symbol_pair:
+        sym_i, sym_j = symbol_pair
+        bond_label = rf"Distance [$\mathrm{{{sym_i}}}_{{{i}}}$-$\mathrm{{{sym_j}}}_{{{j}}}$] ($\rm{{\AA}}$)"
+    else:
+        bond_label = rf"Bond Distance ($\rm{{\AA}}$) between atoms {i} and {j}"
+
+    ax.set_xlabel(bond_label, fontsize=20)
+    ax.set_ylabel("Potential Energy (eV)", fontsize=20)
+    ax.tick_params(axis='both', labelsize=16)
+    ax.grid(ls='--', alpha=0.3)
+
+    fig.subplots_adjust(right=0.98, left=0.12, top=0.95, bottom=0.12)
+    plt.show()
 ########################################################################################################
 # Plot Temperature from Deep Potential Dynamics
 ########################################################################################################
@@ -582,6 +912,67 @@ def get_1dSurface(traj, bond):
     F -= np.nanmin(F)
     
     return r_range, F, bond_lengths, energies
+########################################################################################################
+# Visualize Trajectory with nglview
+########################################################################################################
+from ase.io import read
+import nglview as nv
+
+def ViewTraj(traj, style="ball_and_stick", background="white", size=400):
+    """
+    Returns an interactive nglview widget with custom styling for a given ASE trajectory.
+
+    Parameters:
+        traj (list of ase.Atoms or str): A trajectory (list of ASE Atoms) or a file path.
+        style (str): Representation style (e.g., 'ball_and_stick', 'spacefill', 'licorice').
+        background (str): Viewer background color.
+
+    Returns:
+        nglview.NGLWidget: Configured NGL viewer widget.
+    """
+    # If a string is passed, assume it's a file path
+    if isinstance(traj, str):
+        traj = read(traj, index=':')
+
+    # Create the viewer
+    view = nv.NGLWidget(nv.ASETrajectory(traj))
+    view.clear_representations()
+
+    # Add the desired representation
+    if style == "ball_and_stick":
+        view.add_ball_and_stick()
+    elif style == "spacefill":
+        view.add_spacefill()
+    elif style == "licorice":
+        view.add_licorice()
+    else:
+        view.add_ball_and_stick()  # fallback
+
+    # Add atom index labels
+    view.add_label(
+        selection='all',
+        label_type='atomindex',
+        color='black',
+        zOffset=1.0,      # Push labels above atoms
+        attachment='middle-center'
+    )
+
+    # Viewer settings
+    view.background = background
+    view.camera = "orthographic"
+    view.center()
+    view._set_size(f"{size}px", f"{size}px")
+    view.parameters = {
+        "clipNear": 0,
+        "clipFar": 100,
+        "clipDist": -5,
+        "impostor": True,
+        "fog": False,
+        "antialias": True,
+        "autoRotate": False
+    }
+
+    return view
 ########################################################################################################
 #                                      End of File
 ########################################################################################################

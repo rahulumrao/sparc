@@ -1,0 +1,1 @@
+../../01.train/training_1/frozen_model_1.pb

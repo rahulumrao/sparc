@@ -1,0 +1,30 @@
+
+Iteration 000000
+Training data from: iter_000000/02.dpmd/dpmd.traj
+Model deviation range: [0.050, 0.500] eV/Å
+Candidates found: 2581
+--------------------------------------------------------------------------------
+
+Iteration 000001
+Training data from: iter_000001/02.dpmd/dpmd.traj
+Model deviation range: [0.050, 0.500] eV/Å
+Candidates found: 161
+--------------------------------------------------------------------------------
+
+Iteration 000002
+Training data from: iter_000002/02.dpmd/dpmd.traj
+Model deviation range: [0.050, 0.500] eV/Å
+Candidates found: 379
+--------------------------------------------------------------------------------
+
+Iteration 000003
+Training data from: iter_000003/02.dpmd/dpmd.traj
+Model deviation range: [0.050, 0.500] eV/Å
+Candidates found: 51
+--------------------------------------------------------------------------------
+
+Iteration 000004
+Training data from: iter_000004/02.dpmd/dpmd.traj
+Model deviation range: [0.050, 0.500] eV/Å
+Candidates found: 67
+--------------------------------------------------------------------------------

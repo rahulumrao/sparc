@@ -1,0 +1,1472 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[1] Workflow Analysis &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Analysing workflow" href="../workflow.html" />
+    <link rel="prev" title="Analysis" href="../analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#md-simulation">MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#plumed">PLUMED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#deepmd">DeepMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#metric">Metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#directory-structure">Directory structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../calculator.html">DFT Calculator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../calculator.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../calculator.html#class-setupdftcalculator">Class : SetupDFTCalculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../calculator.html#id1">dft_calculator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../DataProcess.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../analysis.html">Analysis</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../analysis.html#overview">Overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../analysis.html#function">Function:</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">[1] Workflow Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Analysing workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#example-directory-structure">Example Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#geometry-tab-details">Geometry Tab Details</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../analysis.html">Analysis</a></li>
+      <li class="breadcrumb-item active">[1] Workflow Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/analysisAmmoniaBorate.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>Library Requirement:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">numpy</span><span class="p">,</span> <span class="n">pandas</span><span class="p">,</span> <span class="n">ase</span><span class="p">,</span> <span class="n">dpdata</span><span class="p">,</span> <span class="n">matplotlib</span><span class="p">,</span> <span class="n">sparc</span><span class="p">,</span> <span class="n">nglview</span>
+</pre></div>
+</div>
+<p>Required Files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-<span class="w"> </span>input.yaml<span class="w">    </span><span class="o">(</span>workflow<span class="w"> </span>input<span class="w"> </span>file<span class="o">)</span>
+-<span class="w"> </span>input.json<span class="w">    </span><span class="o">(</span>Deepmd<span class="w"> </span>training<span class="w"> </span>file<span class="o">)</span>
+-<span class="w"> </span>INCAR<span class="w">         </span><span class="o">(</span>VASP<span class="w"> </span>input<span class="w"> </span>file<span class="o">)</span>
+-<span class="w"> </span>POSCAR<span class="w">        </span><span class="o">(</span>Strcuture<span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>VASP/POSCAR<span class="o">)</span>
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="c1">#</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dpdata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atoms</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="c1">#</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">lammps_logfile</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lmp_log</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "82bad98890b44552b86615c08ceba463", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<section id="[1]-Workflow-Analysis">
+<h1>[1] Workflow Analysis<a class="headerlink" href="#[1]-Workflow-Analysis" title="Link to this heading"></a></h1>
+<p>We can Utilize the <code class="docutils literal notranslate"><span class="pre">ViewTraj</span></code> function to visualize the sample trajectory accumulated over different iterations stored in <code class="docutils literal notranslate"><span class="pre">TrajCombined.traj</span></code> file</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;TrajCombined.traj&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Frames in Trajectory </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Total Frames in Trajectory 3236
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import local function to visualize trajectory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ViewTraj</span>
+<span class="n">ViewTraj</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "003dbae9a568485893bcf8c35abb284c", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<section id="[11]-Plot-deviation-in-Forces-over-the-course-of-iteration-workflow">
+<h2>[11] Plot deviation in <code class="docutils literal notranslate"><span class="pre">Forces</span></code> over the course of iteration workflow<a class="headerlink" href="#[11]-Plot-deviation-in-Forces-over-the-course-of-iteration-workflow" title="Link to this heading"></a></h2>
+<p>Shaded region in the plot is just to show that these candidates are chosen for labelling. By-default its range is set between 0.05-0.5. Based on the <code class="docutils literal notranslate"><span class="pre">min_devi</span></code> and <code class="docutils literal notranslate"><span class="pre">max_devi</span></code> in the <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file this can be changed to user defined value with the keyword <code class="docutils literal notranslate"><span class="pre">dmin</span></code> and <code class="docutils literal notranslate"><span class="pre">dmax</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import local function to plot model deviation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotForceDeviation</span>
+
+<span class="c1"># We can choose a specific Iter_xxx folder or all to plot deviation in forces</span>
+<span class="n">PlotForceDeviation</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">target_iteration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_7_0.png" src="../_images/notebooks_analysisAmmoniaBorate_7_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We can also choose a range of Iter_xxx folder</span>
+<span class="n">PlotForceDeviation</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># or all</span>
+<span class="n">PlotForceDeviation</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_8_0.png" src="../_images/notebooks_analysisAmmoniaBorate_8_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_8_1.png" src="../_images/notebooks_analysisAmmoniaBorate_8_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">PlotForceDeviation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function PlotForceDeviation in module sparc.src.utils.plot_utils:
+
+PlotForceDeviation(root_dir=&#39;.&#39;, iteration_window=&#39;all&#39;, target_iteration=None, dmin=0.05, dmax=0.5)
+    Parses model_dev_*.out files from iter_* directories (or a specific range/iteration/all),
+    extracts max force deviation, and plots the results.
+
+    Parameters:
+        root_dir (str): Root directory containing iter_* folders.
+        iteration_window (tuple or str): A tuple (start, end) to specify a range of iterations, or &#34;all&#34; to process all iterations.
+        target_iteration (int): A specific iteration number to analyze.
+        dmin (float): Lower threshold for candidate force deviation (default: 0.05).
+        dmax (float): Upper threshold for candidate force deviation (default: 0.5).
+
+    Example:
+        &gt;&gt;&gt; PlotForceDeviation(&#34;/path/to/root&#34;, iteration_window=(2, 5))
+        &gt;&gt;&gt; PlotForceDeviation(&#34;/path/to/root&#34;, target_iteration=3)
+        &gt;&gt;&gt; PlotForceDeviation(&#34;/path/to/root&#34;, iteration_window=&#34;all&#34;)
+
+</pre></div></div>
+</div>
+</section>
+<section id="[12]-Learning-Curve">
+<h2>[12] Learning Curve<a class="headerlink" href="#[12]-Learning-Curve" title="Link to this heading"></a></h2>
+<p>The default training loss output file generated by DeePMD-kit is <code class="docutils literal notranslate"><span class="pre">lcurve.out</span></code>. This file contains the evolution of various loss components during training, including energy, force, virial, and total loss for both the training and validation datasets. We can plot this with <code class="docutils literal notranslate"><span class="pre">PlotLcurve</span></code> function.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotLcurve</span>
+<span class="c1"># If provided keyword &#39;save_fig&#39;, save the figure (e.g., &quot;save_fig=lcurve.png&quot;).</span>
+<span class="n">PlotLcurve</span><span class="p">(</span><span class="n">lcurve_file</span><span class="o">=</span><span class="s1">&#39;iter_000000/01.train/training_1/lcurve.out&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_11_0.png" src="../_images/notebooks_analysisAmmoniaBorate_11_0.png" />
+</div>
+</div>
+</section>
+<section id="[13]-Parity-Plot">
+<h2>[13] Parity Plot<a class="headerlink" href="#[13]-Parity-Plot" title="Link to this heading"></a></h2>
+<p>We wrote a customized <code class="docutils literal notranslate"><span class="pre">ParityPlot</span></code> function, which can do parity plot for energies and force components on a test/validation data provided by the user.</p>
+<ul class="simple">
+<li><ol class="upperalpha simple">
+<li><p>Energy</p></li>
+</ol>
+</li>
+<li><p>(B,C,D) XYZ-component of forces</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParityPlot</span>
+<span class="c1">#</span>
+<span class="o">!</span><span class="nb">export</span><span class="w"> </span><span class="nv">KMP_WARNINGS</span><span class="o">=</span><span class="m">0</span>
+<span class="n">ParityPlot</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="s1">&#39;DeePMD_training/00.data/validation_data&#39;</span><span class="p">,</span>
+          <span class="n">model_path</span><span class="o">=</span><span class="s1">&#39;iter_000004/01.train/training_1/frozen_model_1.pb&#39;</span><span class="p">,</span>
+          <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-05-14 13:02:28.183860: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1928] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 9482 MB memory:  -&gt; device: 0, name: NVIDIA GeForce RTX 3080 Ti, pci bus id: 0000:55:00.0, compute capability: 8.6
+2025-05-14 13:02:28.183960: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1928] Created device /job:localhost/replica:0/task:0/device:GPU:1 with 10229 MB memory:  -&gt; device: 1, name: NVIDIA GeForce RTX 3080 Ti, pci bus id: 0000:a2:00.0, compute capability: 8.6
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_13_1.png" src="../_images/notebooks_analysisAmmoniaBorate_13_1.png" />
+</div>
+</div>
+<p>One can also do per_atom energy/forces with <code class="docutils literal notranslate"><span class="pre">per_atom=True</span></code>.</p>
+<p>Also If provided keyword <code class="docutils literal notranslate"><span class="pre">save_fig</span></code>, save the figure (e.g., “save_fig=parity.png”).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParityPlot</span>
+<span class="c1">#</span>
+<span class="o">!</span><span class="nb">export</span><span class="w"> </span><span class="nv">KMP_WARNINGS</span><span class="o">=</span><span class="m">0</span>
+<span class="n">ParityPlot</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="s1">&#39;DeePMD_training/00.data/validation_data&#39;</span><span class="p">,</span>
+          <span class="n">model_path</span><span class="o">=</span><span class="s1">&#39;iter_000004/01.train/training_1/frozen_model_1.pb&#39;</span><span class="p">,</span>
+          <span class="n">per_atom</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+          <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-05-14 13:06:11.844494: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1928] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 9482 MB memory:  -&gt; device: 0, name: NVIDIA GeForce RTX 3080 Ti, pci bus id: 0000:55:00.0, compute capability: 8.6
+2025-05-14 13:06:11.844600: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1928] Created device /job:localhost/replica:0/task:0/device:GPU:1 with 10229 MB memory:  -&gt; device: 1, name: NVIDIA GeForce RTX 3080 Ti, pci bus id: 0000:a2:00.0, compute capability: 8.6
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_15_1.png" src="../_images/notebooks_analysisAmmoniaBorate_15_1.png" />
+</div>
+</div>
+</section>
+<section id="[14]-Labelled-Candidates-Energies-Across-Active-Learning-Iterations">
+<h2>[14] Labelled Candidates Energies Across Active Learning Iterations<a class="headerlink" href="#[14]-Labelled-Candidates-Energies-Across-Active-Learning-Iterations" title="Link to this heading"></a></h2>
+<p>In active learning workflows, labeled candidates refer to configurations selected for high-fidelity labeling (e.g., via DFT) during each iteration of model refinement. Plotting the potential energies of these labeled structures as a function of iteration will provide the insights into model exploration.</p>
+<p>Similar to <code class="docutils literal notranslate"><span class="pre">PlotForceDeviation</span></code> function we can choose a specific Iter_xxx folder or all to plot energies.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotPotentialEnergy</span>
+<span class="c1">#</span>
+<span class="n">PlotPotentialEnergy</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s1">&#39;AseMD.traj&#39;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_17_0.png" src="../_images/notebooks_analysisAmmoniaBorate_17_0.png" />
+</div>
+</div>
+</section>
+<section id="[15]-Potential-Energy">
+<h2>[15] Potential Energy<a class="headerlink" href="#[15]-Potential-Energy" title="Link to this heading"></a></h2>
+<p>Plotting the potential energy as a function of a selected interatomic distance provides a perspective on the structural and energetic evolution of the dataset. This help us find how configurations sampled during active learning are distributed across different regions of the potential energy surface. The relationship between energy and bond length (or other distance-based descriptors), one can assess the diversity of the data, detect the presence of unphysical or high-energy structures, and
+monitor whether new configurations expand the training set into previously unexplored areas.</p>
+<p>We have written a function <code class="docutils literal notranslate"><span class="pre">PlotPES</span></code> funtion which generates two-dimensional plots of energy versus bond distance using histogram, kernel density estimation (KDE), or hexbin representations.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotPES</span>
+
+<span class="n">PlotPES</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s1">&#39;AseMD.traj&#39;</span><span class="p">,</span>
+        <span class="n">distance_pair</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;kde&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Parsing iterations:
+  Iter  0: 64 frames
+  Iter  1: 2581 frames
+  Iter  2: 161 frames
+  Iter  3: 379 frames
+  Iter  4: 51 frames
+
+Total frames: 3236
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_19_1.png" src="../_images/notebooks_analysisAmmoniaBorate_19_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PlotPES</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">target_iteration</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s1">&#39;AseMD.traj&#39;</span><span class="p">,</span> <span class="n">distance_pair</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;hexbin&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Parsing iterations:
+  Iter  1: 2581 frames
+
+Total frames: 2581
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_20_1.png" src="../_images/notebooks_analysisAmmoniaBorate_20_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PlotPES</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">target_iteration</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s1">&#39;AseMD.traj&#39;</span><span class="p">,</span> <span class="n">distance_pair</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Parsing iterations:
+  Iter  1: 2581 frames
+
+Total frames: 2581
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_21_1.png" src="../_images/notebooks_analysisAmmoniaBorate_21_1.png" />
+</div>
+</div>
+</section>
+<section id="[16]-Plot-Property-Distribution">
+<h2>[16] Plot Property Distribution<a class="headerlink" href="#[16]-Plot-Property-Distribution" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">PlotDistribution</span></code> function tool visualize the statistical distribution of potential energies or bond distances extracted from atomic trajectories generated during active learning iteration. We can monitor the diversity in sampling, convergence, and structural variation in the training set.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">get=&quot;energy&quot;</span></code>, the function extracts potential energy values from ASE trajectories using <code class="docutils literal notranslate"><span class="pre">get_potential_energy()</span></code>. This is useful for identifying fluctuations in sampled configurations, detecting outliers, and observing energetic stabilization across iterations. When <code class="docutils literal notranslate"><span class="pre">get=&quot;distance:i,j&quot;</span></code> is specified, the function computes the bond distance between atoms i and j using <code class="docutils literal notranslate"><span class="pre">get_distance(i,</span> <span class="pre">j)</span></code>, enabling geometric analysis of specific interatomic interactions.</p>
+<p>Similar to <code class="docutils literal notranslate"><span class="pre">PlotForceDeviation</span></code> function we can choose a specific Iter_xxx folder or all to plot energies.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotDistribution</span>
+<span class="c1"># Plot Potential energy as linePlot from each iteration</span>
+<span class="n">PlotDistribution</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">get</span><span class="o">=</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s1">&#39;AseMD.traj&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_23_0.png" src="../_images/notebooks_analysisAmmoniaBorate_23_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot KDE of Potential energy</span>
+<span class="n">PlotDistribution</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">get</span><span class="o">=</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s1">&#39;AseMD.traj&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;kde&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_24_0.png" src="../_images/notebooks_analysisAmmoniaBorate_24_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot KDE of distance between atom 0 (Boron) and atom 7 (Nitrogen)</span>
+<span class="n">PlotDistribution</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">get</span><span class="o">=</span><span class="s1">&#39;distance:0,7&#39;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s1">&#39;AseMD.traj&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;kde&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_25_0.png" src="../_images/notebooks_analysisAmmoniaBorate_25_0.png" />
+</div>
+</div>
+</section>
+<section id="[17]-Plot-ML/MD-Temperature">
+<h2>[17] Plot ML/MD Temperature<a class="headerlink" href="#[17]-Plot-ML/MD-Temperature" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">PlotTemp</span></code> function is designed to extract and visualize the temperature evolution from ML/MD trajectories generated during active learning. It scans trajectory files (e.g., dpmd.traj) located within iter_* directories and plots the instantaneous temperature across simulation frames.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotTemp</span>
+<span class="c1">#</span>
+<span class="n">PlotTemp</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s2">&quot;dpmd.traj&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Mean Temperature (K) from Iteration 0 := 347.90
+Mean Temperature (K) from Iteration 1 := 349.93
+Mean Temperature (K) from Iteration 2 := 348.82
+Mean Temperature (K) from Iteration 3 := 349.94
+Mean Temperature (K) from Iteration 4 := 349.62
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_27_1.png" src="../_images/notebooks_analysisAmmoniaBorate_27_1.png" />
+</div>
+</div>
+</section>
+<section id="[18]-Read-COLVAR-files-(Plumed)">
+<h2>[18] Read COLVAR files (Plumed)<a class="headerlink" href="#[18]-Read-COLVAR-files-(Plumed)" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.plot_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadColvar</span>
+<span class="c1">#</span>
+<span class="n">root_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span>
+<span class="n">colvar_data</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">folder</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;iter_&quot;</span><span class="p">):</span>
+        <span class="n">colvar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="s2">&quot;02.dpmd&quot;</span><span class="p">,</span> <span class="s2">&quot;COLVAR&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">colvar_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading: </span><span class="si">{</span><span class="n">colvar_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">ReadColvar</span><span class="p">(</span><span class="n">colvar_path</span><span class="p">)</span>
+            <span class="n">colvar_data</span><span class="p">[</span><span class="n">folder</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing COLVAR file in </span><span class="si">{</span><span class="n">folder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reading: ./iter_000000/02.dpmd/COLVAR
+Reading: ./iter_000001/02.dpmd/COLVAR
+Reading: ./iter_000002/02.dpmd/COLVAR
+Reading: ./iter_000003/02.dpmd/COLVAR
+Reading: ./iter_000004/02.dpmd/COLVAR
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colvar_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+dict_keys([&#39;iter_000000&#39;, &#39;iter_000001&#39;, &#39;iter_000002&#39;, &#39;iter_000003&#39;, &#39;iter_000004&#39;])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colvar_data</span><span class="p">[</span><span class="s1">&#39;iter_000000&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>time</th>
+      <th>d1</th>
+      <th>ss.coord-0</th>
+      <th>ss.coord-1</th>
+      <th>ss.coord-2</th>
+      <th>ss.coord-3</th>
+      <th>ss.coord-4</th>
+      <th>ss.coord-5</th>
+      <th>ss.coord-6</th>
+      <th>ss.coord-7</th>
+      <th>pb.bias</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.000</td>
+      <td>0.492411</td>
+      <td>1.694711</td>
+      <td>3.803112</td>
+      <td>3.848012</td>
+      <td>4.213217</td>
+      <td>4.487124</td>
+      <td>4.994629</td>
+      <td>5.061090</td>
+      <td>2.643729</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.003</td>
+      <td>0.492650</td>
+      <td>1.685249</td>
+      <td>3.800578</td>
+      <td>3.851308</td>
+      <td>4.206756</td>
+      <td>4.476842</td>
+      <td>4.993015</td>
+      <td>5.057702</td>
+      <td>2.620900</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.006</td>
+      <td>0.492884</td>
+      <td>1.678498</td>
+      <td>3.799042</td>
+      <td>3.855629</td>
+      <td>4.198999</td>
+      <td>4.466045</td>
+      <td>4.991398</td>
+      <td>5.054066</td>
+      <td>2.596992</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.009</td>
+      <td>0.493111</td>
+      <td>1.674489</td>
+      <td>3.798344</td>
+      <td>3.860757</td>
+      <td>4.190269</td>
+      <td>4.455041</td>
+      <td>4.989711</td>
+      <td>5.050308</td>
+      <td>2.572967</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.012</td>
+      <td>0.493330</td>
+      <td>1.673221</td>
+      <td>3.798316</td>
+      <td>3.866467</td>
+      <td>4.180893</td>
+      <td>4.444124</td>
+      <td>4.987890</td>
+      <td>5.046550</td>
+      <td>2.549786</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[74]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">colvar_data</span><span class="p">[</span><span class="s1">&#39;iter_000000&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">colvar_data</span><span class="p">[</span><span class="s1">&#39;iter_000000&#39;</span><span class="p">][</span><span class="s1">&#39;d1&#39;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;MD Time (ps)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;d1&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_32_0.png" src="../_images/notebooks_analysisAmmoniaBorate_32_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[97]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="c1">#</span>
+<span class="n">sorted_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">colvar_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">iter_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_keys</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">colvar_data</span><span class="p">[</span><span class="n">iter_name</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;d1&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;d1&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Iter </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;MD Time (ps)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;d1&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_33_0.png" src="../_images/notebooks_analysisAmmoniaBorate_33_0.png" />
+</div>
+</div>
+<p>We can also plot the <code class="docutils literal notranslate"><span class="pre">SPRINT</span></code> coordintes and the bias added during the MD simulation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[197]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">colvar_data</span><span class="p">[</span><span class="s1">&#39;iter_000000&#39;</span><span class="p">][</span><span class="s1">&#39;ss.coord-0&#39;</span><span class="p">],</span> <span class="n">colvar_data</span><span class="p">[</span><span class="s1">&#39;iter_000000&#39;</span><span class="p">][</span><span class="s1">&#39;pb.bias&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$S_1$ (unitless)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;pb.bias (kJ/mol)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_35_0.png" src="../_images/notebooks_analysisAmmoniaBorate_35_0.png" />
+</div>
+</div>
+</section>
+<section id="[19]-Energy-Evaluation-and-Model-Comparison">
+<h2>[19] Energy Evaluation and Model Comparison<a class="headerlink" href="#[19]-Energy-Evaluation-and-Model-Comparison" title="Link to this heading"></a></h2>
+<p>We provide an <code class="docutils literal notranslate"><span class="pre">analysis</span></code> utility designed to compute the potential energy of a given atomic configuration using each model over different iteration. This enables direct comparison between the predicted energies from machine learning potentials and the corresponding ground-truth values obtained from high-fidelity reference calculations (e.g., DFT).</p>
+<p>This can be executed directly from the terminal using the –analysis flag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sparc<span class="w"> </span>--analysis<span class="w"> </span>get_energies<span class="w"> </span>--dft_file<span class="w"> </span>OUTCAR.scan<span class="w"> </span>--bond<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">7</span><span class="w"> </span>--out<span class="w"> </span>energies.csv
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;energies.csv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Dist.</th>
+      <th>E(DFT)</th>
+      <th>E(iter_000000)</th>
+      <th>E(iter_000001)</th>
+      <th>E(iter_000002)</th>
+      <th>E(iter_000003)</th>
+      <th>E(iter_000004)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.406</td>
+      <td>-36.094409</td>
+      <td>-36.094066</td>
+      <td>-36.094683</td>
+      <td>-36.094350</td>
+      <td>-36.089606</td>
+      <td>-36.092639</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.456</td>
+      <td>-36.343395</td>
+      <td>-36.344538</td>
+      <td>-36.345687</td>
+      <td>-36.345053</td>
+      <td>-36.341639</td>
+      <td>-36.343399</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.506</td>
+      <td>-36.505706</td>
+      <td>-36.507677</td>
+      <td>-36.509061</td>
+      <td>-36.507523</td>
+      <td>-36.505988</td>
+      <td>-36.506751</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.557</td>
+      <td>-36.602935</td>
+      <td>-36.605246</td>
+      <td>-36.605750</td>
+      <td>-36.604283</td>
+      <td>-36.602956</td>
+      <td>-36.604020</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1.606</td>
+      <td>-36.647457</td>
+      <td>-36.649711</td>
+      <td>-36.649056</td>
+      <td>-36.647673</td>
+      <td>-36.646569</td>
+      <td>-36.648659</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>We can plot this data and compare the deviation from the ground-truth energy, as shown in the inset plot.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+
+<span class="c1"># Get DFT energy reference</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Dist.&#39;</span><span class="p">]</span>
+<span class="n">energy</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;E(DFT)&#39;</span><span class="p">]</span>
+<span class="n">Emin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;E(DFT)&#39;</span><span class="p">])</span>
+
+<span class="c1"># Plot DFT energy curve</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span> <span class="o">-</span> <span class="n">Emin</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;DFT&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Plot DeePMD energy curves</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">iter_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;iter_00000</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;E(</span><span class="si">{</span><span class="n">iter_name</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">Emin</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Iter_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="c1"># Inset subplot for energy difference (DeePMD - DFT)</span>
+<span class="n">ax_inset</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">inset_axes</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">])</span>  <span class="c1"># Moved y from 0.1 → 0.25</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">iter_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;iter_00000</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;E(</span><span class="si">{</span><span class="n">iter_name</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span> <span class="c1"># Compute energy difference</span>
+    <span class="n">ax_inset</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="c1"># Formatting the inset</span>
+<span class="n">ax_inset</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Add a reference line at y=0</span>
+<span class="c1"># ax_inset.set_xlabel(r&quot;d [B--N]$\rm{\AA}$&quot;, fontsize=10)</span>
+<span class="n">ax_inset</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\Delta E$ (eV)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ax_inset</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">ax_inset</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Error compared to DFT energies&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="n">ax_inset</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Main plot labels and legend</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;d [B--N]$\rm{\AA}$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Potential Energy (eV)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set multi-column legend with 4 columns for the main plot</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+
+<span class="c1"># Additional plot settings</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">1.4</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_39_0.png" src="../_images/notebooks_analysisAmmoniaBorate_39_0.png" />
+</div>
+</div>
+<p>Since the model in premeture in the beginning, as we only started with <code class="docutils literal notranslate"><span class="pre">64</span></code> initial configuration. The error in energy prediction is high for the first iteration. To better assess the model’s learning behavior, we will plot RMSE relative to the ground truth (DFT) as heatmap, rather than the absolute energy values. Also, we will skip the first iteration (<em>iter 0</em>) for clearitly.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Extract data</span>
+<span class="n">energy_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;E(DFT)&#39;</span><span class="p">])</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Dist.&#39;</span><span class="p">])</span>
+
+<span class="n">rmse_error</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">i_start</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">i_end</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i_start</span><span class="p">,</span> <span class="n">i_end</span><span class="p">):</span>  <span class="c1"># Skip iteration 0</span>
+    <span class="n">energy_iter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E(iter_00000</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">])</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">energy_iter</span> <span class="o">-</span> <span class="n">energy_dft</span>    <span class="c1"># absolute error</span>
+    <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>    <span class="c1"># RMS error</span>
+    <span class="n">rmse_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmse</span><span class="p">)</span>
+
+<span class="c1"># convert list to Numpy array</span>
+<span class="n">rmse_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rmse_error</span><span class="p">)</span>
+
+<span class="c1"># Plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">rmse_error</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;RMSE (eV)&#39;</span><span class="p">},</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Format axes</span>
+<span class="n">xtick_locs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">xtick_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xtick_locs</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="n">xtick_locs</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">xtick_labels</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i_end</span> <span class="o">-</span> <span class="n">i_start</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Iter </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i_start</span><span class="p">,</span> <span class="n">i_end</span><span class="p">)],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;d [B--N]$\rm{\AA}$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Iteration&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_41_0.png" src="../_images/notebooks_analysisAmmoniaBorate_41_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[110]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># DFT energies</span>
+<span class="n">energy_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;E(DFT)&#39;</span><span class="p">])</span>
+
+<span class="c1">#</span>
+<span class="n">rmse_error</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">i_start</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">i_end</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i_start</span><span class="p">,</span> <span class="n">i_end</span><span class="p">):</span>
+    <span class="n">energy_iter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E(iter_00000</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">])</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">energy_iter</span> <span class="o">-</span> <span class="n">energy_dft</span><span class="p">)</span>  <span class="c1"># absolute error per frame</span>
+    <span class="n">rmse_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>    <span class="c1"># RMS error per frame</span>
+
+<span class="c1"># convert list to Numpy array</span>
+<span class="n">rmse_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rmse_error</span><span class="p">)</span>
+
+<span class="c1"># Plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">rmse_error</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;RMSE (eV)&#39;</span><span class="p">},</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Format axes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Frame Index&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Iteration&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i_end</span> <span class="o">-</span> <span class="n">i_start</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Iter </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i_start</span><span class="p">,</span> <span class="n">i_end</span><span class="p">)],</span>
+           <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_42_0.png" src="../_images/notebooks_analysisAmmoniaBorate_42_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="[2]-Free-Energy-Analysis">
+<h1>[2] Free Energy Analysis<a class="headerlink" href="#[2]-Free-Energy-Analysis" title="Link to this heading"></a></h1>
+<p>As we see from above plot, the energy prediction errors are very close to 0 eV, after the first iteration which indicates early convergence of our MLP. However, despite this accuracy in static energy evaluations, it is essential to evaluate the dynamical stability and transferability of the potential under real simulation conditions.</p>
+<p>Therefore, we will run MD simulations using our latest ML model (<code class="docutils literal notranslate"><span class="pre">Iteration</span> <span class="pre">4</span></code>). We will perform enhanced sampling MD (in this case: <code class="docutils literal notranslate"><span class="pre">Metadynamics</span></code>) to explore the free energy landscape and evaluate whether the model accurately reproduces rare-event dynamics and reaction pathways.</p>
+<p>The results from ML/MD simulation will be quantitatively compared to AIMD data (VASP) in terms of free energy profiles along relevant collective variables. This comparison will help assess whether the ML potential is not only locally accurate but also <code class="docutils literal notranslate"><span class="pre">globally</span> <span class="pre">reliable</span> <span class="pre">for</span> <span class="pre">sampling</span> <span class="pre">the</span> <span class="pre">relevant</span> <span class="pre">phase</span> <span class="pre">space</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># AIMD Free Energy Data</span>
+<span class="n">fes_aimd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;iter_000004/02.dpmd/MetaD/HILLSPOT.xyz&#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">])</span>
+<span class="n">fes_aimd</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[123]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ML/MD Free Energy Data</span>
+<span class="n">fes_mlmd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;iter_000004/02.dpmd/MetaD/fes.dat&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;#&#39;</span> <span class="p">,</span><span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;der.f&#39;</span><span class="p">])</span>
+<span class="n">fes_mlmd</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[123]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>d</th>
+      <th>f</th>
+      <th>der.f</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.169460</td>
+      <td>1.258959</td>
+      <td>-0.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.187133</td>
+      <td>1.258879</td>
+      <td>-0.010445</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.204805</td>
+      <td>1.258444</td>
+      <td>-0.043594</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.222478</td>
+      <td>1.256988</td>
+      <td>-0.134851</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1.240151</td>
+      <td>1.253115</td>
+      <td>-0.326709</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[133]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fes_aimd</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">],</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fes_aimd</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">fes_aimd</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">])),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;DFT&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fes_mlmd</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">],</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fes_mlmd</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">fes_mlmd</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">])),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ML/MD&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;d [B--N]$\rm{\AA}$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Free Energy (eV)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">1.4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_46_0.png" src="../_images/notebooks_analysisAmmoniaBorate_46_0.png" />
+</div>
+</div>
+<section id="[21]-RMSE-in-free-energy-profiles">
+<h2>[21] RMSE in free energy profiles<a class="headerlink" href="#[21]-RMSE-in-free-energy-profiles" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_interp_spline</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">align_fes</span><span class="p">(</span><span class="n">dft_pos</span><span class="p">,</span> <span class="n">dft_pmf</span><span class="p">,</span> <span class="n">ml_pos</span><span class="p">,</span> <span class="n">ml_pmf</span><span class="p">,</span> <span class="n">pos_x</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+
+    <span class="c1"># Define shared interpolation domain</span>
+    <span class="n">min_pos</span><span class="p">,</span> <span class="n">max_pos</span> <span class="o">=</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">5.0</span>
+    <span class="n">d_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_pos</span><span class="p">,</span> <span class="n">max_pos</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
+
+    <span class="c1"># Filter original data within [min_pos, max_pos]</span>
+    <span class="n">dft_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dft_pos</span> <span class="o">&gt;=</span> <span class="n">min_pos</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dft_pos</span> <span class="o">&lt;=</span> <span class="n">max_pos</span><span class="p">)</span>
+    <span class="n">ml_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">ml_pos</span> <span class="o">&gt;=</span> <span class="n">min_pos</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ml_pos</span> <span class="o">&lt;=</span> <span class="n">max_pos</span><span class="p">)</span>
+
+    <span class="n">dft_fes_pos</span> <span class="o">=</span> <span class="n">dft_pos</span><span class="p">[</span><span class="n">dft_mask</span><span class="p">]</span>
+    <span class="n">dft_fes_pmf</span> <span class="o">=</span> <span class="n">dft_pmf</span><span class="p">[</span><span class="n">dft_mask</span><span class="p">]</span>
+    <span class="n">ml_fes_pos</span> <span class="o">=</span> <span class="n">ml_pos</span><span class="p">[</span><span class="n">ml_mask</span><span class="p">]</span>
+    <span class="n">ml_fes_pmf</span> <span class="o">=</span> <span class="n">ml_pmf</span><span class="p">[</span><span class="n">ml_mask</span><span class="p">]</span>
+
+    <span class="c1"># Interpolate to common grid using cubic splines</span>
+    <span class="n">dft_interp</span> <span class="o">=</span> <span class="n">make_interp_spline</span><span class="p">(</span><span class="n">dft_fes_pos</span><span class="p">,</span> <span class="n">dft_fes_pmf</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">ml_interp</span> <span class="o">=</span> <span class="n">make_interp_spline</span><span class="p">(</span><span class="n">ml_fes_pos</span><span class="p">,</span> <span class="n">ml_fes_pmf</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="n">dft_fes_pmf_interp</span> <span class="o">=</span> <span class="n">dft_interp</span><span class="p">(</span><span class="n">d_pos</span><span class="p">)</span>
+    <span class="n">ml_fes_pmf_interp</span> <span class="o">=</span> <span class="n">ml_interp</span><span class="p">(</span><span class="n">d_pos</span><span class="p">)</span>
+
+    <span class="c1"># Align ML FES to DFT FES at specified position</span>
+    <span class="n">dft_pmf_at_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">pos_x</span><span class="p">,</span> <span class="n">d_pos</span><span class="p">,</span> <span class="n">dft_fes_pmf_interp</span><span class="p">)</span>
+    <span class="n">ml_pmf_at_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">pos_x</span><span class="p">,</span> <span class="n">d_pos</span><span class="p">,</span> <span class="n">ml_fes_pmf_interp</span><span class="p">)</span>
+    <span class="n">alignment_shift</span> <span class="o">=</span> <span class="n">dft_pmf_at_pos</span> <span class="o">-</span> <span class="n">ml_pmf_at_pos</span>
+    <span class="n">ml_fes_pmf_interp</span> <span class="o">+=</span> <span class="n">alignment_shift</span>
+
+    <span class="k">return</span> <span class="n">d_pos</span><span class="p">,</span> <span class="n">dft_fes_pmf_interp</span><span class="p">,</span> <span class="n">d_pos</span><span class="p">,</span> <span class="n">ml_fes_pmf_interp</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[149]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find minimum in free energy and its location</span>
+<span class="n">dloc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">fes_aimd</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">])</span>
+<span class="c1"># Get corresponding distance at `dloc`</span>
+<span class="n">pos_x</span> <span class="o">=</span> <span class="n">fes_aimd</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">][</span><span class="n">dloc</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pos_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1.6256
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[159]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Align curves along the minimum in the X-axis</span>
+<span class="n">dft_pos</span><span class="p">,</span> <span class="n">dft_pmf</span><span class="p">,</span> <span class="n">dpmd_pos</span><span class="p">,</span> <span class="n">dpmd_pmf</span> <span class="o">=</span> <span class="n">align_fes</span><span class="p">(</span><span class="n">fes_aimd</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">],</span> <span class="n">fes_aimd</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">],</span> <span class="n">fes_mlmd</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">],</span> <span class="n">fes_mlmd</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">],</span> <span class="n">pos_x</span><span class="o">=</span><span class="n">pos_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[170]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plt_fes</span><span class="p">(</span><span class="n">dft_pos</span><span class="p">,</span> <span class="n">dft_pmf</span><span class="p">,</span> <span class="n">ml_pos</span><span class="p">,</span> <span class="n">ml_pmf</span><span class="p">,</span> <span class="n">c1</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">c2</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">model_1</span><span class="o">=</span><span class="s1">&#39;DFT&#39;</span><span class="p">,</span> <span class="n">ml_model</span><span class="o">=</span><span class="s1">&#39;ML/MD&#39;</span><span class="p">):</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+
+    <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dft_pos</span><span class="p">,</span> <span class="n">dft_pmf</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">dft_pmf</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">c1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model_1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+             <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">markevery</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ml_pos</span><span class="p">,</span> <span class="n">ml_pmf</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">dft_pmf</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">c2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ml_model</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+             <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">markevery</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;d [B--N]$\rm{\AA}$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Free Energy (eV)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">1.4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[171]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt_fes</span><span class="p">(</span><span class="n">dft_pos</span><span class="p">,</span> <span class="n">dft_pmf</span><span class="p">,</span> <span class="n">dpmd_pos</span><span class="p">,</span> <span class="n">dpmd_pmf</span><span class="p">,</span> <span class="n">c1</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">c2</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">model_1</span><span class="o">=</span><span class="s1">&#39;DFT&#39;</span><span class="p">,</span> <span class="n">ml_model</span><span class="o">=</span><span class="s1">&#39;DeePMD&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_analysisAmmoniaBorate_52_0.png" src="../_images/notebooks_analysisAmmoniaBorate_52_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
+<span class="c1"># Min and Max position at which PMF is considerd</span>
+<span class="n">min_pos</span><span class="p">,</span> <span class="n">max_pos</span> <span class="o">=</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">5.0</span>
+<span class="c1"># dpmd_fes_pmf_interp = np.interp(X_pos, dpmd_fes_pos, dpmd_fes_pmf)</span>
+
+<span class="c1"># Scipy interpolation</span>
+<span class="n">X_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_pos</span><span class="p">,</span> <span class="n">max_pos</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>  <span class="c1"># num --&gt; number of interpolation points</span>
+<span class="n">dft_fes_pmf_interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">dft_pos</span><span class="p">,</span> <span class="n">dft_pmf</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;extrapolate&#39;</span><span class="p">)(</span><span class="n">X_pos</span><span class="p">)</span>
+<span class="n">dpmd_fes_pmf_interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">dpmd_pos</span><span class="p">,</span> <span class="n">dpmd_pmf</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;extrapolate&#39;</span><span class="p">)(</span><span class="n">X_pos</span><span class="p">)</span>
+
+<span class="c1"># Calculate Root Mean Square Deviation (RMSD) with respect to the minimum PMF at postion x_pos</span>
+<span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">dft_fes_pmf_interp</span> <span class="o">-</span> <span class="n">dpmd_fes_pmf_interp</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error between free energies: </span><span class="si">{</span><span class="n">rmsd</span><span class="si">:</span><span class="s2">6f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save interpolated FES and positions to a file using numpy.vstack -&gt; Stack arrays</span>
+<span class="n">output_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">X_pos</span><span class="p">,</span> <span class="n">dft_fes_pmf_interp</span><span class="p">,</span> <span class="n">dpmd_fes_pmf_interp</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+<span class="c1"># np.savetxt(&#39;interpolated_fes.dat&#39;, output_data, header=&#39;#Position, DFT_FES_PMF, DPMD_FES_PMF&#39;, comments=&#39;&#39;)</span>
+
+<span class="c1"># for i in range(len(common_positions)):</span>
+<span class="c1">#     print(common_positions[i], dft_fes_pmf_interpolated[i], dpmd_fes_pmf_interpolated[i])</span>
+
+<span class="c1"># print(&quot;Interpolated FES and positions saved to &#39;interpolated_fes.dat&#39;.&quot;)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Error between free energies: 0.026649 eV
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../analysis.html" class="btn btn-neutral float-left" title="Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../workflow.html" class="btn btn-neutral float-right" title="Analysing workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

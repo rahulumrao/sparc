@@ -169,7 +169,7 @@ def ExecuteAbInitioDynamics(system, dyn, steps, pace, log_filename, trajfile, di
     dyn.run(steps)
 
 
-def ExecuteMlpDynamics(system, dyn, steps, pace, log_filename, trajfile, dir_name, distance_metrics, name):
+def ExecuteMlpDynamics(system, dyn, steps, pace, log_filename, trajfile, dir_name, distance_metrics, name, epot_threshold):
     """
     Run a Deep Potential MD simulation.
 
@@ -210,11 +210,41 @@ def ExecuteMlpDynamics(system, dyn, steps, pace, log_filename, trajfile, dir_nam
         header=True, stress=False, peratom=False, mode='a'
     )
     dyn.attach(logger, interval=pace)
-
+    
+    # Store reference energy for comparison
+    epot_ref = None
     for step in range(steps):
         dyn.run(1)
+        
+        # Check if physical limits are exceeded
         if distance_metrics and check_physical_limits(system, distance_metrics):
-            SparcLog("Physical limits exceeded. Stopping DPMD simulation.\n")
+            SparcLog("Physical limits exceeded. Stopping MLMD simulation!!!", level="WARNING")
+            break
+        
+        # Check if the Potential Energy becomes undefined
+        epot = np.array(system.get_potential_energy())
+        if np.isnan(epot):
+            SparcLog("Potential Energy is Nan! || Stopping MLMD simulation !!!\n", level="ERROR")
+            break
+
+        # Store reference energy in the first step
+        if epot_ref is None:
+            epot_ref = epot
+            SparcLog(f"Reference Potential Energy//STEP:0 -> {epot_ref}")
+
+        # Check if the Potential Energy is too high
+        Llim = epot_ref - epot_threshold
+        Ulim = epot_ref + epot_threshold
+        if epot > Ulim or epot < Llim:
+            SparcLog("-" * 72, level="ERROR")
+            SparcLog("Potential Energy Exceeded Limit:", level="ERROR")
+            SparcLog(f"    Reference_eV  : {float(epot_ref): .2f} eV", level="ERROR")
+            SparcLog(f"    Threshold_eV  : {float(epot_threshold): .2f} eV", level="ERROR")
+            SparcLog(f"    Lower_limit   : {float(Llim): .2f} eV", level="ERROR")
+            SparcLog(f"    Upper_limit   : {float(Ulim): .2f} eV", level="ERROR")
+            SparcLog(f"    Current_eV    : {float(epot): .2f} eV", level="ERROR")
+            SparcLog("Stopping ML/MD Simulation!!!", level="ERROR")
+            SparcLog("-" * 72, level="ERROR")
             break
 
 

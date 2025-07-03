@@ -1,0 +1,1189 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sparc.src.utils.plot_utils &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../yaml.html#md-simulation">MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../yaml.html#plumed">PLUMED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../yaml.html#deepmd">DeepMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../yaml.html#metric">Metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../yaml.html#directory-structure">Directory structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../calculator.html">DFT Calculator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../calculator.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../calculator.html#class-setupdftcalculator">Class : SetupDFTCalculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../calculator.html#id1">dft_calculator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../deepmd.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../md.html#module-contents">Module Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../DataProcess.html">ProcessData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../DataProcess.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../analysis.html">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../analysis.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../workflow.html">Analysing workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../workflow.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../workflow.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../workflow.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../workflow.html#example-directory-structure">Example Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../workflow.html#geometry-tab-details">Geometry Tab Details</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../workflow.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sparc.src.utils.plot_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sparc.src.utils.plot_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Parity plots for energy and forces</span>
+<span class="c1">########################################################################################################</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.ticker</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaxNLocator</span><span class="p">,</span> <span class="n">FormatStrFormatter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dpdata</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Parity plots for energy and forces</span>
+<span class="c1">########################################################################################################</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_rmse</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">true</span> <span class="o">-</span> <span class="n">pred</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_mae</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">true</span> <span class="o">-</span> <span class="n">pred</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ParityPlot</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="n">per_atom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate parity plots for energy and/or force components with RMSE + MAE annotations.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    data_dir : str</span>
+<span class="sd">        Path to test dataset in DeepMD .npy format.</span>
+<span class="sd">    model_path : str</span>
+<span class="sd">        Path to frozen model.</span>
+<span class="sd">    per_atom : bool</span>
+<span class="sd">        Whether to plot energy per atom instead of total.</span>
+<span class="sd">    plot_type : str</span>
+<span class="sd">        &#39;all&#39; (default), &#39;energy&#39;, or &#39;forces&#39;</span>
+<span class="sd">    save_fig : str or None</span>
+<span class="sd">        Path to save the output figure.</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; ParityPlot(&quot;data_dir&quot;, &quot;frozen_model.pb&quot;, per_atom=True, type=&quot;energy&quot;, save_fig=&#39;lcurve.png&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ParityPlot(&quot;data_dir&quot;, &quot;frozen_model.pb&quot;, per_atom=True, type=&quot;forces&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[ANALYSIS][ERROR] Test data not found: </span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[ANALYSIS][ERROR] Model file not found: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">system</span> <span class="o">=</span> <span class="n">dpdata</span><span class="o">.</span><span class="n">LabeledSystem</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;deepmd/npy&quot;</span><span class="p">)</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dp</span><span class="o">=</span><span class="n">model_path</span><span class="p">)</span>
+
+    <span class="c1"># Extract data</span>
+    <span class="n">e_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">system</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">])</span>
+    <span class="n">e_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">])</span>
+    <span class="n">natoms</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_natoms</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">per_atom</span><span class="p">:</span>
+        <span class="n">e_true</span> <span class="o">/=</span> <span class="n">natoms</span>
+        <span class="n">e_pred</span> <span class="o">/=</span> <span class="n">natoms</span>
+        <span class="n">e_unit</span> <span class="o">=</span> <span class="s2">&quot;eV/Atom&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">e_unit</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span>
+
+    <span class="n">f_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">system</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">])</span>
+    <span class="n">f_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Setup plot layout</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;energy&quot;</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax_energy</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;forces&quot;</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># &#39;all&#39;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+        <span class="n">ax_energy</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># === Energy Parity Plot ===</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">):</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">e_true</span><span class="p">,</span> <span class="n">e_pred</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">e_true</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">e_true</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span> <span class="p">[</span><span class="n">e_true</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">e_true</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span> <span class="s1">&#39;r--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+        <span class="n">rmse_e</span> <span class="o">=</span> <span class="n">compute_rmse</span><span class="p">(</span><span class="n">e_true</span><span class="p">,</span> <span class="n">e_pred</span><span class="p">)</span>
+        <span class="n">mae_e</span> <span class="o">=</span> <span class="n">compute_mae</span><span class="p">(</span><span class="n">e_true</span><span class="p">,</span> <span class="n">e_pred</span><span class="p">)</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span>
+                       <span class="sa">f</span><span class="s2">&quot;RMSE = </span><span class="si">{</span><span class="n">rmse_e</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e_unit</span><span class="si">}</span><span class="se">\n</span><span class="s2">MAE = </span><span class="si">{</span><span class="n">mae_e</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e_unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                       <span class="n">transform</span><span class="o">=</span><span class="n">ax_energy</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                       <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Observed (DFT) [</span><span class="si">{</span><span class="n">e_unit</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predicted (MLP) [</span><span class="si">{</span><span class="n">e_unit</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;(A) Energy&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="p">))</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="p">))</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MaxNLocator</span><span class="p">(</span><span class="n">nbins</span><span class="o">=</span><span class="mi">6</span><span class="p">))</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MaxNLocator</span><span class="p">(</span><span class="n">nbins</span><span class="o">=</span><span class="mi">6</span><span class="p">))</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">ax_energy</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+    <span class="c1"># === Force Parity Plots ===</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span><span class="p">):</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fx&#39;</span><span class="p">,</span> <span class="s1">&#39;fy&#39;</span><span class="p">,</span> <span class="s1">&#39;fz&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;forces&quot;</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span>
+
+            <span class="n">f_t</span> <span class="o">=</span> <span class="n">f_true</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">f_p</span> <span class="o">=</span> <span class="n">f_pred</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">rmse_f</span> <span class="o">=</span> <span class="n">compute_rmse</span><span class="p">(</span><span class="n">f_t</span><span class="p">,</span> <span class="n">f_p</span><span class="p">)</span>
+            <span class="n">mae_f</span> <span class="o">=</span> <span class="n">compute_mae</span><span class="p">(</span><span class="n">f_t</span><span class="p">,</span> <span class="n">f_p</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">f_t</span><span class="p">,</span> <span class="n">f_p</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">f_t</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">f_t</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span> <span class="p">[</span><span class="n">f_t</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">f_t</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span> <span class="s1">&#39;r--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;RMSE = </span><span class="si">{</span><span class="n">rmse_f</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> eV/Å</span><span class="se">\n</span><span class="s2">MAE = </span><span class="si">{</span><span class="n">mae_f</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> eV/Å&quot;</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Observed (DFT) [eV/$\rm{\AA}$]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Predicted (MLP) [eV/$\rm{\AA}$]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">chr</span><span class="p">(</span><span class="mi">66</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="si">}</span><span class="s2">) </span><span class="si">{</span><span class="n">comp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save_fig</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_fig</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[ANALYSIS][INFO] Saved parity plot to: </span><span class="si">{</span><span class="n">save_fig</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Plot Learning Curve</span>
+<span class="c1">########################################################################################################        </span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">PlotLcurve</span><span class="p">(</span><span class="n">lcurve_file</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots the learning curve (L-curve) from DeepMD training log.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    lcurve_file : str</span>
+<span class="sd">        Path to lcurve.out file.</span>
+<span class="sd">    save_fig : str or None</span>
+<span class="sd">        If provided, path to save the figure (e.g., &quot;lcurve.png&quot;).</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; PlotLcurve(lcurve_file=&quot;iter_000000/01.train/training_1/lcurve.out&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">lcurve_file</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[ANALYSIS][ERROR] File not found: </span><span class="si">{</span><span class="n">lcurve_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lcurve_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">lcurve_file</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+    <span class="n">legends</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;rmse_e_val&quot;</span><span class="p">:</span> <span class="s2">&quot;RMSE Energy (val)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rmse_e_trn&quot;</span><span class="p">:</span> <span class="s2">&quot;RMSE Energy (train)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rmse_f_val&quot;</span><span class="p">:</span> <span class="s2">&quot;RMSE Force (val)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rmse_f_trn&quot;</span><span class="p">:</span> <span class="s2">&quot;RMSE Force (train)&quot;</span>
+    <span class="p">}</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">legends</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Training steps&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;DeepMD Learning Curve&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">save_fig</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_fig</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[ANALYSIS][INFO] Saved learning curve plot to: </span><span class="si">{</span><span class="n">save_fig</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Plot error in Forces from various DeepMD models</span>
+<span class="c1">########################################################################################################</span>
+<div class="viewcode-block" id="PlotForceDeviation">
+<a class="viewcode-back" href="../../../../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">PlotForceDeviation</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">target_iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dmin</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses model_dev_*.out files from iter_* directories (or a specific range/iteration/all),</span>
+<span class="sd">    extracts max force deviation, and plots the results.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        root_dir (str): Root directory containing iter_* folders.</span>
+<span class="sd">        iteration_window (tuple or str): A tuple (start, end) to specify a range of iterations, or &quot;all&quot; to process all iterations.</span>
+<span class="sd">        target_iteration (int): A specific iteration number to analyze.</span>
+<span class="sd">        dmin (float): Lower threshold for candidate force deviation (default: 0.05).</span>
+<span class="sd">        dmax (float): Upper threshold for candidate force deviation (default: 0.5).</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; PlotForceDeviation(&quot;/path/to/root&quot;, iteration_window=(2, 5))</span>
+<span class="sd">        &gt;&gt;&gt; PlotForceDeviation(&quot;/path/to/root&quot;, target_iteration=3)</span>
+<span class="sd">        &gt;&gt;&gt; PlotForceDeviation(&quot;/path/to/root&quot;, iteration_window=&quot;all&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="c1"># Collect relevant iteration directories</span>
+    <span class="n">iter_dirs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s2">&quot;iter_*&quot;</span><span class="p">)))</span>
+    <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">if</span> <span class="n">target_iteration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">target_iteration</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">iteration_window</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="n">iter_dirs</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iteration_window</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    
+    <span class="c1"># Loop over selected iter_* directories</span>
+    <span class="k">for</span> <span class="n">iter_dir</span> <span class="ow">in</span> <span class="n">selected_dirs</span><span class="p">:</span>
+        <span class="n">iter_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iter_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># Extract iteration number</span>
+        <span class="n">dpmd_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iter_dir</span><span class="p">,</span> <span class="s2">&quot;02.dpmd&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dpmd_dir</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Find all model_dev_*.out files</span>
+        <span class="n">model_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpmd_dir</span><span class="p">,</span> <span class="s2">&quot;model_dev_*.out&quot;</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">model_file</span> <span class="ow">in</span> <span class="n">model_files</span><span class="p">:</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">max_devi_f</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># Read and parse the file</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">model_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+            <span class="c1"># Extract data from lines (skip header lines)</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">:]:</span>  <span class="c1"># Skip first two header lines</span>
+                <span class="n">cols</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                        <span class="n">max_devi_f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>  <span class="c1"># Read: max_devi_f</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+            <span class="c1"># Store in dictionary</span>
+            <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">:</span>
+                <span class="n">data_dict</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">iter_num</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">max_devi_f</span><span class="p">))</span>
+
+    <span class="c1"># Plotting</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">num_iterations</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">ncol</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_iterations</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># Adjust number of legend columns dynamically</span>
+    
+    <span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">iter_num</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">max_devi_f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">max_devi_f</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Iter: </span><span class="si">{</span><span class="n">iter_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">dmin</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">dmax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">steps</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">steps</span><span class="p">)],</span> <span class="n">dmin</span><span class="p">,</span> <span class="n">dmax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>   
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Candidates&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Max. Force Deviation ($\rm{eV/\AA}$)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span>
+    <span class="c1"># plt.title(&quot;Force deviation from each iteration/s&quot;, fontsize=16, color=&#39;blue&#39;)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="c1"># Move the legend to the top and remove model_devi</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">ncol</span><span class="o">=</span><span class="n">ncol</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Plot Potential energy from Labelles candidates</span>
+<span class="c1">########################################################################################################</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">PlotPotentialEnergy</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">target_iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s2">&quot;AseMD.traj&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses trajectory files from iter_* directories (or a specific range/iteration/all),</span>
+<span class="sd">    extracts potential energy, and plots the results.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        root_dir (str): Root directory containing iter_* folders.</span>
+<span class="sd">        iteration_window (tuple or str): A tuple (start, end) to specify a range of iterations, or &quot;all&quot; to process all iterations.</span>
+<span class="sd">        target_iteration (int): A specific iteration number to analyze.</span>
+<span class="sd">        traj_filename (str): Name of the trajectory file to read in each iteration folder (default: &quot;dpmd.traj&quot;).</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; plot_potential_energy(&quot;/path/to/root&quot;, iteration_window=(2, 5), traj_filename=&quot;AseMD.traj&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; plot_potential_energy(&quot;/path/to/root&quot;, target_iteration=3, traj_filename=&quot;AseMD.traj&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; plot_potential_energy(&quot;/path/to/root&quot;, iteration_window=&quot;all&quot;, traj_filename=&quot;AseMD.traj&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">traj_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">traj_filename</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the trajectory filename (e.g., AseMD.traj): &quot;</span><span class="p">)</span>
+    
+    <span class="n">energy_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="c1"># Collect relevant iteration directories</span>
+    <span class="n">iter_dirs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s2">&quot;iter_*&quot;</span><span class="p">)))</span>
+    <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">if</span> <span class="n">target_iteration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">target_iteration</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">iteration_window</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="n">iter_dirs</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iteration_window</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    
+    <span class="c1"># Loop over selected iter_* directories</span>
+    <span class="k">for</span> <span class="n">iter_dir</span> <span class="ow">in</span> <span class="n">selected_dirs</span><span class="p">:</span>
+        <span class="n">iter_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iter_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># Extract iteration number</span>
+        <span class="n">dpmd_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iter_dir</span><span class="p">,</span> <span class="s2">&quot;00.dft&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dpmd_dir</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Find the specified trajectory file</span>
+        <span class="n">traj_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpmd_dir</span><span class="p">,</span> <span class="n">traj_filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">traj_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">traj_filename</span><span class="si">}</span><span class="s2"> not found in </span><span class="si">{</span><span class="n">dpmd_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Read trajectory file</span>
+        <span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">traj_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Extract potential energies</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">]</span>
+        
+        <span class="c1"># Store in dictionary</span>
+        <span class="k">if</span> <span class="n">iter_num</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">energy_dict</span><span class="p">:</span>
+            <span class="n">energy_dict</span><span class="p">[</span><span class="n">iter_num</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">energy_dict</span><span class="p">[</span><span class="n">iter_num</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+    
+    <span class="c1"># Plotting</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+    <span class="n">num_iterations</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">energy_dict</span><span class="p">)</span>
+    <span class="n">ncol</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_iterations</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>  <span class="c1"># Auto-adjust legend columns</span>
+    
+    <span class="k">for</span> <span class="n">iter_num</span><span class="p">,</span> <span class="n">energies</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">energy_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)),</span> <span class="n">energies</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Iter </span><span class="si">{</span><span class="n">iter_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    
+    <span class="c1"># Labels and formatting</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Labelled Candidates&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Potential Energy (eV)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="c1"># plt.title(&quot;Potential Energy vs Labelles Candidates Across Iterations&quot;, fontsize=18, color=&#39;b&#39;)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    
+    <span class="c1"># Legend</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">ncol</span><span class="o">=</span><span class="n">ncol</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Plot Distribution of Properties</span>
+<span class="c1">########################################################################################################</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">PlotDistribution</span><span class="p">(</span>
+    <span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">iteration_window</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+    <span class="n">target_iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">traj_filename</span><span class="o">=</span><span class="s2">&quot;AseMD.traj&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span>         <span class="c1"># Options: &quot;line&quot;, &quot;kde&quot;, &quot;hist&quot;</span>
+    <span class="n">get</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>        <span class="c1"># &quot;energy&quot; or &quot;distance:i,j&quot;</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot potential energy or bond distance from ASE trajectories across iter_* folders.</span>
+
+<span class="sd">    This function reads trajectory files (e.g., AseMD.traj) inside `00.dft` folders located within iter_* </span>
+<span class="sd">    directories, extracts either potential energy or bond distance over time, and visualizes them using </span>
+<span class="sd">    line plots, KDE plots, or histograms.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        root_dir (str): Root directory containing iter_* folders. Default is current directory.</span>
+<span class="sd">        iteration_window (tuple or str): (start, end) tuple to specify a range of iterations, or &quot;all&quot;.</span>
+<span class="sd">        target_iteration (int): A specific iteration to analyze. Overrides iteration_window if given.</span>
+<span class="sd">        traj_filename (str): Name of the ASE-readable trajectory file (default: &quot;AseMD.traj&quot;).</span>
+<span class="sd">        type (str): Type of plot to generate:</span>
+<span class="sd">                    - &#39;line&#39;: property vs. frame index</span>
+<span class="sd">                    - &#39;kde&#39; : kernel density estimate</span>
+<span class="sd">                    - &#39;hist&#39;: histogram of property values</span>
+<span class="sd">        get (str): What property to extract:</span>
+<span class="sd">                   - &quot;energy&quot; : uses get_potential_energy()</span>
+<span class="sd">                   - &quot;distance:i,j&quot; : uses get_distance(i, j) between atoms i and j</span>
+
+<span class="sd">        **kwargs: Additional keyword arguments forwarded to the underlying matplotlib/seaborn plotting calls.</span>
+<span class="sd">                  Common kwargs include:</span>
+<span class="sd">                      color, linestyle, linewidth, marker, alpha, bins, fill, edgecolor, etc.</span>
+
+<span class="sd">    Example usage:</span>
+<span class="sd">        # Default plot: potential energy across all iterations as a line plot</span>
+<span class="sd">        PlotDistribution()</span>
+
+<span class="sd">        # Explicit energy line plot</span>
+<span class="sd">        PlotDistribution(get=&quot;energy&quot;, type=&quot;line&quot;)</span>
+
+<span class="sd">        # Bond distance between atoms 0 and 7 as KDE</span>
+<span class="sd">        PlotDistribution(get=&quot;distance:0,7&quot;, type=&quot;kde&quot;)</span>
+
+<span class="sd">        # Histogram of energies from iteration 3</span>
+<span class="sd">        PlotDistribution(target_iteration=3, get=&quot;energy&quot;, type=&quot;hist&quot;, bins=40, alpha=0.5)</span>
+
+<span class="sd">        # Customized markers for energy plot</span>
+<span class="sd">        PlotDistribution(get=&quot;energy&quot;, type=&quot;line&quot;, color=&quot;red&quot;, marker=&quot;x&quot;, linestyle=&quot;--&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">property_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">is_energy</span> <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;energy&quot;</span>
+    <span class="n">is_distance</span> <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;distance:&quot;</span><span class="p">)</span>
+    <span class="n">symbol_pair</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">is_energy</span><span class="p">:</span>
+        <span class="n">prop_label</span> <span class="o">=</span> <span class="s2">&quot;Potential Energy (eV)&quot;</span>
+    <span class="k">elif</span> <span class="n">is_distance</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">get</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;For distance, use format: &#39;distance:i,j&#39;&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;get must be &#39;energy&#39; or &#39;distance:i,j&#39;&quot;</span><span class="p">)</span>
+
+    <span class="n">iter_dirs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s2">&quot;iter_*&quot;</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">target_iteration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">target_iteration</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">iteration_window</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="n">iter_dirs</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iteration_window</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;iteration_window must be &#39;all&#39; or (start, end)&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">iter_dir</span> <span class="ow">in</span> <span class="n">selected_dirs</span><span class="p">:</span>
+        <span class="n">iter_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iter_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">dpmd_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iter_dir</span><span class="p">,</span> <span class="s2">&quot;00.dft&quot;</span><span class="p">)</span>
+        <span class="n">traj_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpmd_dir</span><span class="p">,</span> <span class="n">traj_filename</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">traj_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">traj_filename</span><span class="si">}</span><span class="s2"> not found in </span><span class="si">{</span><span class="n">dpmd_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">traj_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_distance</span> <span class="ow">and</span> <span class="n">symbol_pair</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">symbols</span> <span class="o">=</span> <span class="n">traj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span>
+                <span class="n">symbol_pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">symbols</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">symbols</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Could not extract atom symbols: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">symbol_pair</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">is_energy</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">is_distance</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">]</span>
+
+        <span class="n">property_dict</span><span class="p">[</span><span class="n">iter_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+
+    <span class="k">if</span> <span class="n">is_energy</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="o">==</span><span class="s1">&#39;line&#39;</span><span class="p">:</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Candidates&quot;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s2">&quot;Potential Energy (eV)&quot;</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="o">==</span><span class="s1">&#39;kde&#39;</span><span class="p">:</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Potential Energy (eV)&quot;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s2">&quot;Density&quot;</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="o">==</span><span class="s1">&#39;hist&#39;</span><span class="p">:</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Potential Energy (eV)&quot;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s2">&quot;P(Energy)&quot;</span>
+            
+    <span class="k">elif</span> <span class="n">is_distance</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">symbol_pair</span><span class="p">:</span>
+            <span class="n">sym_i</span><span class="p">,</span> <span class="n">sym_j</span> <span class="o">=</span> <span class="n">symbol_pair</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;Distance [$\mathrm</span><span class="se">{{</span><span class="si">{</span><span class="n">sym_i</span><span class="si">}</span><span class="se">}}</span><span class="s2">_</span><span class="se">{{</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">}}</span><span class="s2">$-$\mathrm</span><span class="se">{{</span><span class="si">{</span><span class="n">sym_j</span><span class="si">}</span><span class="se">}}</span><span class="s2">_</span><span class="se">{{</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="se">}}</span><span class="s2">$] ($\rm</span><span class="se">{{</span><span class="s2">\AA</span><span class="se">}}</span><span class="s2">$)&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;Bond Distance ($\rm</span><span class="se">{{</span><span class="s2">\AA</span><span class="se">}}</span><span class="s2">$) between atoms </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">ylabel</span> <span class="o">=</span> <span class="s2">&quot;Bond Distance Distribution&quot;</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;hist&quot;</span> <span class="k">else</span> <span class="s2">&quot;Density&quot;</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+    <span class="n">ncol</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">property_dict</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">iter_num</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">property_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Iter </span><span class="si">{</span><span class="n">iter_num</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="n">values</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;marker&quot;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">),</span>
+                <span class="n">linestyle</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;linestyle&quot;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">),</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;linewidth&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="n">markersize</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;kde&quot;</span><span class="p">:</span>
+            <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span>
+                <span class="n">values</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;linewidth&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="n">fill</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span>
+                <span class="n">linestyle</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;linestyle&quot;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;hist&quot;</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+                <span class="n">values</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bins&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
+                <span class="n">edgecolor</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edgecolor&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">),</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span>
+                <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;type must be &#39;line&#39;, &#39;kde&#39;, or &#39;hist&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">23</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">ylabel</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">!=</span> <span class="s2">&quot;line&quot;</span> <span class="k">else</span> <span class="n">prop_label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">23</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">ncol</span><span class="o">=</span><span class="n">ncol</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Plot Potential Energy Surface</span>
+<span class="c1">########################################################################################################</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">PlotPES</span><span class="p">(</span>
+    <span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">iteration_window</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+    <span class="n">target_iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">traj_filename</span><span class="o">=</span><span class="s2">&quot;AseMD.traj&quot;</span><span class="p">,</span>
+    <span class="n">distance_pair</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;kde&quot;</span><span class="p">,</span>  <span class="c1"># &quot;kde&quot;, &quot;heatmap&quot;, or &quot;hexbin&quot;</span>
+    <span class="n">bins</span><span class="o">=</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot energy vs. bond distance across trajectories as a 2D KDE, heatmap, or hexbin.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        root_dir (str): Root directory containing iter_* folders.</span>
+<span class="sd">        iteration_window (tuple or str): (start, end) or &quot;all&quot;.</span>
+<span class="sd">        target_iteration (int): A specific iteration to analyze.</span>
+<span class="sd">        traj_filename (str): ASE-readable trajectory file inside 00.dft folders.</span>
+<span class="sd">        distance_pair (tuple): Atom indices (i, j) for bond distance calculation.</span>
+<span class="sd">        type (str): &quot;kde&quot;, &quot;heatmap&quot;, or &quot;hexbin&quot;.</span>
+<span class="sd">        bins (tuple): Number of bins for heatmap/hexbin (x, y or just x).</span>
+<span class="sd">        **kwargs: Extra kwargs forwarded to seaborn/matplotlib functions.</span>
+
+<span class="sd">    Example usage:</span>
+<span class="sd">        # Default KDE plot of energy vs. bond distance between atoms 0 and 7</span>
+<span class="sd">        PlotPES()</span>
+
+<span class="sd">        # Hexbin plot with custom bin count</span>
+<span class="sd">        PlotPES(type=&quot;hexbin&quot;, bins=(60,))</span>
+
+<span class="sd">        # Heatmap from a specific iteration</span>
+<span class="sd">        PlotPES(target_iteration=3, type=&quot;heatmap&quot;, bins=(40, 40))</span>
+
+<span class="sd">        # KDE plot with a custom colormap</span>
+<span class="sd">        PlotPES(type=&quot;kde&quot;, cmap=&quot;mako&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">distance_pair</span>
+    <span class="n">x_vals</span><span class="p">,</span> <span class="n">y_vals</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="n">total_frames</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">symbol_pair</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># To store (symbol_i, symbol_j)</span>
+
+    <span class="c1"># Get folders</span>
+    <span class="n">iter_dirs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s2">&quot;iter_*&quot;</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">target_iteration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">target_iteration</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">iteration_window</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="n">iter_dirs</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iteration_window</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;iteration_window must be &#39;all&#39; or (start, end)&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing iterations:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">iter_dir</span> <span class="ow">in</span> <span class="n">selected_dirs</span><span class="p">:</span>
+        <span class="n">iter_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iter_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">traj_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iter_dir</span><span class="p">,</span> <span class="s2">&quot;00.dft&quot;</span><span class="p">,</span> <span class="n">traj_filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">traj_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Iter </span><span class="si">{</span><span class="n">iter_num</span><span class="si">:</span><span class="s2">&gt;2</span><span class="si">}</span><span class="s2">: MISSING (</span><span class="si">{</span><span class="n">traj_filename</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">traj_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="n">num_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Iter </span><span class="si">{</span><span class="n">iter_num</span><span class="si">:</span><span class="s2">&gt;2</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">num_frames</span><span class="si">}</span><span class="s2"> frames&quot;</span><span class="p">)</span>
+        <span class="n">total_frames</span> <span class="o">+=</span> <span class="n">num_frames</span>
+
+        <span class="c1"># Get atomic symbols from the first valid trajectory only</span>
+        <span class="k">if</span> <span class="n">symbol_pair</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_frames</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">symbols</span> <span class="o">=</span> <span class="n">traj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span>
+                <span class="n">symbol_pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">symbols</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">symbols</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Could not extract atom symbols: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">symbol_pair</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span>
+                <span class="n">x_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                <span class="n">y_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Error in </span><span class="si">{</span><span class="n">traj_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Total frames: </span><span class="si">{</span><span class="n">total_frames</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_vals</span><span class="p">)</span>
+
+    <span class="c1"># Plot setup</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;kde&quot;</span><span class="p">:</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cmap&quot;</span><span class="p">,</span> <span class="s2">&quot;viridis&quot;</span><span class="p">),</span>
+            <span class="n">levels</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">thresh</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;heatmap&quot;</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">hist2d</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+            <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cmap&quot;</span><span class="p">,</span> <span class="s2">&quot;plasma&quot;</span><span class="p">),</span>
+            <span class="n">cmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s2">&quot;Counts&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;hexbin&quot;</span><span class="p">:</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cmap&quot;</span><span class="p">,</span> <span class="s2">&quot;inferno&quot;</span><span class="p">)</span>
+        <span class="n">gridsize</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="k">else</span> <span class="n">bins</span>
+        <span class="n">hb</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">hexbin</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+            <span class="n">gridsize</span><span class="o">=</span><span class="n">gridsize</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+            <span class="n">mincnt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">hb</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s2">&quot;Counts&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;plot_type must be &#39;kde&#39;, &#39;heatmap&#39;, or &#39;hexbin&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Axis labels</span>
+    <span class="k">if</span> <span class="n">symbol_pair</span><span class="p">:</span>
+        <span class="n">sym_i</span><span class="p">,</span> <span class="n">sym_j</span> <span class="o">=</span> <span class="n">symbol_pair</span>
+        <span class="n">bond_label</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;Distance [$\mathrm</span><span class="se">{{</span><span class="si">{</span><span class="n">sym_i</span><span class="si">}</span><span class="se">}}</span><span class="s2">_</span><span class="se">{{</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">}}</span><span class="s2">$-$\mathrm</span><span class="se">{{</span><span class="si">{</span><span class="n">sym_j</span><span class="si">}</span><span class="se">}}</span><span class="s2">_</span><span class="se">{{</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="se">}}</span><span class="s2">$] ($\rm</span><span class="se">{{</span><span class="s2">\AA</span><span class="se">}}</span><span class="s2">$)&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bond_label</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;Bond Distance ($\rm</span><span class="se">{{</span><span class="s2">\AA</span><span class="se">}}</span><span class="s2">$) between atoms </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">bond_label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Potential Energy (eV)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="mf">0.98</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.12</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Plot Temperature from Deep Potential Dynamics</span>
+<span class="c1">########################################################################################################</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">PlotTemp</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">target_iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">traj_filename</span><span class="o">=</span><span class="s2">&quot;dpmd.traj&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses trajectory files from iter_* directories (or a specific range/iteration/all),</span>
+<span class="sd">    extracts temperature, and plots the results.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        root_dir (str): Root directory containing iter_* folders.</span>
+<span class="sd">        iteration_window (tuple or str): A tuple (start, end) to specify a range of iterations, or &quot;all&quot; to process all iterations.</span>
+<span class="sd">        target_iteration (int): A specific iteration number to analyze.</span>
+<span class="sd">        traj_filename (str): Name of the trajectory file to read in each iteration folder.</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; plot_temperature(&quot;/path/to/root&quot;, iteration_window=(2, 5), traj_filename=&quot;dpmd.traj&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; plot_temperature(&quot;/path/to/root&quot;, target_iteration=3, traj_filename=&quot;dpmd.traj&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; plot_temperature(&quot;/path/to/root&quot;, iteration_window=&quot;all&quot;, traj_filename=&quot;dpmd.traj&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">traj_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">traj_filename</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the trajectory filename (default: dpmd.traj): &quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;dpmd.traj&quot;</span>
+    
+    <span class="n">temp_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="c1"># Collect relevant iteration directories</span>
+    <span class="n">iter_dirs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s2">&quot;iter_*&quot;</span><span class="p">)))</span>
+    <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">if</span> <span class="n">target_iteration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">target_iteration</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">iteration_window</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="n">iter_dirs</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iteration_window</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">selected_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">iter_dirs</span> <span class="k">if</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">iteration_window</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    
+    <span class="c1"># Loop over selected iter_* directories</span>
+    <span class="k">for</span> <span class="n">iter_dir</span> <span class="ow">in</span> <span class="n">selected_dirs</span><span class="p">:</span>
+        <span class="n">iter_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iter_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># Extract iteration number</span>
+        <span class="n">dpmd_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iter_dir</span><span class="p">,</span> <span class="s2">&quot;02.dpmd&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dpmd_dir</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Find the specified trajectory file</span>
+        <span class="n">traj_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpmd_dir</span><span class="p">,</span> <span class="n">traj_filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">traj_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">traj_filename</span><span class="si">}</span><span class="s2"> not found in </span><span class="si">{</span><span class="n">dpmd_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Read trajectory file</span>
+        <span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">traj_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Extract temperatures</span>
+        <span class="n">temperatures</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">get_temperature</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">]</span>
+        
+        <span class="c1"># Store in dictionary</span>
+        <span class="k">if</span> <span class="n">iter_num</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">temp_dict</span><span class="p">:</span>
+            <span class="n">temp_dict</span><span class="p">[</span><span class="n">iter_num</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">temp_dict</span><span class="p">[</span><span class="n">iter_num</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">temperatures</span><span class="p">)</span>
+    
+    <span class="c1"># Plotting</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+    <span class="n">num_iterations</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp_dict</span><span class="p">)</span>
+    <span class="n">ncol</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_iterations</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>  <span class="c1"># Auto-adjust legend columns</span>
+    
+    <span class="k">for</span> <span class="n">iter_num</span><span class="p">,</span> <span class="n">temperatures</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">temp_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">temperatures</span><span class="p">)),</span> <span class="n">temperatures</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Iter </span><span class="si">{</span><span class="n">iter_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+        <span class="n">mean_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean Temperature (K) from Iteration </span><span class="si">{</span><span class="n">iter_num</span><span class="si">}</span><span class="s2"> := </span><span class="si">{</span><span class="n">mean_temp</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Labels and formatting</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;MD Steps&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Temperature (K)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="c1"># plt.title(&quot;Temperature vs Frame Index Across Iterations&quot;, fontsize=18)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    
+    <span class="c1"># Legend</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">ncol</span><span class="o">=</span><span class="n">ncol</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Read COLVAR file fro PLUMED</span>
+<span class="c1">########################################################################################################</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ReadColvar</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;COLVAR&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a COLVAR file, automatically detecting column names from the first line if present.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        file_path (str): Path to the COLVAR file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame: DataFrame containing the COLVAR data.</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; df = read_colvar(&quot;COLVAR&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(df.head())</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">first_line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">column_names</span> <span class="o">=</span> <span class="n">first_line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">:]</span> <span class="k">if</span> <span class="n">first_line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#! FIELDS&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">column_names</span><span class="p">)</span>
+
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Compute Histogram and Create Surface from a ASE Trajectory</span>
+<span class="c1">########################################################################################################</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ase.io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian_kde</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_2dSurface</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the free energy surface for the given bond distances from an ASE trajectory.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            traj  : ASE trajectory object (list of Atoms objects)</span>
+<span class="sd">                    The trajectory object containing the atomic configurations.</span>
+<span class="sd">            bonds : List of tuples specifying the atom indices for two bonds [(a1, b1), (a2, b2)]</span>
+<span class="sd">                    Each tuple represents a bond, where each element is an atom index.</span>
+<span class="sd">            T     : Temperature in Kelvin (default = 300 K)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R1 : 2D array of bond distances for bond 1, corresponding to the first bond in the input.</span>
+<span class="sd">            R2 : 2D array of bond distances for bond 2, corresponding to the second bond in the input.</span>
+<span class="sd">            F  : 2D array of free energies for the given bond distances, calculated from the probability distribution.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            The free energy surface is computed using Kernel Density Estimation (KDE) to approximate the joint</span>
+<span class="sd">            probability distribution of the two bond distances. The result is normalized and converted to free energy</span>
+<span class="sd">            values using the Boltzmann constant. The surface is then adjusted by subtracting its minimum value, </span>
+<span class="sd">            ensuring that the lowest energy is set to zero. </span>
+<span class="sd">            </span>
+<span class="sd">            This free energy estimate is intended for visualization purposes only and should not be used for publication.</span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; R1, R2, F = get_2dSurface(traj, [(0,1), (1,2)])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract bond distances for each frame</span>
+    <span class="n">b_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="o">*</span><span class="n">bonds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">])</span>
+    <span class="n">b_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="o">*</span><span class="n">bonds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">])</span>
+
+    <span class="c1"># Stack bond lengths into a 2D array for joint distribution</span>
+    <span class="n">bond_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">b_1</span><span class="p">,</span> <span class="n">b_2</span><span class="p">])</span>
+
+    <span class="c1"># Use Kernel Density Estimation (KDE) to approximate P(r1, r2)</span>
+    <span class="n">kde</span> <span class="o">=</span> <span class="n">gaussian_kde</span><span class="p">(</span><span class="n">bond_data</span><span class="p">)</span>
+
+    <span class="c1"># Define a grid of bond distances</span>
+    <span class="n">r1_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">b_1</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">b_1</span><span class="p">),</span> <span class="mi">150</span><span class="p">)</span>
+    <span class="n">r2_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">b_2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">b_2</span><span class="p">),</span> <span class="mi">150</span><span class="p">)</span>
+    <span class="n">R1</span><span class="p">,</span> <span class="n">R2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">r1_range</span><span class="p">,</span> <span class="n">r2_range</span><span class="p">)</span>
+
+    <span class="c1"># Evaluate KDE on the grid</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">kde</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">R1</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">R2</span><span class="o">.</span><span class="n">ravel</span><span class="p">()]))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">R1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1"># Normalize P to sum to 1 (convert KDE estimate into probability)</span>
+    <span class="n">P</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+
+    <span class="c1"># Define physical constants</span>
+    <span class="n">kB</span> <span class="o">=</span> <span class="mf">0.010364</span> <span class="c1">#0.001987  #8.617333262e-5  # Boltzmann constant in eV/K</span>
+
+    <span class="c1"># Compute free energy surface</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="o">-</span><span class="n">kB</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>  <span class="c1"># Normalize by setting the minimum to 0</span>
+
+    <span class="c1"># Avoid numerical issues (replace very low probabilities with NaN)</span>
+    <span class="n">F</span><span class="p">[</span><span class="n">P</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">return</span> <span class="n">R1</span><span class="p">,</span> <span class="n">R2</span><span class="p">,</span> <span class="n">F</span>
+
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Compute Histogram and Create 1D Surface along some Distance from a ASE Trajectory</span>
+<span class="c1">########################################################################################################</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_1dSurface</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">bond</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the energy profile along a bond distance from an ASE trajectory</span>
+<span class="sd">    using linear interpolation of potential energies.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        traj  : ASE trajectory object (list of Atoms objects)</span>
+<span class="sd">        bond  : Tuple specifying the atom indices for the bond (a, b)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        r_range     : Bond distances </span>
+<span class="sd">        F           : Free energy profile estimated from potential energy (units: eV)</span>
+<span class="sd">        bond_lengths : Original bond distances (for segment scatter plot)</span>
+<span class="sd">        energies : Corresponding potential energies (for segment scatter plot) (units: eV)</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; r, F, r_raw, e_raw = get_1dSurface(traj, (0, 1))        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Extract bond distances and potential energy</span>
+    <span class="n">bond_lengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="o">*</span><span class="n">bond</span><span class="p">)</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">])</span>
+    <span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">])</span>
+
+    <span class="c1"># Sort bond lengths for proper interpolation</span>
+    <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">bond_lengths</span><span class="p">)</span>
+    <span class="n">bond_lengths</span> <span class="o">=</span> <span class="n">bond_lengths</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">]</span>
+    <span class="n">energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">]</span>
+
+    <span class="c1"># Create interpolation function using Scipy</span>
+    <span class="n">interp_func</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">bond_lengths</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Smooth bond distance in a grid for interpolation</span>
+    <span class="n">r_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">bond_lengths</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">bond_lengths</span><span class="p">),</span> <span class="mi">200</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">interp_func</span><span class="p">(</span><span class="n">r_range</span><span class="p">)</span>
+
+    <span class="c1"># Normalize free energy (shift to zero)</span>
+    <span class="n">F</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">r_range</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">bond_lengths</span><span class="p">,</span> <span class="n">energies</span>
+<span class="c1">########################################################################################################</span>
+<span class="c1"># Visualize Trajectory with nglview</span>
+<span class="c1">########################################################################################################</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">nglview</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nv</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ViewTraj</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;ball_and_stick&quot;</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">400</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an interactive nglview widget with custom styling for a given ASE trajectory.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        traj (list of ase.Atoms or str): A trajectory (list of ASE Atoms) or a file path.</span>
+<span class="sd">        style (str): Representation style (e.g., &#39;ball_and_stick&#39;, &#39;spacefill&#39;, &#39;licorice&#39;).</span>
+<span class="sd">        background (str): Viewer background color.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        nglview.NGLWidget: Configured NGL viewer widget.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># If a string is passed, assume it&#39;s a file path</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create the viewer</span>
+    <span class="n">view</span> <span class="o">=</span> <span class="n">nv</span><span class="o">.</span><span class="n">NGLWidget</span><span class="p">(</span><span class="n">nv</span><span class="o">.</span><span class="n">ASETrajectory</span><span class="p">(</span><span class="n">traj</span><span class="p">))</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">clear_representations</span><span class="p">()</span>
+
+    <span class="c1"># Add the desired representation</span>
+    <span class="k">if</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;ball_and_stick&quot;</span><span class="p">:</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">add_ball_and_stick</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;spacefill&quot;</span><span class="p">:</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">add_spacefill</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;licorice&quot;</span><span class="p">:</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">add_licorice</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">add_ball_and_stick</span><span class="p">()</span>  <span class="c1"># fallback</span>
+
+    <span class="c1"># Add atom index labels</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span>
+        <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
+        <span class="n">label_type</span><span class="o">=</span><span class="s1">&#39;atomindex&#39;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+        <span class="n">zOffset</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Push labels above atoms</span>
+        <span class="n">attachment</span><span class="o">=</span><span class="s1">&#39;middle-center&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Viewer settings</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="n">background</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="s2">&quot;orthographic&quot;</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">_set_size</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">px&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">px&quot;</span><span class="p">)</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;clipNear&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;clipFar&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="s2">&quot;clipDist&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;impostor&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;fog&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;antialias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;autoRotate&quot;</span><span class="p">:</span> <span class="kc">False</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">view</span>
+<span class="c1">########################################################################################################</span>
+<span class="c1">#                                      End of File</span>
+<span class="c1">########################################################################################################</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

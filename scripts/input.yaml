@@ -45,6 +45,9 @@ deepmd_setup:
   log_frequency: 5          # Output frequency
   use_plumed: True          # Default: False
   plumed_file: "plumed.dat" # Optional: defaults to "plumed.dat" if not specified
+  umbrella_sampling: 
+    enabled: False          # Default: False
+    config_file: "umbrella_sampling.yaml" # Path to the Umbrella Sampling window definitions
 
 # Active Learning
 active_learning: False

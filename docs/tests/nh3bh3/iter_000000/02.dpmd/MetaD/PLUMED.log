@@ -1,0 +1,62 @@
+PLUMED: PLUMED is starting
+PLUMED: Version: 2.8.2 (git: Unknown) compiled on Nov  6 2023 at 21:02:01
+PLUMED: Please cite these papers when using PLUMED [1][2]
+PLUMED: For further information see the PLUMED web page at http://www.plumed.org
+PLUMED: Root: /home/rverma7/.conda/envs/deepmd/lib/plumed
+PLUMED: For installed feature, see /home/rverma7/.conda/envs/deepmd/lib/plumed/src/config/config.txt
+PLUMED: Molecular dynamics engine: LAMMPS
+PLUMED: Precision of reals: 8
+PLUMED: Running over 1 node
+PLUMED: Number of threads: 1
+PLUMED: Cache line size: 512
+PLUMED: Number of atoms: 8
+PLUMED: File suffix: 
+PLUMED: FILE: plumed.dat
+PLUMED: Action UNITS
+PLUMED:   with label @0
+PLUMED:   length: A = 0.1 nm
+PLUMED:   energy: eV = 96.4853 kj/mol
+PLUMED:   time: ps
+PLUMED:   charge: e
+PLUMED:   mass: amu
+PLUMED:   using physical units
+PLUMED:   inside PLUMED, Boltzmann constant is 8.61733e-05
+PLUMED: Action DISTANCE
+PLUMED:   with label d1
+PLUMED:   between atoms 1 8
+PLUMED:   using periodic boundary conditions
+PLUMED: Action METAD
+PLUMED:   with label metad
+PLUMED:   with arguments d1
+PLUMED:   added component to this action:  metad.bias 
+PLUMED:   Gaussian width  0.050000  Gaussian height 0.005000
+PLUMED:   Gaussian deposition pace 50
+PLUMED:   Gaussian file HILLS
+PLUMED:   Bibliography [3]
+PLUMED: Action FLUSH
+PLUMED:   with label @3
+PLUMED:   with stride 1000
+PLUMED: Action PRINT
+PLUMED:   with label @4
+PLUMED:   with stride 100
+PLUMED:   with arguments d1 metad.bias
+PLUMED:   on file COLVAR
+PLUMED:   with format  %f
+PLUMED: END FILE: plumed.dat
+PLUMED: Timestep: 0.001000
+PLUMED: KbT has not been set by the MD engine
+PLUMED: It should be set by hand where needed
+PLUMED: Relevant bibliography:
+PLUMED:   [1] The PLUMED consortium, Nat. Methods 16, 670 (2019)
+PLUMED:   [2] Tribello, Bonomi, Branduardi, Camilloni, and Bussi, Comput. Phys. Commun. 185, 604 (2014)
+PLUMED:   [3] Laio and Parrinello, PNAS 99, 12562 (2002)
+PLUMED: Please read and cite where appropriate!
+PLUMED: Finished setup
+PLUMED:                                               Cycles        Total      Average      Minimum      Maximum
+PLUMED:                                                    1     9.118583     9.118583     9.118583     9.118583
+PLUMED: 1 Prepare dependencies                        150001     0.105259     0.000001     0.000000     0.000104
+PLUMED: 2 Sharing data                                150001     0.363279     0.000002     0.000000     0.000149
+PLUMED: 3 Waiting for data                            150001     0.174868     0.000001     0.000000     0.000103
+PLUMED: 4 Calculating (forward loop)                  150001     6.771511     0.000045     0.000002     0.000359
+PLUMED: 5 Applying (backward loop)                    150001     0.466560     0.000003     0.000001     0.000156
+PLUMED: 6 Update                                      150001     0.146799     0.000001     0.000000     0.000189

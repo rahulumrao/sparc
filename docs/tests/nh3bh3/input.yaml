@@ -1,0 +1,75 @@
+# YAML configuration file for SPARC pacakge
+# General setings
+general:
+ structure_file: "POSCAR" # Input structure
+# structure_files: "[POSCAR.1, POSCAR.2, POSCAR.3]" # Input structure
+
+## DFT calculator settings
+dft_calculator:
+ name: "VASP" # DFT package name
+ prec: "Normal" # Precision level
+ kgamma: False # Gamma point calculation
+ incar_file: "INCAR" # Path to INCAR file
+ exe_command: "mpirun -np 16 /rs1/researchers/w/wjpfaend/codes/VASP-642_CPU/bin/vasp_std"
+
+# ASE MD simulation settings
+md_simulation:
+ ensemble: "NVT"   # Ensemble for MD simulation
+ thermostat: "Nose"   # Thermostat type (nose-Hoover)
+ tdamp: 10  # Damping parameter for thermostat
+ timestep_fs: 1.0    # TimeStep for MD simulation
+ temperature: 350    # Temperature in Kelvin
+ steps: 0  # Number of MD Steps
+ log_frequency: 1   # Interval for MD log and save trajectories
+ restart: False # MD Restart 
+ use_dft_plumed: False  # Use PLUMED for MD simulation
+
+# Plumed settings
+dft_plumed:
+ input_file: "plumed_dft.dat"    # PLUMED input file
+ restart: False
+ kT: 0.02585 #eV       # kT value PLUMED units
+
+# Deepmd training settings
+deepmd_setup:
+ training: False    # Enable Deep potential training
+ data_dir: "DeePMD_training/00.data"    # Path to store training and validation data
+ input_file: "input.json"    # Input file for DeepMD training
+ skip_min: 0    # Minimum frames to skip
+ skip_max: null    # Maximum frames to skip
+ MdSimulation: True
+ num_models: 2
+ timestep_fs: 1.0
+ md_steps: 500000
+ multiple_run: 1
+ log_frequency: 80
+ use_plumed: True
+ plumed_file: 'plumed_dp.dat'
+#
+# Active Learning
+active_learning: True
+learning_restart: False
+latest_model: 'iter_000005/01.train/training_1/frozen_model_1.pb'
+iteration: 5
+model_dev:
+ f_min_dev: 0.05
+ f_max_dev: 0.5
+
+# check metrics (optional)
+distance_metrics:
+  - pair: [0, 7]
+    min_distance: 1.0  # Minimum allowed distance in Angstroms
+    max_distance: 7.0  # Maximum allowed distance in Angstroms
+  - pair: [1, 7]
+    min_distance: 0.8  # Minimum allowed distance in Angstroms
+    max_distance: 1.5  # Maximum allowed distance in Angstroms
+  - pair: [0, 6]
+    min_distance: 0.8  # Minimum allowed distance in Angstroms
+    max_distance: 1.5  # Maximum allowed distance in Angstroms
+
+# File output settings
+output:
+ log_file: "AseMD.log"        # Log file of MD simulation
+ xyz_file: "AseTraj.xyz"      # XYZ trajectory file for AIMD run
+ aimdtraj_file: "AseMD.traj"  # ASE trajectory file for AIMD run
+ dptraj_file: "dpmd.traj"     # ASE DeepMD trajectory file

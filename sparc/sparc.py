@@ -41,7 +41,7 @@ from sparc.src.utils.read_input import load_config
 from sparc.src.deepmd import deepmd_training, setup_DeepPotential
 from sparc.src.calculator import dft_calculator
 from sparc.src.ase_md import NoseNVT, LangevinNVT, ExecuteAbInitioDynamics, ExecuteMlpDynamics, CalculateDFTEnergy
-from sparc.src.plumed_wrapper import modify_forces
+from sparc.src.plumed_wrapper import modify_forces, umbrella
 from sparc.src.data_processing import get_data
 from sparc.src.active_learning import QueryByCommittee
 from sparc.src.utils.logger import setup_logger, SparcLog
@@ -133,7 +133,7 @@ def main():
                 atoms=system,
                 timestep=config['md_simulation']['timestep_fs'] * ase.units.fs,
                 temperature=temperature,
-                friction=config['md_simulation']['friction'],
+                friction=config['md_simulation']['friction'] / ase.units.fs,
                 restart=config['md_simulation']['restart']
             )
         # Configure PLUMED if enabled
@@ -223,15 +223,29 @@ def main():
                     atoms=dp_atoms, 
                     timestep=config['deepmd_setup']['timestep_fs'] * ase.units.fs,
                     temperature=temperature, 
-                    friction=config['md_simulation']['friction']
+                    friction=config['md_simulation']['friction'] / ase.units.fs
                 )
         
             MDsteps = config['deepmd_setup']['md_steps']
             writePace = config['deepmd_setup']['log_frequency']
             
             dp_plumed_is = config['deepmd_setup']['use_plumed']
+            umbrella_enabled = config['deepmd_setup']['umbrella_sampling'].get('enabled', False)
+            # print(f"Umbrella Sampling is Enabled {umbrella_enabled}")
+            # sys.exit(1)
             # Configure PLUMED if enabled
-            if dp_plumed_is:
+            if dp_plumed_is and umbrella_enabled:
+                SparcLog("\n========================================================================")
+                SparcLog("       Umbrella Sampling Enabled — Running MLMD Windows with PLUMED       ")
+                SparcLog("========================================================================")
+
+                umbrella(config=config, 
+                         us_dir=iter_structure, 
+                         dp_path=dp_path, 
+                         dp_model=dp_model
+                         )
+                break
+            if dp_plumed_is and not umbrella_enabled:
                 SparcLog("\n========================================================================")
                 SparcLog(f"    Sim:[{i}]       PLUMED IS CALLED FOR DPMD SIMULATION !")
                 SparcLog("========================================================================")
@@ -261,7 +275,8 @@ def main():
                 trajfile=config['output']['dptraj_file'],
                 dir_name=iter_structure['dpmd_dir'],
                 distance_metrics=config['distance_metrics'],
-                name=thermostat
+                name=thermostat,
+                epot_threshold=config['deepmd_setup']['epot_threshold']
             )
         if config['active_learning']:            
             # Check for structures requiring labeling
@@ -394,14 +409,28 @@ def main():
                         atoms=dp_atoms, 
                         timestep=dp_tau,
                         temperature=temperature, 
-                        friction=config['md_simulation']['friction']
+                        friction=config['md_simulation']['friction'] / ase.units.fs
                     )
                 
                 MDsteps = config['deepmd_setup']['md_steps']
                 writePace = config['deepmd_setup']['log_frequency']
                 
                 dp_plumed_is = config['deepmd_setup']['use_plumed']
-                if dp_plumed_is:
+                umbrella_enabled = config['deepmd_setup']['umbrella_sampling'].get('enabled', False)
+                print(f"IS Umbrella Sampling Enables: {umbrella_enabled}")
+                #
+                if dp_plumed_is and umbrella_enabled:
+                    SparcLog("\n========================================================================")
+                    SparcLog("       Umbrella Sampling Enabled — Running MLMD Windows with PLUMED       ")
+                    SparcLog("========================================================================")
+
+                    umbrella(config=config, 
+                            us_dir=iter_structure, 
+                            dp_path=parent_dir, 
+                            dp_model=latest_models[0]
+                            )
+                    break
+                if dp_plumed_is and not umbrella_enabled:
                     SparcLog("\n========================================================================")
                     SparcLog("               PLUMED IS CALLED FOR DPMD SIMULATION !")
                     SparcLog("========================================================================")
@@ -430,7 +459,8 @@ def main():
                     trajfile=config['output']['dptraj_file'],
                     dir_name=iter_structure['dpmd_dir'],
                     distance_metrics=config['distance_metrics'],
-                    name=thermostat
+                    name=thermostat,
+                    epot_threshold=config['deepmd_setup']['epot_threshold']
                 )
             
             # Check for new candidates
