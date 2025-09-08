@@ -198,7 +198,7 @@ def ExecuteMlpDynamics(system, dyn, steps, pace, log_filename, trajfile, dir_nam
     -------
     None
     """
-    SparcLog("\n" + "=" * 72 + "\n")
+    SparcLog("=" * 72 + "\n")
     SparcLog(f"Initializing DeepPotential MD Simulation [{name}]".center(72) + "\n")
     SparcLog("=" * 72 + "\n")
 
@@ -236,13 +236,13 @@ def ExecuteMlpDynamics(system, dyn, steps, pace, log_filename, trajfile, dir_nam
         Llim = epot_ref - epot_threshold
         Ulim = epot_ref + epot_threshold
         if epot > Ulim or epot < Llim:
-            SparcLog("-" * 72, level="ERROR")
+            SparcLog(f"{f'[Iteration: {dir_name}]':^72}", level="ERROR")
             SparcLog("Potential Energy Exceeded Limit:", level="ERROR")
-            SparcLog(f"    Reference_eV  : {float(epot_ref): .2f} eV", level="ERROR")
-            SparcLog(f"    Threshold_eV  : {float(epot_threshold): .2f} eV", level="ERROR")
-            SparcLog(f"    Lower_limit   : {float(Llim): .2f} eV", level="ERROR")
-            SparcLog(f"    Upper_limit   : {float(Ulim): .2f} eV", level="ERROR")
-            SparcLog(f"    Current_eV    : {float(epot): .2f} eV", level="ERROR")
+            SparcLog(f"Reference Energy  : {float(epot_ref): .2f} eV", level="ERROR")
+            SparcLog(f"Threshold Energy  : {float(epot_threshold): .2f} eV", level="ERROR")
+            SparcLog(f"Lower_limit       : {float(Llim): .2f} eV", level="ERROR")
+            SparcLog(f"Upper_limit       : {float(Ulim): .2f} eV", level="ERROR")
+            SparcLog(f"Current Energy    : {float(epot): .2f} eV", level="ERROR")
             SparcLog("Stopping ML/MD Simulation!!!", level="ERROR")
             SparcLog("-" * 72, level="ERROR")
             break

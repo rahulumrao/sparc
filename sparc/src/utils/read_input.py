@@ -23,7 +23,7 @@ def load_config(input_file: str = "input.yaml") -> dict:
     """
     with open(input_file, "r") as file:
         config = yaml.safe_load(file)
-        SparcLog("\n========================================================================")
+        SparcLog("========================================================================")
         SparcLog("  Input Configurations (- PLEASE CHECK SPARC INPUTS CAREFULLY! -)")
         SparcLog("========================================================================")
         SparcLog(yaml.dump(config, default_flow_style=False))

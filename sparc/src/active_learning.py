@@ -51,7 +51,7 @@ def QueryByCommittee(trajfile, model_path, num_models, max_lim, min_lim, dpmd_da
     # dataset.to_deepmd_npy(str(dpmd_data_path))
     dataset.to_deepmd_npy(str(dpmd_data_path))
     
-    SparcLog("\n========================================================================")
+    SparcLog("========================================================================")
     SparcLog("{}".format(f"Model Path: {model_path}".center(72)))
     SparcLog("========================================================================")
     
@@ -75,7 +75,7 @@ def QueryByCommittee(trajfile, model_path, num_models, max_lim, min_lim, dpmd_da
 
     # Validate the number of models
     if len(model_names) < num_models:
-        SparcLog("\n========================================================================")
+        SparcLog("========================================================================")
         SparcLog("!{}!".format(f"Error: Found only {len(model_names)} models, but {num_models} are required".center(70)))
         SparcLog("!{}!".format("Check the model_path!".center(70)))
         SparcLog("========================================================================")
@@ -83,7 +83,7 @@ def QueryByCommittee(trajfile, model_path, num_models, max_lim, min_lim, dpmd_da
             f"Found only {len(model_names)} models, but {num_models} are required. Check the model_path!"
         )
 
-    SparcLog("\n========================================================================")
+    SparcLog("========================================================================")
     SparcLog("{}".format("Using the following models:".center(72)))
     SparcLog("========================================================================")
     for model in model_names:
@@ -96,12 +96,12 @@ def QueryByCommittee(trajfile, model_path, num_models, max_lim, min_lim, dpmd_da
     # Run the command
     try:
         subprocess.run(command, check=True)
-        SparcLog("\n========================================================================")
+        SparcLog("========================================================================")
         SparcLog("!{}!".format("Model deviation calculation completed successfully!".center(70)))
         SparcLog("{}".format(f"Results saved in: {outfile}".center(72)))
         SparcLog("========================================================================")
     except subprocess.CalledProcessError as e:
-        SparcLog("\n========================================================================")
+        SparcLog("========================================================================")
         SparcLog("!{}!".format("Error in dp model-devi command execution".center(70)))
         SparcLog("!{}!".format(str(e).center(70)))
         SparcLog("========================================================================")

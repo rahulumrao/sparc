@@ -33,7 +33,7 @@ def create_iteration_dirs(iter_num):
     dpmd_dir = iter_dir/"02.dpmd"     # DeepMD runs and model deviation
     
     # Print iteration information
-    SparcLog("\n" + "="*72)
+    SparcLog("="*72)
     SparcLog(f"Creating directories for Iteration: {iter_num:06d}")
     SparcLog("="*72)
     SparcLog(f"├── {iter_name}/")
@@ -196,7 +196,7 @@ def load_checkpoint(atoms, filename='md_checkpoint.pkl'):
                mdstep is the MD step number from the checkpoint
     """
     if os.path.exists(filename):
-        SparcLog(f"\nRestarting simulation from checkpoint: {filename}")
+        SparcLog(f"Restarting simulation from checkpoint: {filename}")
         with open(filename, 'rb') as f:
             state = pickle.load(f)
 
@@ -380,7 +380,7 @@ def check_physical_limits(atoms, distance_metrics):
             symbol1 = atoms.get_chemical_symbols()[atom1]
             symbol2 = atoms.get_chemical_symbols()[atom2]
             
-            SparcLog("\n" + "=" * 50)
+            SparcLog("=" * 50)
             SparcLog("  WARNING: DISTANCE CHANGED BEYOND PHYSICAL LIMIT ")
             SparcLog("-" * 50)
             SparcLog(f"  ATOMS: {symbol1} ({atom1}) -- {symbol2} ({atom2})  ")

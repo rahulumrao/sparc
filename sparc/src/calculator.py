@@ -77,7 +77,7 @@ class SetupDFTCalculator:
         incar_params = parse_incar(str(incar_path))
 
         if self.print_screen:
-            SparcLog("\n" + "="*50)
+            SparcLog("="*50)
             SparcLog("              INCAR PARAMETERS                ")
             SparcLog("="*50)
             max_key_length = max(len(key) for key in incar_params.keys())

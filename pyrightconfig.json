@@ -1,0 +1,10 @@
+{
+  "exclude": [
+    "env",
+    "**/node_modules",
+    "**/__pycache__",
+    "sparc.egg-info",
+    "build",
+    ".git"
+  ]
+}

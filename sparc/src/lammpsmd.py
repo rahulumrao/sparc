@@ -10,11 +10,12 @@ from ase.io import read, write
 from ase.md.md import MolecularDynamics
 from ase.calculators.lammpsrun import LAMMPS
 from ase.calculators.calculator import Calculator, all_changes
+from ase.calculators.plumed import Plumed
 import yaml
 
 
 class DeepMDLammpsCalculator(LAMMPS):
-    def __init__(self, model_files, label, command="lmp", tmp_dir="tmp", deepmd_opts=None, plumed_input=None, **kwargs):
+    def __init__(self, model_files, label, command="lmp", tmp_dir="tmp", deepmd_opts=None, **kwargs):
         if not isinstance(model_files, list):
             model_files = [model_files]
 
@@ -22,9 +23,8 @@ class DeepMDLammpsCalculator(LAMMPS):
         self.label = label
         self.tmp_dir = tmp_dir
         self.deepmd_opts = deepmd_opts or []
-        self.plumed_input = plumed_input
         kwargs.setdefault("keep_tmp_files", True)
-        kwargs.setdefault("files", model_files + ([plumed_input] if plumed_input else []))
+        kwargs.setdefault("files", model_files)
         kwargs.setdefault("tmp_dir", tmp_dir)
         kwargs.setdefault("label", label)
 
@@ -41,14 +41,30 @@ class DeepMDLammpsCalculator(LAMMPS):
             "pair_coeff": ["* *"],
         })
 
-        if self.plumed_input:
-            self.parameters.setdefault("fix", [])
-            self.parameters["fix"].append(f"plumed all plumed input {self.plumed_input}")
-
-
     def calculate(self, atoms=None, properties=None, system_changes=all_changes, set_atoms=True):
         self.set_deepmd_inputs()
         super().calculate(atoms, properties, system_changes)
+
+
+class DeepMDLammpsCalculatorWithPlumed(Calculator):
+    implemented_properties = ["energy", "forces"]
+
+    def __init__(self, base_calc, plumed_input, **kwargs):
+        super().__init__(**kwargs)
+        self.base_calc = base_calc
+        self.plumed_input = plumed_input
+        self.plumed = Plumed(input=plumed_input)
+
+    def calculate(self, atoms=None, properties=None, system_changes=all_changes):
+        self.base_calc.calculate(atoms, properties, system_changes)
+        self.plumed.atoms = atoms
+        self.plumed.calculate(atoms)
+
+        self.results = dict(self.base_calc.results)
+        if "forces" in self.base_calc.results:
+            self.results["forces"] += self.plumed.results.get("forces", 0.0)
+        if "energy" in self.plumed.results:
+            self.results["energy"] += self.plumed.results["energy"]
 
 
 class DeepMDMD(MolecularDynamics):
@@ -92,15 +108,19 @@ class DeepMDMD(MolecularDynamics):
             f"\"if '$(c_MaxUnc) > {std_tolerance}' then 'write_restart restart_*.dat' quit\""
         )
 
-        calc = DeepMDLammpsCalculator(
+        base_calc = DeepMDLammpsCalculator(
             model_files=self.model_files,
             label=label,
             command=self.command,
             specorder=self.specorder,
             deepmd_opts=self.deepmd_opts,
-            plumed_input=self.plumed_input,
             **params
         )
+
+        if self.plumed_input:
+            calc = DeepMDLammpsCalculatorWithPlumed(base_calc, self.plumed_input)
+        else:
+            calc = base_calc
 
         calc.calculate(self.curr_atoms, set_atoms=True)
 

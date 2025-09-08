@@ -66,16 +66,16 @@ def setup_DeepPotential(atoms, model_path, model_name="frozen_model.pb"):
         forces = dp_system.get_forces()
         
         if potential_energy is not None and forces is not None:
-            SparcLog("\n" + "=" * 72)
+            SparcLog("=" * 72)
             SparcLog(f"DeepPotential model successfully loaded and tested: \n {dp_model}")
             SparcLog("=" * 72)
         else:
-            SparcLog("\n" + "=" * 72)
+            SparcLog("=" * 72)
             SparcLog("Error: Failed to compute energy and forces with DeepPotential model")
             SparcLog("=" * 72)
             
     except Exception as e:
-        SparcLog("\n" + "=" * 72)
+        SparcLog("=" * 72)
         SparcLog("Error: Failed to setup DeepPotential model")
         SparcLog(f"Details: {str(e)}")
         SparcLog("=" * 72)
@@ -107,13 +107,13 @@ def evaluate_model_accuracy(model_path, test_data_path):
         )
         output_lines = result.stdout.splitlines()
         # print("Full DeepMD Test Output:\n", output_lines)
-        SparcLog("\n" + "=" * 72)
+        SparcLog("=" * 72)
         SparcLog("DeepMD Model Evaluation Results")
         SparcLog("-" * 72)
         SparcLog(result.stdout.strip())
    
     except subprocess.CalledProcessError as e:
-        SparcLog("\n" + "=" * 72)
+        SparcLog("=" * 72)
         SparcLog("Error in model evaluation:")
         SparcLog(f"Details: {str(e)}")
         SparcLog("=" * 72)
@@ -222,7 +222,7 @@ def deepmd_training(active_learning: bool, datadir: str, atom_types: list, train
               "\n !! WARNING: More than 4 models will not give additional advantage. Proceed with caution! !!\n",
               "*" * 100)
     
-    SparcLog("\n========================================================================")
+    SparcLog("========================================================================")
     SparcLog(f"          DEEPMD WILL TRAIN {num_models} MODELS !")
     SparcLog("========================================================================")
     
@@ -232,7 +232,7 @@ def deepmd_training(active_learning: bool, datadir: str, atom_types: list, train
         folder_name = f"training_{i}"
         dir_name = os.path.join(training_dir, folder_name)
         
-        SparcLog("\n========================================================================")
+        SparcLog("========================================================================")
         SparcLog(f"  RUNNING TRAINING IN FOLDER ({dir_name}) !")
         SparcLog("========================================================================\n")
         
@@ -265,7 +265,7 @@ def deepmd_training(active_learning: bool, datadir: str, atom_types: list, train
             
             # Check for the existence of the checkpoint file
             if os.path.exists('checkpoint'):
-                SparcLog("\n" + "*"*80)
+                SparcLog("*"*80)
                 SparcLog("[INFO] Checkpoint file found | Resuming training with the current model state")
                 SparcLog("*"*80 + "\n")
 

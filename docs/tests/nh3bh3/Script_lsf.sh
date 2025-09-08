@@ -12,9 +12,7 @@
 source /usr/share/Modules/init/bash
 #
 module purge
-##module load mkl/2022.1.0
-##module load nvhpc/23.1 
-# module load VASP/vasp_gpu
+#
 module load VASP/vasp_cpu_gcc
 conda activate /rs1/researchers/w/wjpfaend/rahul/MLP/sparc_CPU  
 ulimit -s unlimited
@@ -24,10 +22,10 @@ export KMP_AFFINITY=none
 export TF_CPP_MIN_LOG_LEVEL=3
 
 export VASP_PP_PATH=/rs1/researchers/w/wjpfaend/codes/POTCAR_FILES
-#export CUDA_VISIBLE_DEVICES=1
+
 #
 date
 
 sparc -i input.yaml
-#PYTHONUNBUFFERED=1 sparc -i input.yaml >> output.log
+
 date

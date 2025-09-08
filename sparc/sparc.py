@@ -193,7 +193,7 @@ def main():
     #--------------------------------------------------------------------------------------#
     if dpmd_run_is:
         n_sample = config['deepmd_setup'].get('multiple_run', 1)
-        SparcLog("\n========================================================================")
+        SparcLog("========================================================================")
         SparcLog(f"      MULTIPLE MLP-MD SIMULATION STARTING FROM SAME CONFIGURATION!")
         SparcLog("========================================================================")
         
@@ -417,7 +417,7 @@ def main():
                 
                 dp_plumed_is = config['deepmd_setup']['use_plumed']
                 umbrella_enabled = config['deepmd_setup']['umbrella_sampling'].get('enabled', False)
-                print(f"IS Umbrella Sampling Enables: {umbrella_enabled}")
+                SparcLog(f"Umbrella Sampling : {umbrella_enabled}")
                 #
                 if dp_plumed_is and umbrella_enabled:
                     SparcLog("\n========================================================================")

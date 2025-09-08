@@ -27,9 +27,7 @@ dependencies = [
   "pandas",
   "scipy",
   "dpdata",
-  "cython",
-  "joblib",
-  "tqdm"
+  "cython"
 ]
 
 [project.optional-dependencies]
