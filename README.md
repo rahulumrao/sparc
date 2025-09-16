@@ -35,16 +35,24 @@ SPARC is an open-source Python package that implements an active learning workfl
 
 ## Installation
 
+<!-- conda create -n test_sparc -c conda-forge -c deepmodeling python=3.10 deepmd-kit=2.2.10 -->
+
 1. Create and activate a conda environment:
 ```bash
 conda create -n sparc python=3.10
 conda activate sparc
 ```
-2. Install [Deepmd-kit](https://docs.deepmodeling.com/projects/deepmd/en/r2/getting-started/install.html) from `conda`:
+2. Use any of following methods to install [Deepmd-kit](https://docs.deepmodeling.com/projects/deepmd/en/r2/getting-started/install.html) from `conda`:
+
+#### pip
+```bash
+pip install deepmd-kit[gpu,cu12]==2.2.10
+```
+#### conda-forge
 ```bash
 conda install deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults
 ```
-
+`Check known issues for any problem with DeePMD installation!`
 <!-- # conda create -n cuda_test deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults -->
 
 3. Clone and install SPARC:
@@ -213,12 +221,25 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 
 ## Known Issue
 > [!IMPORTANT]  
-> - Deepmd-kit `pip tensorflow-cuda` installation soetimes does not detect GPU.  
+> - Deepmd-kit `pip install tensorflow[and-cuda]` installation soetimes does not detect GPU.  
 > - To verify if TensorFlow detects your GPU, run the following command:  
 >   ```bash
 >   python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
 >   ```
-> Check [TensorFlow pip installation](https://www.tensorflow.org/install/pip) page to fix this.
+> Check [TensorFlow pip installation](https://www.tensorflow.org/install/pip) page to fix this. \
+> Some hardware have also shown issue with `conda`
+> ```bash
+> LibMambaUnsatisfiableError: Encountered problems while solving:
+>  - nothing provides __cuda needed by libdeepmd-2.2.10-0_cuda10.2_gpu
+>  - nothing provides __cuda needed by tensorflow-2.9.0-cuda102py310h7cc18f4_0
+> - Could not solve for environment specs
+> - The following packages are incompatible
+> - ├─ deepmd-kit 2.2.10 *gpu is not installable because it requires
+> - │  └─ tensorflow 2.9.* cuda*, which requires
+> - │     └─ __cuda, which is missing on the system;
+> - └─ libdeepmd 2.2.10 *gpu is not installable because it requires
+> -  └─ __cuda, which is missing on the system.
+> ```
 
 ## Dcumentation:
 ``` bash
