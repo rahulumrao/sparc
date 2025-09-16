@@ -227,7 +227,8 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 >   python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
 >   ```
 > Check [TensorFlow pip installation](https://www.tensorflow.org/install/pip) page to fix this. \
-> Some hardware have also shown issue with `conda`
+> 
+> Some hardware have also shown issues with `conda` channels
 > ```bash
 > LibMambaUnsatisfiableError: Encountered problems while solving:
 >  - nothing provides __cuda needed by libdeepmd-2.2.10-0_cuda10.2_gpu
