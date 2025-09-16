@@ -42,13 +42,13 @@ SPARC is an open-source Python package that implements an active learning workfl
 conda create -n sparc python=3.10
 conda activate sparc
 ```
-2. Use any of following methods to install [Deepmd-kit](https://docs.deepmodeling.com/projects/deepmd/en/r2/getting-started/install.html) from `conda`:
+2. Use any of following methods to install [Deepmd-kit](https://docs.deepmodeling.com/projects/deepmd/en/r2/getting-started/install.html) :
 
-#### pip
+- #### pip
 ```bash
 pip install deepmd-kit[gpu,cu12]==2.2.10
 ```
-#### conda-forge
+- #### conda-forge
 ```bash
 conda install deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults
 ```
