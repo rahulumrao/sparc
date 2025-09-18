@@ -54,7 +54,7 @@ Several groups have coupled AL with enhanced sampling or pathway exploration tec
 
 ML/MD output is stored in ASE trajectory formats as this enables the broader ecosystem of analysis tools that already support ASE compatible formats. Since `SPARC` manages all stages via ASE, no additional infrastructure is needed beyond a Python environment with the required dependencies installed. This makes the workflow highly portable across computing environments and suitable for both exploratory studies and large-scale production run.
 
-![A schematic representation of AL cycle for training MLIPs. `SPARC` implements an additional block (PES exploration) to this cycle for systmatic exploration of the configurational space.\label{fig:flowchart}](figures/flowchart.png){ width=350px }
+![A schematic representation of AL cycle for training MLIPs. `SPARC` implements an additional block (PES exploration) to this cycle for systmatic exploration of the configurational space.\label{fig:flowchart}](figures/flowchart.png){ width=1500px }
 
 # Technical requirements and usage examples
 
@@ -74,14 +74,14 @@ An ensemble of DeePMD models were trained and one of the ML models was used to r
 
 The effect of this iterative refinement is shown in \autoref{fig:error} which plots the maximum force deviation recorded in each cycle. In the initial iterations, deviations were large. As the workflow explores the chemical space and finds new configurations, these errors slowly decreased, indicating that the model was progressively learning the relevant physics. 
 
-![Force deviation across `SPARC` iterations. The shaded region marks the uncertainty thresholds for labeling.\label{fig:error}](figures/error.png){ width=350px }
+![Force deviation across `SPARC` iterations. The shaded region marks the uncertainty thresholds for labeling.\label{fig:error}](figures/error.png){ width=1500px }
 
 By the fourth iteration, the error had converged to near-zero values, reflecting a stable and reactive MLIP. During exploration the model will be exposed to new configurations beyond training data which can result in very high forces, as observed in iteration 2.
 
 
 We further assessed the reliability of trained MLIP under finite-temperature molecular dynamics. We performed enhanced sampling MD for both ab-initio and ML. In these simulations, the B-N bond distance was biased with metadynamics with a Gaussian width 0.05 Å and height 0.005 eV. The resulting free energy profiles is shown in \autoref{fig:fesProfile}.
 
-![Free energy profile computed from both AIMD (black) and MLIP (red).\label{fig:fesProfile}](figures/FreeEnergy.png){ width=400px }
+![Free energy profile computed from both AIMD (black) and MLIP (red).\label{fig:fesProfile}](figures/FreeEnergy.png){ width=1500px }
 
 Here, MLIP was able to reproduce minima near 1.6 Å, with some minor discrepancies after 3.0 Å. The root mean square deviation between these curves was 0.04 eV, which is within chemical accuracy. 
 
