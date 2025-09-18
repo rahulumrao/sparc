@@ -22,11 +22,10 @@ SPARC is an open-source Python package that implements an active learning workfl
 
 ### Core Dependencies
 - Python 3.xx
-- [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit) 2.2.10
+- [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit) (version: 2.2.10)
 - [ASE](https://wiki.fysik.dtu.dk/ase/) (Atomic Simulation Environment)
-- [VASP](https://www.vasp.at/) (for DFT calculations)
-- [PLUMED](https://www.plumed.org/) (for enhanced sampling)
-- MPI library
+- [VASP](https://www.vasp.at/) (First-Principle Calculations)
+- [PLUMED](https://www.plumed.org/) (PES Exploration)
 
 ### Python Package Dependencies
 - numpy
