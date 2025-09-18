@@ -33,7 +33,6 @@ from pathlib import Path
 from ase.io import read, write
 import ase.units
 from ase.md import MDLogger
-# 
 ################################################################
 # from scripts.plot_model_devi import main as plot_model_devi
 # Local imports
@@ -85,14 +84,15 @@ def main():
     config = yaml_config
     
     #--------------------------------------------------------------------------------------#
-    # System initialization
+    # Workflow Initialization
     parent_dir = os.getcwd()
     
     # Read and prepare atomic structure
-    system = read(config['general']['structure_file'])  # e.g., POSCAR or xyz file
+    system = read(config['general']['structure_file'])  # e.g., POSCAR or xyz file (ASE accepted formats)
     atom_types = list(dict.fromkeys(system.get_chemical_symbols()))
-    system.set_pbc([True, True, True])
-    system.center()
+    if system.get_pbc().any():          # True for perodic system (eg: POSCAR)
+        system.set_pbc([True, True, True])
+        system.center()
     original_system = system
     SparcLog(f'STRUCTURE FILE: {system}')
     # sys.exit(1)
@@ -101,10 +101,10 @@ def main():
     thermostat = config.get('md_simulation', {}).get('thermostat', 'Nose')
     thermostat_func = {'Nose': NoseNVT, 'Langevin': LangevinNVT}
     
+    # If AIMD Steps == 0 then dftmd_is = False
     DftMDSteps = config.get('md_simulation', {}).get('steps', 0)
     dftmd_is = DftMDSteps > 0
     training_is = config.get('deepmd_setup', {}).get('training', False)
-    plumed_is = config.get('md_simulation', {}).get('use_dft_plumed', False)
     dpmd_run_is = config.get('deepmd_setup', {}).get('MdSimulation', False)
     
     if dftmd_is or training_is or dpmd_run_is:
@@ -116,9 +116,9 @@ def main():
     if dftmd_is:
         # Set up DFT calculator
         dft_calc = dft_calculator(config, True)
-        SparcLog("\n========================================================================")
-        SparcLog(f"\n ! ab-initio MD Simulations will be performed at Temp.: {temperature}K !")
-        SparcLog("\n========================================================================")
+        SparcLog("========================================================================")
+        SparcLog(f" ! ab-initio MD Simulations will be performed at Temp.: {temperature}K !")
+        SparcLog("========================================================================")
         # Configure and run AIMD
         if thermostat == 'Nose':
             dyn_dft = NoseNVT(
@@ -137,17 +137,23 @@ def main():
                 restart=config['md_simulation']['restart']
             )
         # Configure PLUMED if enabled
+        plumed_is = config.get('md_simulation', {}).get('use_dft_plumed', False)
         if plumed_is:
-            SparcLog("\n========================================================================")
+            SparcLog("========================================================================")
             SparcLog("               PLUMED IS CALLED FOR MD SIMULATION. !")
             SparcLog("========================================================================")
+            
+            # Get PLUMED input file - use default if not specified
+            plumed_dft = config['dft_plumed'].get('input_file', 'plumed.dat')
+            SparcLog(f"Using PLUMED input file: {plumed_dft}")
+            remove_backup_files(file_ext="bck.*")   # remove PLUMED generated backup files if present!
             system.calc = modify_forces(
                 calculator=dft_calc, 
                 system=system, 
                 timestep=config['md_simulation']['timestep_fs'] * ase.units.fs, 
                 kT=config['plumed']['kT'],
                 restart=config['plumed']['restart'], 
-                plumed_input=config['md_simulation']['plumed_file'],
+                plumed_input=plumed_dft,
                 iteration=iter_structure['dft_dir']
             )
         else:
@@ -170,7 +176,7 @@ def main():
     #--------------------------------------------------------------------------------------#
     datadir = os.path.join(parent_dir, config['deepmd_setup']['data_dir'])
     if training_is:
-        # Process AIMD trajectory for training
+        # Process AIMD trajectory for ML model training using `dpdata`
         get_data(
             ase_traj=iter_structure['dft_dir'] / config['output']['aimdtraj_file'], 
             dir_name=datadir, 
@@ -198,7 +204,7 @@ def main():
         SparcLog("========================================================================")
         
         dp_path = iter_structure['train_dir'] 
-        dp_model = "training_1/frozen_model_1.pb"
+        dp_model = "training_1/frozen_model_1.pb"   # Default model to run ML/MD simulation [optional]
         dp_system = original_system
         # Setup DeepMD calculator and run multiple MD simulations if requested
         for i in range(n_sample):
@@ -235,7 +241,7 @@ def main():
             # sys.exit(1)
             # Configure PLUMED if enabled
             if dp_plumed_is and umbrella_enabled:
-                SparcLog("\n========================================================================")
+                SparcLog("========================================================================")
                 SparcLog("       Umbrella Sampling Enabled — Running MLMD Windows with PLUMED       ")
                 SparcLog("========================================================================")
 
@@ -246,14 +252,14 @@ def main():
                          )
                 break
             if dp_plumed_is and not umbrella_enabled:
-                SparcLog("\n========================================================================")
+                SparcLog("========================================================================")
                 SparcLog(f"    Sim:[{i}]       PLUMED IS CALLED FOR DPMD SIMULATION !")
                 SparcLog("========================================================================")
                 
                 # Get PLUMED input file - use default if not specified
                 plumed_file = config['deepmd_setup'].get('plumed_file', 'plumed.dat')
                 SparcLog(f"Using PLUMED input file: {plumed_file}")
-                remove_backup_files(file_ext="bck.*")
+                remove_backup_files(file_ext="bck.*")   # remove PLUMED backup files
                 dp_atoms.calc = modify_forces(
                     calculator=dp_calc, 
                     system=dp_atoms, 
@@ -279,7 +285,7 @@ def main():
                 epot_threshold=config['deepmd_setup']['epot_threshold']
             )
         if config['active_learning']:            
-            # Check for structures requiring labeling
+            # Check for structures requiring labeling (Query-by-Committee [QbC])
             candidate_found_is, labelled_files, latest_models = QueryByCommittee(
                 trajfile=iter_structure['dpmd_dir'] / config['output']['dptraj_file'], 
                 model_path=iter_structure['train_dir'], 
@@ -323,7 +329,7 @@ def main():
         # Active Learning Loop
         #--------------------------------------------------------------------------------------#
         while candidate_found_is and iter < al_iter:
-            SparcLog("\n========================================================================")
+            SparcLog("========================================================================")
             SparcLog("{}".format(f"Starting Iteration {iter}".center(72)))
             SparcLog("========================================================================")
             
@@ -334,13 +340,13 @@ def main():
                     SparcLog(f"Warning: Candidate file {files} not found, skipping...")
                     continue
                 
-                # Run DFT calculations
+                # Run DFT calculations (for now // relabelling only supports POSCAR format)
                 poscar_ = read(files, format='vasp')
                 poscar_.calc = dft_calculator(config, False)
                 
                 header = True if idx == 1 else False
                 if header:
-                    SparcLog("\n========================================================================")
+                    SparcLog("========================================================================")
                     SparcLog("!{}!".format(f"[Iteration {iter}] Computing Energy and Forces for Candidates".center(70)))
                     SparcLog("========================================================================")
                 CalculateDFTEnergy(
@@ -366,8 +372,8 @@ def main():
                 skip_min=0, 
                 skip_max=None
             )
-            
-            SparcLog("\nStarting DeepMD training")
+            SparcLog("!{}!".format("Starting MLIP Training".center(70)))
+            # SparcLog("Starting MLIP Training")
             deepmd_training(
                 active_learning=True,
                 training_dir=iter_structure['train_dir'],
@@ -377,12 +383,12 @@ def main():
                 atom_types=atom_types
             )
 
-            SparcLog("\n{}".format("Setting up DeepPotential Calculator".center(72)))
+            SparcLog("{}".format("Setting up DeepPotential Calculator".center(72)))
             #--------------------------------------------------------------------------------------#
             # Set DeepPotential calculator
             #--------------------------------------------------------------------------------------#
             n_sample = config['deepmd_setup'].get('multiple_run', 1)           
-            SparcLog("\n========================================================================")
+            SparcLog("========================================================================")
             SparcLog("      MULTIPLE SAMPLE MD-SIMULATION STARTING FROM SAME CONFIGURATION!")
             SparcLog("========================================================================")
             for i in range(n_sample):
@@ -420,7 +426,7 @@ def main():
                 SparcLog(f"Umbrella Sampling : {umbrella_enabled}")
                 #
                 if dp_plumed_is and umbrella_enabled:
-                    SparcLog("\n========================================================================")
+                    SparcLog("========================================================================")
                     SparcLog("       Umbrella Sampling Enabled — Running MLMD Windows with PLUMED       ")
                     SparcLog("========================================================================")
 
@@ -431,7 +437,7 @@ def main():
                             )
                     break
                 if dp_plumed_is and not umbrella_enabled:
-                    SparcLog("\n========================================================================")
+                    SparcLog("========================================================================")
                     SparcLog("               PLUMED IS CALLED FOR DPMD SIMULATION !")
                     SparcLog("========================================================================")
                     
@@ -475,7 +481,7 @@ def main():
             )
             candidates = len(labelled_files)
             if not candidate_found_is:
-                SparcLog("\n========================================================================")
+                SparcLog("========================================================================")
                 SparcLog("                 No More Candidates Found for Labelling.                 ")
                 SparcLog("                 End of Active Learning Loop.                             ")
                 SparcLog("========================================================================")
