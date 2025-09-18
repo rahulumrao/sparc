@@ -100,6 +100,6 @@ This work was partially supported by NSF award EFRI-2132219 to RV and JP, and th
 - [PLUMED](https://www.plumed.org/): enhanced sampling and CV biasing.  
 - [VASP](https://www.vasp.at/) and [CP2K](https://www.cp2k.org/): first-principles labeling.  
 
-<!-- # References -->
+# References
 
 
