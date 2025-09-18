@@ -24,7 +24,7 @@ affiliations:
  - name: Department of Chemical and Biomolecular Engineering, North Carolina State University, Raleigh, USA
    index: 1
 date: 18 Spetember 2025
-bibliography: sample.bib
+bibliography: ref.bib
 ---
 
 # Summary
