@@ -180,34 +180,33 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 1. **Initial AIMD**
    - Data generation *ab initio* MD using VASP/CP2K
 
-2. **ML Potantial (MLP) Training**
+2. **ML Interatomic Potantial (MLIP) Training**
    - Process AIMD trajectories
-   - Train multiple ML models
+   - Train ensemble of ML models
    - Freeze and compresses models
 
-3. **MLP/MD Simulation**
-   - Run MLP-MD using trained potential models
-   - Monitor force deviations
-
-4. **Active Learning**
-   - Identifies structures for labeling
-   - Performs DFT calculations (labelling) on selected structures
-   - Retrain models with expanded dataset
+3. **ML/MD Simulation**
+   - Run ML/MD using one of the ML model
+   - Monitor atomic force deviations 
+  **Active Learning with Query-by-Committee**
+    - Identifies structures high error in atomic forces
+    - Performs first-principle calculations (labelling)
+    - Retrain models with expanded dataset
 
 ## Current Status
 
-- ✅ Fixed Model Update in Active Learning Iterations restart with added key:
+- Fixed Model Update in Active Learning Iterations restart with added key:
   - `learning_restart: True`
   - `latest_model: 'path/to/frozen_model.pb'`
-- ✅ Implemented Langevin Themostat
-- ✅ Structured log formatting for better readability
-- ✅ Preliminary support for the CP2K calculator implemented; full validation and testing are pending.
-- ✅ Utility tools for analysis of ML model accuracy, active learning status, and simulation properties.
+- Implemented Langevin Themostat
+- Structured log formatting for better readability
+- Implemented Umbrella Sampling for modelling reactions on-the-fly
+- Utility tools for analysis of ML model accuracy, active learning status, and simulation properties.
 
 ## Planned Updates
-- 🚧 Code refinement in progress
-- 🚧 Support for additional DFT calculators planned
-- 📝 Documentation under development
+- Code refinement in progress
+- Support for ORCA and xTB calculators
+- Documentation under development
 
 > [!IMPORTANT]  
 > There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check [documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.
