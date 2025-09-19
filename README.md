@@ -259,7 +259,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ---
 > [!WARNING]
 > This package is under active development. Features and APIs may change.
-
-> [!WARNING]
 > This code is designed to work in a Linux environment. It may not be fully compatible with macOS systems.
 
