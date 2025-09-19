@@ -8,7 +8,7 @@
 
 ## Overview
 
-SPARC is an open-source Python package that implements an active learning workflow for developing reactive machine learning potentials. It automates the process of running _ab-initio_ calculations, training ML models, and identifying new structures that need quantum mechanical labeling.
+SPARC is a Python package build around the `ASE` wrapper that implements an automated workflow of developing machine learning potential for reactive chemical systems. It automates the process of identifying new structures in the configurational space without having to run initial _ab-initio_ MD simulations. ``SPARC`` is designed to work seamlessly within the Python framewrok, providing users with powerful tools for efficient simulation and model improvement.
 
 ## Key Features
 
@@ -160,19 +160,19 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 ## Core Components
 
 ### 1. MD Simulation
-- Supports both _ab initio_ and ML Molecular Dynamics within ASE
+- Supports both _ab initio_ and ML molecular dynamics within ASE MD engine
 - NVT ensemble with Nose-Hoover and Langevin thermostat
 - Checkpoint/restart capabilities
-- Optional PLUMED integration for enhanced sampling
+- PLUMED integration for accelerated configuration space sampling
 
 ### 2. DeepMD Training
 - Automated model training
-- Multiple model generation for labelling
+- Ensemble model generation
 - Configurable network architecture and training parameters
 
 ### 3. Active Learning
-- Query by Committee approach for structure selection
-- Force-based deviation metrics
+- Query by Committee approach for configuration selection
+- Atomic force based error metrics
 - Automated structure labeling and retraining
 
 ## Workflow
@@ -189,7 +189,7 @@ Monitor log and output stored in `iter_xxxxxx` directories.
    - Run ML/MD using one of the ML model
    - Monitor atomic force deviations 
     - **Active Learning with Query-by-Committee**
-      - Identifies structures high error in atomic forces
+      - Identifies structures within the cutoff error in atomic forces
       - Performs first-principle calculations (labelling)
       - Retrain models with expanded dataset
 
