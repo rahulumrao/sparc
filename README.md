@@ -16,6 +16,7 @@ SPARC is a Python package build around the `ASE` wrapper that implements an auto
 - _Ab initio_ molecular dynamics (AIMD) using [VASP](https://www.vasp.at/) and [CP2K](https://www.cp2k.org/)
 - Machine learning potential training with [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit)
 - ML/MD simulations and iterative model refinement
+- Monitor atomic force deviations and query-by-committee to identify new configurations
 - Reactive trajectory generation with [PLUMED](https://www.plumed.org/) integration
 
 ## Requirements
@@ -96,7 +97,7 @@ export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
 ```
 
 2. **Prepare input file (see example below)**
-  - _navigate to `scripts` folder for example input tempelate_
+  - _navigate to `scripts` folder for full input tempelate_
 ### Example Input File
 ```yaml
 general:
@@ -125,9 +126,9 @@ model_dev:
   f_max_dev: 0.8
 ```
 
-Once the installation is complete and the required dependencies are setup, follow these steps to run SPARC.
+Once the installation is complete and required dependencies are setup, follow these steps to run SPARC.
 
-Ensure you have the necessary input files (eg., input.yaml, input.json, INCAR, POSCAR). You can find a template in `scripts/input.yaml`.
+Ensure you have the necessary input files (eg., input.yaml, input.json, INCAR, POSCAR). You can find a template in `scripts/input.yaml` in the root directory.
 
 3. **Run SPARC**
 
@@ -140,6 +141,7 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 ```bash
 >> Project Root
 ├── INCAR
+├── POSCAR
 ├── input.json
 ├── input.yaml
 ├──── Dataset
@@ -172,7 +174,7 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 - Query by Committee approach for configuration selection
 - Atomic force based error metrics
 - Automated structure labeling and retraining
-
+<!-- 
 ## Workflow
 
 1. **Initial AIMD**
@@ -189,17 +191,16 @@ Monitor log and output stored in `iter_xxxxxx` directories.
     - **Active Learning with Query-by-Committee**
       - Identifies structures within the cutoff error in atomic forces
       - Performs first-principle calculations (labelling)
-      - Retrain models with expanded dataset
+      - Retrain models with expanded dataset -->
 
 ## Current Status
 
-- Fixed Model Update in Active Learning Iterations restart with added key:
+- Fixed model update in active learning iterations restart with added key:
   - `learning_restart: True`
   - `latest_model: 'path/to/frozen_model.pb'`
-- Implemented Langevin Themostat
 - Structured log formatting for better readability
-- Implemented Umbrella Sampling for modelling reactions on-the-fly
-- Utility tools for analysis of ML model accuracy, active learning status, and simulation properties.
+- Implemented Umbrella Sampling for reaction study on-the-fly
+- Utility tools for analysing model accuracy, active learning status, and structural properties.
 
 ## Planned Updates
 - Code refinement in progress
