@@ -80,9 +80,6 @@ If you **don’t need additional modules**, you can skip the manual installation
 conda install -c conda-forge py-plumed
 ```
 
-
-
-
 ## Quick Start
 
 1. **Set Environment Variables:**
@@ -91,7 +88,7 @@ conda install -c conda-forge py-plumed
 export VASP_PP_PATH=/path/to/vasp/potcar_files    # POTCAR files path
 ```
 
-If you have installed PLUMED manually (skip if you used `conda-forge`), you also need to set the environment before running the code:
+If you have installed PLUMED manually (skip if you used `conda-forge`), you also need to set PLUMED environment before running the code:
 
 ```bash
 export PLUMED_KERNEL="$CONDA_PREFIX/lib/libplumedKernel.so"
@@ -99,7 +96,7 @@ export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
 ```
 
 2. **Prepare input file (see example below)**
-
+  - `navigate to script folder for input tempelate`
 ### Example Input File
 ```yaml
 general:
