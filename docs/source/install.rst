@@ -2,9 +2,7 @@
 SPARC Installation Guide
 ========================
 
-This guide provides step-by-step instructions to set up SPARC, an automated workflow for 
-training machine learning potential for reactive chemical system
-along with its core dependencies such as DeepMD-kit, PLUMED, and VASP.
+Here is a step-by-step instructions to set up the SPARC workflow along with its core dependencies such as DeepMD-kit, PLUMED, and VASP.
 
 
 
@@ -25,11 +23,11 @@ along with its core dependencies such as DeepMD-kit, PLUMED, and VASP.
 Core Software Dependencies:
 ---------------------------
 
-* Python 3.9 or 3.10 (recommended)
-* DeepMD-kit 2.2.10
-* ASE (Atomic Simulation Environment)
-* VASP (required for DFT calculations)
-* PLUMED (for exploration of PES)
+* Python version 3.10 of higher (recommended)
+* DeepMD-kit == 2.2.10
+* ASE (Atomic Simulation Environment) >= 3.24.0
+* VASP or CP2K (required for `first-principle` calculations)
+* PLUMED (for accelerated sampling and PES exploration)
 
 Python Package Dependencies:
 ----------------------------
@@ -37,6 +35,8 @@ Python Package Dependencies:
 * numpy
 * pandas
 * dpdata
+* matplotlib [optional]
+* jupyter-notebook [optional]
 
 Step-by-Step Installation
 -------------------------
@@ -48,13 +48,21 @@ Step-by-Step Installation
       conda create -n sparc python=3.10
       conda activate sparc
 
-2. Install  `DeepMD-kit <dpmd_install_>`_, this command installs the GPU-enabled version of DeepMD-kit:
+2. Use any of following methods to install  `DeepMD-kit <dpmd_install_>`_ :
 
+- pip
+   
+.. code-block:: bash
+
+   pip install deepmd-kit[gpu,cu12]==2.2.10
+
+- conda-forge
+  
 .. code-block:: bash
 
    conda install deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults
 
-3. Clone and install SPARC:
+1. Clone and install SPARC:
 
    .. code-block:: bash
 
@@ -134,17 +142,34 @@ To verify your installation:
 .. important::
 
    The ``pip install tensorflow[and-cuda]`` may not always detect the GPU due to potential configuration issues. 
-   To verify if TensorFlow has successfully recognized the GPU, execute the following command:
+   To verify if TensorFlow has successfully recognizing GPU environment, execute the following command in terminal:
 
    ``python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"``
    
    If the output is an empty list, check:
 
    - Your NVIDIA driver and CUDA toolkit installation
-   - The CUDA version compatibility with TensorFlow
-   - That your environment variables (e.g., `LD_LIBRARY_PATH`) are correctly set
+   - CUDA version compatibility with TensorFlow
+   - Environment variables (e.g., ``LD_LIBRARY_PATH``) are correctly set
+  
+   **Some hardware have also shown issues with ``conda` channels**
    
+   LibMambaUnsatisfiableError: 
+      Encountered problems while solving:
+   - nothing provides __cuda needed by libdeepmd-2.2.10-0_cuda10.2_gpu
+   - nothing provides __cuda needed by tensorflow-2.9.0-cuda102py310h7cc18f4_0
+   - The following packages are incompatible
+      - ├─ deepmd-kit 2.2.10 *gpu is not installable because it requires
+      - │  └─ tensorflow 2.9.* cuda*, which requires
+      - │     └─ __cuda, which is missing on the system;
+      - └─ libdeepmd 2.2.10 *gpu is not installable because it requires
+      -  └─__cuda, which is missing on the system.
+  
    Also, refer to the `TensorFlow GPU troubleshooting guide <tf_>`_ for details.
+
+.. warning::
+
+   This code is designed to work in a Linux environment. It may not be fully compatible with macOS systems.
 
 .. _dpmd_install: https://docs.deepmodeling.com/projects/deepmd/en/stable/getting-started/install.html
 .. _plumed: https://www.plumed.org/download

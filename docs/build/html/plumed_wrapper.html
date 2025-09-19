@@ -123,6 +123,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plumed</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -140,16 +141,14 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="workflow.html">Analysing workflow</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#features">Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#quick-start">Quick Start</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#example-directory-structure">Example Directory Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#geometry-tab-details">Geometry Tab Details</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#function">Function:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#function">Function:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#example-directory-structure">Example Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#geometry-tab-details">Geometry Tab Details</a></li>
 </ul>
 </li>
 </ul>
@@ -209,7 +208,7 @@ as this approach offers efficient, self-guided exploration of complex chemical a
 </div>
 <dl class="py function" id="module-sparc.src.plumed_wrapper">
 <dt class="sig sig-object py" id="sparc.src.plumed_wrapper.modify_forces">
-<span class="sig-prename descclassname"><span class="pre">sparc.src.plumed_wrapper.</span></span><span class="sig-name descname"><span class="pre">modify_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plumed_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/plumed_wrapper.html#modify_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.plumed_wrapper.modify_forces" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sparc.src.plumed_wrapper.</span></span><span class="sig-name descname"><span class="pre">modify_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plumed_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PlumedLog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PLUMED.log'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/plumed_wrapper.html#modify_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.plumed_wrapper.modify_forces" title="Link to this definition"></a></dt>
 <dd><p>Set up and return a PLUMED wrapped ASE calculator for a molecular dynamics (MD) run.</p>
 <p>This function reads a PLUMED input file and wraps an existing ASE calculator
 to apply biasing forces during MD. Useful for enhanced sampling simulations.</p>
@@ -240,6 +239,27 @@ plumed_calc : ase.calculators.plumed.Plumed</p>
 <div><p>The PLUMED-wrapped ASE calculator, ready for molecular dynamics simulations.</p>
 </div></blockquote>
 </section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sparc.src.plumed_wrapper.umbrella">
+<span class="sig-prename descclassname"><span class="pre">sparc.src.plumed_wrapper.</span></span><span class="sig-name descname"><span class="pre">umbrella</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">us_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dp_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dp_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/plumed_wrapper.html#umbrella"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.plumed_wrapper.umbrella" title="Link to this definition"></a></dt>
+<dd><p>This function sets up a PLUMED calculator for umbrella sampling simulations.
+It reads a configuration file defining the umbrella sampling windows and applies
+biasing forces to the system to keep the atoms within these windows.</p>
+<p>Parameters:
+config : dict</p>
+<blockquote>
+<div><p>The configuration dictionary containing the umbrella sampling parameters.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>iter_structure<span class="classifier">dict</span></dt><dd><p>The iteration structure dictionary containing the iteration number and directory.</p>
+</dd>
+<dt>base_dir<span class="classifier">str</span></dt><dd><p>The base directory for the umbrella sampling simulations.</p>
+</dd>
+</dl>
+<p>Returns:
+None</p>
 </dd></dl>
 
 </section>

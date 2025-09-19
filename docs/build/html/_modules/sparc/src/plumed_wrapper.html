@@ -118,6 +118,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../plumed_wrapper.html">Plumed</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -135,16 +136,14 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../workflow.html">Analysing workflow</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../workflow.html#features">Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../workflow.html#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../workflow.html#quick-start">Quick Start</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../workflow.html#example-directory-structure">Example Directory Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../workflow.html#geometry-tab-details">Geometry Tab Details</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#function">Function:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../workflow.html#function">Function:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#example-directory-structure">Example Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#geometry-tab-details">Geometry Tab Details</a></li>
 </ul>
 </li>
 </ul>
@@ -179,18 +178,25 @@
 <span></span><span class="ch">#!/usr/bin/python3</span>
 <span class="c1"># plumed_wrapper.py</span>
 <span class="c1">################################################################</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="c1">################################################################</span>
-<span class="c1"># Third party inport</span>
+<span class="c1"># Third party imports</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ase.units</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.plumed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Plumed</span>
+<span class="c1"># Local imports</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.deepmd</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_DeepPotential</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.ase_md</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoseNVT</span><span class="p">,</span> <span class="n">LangevinNVT</span><span class="p">,</span> <span class="n">ExecuteMlpDynamics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcLog</span>
 <span class="c1">#===================================================================================================#</span>
 <span class="c1"># Setup PLUMED</span>
 <span class="c1">#===================================================================================================#</span>
 <div class="viewcode-block" id="modify_forces">
 <a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">modify_forces</span><span class="p">(</span><span class="n">calculator</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">kT</span><span class="p">,</span> <span class="n">restart</span><span class="p">,</span> <span class="n">plumed_input</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">modify_forces</span><span class="p">(</span><span class="n">calculator</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">kT</span><span class="p">,</span> <span class="n">restart</span><span class="p">,</span> <span class="n">plumed_input</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">PlumedLog</span><span class="o">=</span><span class="s1">&#39;PLUMED.log&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up and return a PLUMED wrapped ASE calculator for a molecular dynamics (MD) run.</span>
 
@@ -247,13 +253,108 @@
                     <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span> 
                     <span class="n">atoms</span><span class="o">=</span><span class="n">system</span><span class="p">,</span> 
                     <span class="n">kT</span><span class="o">=</span><span class="n">kT</span><span class="p">,</span> 
-                    <span class="n">log</span><span class="o">=</span><span class="s1">&#39;PLUMED.log&#39;</span><span class="p">,</span> 
+                    <span class="n">log</span><span class="o">=</span><span class="n">PlumedLog</span><span class="p">,</span> 
                     <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">)</span>
     <span class="c1"># atoms.calc = plumed_calc</span>
 
     <span class="c1"># Return the configured PLUMED calculator</span>
     <span class="k">return</span> <span class="n">plumed_calc</span></div>
 
+<span class="c1">#===================================================================================================#</span>
+<span class="c1"># Umbrella Sampling</span>
+<span class="c1">#===================================================================================================#</span>
+<div class="viewcode-block" id="umbrella">
+<a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">umbrella</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">us_dir</span><span class="p">,</span> <span class="n">dp_path</span><span class="p">,</span> <span class="n">dp_model</span><span class="p">):</span>   
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function sets up a PLUMED calculator for umbrella sampling simulations.</span>
+<span class="sd">    It reads a configuration file defining the umbrella sampling windows and applies</span>
+<span class="sd">    biasing forces to the system to keep the atoms within these windows.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    config : dict   </span>
+<span class="sd">        The configuration dictionary containing the umbrella sampling parameters.</span>
+<span class="sd">    iter_structure : dict</span>
+<span class="sd">        The iteration structure dictionary containing the iteration number and directory.</span>
+<span class="sd">    base_dir : str</span>
+<span class="sd">        The base directory for the umbrella sampling simulations.</span>
+
+<span class="sd">    Returns:    </span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the PLUMED input file and read its contents</span>
+    <span class="c1"># config[&#39;deepmd_setup&#39;][&#39;umbrella_sampling&#39;].get(&#39;config_file&#39;, &#39;umbrella_sampling.yaml&#39;)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;deepmd_setup&#39;</span><span class="p">][</span><span class="s1">&#39;umbrella_sampling&#39;</span><span class="p">][</span><span class="s1">&#39;config_file&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">umbrella_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+    <span class="c1"># Initialize</span>
+    <span class="c1"># Initialize simulation parameters</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;md_simulation&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+    <span class="n">thermostat</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;md_simulation&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thermostat&#39;</span><span class="p">,</span> <span class="s1">&#39;Nose&#39;</span><span class="p">)</span>
+    <span class="n">thermostat_func</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Nose&#39;</span><span class="p">:</span> <span class="n">NoseNVT</span><span class="p">,</span> <span class="s1">&#39;Langevin&#39;</span><span class="p">:</span> <span class="n">LangevinNVT</span><span class="p">}</span>
+    <span class="n">MDSteps</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;deepmd_setup&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;md_steps&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># print(f&quot;MD Steps {MDSteps}&quot;)</span>
+    <span class="c1"># sys.exit(1)</span>
+    <span class="c1"># Set system</span>
+    <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">window</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">umbrella_config</span><span class="p">[</span><span class="s1">&#39;umbrella_windows&#39;</span><span class="p">]):</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running Umbrella Sampling for window </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">struct_file</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="s1">&#39;structure&#39;</span><span class="p">]</span>
+        <span class="n">plumed_file</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="s1">&#39;plumed_file&#39;</span><span class="p">]</span>
+        <span class="n">window_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">us_dir</span><span class="p">[</span><span class="s1">&#39;dpmd_dir&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">window_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">usmd_log</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;usmd.log&quot;</span><span class="p">)</span> <span class="c1"># f&quot;{us_dir[&#39;dpmd_dir&#39;]}/usmd.log&quot;</span>
+        <span class="c1"># print(f&quot;Current Window: {window_dir} || {usmd_log}&quot;)</span>
+        <span class="c1"># sys.exit(1)</span>
+        <span class="c1"># Load structure and re-initialize system and calculator</span>
+        <span class="n">dp_atoms</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">struct_file</span><span class="p">)</span>
+        <span class="n">dp_atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">window_dir</span><span class="p">,</span> <span class="s2">&quot;input.xyz&quot;</span><span class="p">))</span>
+        <span class="n">dp_atoms</span><span class="p">,</span> <span class="n">dp_calc</span> <span class="o">=</span> <span class="n">setup_DeepPotential</span><span class="p">(</span>
+            <span class="n">atoms</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
+            <span class="n">model_path</span><span class="o">=</span><span class="n">dp_path</span><span class="p">,</span>
+            <span class="n">model_name</span><span class="o">=</span><span class="n">dp_model</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create new dynamics object</span>
+        <span class="k">if</span> <span class="n">thermostat</span> <span class="o">==</span> <span class="s1">&#39;Nose&#39;</span><span class="p">:</span>
+            <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">thermostat_func</span><span class="p">[</span><span class="n">thermostat</span><span class="p">](</span>
+                <span class="n">atoms</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
+                <span class="n">timestep</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;deepmd_setup&#39;</span><span class="p">][</span><span class="s1">&#39;timestep_fs&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+                <span class="n">tdamp</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;md_simulation&#39;</span><span class="p">][</span><span class="s1">&#39;tdamp&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+                <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">thermostat_func</span><span class="p">[</span><span class="n">thermostat</span><span class="p">](</span>
+                <span class="n">atoms</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
+                <span class="n">timestep</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;deepmd_setup&#39;</span><span class="p">][</span><span class="s1">&#39;timestep_fs&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+                <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+                <span class="n">friction</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;md_simulation&#39;</span><span class="p">][</span><span class="s1">&#39;friction&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Wrap with PLUMED</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  → Window </span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2"> | Structure: </span><span class="si">{</span><span class="n">struct_file</span><span class="si">}</span><span class="s2"> | PLUMED: </span><span class="si">{</span><span class="n">plumed_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">dp_atoms</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">modify_forces</span><span class="p">(</span>
+            <span class="n">calculator</span><span class="o">=</span><span class="n">dp_calc</span><span class="p">,</span>
+            <span class="n">system</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
+            <span class="n">timestep</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;deepmd_setup&#39;</span><span class="p">][</span><span class="s1">&#39;timestep_fs&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+            <span class="n">kT</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;plumed&#39;</span><span class="p">][</span><span class="s1">&#39;kT&#39;</span><span class="p">],</span>
+            <span class="n">restart</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;plumed&#39;</span><span class="p">][</span><span class="s1">&#39;restart&#39;</span><span class="p">],</span>
+            <span class="n">plumed_input</span><span class="o">=</span><span class="n">plumed_file</span><span class="p">,</span>
+            <span class="n">iteration</span><span class="o">=</span><span class="n">window_dir</span><span class="p">,</span>
+            <span class="n">PlumedLog</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">us_dir</span><span class="p">[</span><span class="s1">&#39;dpmd_dir&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;PLUMED.log&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">ExecuteMlpDynamics</span><span class="p">(</span>
+            <span class="n">system</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
+            <span class="n">dyn</span><span class="o">=</span><span class="n">dyn_dp</span><span class="p">,</span>
+            <span class="n">steps</span><span class="o">=</span><span class="n">MDSteps</span><span class="p">,</span>
+            <span class="n">pace</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;deepmd_setup&#39;</span><span class="p">][</span><span class="s1">&#39;log_frequency&#39;</span><span class="p">],</span>
+            <span class="n">log_filename</span><span class="o">=</span><span class="n">usmd_log</span><span class="p">,</span>
+            <span class="n">trajfile</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="s1">&#39;dptraj_file&#39;</span><span class="p">],</span>
+            <span class="n">dir_name</span><span class="o">=</span><span class="n">us_dir</span><span class="p">[</span><span class="s1">&#39;dpmd_dir&#39;</span><span class="p">],</span>
+            <span class="n">distance_metrics</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;distance_metrics&#39;</span><span class="p">],</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">thermostat</span><span class="p">,</span>
+            <span class="n">epot_threshold</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;deepmd_setup&#39;</span><span class="p">][</span><span class="s1">&#39;epot_threshold&#39;</span><span class="p">]</span>
+        <span class="p">)</span></div>
 
 <span class="c1">#===================================================================================================#</span>
 <span class="c1">#                                     END OF FILE </span>

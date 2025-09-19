@@ -122,6 +122,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plumed_wrapper.html">Plumed</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -182,11 +183,10 @@
   <span style="font-size: 1.5em; font-weight: bold;">Welcome to SPARC's documentation!</span>
 </div><p><strong>SPARC</strong> (<strong>S</strong>mart <strong>P</strong>otential with <strong>A</strong>tomistic <strong>R</strong>are Events and <strong>C</strong>ontinuous Learning)
 is a Python package build around the <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a> wrapper that implements an automated workflow of developing machine learning potential for reactive chemical systems.
-This package is designed to work seamlessly with VASP, DeepMD-kit, and PLUMED, providing users with powerful tools
-for efficient simulation and model improvement.</p>
+This package is designed to work seamlessly within the Python framewrok, providing users with powerful tools for efficient simulation and model improvement.</p>
 <section id="scientific-overview">
 <h1>Scientific Overview<a class="headerlink" href="#scientific-overview" title="Link to this heading"></a></h1>
-<p>SPARC employs an active learning workflow to iteratively refine machine learning potentials using first-principles calculations.
+<p>SPARC workflow employs an active learning protocol to iteratively refine machine learning potentials using first-principles calculations.
 This enables users to develop highly accurate potentials for molecular dynamics simulations, which is essential for studying
 complex materials and chemical processes.</p>
 <div class="toctree-wrapper compound">
@@ -256,11 +256,11 @@ complex materials and chemical processes.</p>
 <h1>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h1>
 <p>SPARC provides the following core functionalities:</p>
 <ul class="simple">
-<li><p><strong>First-principles calculations</strong> with <a class="reference external" href="https://www.vasp.at/">VASP</a> for data generation</p></li>
-<li><p><strong>Machine learning potential training</strong> with <a class="reference external" href="https://github.com/deepmodeling/deepmd-kit">DeepMD-kit</a> package</p></li>
-<li><p><strong>Machine learning molecular dynamics (MLMD)</strong> simulations for efficient and scalable modeling</p></li>
+<li><p><strong>First-principles calculations</strong> with <a class="reference external" href="https://www.vasp.at/">VASP</a> and <a class="reference external" href="https://www.cp2k.org/">CP2K</a> for first-principle calculations</p></li>
+<li><p><strong>Machine learning model training</strong> with <a class="reference external" href="https://github.com/deepmodeling/deepmd-kit">DeepMD-kit</a> package</p></li>
+<li><p><strong>Machine learning molecular dynamics (ML/MD)</strong> simulations using <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a> MD engine for efficient and scalable modeling</p></li>
 <li><p><strong>Active learning</strong> for continuous model improvement through iterative training and data selection</p></li>
-<li><p><strong>Potential Energy Surface Exploration</strong> through integration with <a class="reference external" href="https://www.plumed.org/">PLUMED</a></p></li>
+<li><p><strong>Potential Energy Surface Exploration</strong> through integration with <a class="reference external" href="https://www.plumed.org/">PLUMED</a> library</p></li>
 </ul>
 </section>
 <section id="use-cases">
