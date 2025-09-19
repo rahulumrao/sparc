@@ -8,14 +8,14 @@
 
 ## Overview
 
-SPARC is a Python package build around the `ASE` wrapper that implements an automated workflow of developing machine learning potential for reactive chemical systems. It automates the process of identifying new structures in the configurational space without having to run initial _ab-initio_ MD simulations. ``SPARC`` is designed to work seamlessly within the Python framewrok, providing users with powerful tools for efficient simulation and model improvement.
+SPARC is a Python package build around the `ASE` wrapper that implements an automated workflow of developing machine learning potential for reactive chemical systems. It automates the process of identifying new structures in the configurational space without having to run initial _ab-initio_ MD simulations. SPARC is designed to work seamlessly within the Python framewrok to efficiently improve ML model.
 
 ## Key Features
 
-- Ab initio Molecular Dynamics (AIMD) using [VASP](https://www.vasp.at/)
+- Automated active learning workflow
+- _Ab initio_ molecular dynamics (AIMD) using [VASP](https://www.vasp.at/) and [CP2K](https://www.cp2k.org/)
 - Machine learning potential training with [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit)
-- Deep Potential Molecular Dynamics (DPMD) simulations
-- Active learning for continuous model improvement
+- ML/MD simulations and iterative model refinement
 - Reactive trajectory generation with [PLUMED](https://www.plumed.org/) integration
 
 ## Requirements
@@ -31,6 +31,7 @@ SPARC is a Python package build around the `ASE` wrapper that implements an auto
 - numpy
 - pandas
 - dpdata
+- cython
 
 ## Installation
 
@@ -41,7 +42,7 @@ SPARC is a Python package build around the `ASE` wrapper that implements an auto
 conda create -n sparc python=3.10
 conda activate sparc
 ```
-2. Use any of following methods to install [Deepmd-kit](https://docs.deepmodeling.com/projects/deepmd/en/r2/getting-started/install.html) :
+2. Use any of following methods to install [Deepmd-kit](https://docs.deepmodeling.com/projects/deepmd/en/r2/getting-started/install.html):
 
 - #### pip
 ```bash
@@ -51,21 +52,21 @@ pip install deepmd-kit[gpu,cu12]==2.2.10
 ```bash
 conda install deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults
 ```
-`Check known issues for any problem with DeePMD installation!`
+<!-- `Check known issues for any problem with DeePMD installation!` -->
 <!-- # conda create -n cuda_test deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults -->
 
-3. Clone and install SPARC:
+3. Clone repository and install pacakge:
 ```bash
 git clone https://github.com/rahulumrao/sparc.git
 cd sparc
 pip install .
 ```
 > [!Note]
->  Some Collective Variables (CVs), such as Generic CVs (e.g., SPRINT), are part of the `additional module` and are not included in a standard PLUMED installation. To enable them, we need to manually install PLUMED and wrap with Python:
+>  Some Collective Variables (CVs), such as Generic CVs (e.g., SPRINT), are part of the `additional module` and are not included in a standard PLUMED installation. To enable them, we need to manually install PLUMED and wrap with Python environment:
 
 4. Install PLUMED:
 
-Download [PLUMED](https://www.plumed.org/download) package from the website, and install with the following flags (make sure conda env is active):
+Download [PLUMED](https://www.plumed.org/download) package from the website, and install with the following flags (*make sure conda env is active*):
 ```bash
 ./configure --enable-mpi=no --enable-modules=all PYTHON_BIN=$(which python) --prefix=$CONDA_PREFIX
 
