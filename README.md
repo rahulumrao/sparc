@@ -96,7 +96,7 @@ export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
 ```
 
 2. **Prepare input file (see example below)**
-  - `navigate to script folder for input tempelate`
+  - _navigate to `scripts` folder for example input tempelate_
 ### Example Input File
 ```yaml
 general:
