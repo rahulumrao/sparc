@@ -188,7 +188,7 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 3. **ML/MD Simulation**
    - Run ML/MD using one of the ML model
    - Monitor atomic force deviations 
-  **Active Learning with Query-by-Committee**
+  - **Active Learning with Query-by-Committee**
     - Identifies structures high error in atomic forces
     - Performs first-principle calculations (labelling)
     - Retrain models with expanded dataset
