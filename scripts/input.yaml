@@ -10,29 +10,29 @@ dft_calculator:
   prec: "Normal"             # Precision level
   kgamma: True               # Gamma point calculation
   incar_file: "INCAR"        # Path to INCAR file
-  exe_command: "/home/prg/Softwares/VASP_gcc/VASP-642_CPU/bin/vasp_std"  # Full command to run VASP with MPI
+  exe_command: "/path/to/VASP/bin/vasp_std"  # Full command to run VASP with MPI
 
 # ASE MD simulation settings
 md_simulation:
   ensemble: "NVT"           # Ensemble for MD simulation
   thermostat:               # Thermostat configuration as a dictionary
     type: "Nose"            # Thermostat type (Nose-Hoover or Langevin)
-    tdamp: 2.0              # Damping parameter for Nose-Hoover thermostat
+    tdamp: 25.0             # Damping parameter for Nose-Hoover thermostat
   timestep_fs: 1.0          # TimeStep for MD simulation
   temperature: 300          # Temperature in Kelvin
-  steps: 10                 # Number of AIMD steps
+  steps: 10                 # Number of AIMD steps (If = 0, then no AIMD will be run)
   restart: False            # Whether to restart MD simulation from checkpoint
-  use_plumed: True          # Use PLUMED for MD simulation
+  use_dft_plumed: False     # Use PLUMED for MD simulation
 
 # Plumed settings
-plumed:
+dft_plumed:
   input_file: "plumed.dat"  # PLUMED input file
-  restart: True             # restart PLUMED
-  kT: 0.02585               # kT value PLUMED units
+  restart: False            # restart PLUMED
+  kT: 0.02585               # kT in [eV]
 
 # DeepMD settings
 deepmd_setup:
-  training: False            # Enable Deep potential training
+  training: True            # Enable Deep potential training
   data_dir: "DeePMD_training/00.data"  # Path to store training and validation data
   input_file: "input.json"  # Input file for DeepMD training
   skip_min: 0               # Minimum frames to skip
@@ -41,9 +41,9 @@ deepmd_setup:
   MdSimulation: True        # DeepPotential MD simulation (False/True)
   timestep_fs: 1.0          # Timestep
   md_steps: 2000            # MLP-MD steps
-  multiple_run: 5           # Run multiple MD-MLP run starting with different velocities
+  multiple_run: 1           # Run multiple MD-MLP run starting with different velocities
   log_frequency: 5          # Output frequency
-  use_plumed: True          # Default: False
+  use_plumed: False         # Default: False
   plumed_file: "plumed.dat" # Optional: defaults to "plumed.dat" if not specified
   umbrella_sampling: 
     enabled: False          # Default: False
@@ -54,8 +54,8 @@ active_learning: False
 learning_restart: False     # Restart AL loop from last step
 iteration: 10               # Active Learning iteration steps
 model_dev:
-  f_min_dev: 0.1
-  f_max_dev: 0.8
+  f_min_dev: 0.05
+  f_max_dev: 0.5
 
 # check metrics (optional)
 distance_metrics:
