@@ -203,17 +203,15 @@ Monitor log and output stored in `iter_xxxxxx` directories.
 - Utility tools for analysing model accuracy, active learning status, and structural properties.
 
 ## Planned Updates
-- Code refinement in progress
-- Support for ORCA and xTB calculators
+- Support for ORCA, Psi4 and xTB calculators
 - Documentation under development
 
 > [!IMPORTANT]  
-> There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check [documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.
+> There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check [DeePMD documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.
 
 ## Limitations
 
 - Currently only supports DeepMD-kit 2.2.10 (newer versions not yet supported)
-- Limited to VASP for DFT calculations
 - Documentation is still being developed
 
 ## Known Issue
@@ -246,7 +244,7 @@ pip install sphinx sphinx-autodoc-typehints sphinx_rtd_theme
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](./LICENSE).
 
 <!-- ## Support -->
 
