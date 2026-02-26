@@ -52,7 +52,7 @@ Several groups have coupled AL with enhanced sampling or pathway exploration tec
 
 `SPARC` currently supports VASP [@hafner2008vasp] and CP2K [@hutter2014cp2k] for electronic structure calculation, although this could be readily expanded in the future. For MLIP training we use DeePMD-kit architecture [@wang2018deepmd], with the ensemble model approach for query-by-committee (QbC) uncertainty estimation [@miksch2021strategiesMLPs]. ML/MD simulations are run using ASE MD engine coupled together with both DeePMD and PLUMED calculator.
 
-ML/MD output is stored in ASE trajectory formats as this enables the broader ecosystem of analysis tools that already support ASE compatible formats. Since `SPARC` manages all stages via ASE, no additional infrastructure is needed beyond a Python environment with the required dependencies installed. This makes the workflow highly portable across computing environments and suitable for both exploratory studies and large-scale production run.
+ML/MD output is stored in ASE trajectory formats as this enables the broader ecosystem of analysis tools that already support ASE compatible formats. Since `SPARC` manages all stages via ASE, the workfow requires a Python environment with necessary dependencies. This makes the workflow highly portable across computing environments and suitable for both exploratory studies and large-scale production run.
 
 ![A schematic representation of AL cycle for training MLIPs. `SPARC` implements an additional block (PES exploration) to this cycle for systematic exploration of the configurational space.\label{fig:flowchart}](figures/flowchart.png){ width=1500px }
 
@@ -101,5 +101,4 @@ This work was partially supported by NSF award EFRI-2132219 to RV and JP, and th
 - [VASP](https://www.vasp.at/) and [CP2K](https://www.cp2k.org/): first-principles labeling.  
 
 # References
-
 
