@@ -54,7 +54,7 @@ tar -xvf AmmoniaBorate.tar.gz
 If you use this dataset in your research, please cite:
 
 ```bibtex
-@software{sparc,
+@dataset{sparc,
   author = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
   doi    = {https://doi.org/10.5281/zenodo.18261342},
   license = {MIT},
