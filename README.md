@@ -288,10 +288,10 @@ If you use this software or the dataset in your research, please cite:
   author = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
   doi    = {https://doi.org/10.5281/zenodo.19389278},
   license = {MIT},
-  month  = {jan},
+  month  = {Apr},
   title  = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
   url    = {https://github.com/rahulumrao/sparc},
-  year   = {2025}
+  year   = {2026}
 }
 
 @dataset{sparc,
