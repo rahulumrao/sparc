@@ -301,6 +301,6 @@ If you use this software or the dataset in your research, please cite:
   month  = {jan},
   title  = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
   url    = {https://zenodo.org/records/18261342},
-  year   = {2025}
+  year   = {2026}
 }
 ```
