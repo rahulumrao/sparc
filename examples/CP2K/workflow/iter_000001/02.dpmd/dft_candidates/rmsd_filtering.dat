@@ -1,0 +1,12 @@
+# RMSD Filtering Log
+# Generated: 2026-04-17 23:26:26
+# RMSD Threshold: 0.050 Å
+# Exclude Hydrogen: True
+#
+# Status   Serial   Frame    MaxFDev      MinRMSD      Action         
+#================================================================================
+ACCEPT         1       1      0.1021       0.321  Selected
+ACCEPT         2      99      0.1154       0.074  Selected
+SKIP         ---     123      0.1052       0.004  RMSD < 0.050
+SKIP         ---     143      0.1308       0.034  RMSD < 0.050
+SKIP         ---     158      0.1469       0.031  RMSD < 0.050

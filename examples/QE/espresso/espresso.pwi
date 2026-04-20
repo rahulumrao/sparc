@@ -1,0 +1,52 @@
+&CONTROL
+   calculation      = 'scf'
+   verbosity        = 'low'
+   restart_mode     = 'from_scratch'
+   tstress          = .true.
+   tprnfor          = .true.
+   outdir           = './qe_out'
+   pseudo_dir       = '/home/rverma7/Softwares/qe-7.0/pseudo/SSSP_1.3.0_PBE'
+/
+&SYSTEM
+   ibrav            = 0
+   ecutwfc          = 40
+   ecutrho          = 320
+   occupations      = 'fixed'
+   ntyp             = 3
+   nat              = 8
+/
+&ELECTRONS
+   electron_maxstep = 100
+   conv_thr         = 1e-05
+   mixing_beta      = 0.3
+/
+&IONS
+/
+&CELL
+/
+&FCP
+/
+&RISM
+/
+ATOMIC_SPECIES
+B 10.81 b_pbe_v1.4.uspp.F.UPF
+H 1.008 H.pbe-rrkjus_psl.1.0.0.UPF
+N 14.007 N.pbe-n-radius_5.UPF
+
+K_POINTS gamma
+
+CELL_PARAMETERS angstrom
+12.00000000000000 0.00000000000000 0.00000000000000
+0.00000000000000 12.00000000000000 0.00000000000000
+0.00000000000000 0.00000000000000 12.00000000000000
+
+ATOMIC_POSITIONS angstrom
+B 5.7246816513 6.0043376106 5.1542363250  
+H 5.4066351052 6.6375266080 7.3424871891  
+H 6.7409638802 5.8472213922 6.9590978242  
+H 5.2446826984 5.0285455002 7.3155563681  
+H 5.1277362746 6.9714544998 4.9775247402  
+H 5.1005053699 5.1546397341 4.6575128109  
+H 6.8994946301 6.1626820199 4.9735702734  
+N 5.7518482371 5.8167660943 6.8804190547  
+

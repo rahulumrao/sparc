@@ -1,0 +1,38 @@
+# ============================================================
+# SPARC - CP2K Basic Example (Ammonia Borane, NH3BH3)
+# ============================================================
+# Minimal single-shot AIMD run using CP2K as DFT engine.
+# Run from this directory:
+#   python /path/to/sparc.py -i input.yaml
+
+general:
+  structure_file: "../AmmoniaBorate.xyz"
+
+dft_calculator:
+  engine: "CP2K"
+  template_file: "cp2k_template.inp"
+  exe_command: "mpirun -np 2 /home/prg/Softwares/cp2k_gcc/exe/local/cp2k_shell.psmp" 
+
+cp2k:
+    xc: 'PADE'
+    basis_set_file: 'BASIS_MOLOPT'
+    potential_file: 'GTH_POTENTIALS'
+
+aimd_setup:
+  ensemble: "NVT"
+  temperature: 300
+  thermostat:
+    type: "Langevin"
+    friction: 0.10
+  timestep_fs: 0.5
+  steps: 100
+  log_frequency: 1
+  restart: false
+  plumed:
+    enabled: false
+
+output:
+  log_file: "AseMD.log"
+  xyz_file: "AseTraj.xyz"
+  aimdtraj_file: "AseMD.traj"
+  dptraj_file: "dpmd.traj"

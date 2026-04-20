@@ -1,0 +1,204 @@
+================================================================================
+BEGIN CALCULATION - 2026-04-15 15:45:47
+================================================================================
+
+
+         ######  ########     ###    ########   ######  
+        ##    ## ##     ##   ## ##   ##     ## ##    ## 
+        ##       ##     ##  ##   ##  ##     ## ##       
+         ######  ########  ##     ## ########  ##       
+              ## ##        ######### ##   ##   ##       
+        ##    ## ##        ##     ## ##    ##  ##    ## 
+         ######  ##        ##     ## ##     ##  ###### 
+         --v0.2.0
+
+[SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning
+[SPARC][INFO] Version: 0.2.0
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Working directory: /home/rverma7/My_Program/0.3_sparc/examples/QE
+[SPARC][INFO] Configuration file: input.yaml
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     YAML configuration loaded successfully!                     
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Using structure file: AmmoniaBorate.xyz (1 of 1)
+[SPARC][INFO] WORKFLOW PARAMETERS :
+[SPARC][INFO] ---------------------
+[SPARC][INFO] Structure FileName/s           ['AmmoniaBorate.xyz']
+[SPARC][INFO] Number of Atoms                8
+[SPARC][INFO] Chemical Formula               H6BN
+[SPARC][INFO] 
+[SPARC][INFO] DFT Engine                     QE
+[SPARC][INFO] DFT Tempelate File             qe_template.inp
+[SPARC][INFO] DFT Executable                 mpirun -np 4 pw.x
+[SPARC][INFO] 
+[SPARC][INFO] Active Learning                Disabled
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] 
+[SPARC][INFO] Setting up QE calculator...
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]            QUANTUM ESPRESSO CALCULATOR            
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]   Executable               mpirun -np 4 pw.x
+[SPARC][INFO]   Pseudo Dir               /home/rverma7/Softwares/qe-7.0/pseudo/SSSP_1.3.0_PBE
+[SPARC][INFO]   K-points                 Gamma
+[SPARC][INFO]   K-offset                 None
+[SPARC][INFO]   Directory                espresso
+[SPARC][INFO] 
+[SPARC][INFO]   Pseudopotentials:
+[SPARC][INFO]     B      b_pbe_v1.4.uspp.F.UPF
+[SPARC][INFO]     N      N.pbe-n-radius_5.UPF
+[SPARC][INFO]     H      H.pbe-rrkjus_psl.1.0.0.UPF
+[SPARC][INFO] 
+[SPARC][INFO]   Input Parameters:
+[SPARC][INFO]     restart_mode             from_scratch
+[SPARC][INFO]     calculation              scf
+[SPARC][INFO]     tprnfor                  True
+[SPARC][INFO]     tstress                  True
+[SPARC][INFO]     outdir                   ./qe_out
+[SPARC][INFO]     verbosity                low
+[SPARC][INFO]     ibrav                    0
+[SPARC][INFO]     ecutwfc                  40
+[SPARC][INFO]     ecutrho                  320
+[SPARC][INFO]     occupations              fixed
+[SPARC][INFO]     conv_thr                 1e-05
+[SPARC][INFO]     mixing_beta              0.3
+[SPARC][INFO]     electron_maxstep         100
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] Quantum ESPRESSO calculator setup successfully
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Ab-initio MD using NVT-Langevin at 300K                     
+[SPARC][INFO] MD Ensemble                    NVT
+[SPARC][INFO] Temperature                    300.0 K
+[SPARC][INFO] MD Thermostat                  Langevin
+[SPARC][INFO] Timestep                       1.00 fs
+[SPARC][INFO] AIMD Steps                     100
+[SPARC][INFO] Output Trajectory              AseMD.traj
+[SPARC][INFO] Output Logfile                 AseMD.log
+[SPARC][INFO] 
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang.^3)
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -457.9262      0.3102    300.00    0.2102   1728.00
+[SPARC][INFO] 1          -457.9586      0.2943    284.58    0.1849   1728.00
+[SPARC][INFO] 2          -457.9995      0.2949    285.15    0.1769   1728.00
+[SPARC][INFO] 3          -458.0606      0.2450    236.92    0.1719   1728.00
+[SPARC][INFO] 4          -458.1333      0.2862    276.75    0.1668   1728.00
+[SPARC][INFO] 5          -458.2015      0.3595    347.64    0.1702   1728.00
+[SPARC][INFO] 6          -458.2514      0.3551    343.39    0.1654   1728.00
+[SPARC][INFO] 7          -458.3216      0.4429    428.35    0.1336   1728.00
+[SPARC][INFO] 8          -458.3819      0.5058    489.10    0.0751   1728.00
+[SPARC][INFO] 9          -458.3604      0.4888    472.67    0.0243   1728.00
+[SPARC][INFO] 10         -458.2900      0.3695    357.32   -0.0032   1728.00
+[SPARC][INFO] 11         -458.2773      0.4126    398.97   -0.0140   1728.00
+[SPARC][INFO] 12         -458.3213      0.5100    493.22   -0.0001   1728.00
+[SPARC][INFO] 13         -458.3716      0.4513    436.46    0.0062   1728.00
+[SPARC][INFO] 14         -458.3376      0.3912    378.33    0.0006   1728.00
+[SPARC][INFO] 15         -458.2879      0.2822    272.85   -0.0145   1728.00
+[SPARC][INFO] 16         -458.2720      0.2915    281.85   -0.0549   1728.00
+[SPARC][INFO] 17         -458.2550      0.2757    266.65   -0.0976   1728.00
+[SPARC][INFO] 18         -458.2291      0.3047    294.62   -0.1212   1728.00
+[SPARC][INFO] 19         -458.2166      0.4217    407.76   -0.1347   1728.00
+[SPARC][INFO] 20         -458.2189      0.3255    314.75   -0.1239   1728.00
+[SPARC][INFO] 21         -458.2250      0.2932    283.55   -0.0765   1728.00
+[SPARC][INFO] 22         -458.2209      0.3571    345.29   -0.0445   1728.00
+[SPARC][INFO] 23         -458.2016      0.3338    322.79   -0.0199   1728.00
+[SPARC][INFO] 24         -458.1598      0.2747    265.63   -0.0167   1728.00
+[SPARC][INFO] 25         -458.1169      0.2978    287.98   -0.0495   1728.00
+[SPARC][INFO] 26         -458.0435      0.3306    319.75   -0.1169   1728.00
+[SPARC][INFO] 27         -457.9295      0.2677    258.92   -0.1899   1728.00
+[SPARC][INFO] 28         -457.8717      0.2582    249.69   -0.2528   1728.00
+[SPARC][INFO] 29         -457.8990      0.4136    399.92   -0.2639   1728.00
+[SPARC][INFO] 30         -457.9661      0.5094    492.61   -0.2131   1728.00
+[SPARC][INFO] 31         -457.9509      0.4949    478.64   -0.1051   1728.00
+[SPARC][INFO] 32         -457.8224      0.4621    446.90    0.0299   1728.00
+[SPARC][INFO] 33         -457.7614      0.3947    381.71    0.1067   1728.00
+[SPARC][INFO] 34         -457.8498      0.5421    524.19    0.0877   1728.00
+[SPARC][INFO] 35         -457.8628      0.4682    452.73    0.0095   1728.00
+[SPARC][INFO] 36         -457.8288      0.3589    347.11   -0.0926   1728.00
+[SPARC][INFO] 37         -457.8273      0.5318    514.30   -0.1486   1728.00
+[SPARC][INFO] 38         -457.8627      0.5059    489.26   -0.1772   1728.00
+[SPARC][INFO] 39         -457.9136      0.4020    388.80   -0.2014   1728.00
+[SPARC][INFO] 40         -457.9273      0.5073    490.61   -0.1782   1728.00
+[SPARC][INFO] 41         -457.9343      0.5722    553.39   -0.1216   1728.00
+[SPARC][INFO] 42         -457.9904      0.5648    546.21   -0.0948   1728.00
+[SPARC][INFO] 43         -458.0336      0.5409    523.07   -0.0810   1728.00
+[SPARC][INFO] 44         -457.9698      0.4366    422.23   -0.0727   1728.00
+[SPARC][INFO] 45         -457.9287      0.3585    346.71   -0.1075   1728.00
+[SPARC][INFO] 46         -457.9910      0.4605    445.33   -0.1584   1728.00
+[SPARC][INFO] 47         -458.0489      0.4581    443.04   -0.1963   1728.00
+[SPARC][INFO] 48         -458.0476      0.4251    411.11   -0.1904   1728.00
+[SPARC][INFO] 49         -458.0418      0.3553    343.64   -0.1601   1728.00
+[SPARC][INFO] 50         -458.1111      0.3831    370.45   -0.1028   1728.00
+[SPARC][INFO] 51         -458.2013      0.5915    571.96   -0.0296   1728.00
+[SPARC][INFO] 52         -458.2189      0.6172    596.84    0.0285   1728.00
+[SPARC][INFO] 53         -458.0978      0.4058    392.38    0.0516   1728.00
+[SPARC][INFO] 54         -458.0886      0.3515    339.88   -0.0164   1728.00
+[SPARC][INFO] 55         -458.1032      0.3542    342.56   -0.0897   1728.00
+[SPARC][INFO] 56         -458.0678      0.3868    374.03   -0.1408   1728.00
+[SPARC][INFO] 57         -458.0197      0.3993    386.11   -0.1480   1728.00
+[SPARC][INFO] 58         -457.9669      0.2904    280.83   -0.1255   1728.00
+[SPARC][INFO] 59         -457.9529      0.3299    319.01   -0.0755   1728.00
+[SPARC][INFO] 60         -457.9819      0.2567    248.21   -0.0116   1728.00
+[SPARC][INFO] 61         -457.9973      0.2799    270.69    0.0668   1728.00
+[SPARC][INFO] 62         -458.0211      0.2235    216.17    0.0928   1728.00
+[SPARC][INFO] 63         -458.0686      0.3914    378.54    0.0781   1728.00
+[SPARC][INFO] 64         -458.1270      0.5076    490.89    0.0378   1728.00
+[SPARC][INFO] 65         -458.1900      0.4863    470.24    0.0054   1728.00
+[SPARC][INFO] 66         -458.2341      0.4442    429.58   -0.0214   1728.00
+[SPARC][INFO] 67         -458.2377      0.4536    438.65   -0.0331   1728.00
+[SPARC][INFO] 68         -458.1969      0.3661    353.99   -0.0571   1728.00
+[SPARC][INFO] 69         -458.1645      0.3755    363.13   -0.0736   1728.00
+[SPARC][INFO] 70         -458.1040      0.2282    220.71   -0.0862   1728.00
+[SPARC][INFO] 71         -458.0549      0.2171    209.92   -0.0709   1728.00
+[SPARC][INFO] 72         -458.0693      0.2310    223.38   -0.0267   1728.00
+[SPARC][INFO] 73         -458.1645      0.1680    162.43   -0.0132   1728.00
+[SPARC][INFO] 74         -458.2307      0.1813    175.36   -0.0360   1728.00
+[SPARC][INFO] 75         -458.2466      0.1683    162.71   -0.0831   1728.00
+[SPARC][INFO] 76         -458.2390      0.1853    179.15   -0.1097   1728.00
+[SPARC][INFO] 77         -458.2259      0.1401    135.52   -0.1301   1728.00
+[SPARC][INFO] 78         -458.2318      0.1315    127.21   -0.1235   1728.00
+[SPARC][INFO] 79         -458.2605      0.1680    162.47   -0.0854   1728.00
+[SPARC][INFO] 80         -458.2821      0.1727    167.05   -0.0356   1728.00
+[SPARC][INFO] 81         -458.2908      0.2005    193.86    0.0264   1728.00
+[SPARC][INFO] 82         -458.2910      0.2032    196.46    0.0492   1728.00
+[SPARC][INFO] 83         -458.2915      0.3009    290.96    0.0457   1728.00
+[SPARC][INFO] 84         -458.2821      0.2465    238.39    0.0095   1728.00
+[SPARC][INFO] 85         -458.2676      0.4132    399.53   -0.0343   1728.00
+[SPARC][INFO] 86         -458.2239      0.3571    345.30   -0.0856   1728.00
+[SPARC][INFO] 87         -458.1605      0.2549    246.45   -0.0999   1728.00
+[SPARC][INFO] 88         -458.1442      0.2452    237.11   -0.0695   1728.00
+[SPARC][INFO] 89         -458.1401      0.2321    224.46   -0.0503   1728.00
+[SPARC][INFO] 90         -458.1553      0.3373    326.19   -0.0336   1728.00
+[SPARC][INFO] 91         -458.1383      0.2062    199.37   -0.0185   1728.00
+[SPARC][INFO] 92         -458.1126      0.2025    195.84   -0.0120   1728.00
+[SPARC][INFO] 93         -458.1034      0.2593    250.77   -0.0366   1728.00
+[SPARC][INFO] 94         -458.0941      0.2794    270.16   -0.0568   1728.00
+[SPARC][INFO] 95         -458.0948      0.3448    333.42   -0.0539   1728.00
+[SPARC][INFO] 96         -458.0981      0.4002    387.01   -0.0431   1728.00
+[SPARC][INFO] 97         -458.0789      0.2824    273.07   -0.0263   1728.00
+[SPARC][INFO] 98         -458.0458      0.2693    260.38    0.0096   1728.00
+[SPARC][INFO] 99         -458.0243      0.3036    293.63    0.0572   1728.00
+[SPARC][INFO] 100        -458.0334      0.2767    267.56    0.1197   1728.00
+[SPARC][INFO] PyTorch backend is functional
+[SPARC][INFO] Detected DeePMD-kit v3 with PYTORCH backend
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                         ACTIVE LEARNING CYCLE : DISABLED                        
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+
+================================================================================
+END CALCULATION - 2026-04-15 16:15:27
+Total Runtime: 0:29:40.128452
+================================================================================

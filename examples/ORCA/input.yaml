@@ -1,0 +1,32 @@
+# ============================================================
+# SPARC - ORCA Basic Example (Ammonia Borane, NH3BH3)
+# ============================================================
+# ORCA is a non-periodic quantum chemistry code.
+# Suitable for molecular clusters and gas-phase systems.
+
+general:
+  structure_file: "../AmmoniaBorate.xyz"
+
+dft_calculator:
+  engine: "ORCA"
+  template_file: "orca_template.inp"
+  exe_command: "/home/rverma7/Softwares/ORCA/orca"         # Full path required for ORCA
+
+aimd_setup:
+  ensemble: "NVT"
+  temperature: 300
+  thermostat:
+    type: "Langevin"
+    friction: 0.10
+  timestep_fs: 0.5
+  steps: 100
+  log_frequency: 1
+  restart: false
+  plumed:
+    enabled: false
+
+output:
+  log_file: "AseMD.log"
+  xyz_file: "AseTraj.xyz"
+  aimdtraj_file: "AseMD.traj"
+  dptraj_file: "dpmd.traj"

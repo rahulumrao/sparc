@@ -1,0 +1,39 @@
+# ============================================================
+# SPARC - CP2K NVT (Canonical) Ensemble
+# Ammonia Borane (NH3BH3), PBE/DZVP-MOLOPT
+# ============================================================
+# NVT: constant Number, Volume, Temperature.
+# Thermostat options: Langevin (friction-based) or Nose (Nose-Hoover chain).
+
+general:
+  structure_file: "../../../AmmoniaBorate.xyz"
+
+dft_calculator:
+  engine: "CP2K"
+  template_file: "cp2k_template.inp"
+  exe_command: "mpirun -np 2 /home/prg/Softwares/cp2k_gcc/exe/local/cp2k_shell.psmp"
+
+cp2k:
+    xc: 'PADE'
+    basis_set_file: 'BASIS_MOLOPT'
+    potential_file: 'GTH_POTENTIALS'
+
+aimd_setup:
+  ensemble: "NVT"
+  temperature: 300                      # Target temperature [K]
+  thermostat:
+    type: "Langevin"                    # "Langevin" or "Nose"
+    friction: 0.10                      # Langevin friction coefficient [1/fs]
+    # tdamp: 25.0                       # Nose-Hoover damping [fs] (use with type: Nose)
+  timestep_fs: 1.0
+  steps: 100
+  log_frequency: 1
+  restart: false
+  plumed:
+    enabled: false
+
+output:
+  log_file: "AseMD.log"
+  xyz_file: "AseTraj.xyz"
+  aimdtraj_file: "AseMD.traj"
+  dptraj_file: "dpmd.traj"

@@ -1,0 +1,684 @@
+
+         ######  ########     ###    ########   ######  
+        ##    ## ##     ##   ## ##   ##     ## ##    ## 
+        ##       ##     ##  ##   ##  ##     ## ##       
+         ######  ########  ##     ## ########  ##       
+              ## ##        ######### ##   ##   ##       
+        ##    ## ##        ##     ## ##    ##  ##    ## 
+         ######  ##        ##     ## ##     ##  ###### 
+         --v0.2.0
+
+[SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning
+[SPARC][INFO] Version: 0.2.0
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Working directory: /home/rverma7/My_Program/0.3_sparc/examples/VASP
+[SPARC][INFO] Configuration file: input.yaml
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     YAML configuration loaded successfully!                     
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Using structure file: AmmoniaBorate.xyz
+[SPARC][INFO] WORKFLOW PARAMETERS :
+[SPARC][INFO] ---------------------
+[SPARC][INFO] Structure FileName/s           AmmoniaBorate.xyz
+[SPARC][INFO] Number of Atoms                8
+[SPARC][INFO] Chemical Formula               H6BN
+[SPARC][INFO] 
+[SPARC][INFO] DFT Engine                     VASP
+[SPARC][INFO] DFT Tempelate File             INCAR
+[SPARC][INFO] DFT Executable                 mpirun -np 4 vasp_std
+[SPARC][INFO] 
+[SPARC][INFO] Active Learning                Disabled
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] 
+[SPARC][INFO] Setting up VASP calculator...
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]               VASP INPUT PARAMETERS               
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] | SYSTEM : 13-Butadiene
+[SPARC][INFO] | ISTART : 0
+[SPARC][INFO] | ICHARG : 2
+[SPARC][INFO] | ISPIN  : 1
+[SPARC][INFO] | ENCUT  : 300.0
+[SPARC][INFO] | LCHARG : False
+[SPARC][INFO] | LWAVE  : False
+[SPARC][INFO] | ISMEAR : 0
+[SPARC][INFO] | SIGMA  : 0.05
+[SPARC][INFO] | EDIFF  : 1e-05
+[SPARC][INFO] | LPLANE : True
+[SPARC][INFO] | NCORE  : 2
+[SPARC][INFO] | LSCALU : False
+[SPARC][INFO] | NSIM   : 4
+[SPARC][INFO] | NWRITE : 2
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] VASP Calculator Setup Successfully!
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Ab-initio MD using NVT-Langevin at 300K                     
+[SPARC][INFO] MD Ensemble                    NVT
+[SPARC][INFO] Temperature                    300.0 K
+[SPARC][INFO] MD Thermostat                  Langevin
+[SPARC][INFO] Timestep                       1.00 fs
+[SPARC][INFO] AIMD Steps                     100
+[SPARC][INFO] Output Trajectory              AseMD.traj
+[SPARC][INFO] Output Logfile                 AseMD.log
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] PLUMED ENABLED FOR MD SIMULATION
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] PLUMED output files will be written in iter_000000/00.dft
++++ Loading the PLUMED kernel runtime +++
++++ PLUMED_KERNEL="/home/rverma7/anaconda3/envs/sparcGNN/lib/libplumedKernel.so" +++
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang.^3)
+[SPARC][INFO] --------------------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rverma7/anaconda3/envs/sparcGNN/bin/sparc", line 7, in <module>
+    sys.exit(main())
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/sparc/sparc.py", line 260, in main
+    _main_workflow()
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/sparc/sparc.py", line 417, in _main_workflow
+    ExecuteAbInitioDynamics(
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/sparc/src/ase_md.py", line 435, in ExecuteAbInitioDynamics
+    dyn.run(steps)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/md/md.py", line 169, in run
+    return Dynamics.run(self, steps=steps)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/optimize/optimize.py", line 283, in run
+    for converged in Dynamics.irun(self, steps=steps):
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/optimize/optimize.py", line 233, in irun
+    self.optimizable.get_forces()
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/optimize/optimize.py", line 34, in get_forces
+    return self.atoms.get_forces()
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/atoms.py", line 827, in get_forces
+    forces = self._calc.get_forces(self)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/abc.py", line 30, in get_forces
+    return self.get_property('forces', atoms)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/calculator.py", line 538, in get_property
+    self.calculate(atoms, [name], system_changes)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/plumed.py", line 164, in calculate
+    comp = self.compute_energy_and_forces(self.atoms.get_positions(),
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/plumed.py", line 171, in compute_energy_and_forces
+    unbiased_energy = self.calc.get_potential_energy(self.atoms)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/abc.py", line 24, in get_potential_energy
+    return self.get_property(name, atoms)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/calculator.py", line 538, in get_property
+    self.calculate(atoms, [name], system_changes)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/vasp/vasp.py", line 332, in calculate
+    self.write_input(self.atoms, properties, system_changes)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/vasp/vasp.py", line 486, in write_input
+    self.initialize(atoms)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/vasp/create_input.py", line 1544, in initialize
+    self.ppp_list = self._build_pp_list(atoms,
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/vasp/create_input.py", line 1496, in _build_pp_list
+    raise RuntimeError(msg)
+RuntimeError: Looking for PP for potpaw_PBE/B/POTCAR
+                        The pseudopotentials are expected to be in:
+                        LDA:  $VASP_PP_PATH/potpaw/
+                        PBE:  $VASP_PP_PATH/potpaw_PBE/
+                        PW91: $VASP_PP_PATH/potpaw_GGA/
+
+                        No pseudopotential for B!
+
+         ######  ########     ###    ########   ######  
+        ##    ## ##     ##   ## ##   ##     ## ##    ## 
+        ##       ##     ##  ##   ##  ##     ## ##       
+         ######  ########  ##     ## ########  ##       
+              ## ##        ######### ##   ##   ##       
+        ##    ## ##        ##     ## ##    ##  ##    ## 
+         ######  ##        ##     ## ##     ##  ###### 
+         --v0.2.0
+
+[SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning
+[SPARC][INFO] Version: 0.2.0
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Working directory: /home/rverma7/My_Program/0.3_sparc/examples/VASP
+[SPARC][INFO] Configuration file: input.yaml
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     YAML configuration loaded successfully!                     
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Using structure file: AmmoniaBorate.xyz
+[SPARC][INFO] WORKFLOW PARAMETERS :
+[SPARC][INFO] ---------------------
+[SPARC][INFO] Structure FileName/s           AmmoniaBorate.xyz
+[SPARC][INFO] Number of Atoms                8
+[SPARC][INFO] Chemical Formula               H6BN
+[SPARC][INFO] 
+[SPARC][INFO] DFT Engine                     VASP
+[SPARC][INFO] DFT Tempelate File             INCAR
+[SPARC][INFO] DFT Executable                 mpirun -np 4 vasp_std
+[SPARC][INFO] 
+[SPARC][INFO] Active Learning                Disabled
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] 
+[SPARC][INFO] Setting up VASP calculator...
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]               VASP INPUT PARAMETERS               
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] | SYSTEM : 13-Butadiene
+[SPARC][INFO] | ISTART : 0
+[SPARC][INFO] | ICHARG : 2
+[SPARC][INFO] | ISPIN  : 1
+[SPARC][INFO] | ENCUT  : 300.0
+[SPARC][INFO] | LCHARG : False
+[SPARC][INFO] | LWAVE  : False
+[SPARC][INFO] | ISMEAR : 0
+[SPARC][INFO] | SIGMA  : 0.05
+[SPARC][INFO] | EDIFF  : 1e-05
+[SPARC][INFO] | LPLANE : True
+[SPARC][INFO] | NCORE  : 2
+[SPARC][INFO] | LSCALU : False
+[SPARC][INFO] | NSIM   : 4
+[SPARC][INFO] | NWRITE : 2
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] VASP Calculator Setup Successfully!
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Ab-initio MD using NVT-Langevin at 300K                     
+[SPARC][INFO] MD Ensemble                    NVT
+[SPARC][INFO] Temperature                    300.0 K
+[SPARC][INFO] MD Thermostat                  Langevin
+[SPARC][INFO] Timestep                       1.00 fs
+[SPARC][INFO] AIMD Steps                     100
+[SPARC][INFO] Output Trajectory              AseMD.traj
+[SPARC][INFO] Output Logfile                 AseMD.log
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] PLUMED ENABLED FOR MD SIMULATION
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] PLUMED output files will be written in iter_000000/00.dft
++++ Loading the PLUMED kernel runtime +++
++++ PLUMED_KERNEL="/home/rverma7/anaconda3/envs/sparcGNN/lib/libplumedKernel.so" +++
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang.^3)
+[SPARC][INFO] --------------------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rverma7/anaconda3/envs/sparcGNN/bin/sparc", line 7, in <module>
+    sys.exit(main())
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/sparc/sparc.py", line 260, in main
+    _main_workflow()
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/sparc/sparc.py", line 417, in _main_workflow
+    ExecuteAbInitioDynamics(
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/sparc/src/ase_md.py", line 435, in ExecuteAbInitioDynamics
+    dyn.run(steps)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/md/md.py", line 169, in run
+    return Dynamics.run(self, steps=steps)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/optimize/optimize.py", line 283, in run
+    for converged in Dynamics.irun(self, steps=steps):
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/optimize/optimize.py", line 233, in irun
+    self.optimizable.get_forces()
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/optimize/optimize.py", line 34, in get_forces
+    return self.atoms.get_forces()
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/atoms.py", line 827, in get_forces
+    forces = self._calc.get_forces(self)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/abc.py", line 30, in get_forces
+    return self.get_property('forces', atoms)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/calculator.py", line 538, in get_property
+    self.calculate(atoms, [name], system_changes)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/plumed.py", line 164, in calculate
+    comp = self.compute_energy_and_forces(self.atoms.get_positions(),
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/plumed.py", line 171, in compute_energy_and_forces
+    unbiased_energy = self.calc.get_potential_energy(self.atoms)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/abc.py", line 24, in get_potential_energy
+    return self.get_property(name, atoms)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/calculator.py", line 538, in get_property
+    self.calculate(atoms, [name], system_changes)
+  File "/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/ase/calculators/vasp/vasp.py", line 340, in calculate
+    raise calculator.CalculationFailed(
+ase.calculators.calculator.CalculationFailed: vasp in /home/rverma7/My_Program/0.3_sparc/examples/VASP/vasp returned an error: 66 stderr 
+
+         ######  ########     ###    ########   ######  
+        ##    ## ##     ##   ## ##   ##     ## ##    ## 
+        ##       ##     ##  ##   ##  ##     ## ##       
+         ######  ########  ##     ## ########  ##       
+              ## ##        ######### ##   ##   ##       
+        ##    ## ##        ##     ## ##    ##  ##    ## 
+         ######  ##        ##     ## ##     ##  ###### 
+         --v0.2.0
+
+[SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning
+[SPARC][INFO] Version: 0.2.0
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Working directory: /home/rverma7/My_Program/0.3_sparc/examples/VASP
+[SPARC][INFO] Configuration file: input.yaml
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     YAML configuration loaded successfully!                     
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Using structure file: AmmoniaBorate.xyz
+[SPARC][INFO] WORKFLOW PARAMETERS :
+[SPARC][INFO] ---------------------
+[SPARC][INFO] Structure FileName/s           AmmoniaBorate.xyz
+[SPARC][INFO] Number of Atoms                8
+[SPARC][INFO] Chemical Formula               H6BN
+[SPARC][INFO] 
+[SPARC][INFO] DFT Engine                     VASP
+[SPARC][INFO] DFT Tempelate File             INCAR
+[SPARC][INFO] DFT Executable                 mpirun -np 4 vasp_std
+[SPARC][INFO] 
+[SPARC][INFO] Active Learning                Disabled
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] 
+[SPARC][INFO] Setting up VASP calculator...
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]               VASP INPUT PARAMETERS               
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] | SYSTEM : 13-Butadiene
+[SPARC][INFO] | ISTART : 0
+[SPARC][INFO] | ICHARG : 2
+[SPARC][INFO] | ISPIN  : 1
+[SPARC][INFO] | ENCUT  : 300.0
+[SPARC][INFO] | LCHARG : False
+[SPARC][INFO] | LWAVE  : False
+[SPARC][INFO] | ISMEAR : 0
+[SPARC][INFO] | SIGMA  : 0.05
+[SPARC][INFO] | EDIFF  : 1e-05
+[SPARC][INFO] | LPLANE : True
+[SPARC][INFO] | NCORE  : 2
+[SPARC][INFO] | LSCALU : False
+[SPARC][INFO] | NSIM   : 4
+[SPARC][INFO] | NWRITE : 2
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] VASP Calculator Setup Successfully!
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Ab-initio MD using NVT-Langevin at 300K                     
+[SPARC][INFO] MD Ensemble                    NVT
+[SPARC][INFO] Temperature                    300.0 K
+[SPARC][INFO] MD Thermostat                  Langevin
+[SPARC][INFO] Timestep                       1.00 fs
+[SPARC][INFO] AIMD Steps                     100
+[SPARC][INFO] Output Trajectory              AseMD.traj
+[SPARC][INFO] Output Logfile                 AseMD.log
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] PLUMED ENABLED FOR MD SIMULATION
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] PLUMED output files will be written in iter_000000/00.dft
++++ Loading the PLUMED kernel runtime +++
++++ PLUMED_KERNEL="/home/rverma7/anaconda3/envs/sparcGNN/lib/libplumedKernel.so" +++
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang.^3)
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0           -36.0932      0.3102    300.00
+[SPARC][INFO] 1           -36.0897      0.3424    331.13
+[SPARC][INFO] 2           -36.0589      0.3883    375.47
+[SPARC][INFO] 3           -36.0834      0.4330    418.72
+[SPARC][INFO] 4           -36.1837      0.4191    405.32
+[SPARC][INFO] 5           -36.3106      0.5463    528.31
+[SPARC][INFO] 6           -36.3967      0.6003    580.54
+[SPARC][INFO] 7           -36.4248      0.7525    727.72
+[SPARC][INFO] 8           -36.3660      0.7607    735.65
+[SPARC][INFO] 9           -36.3516      0.9050    875.18
+[SPARC][INFO] 10          -36.3727      0.7365    712.25
+[SPARC][INFO] 11          -36.3856      0.5974    577.72
+[SPARC][INFO] 12          -36.3232      0.6578    636.11
+[SPARC][INFO] 13          -36.2186      0.5575    539.12
+[SPARC][INFO] 14          -36.1445      0.4215    407.60
+[SPARC][INFO] 15          -36.1270      0.4168    403.03
+[SPARC][INFO] 16          -36.1848      0.5136    496.66
+[SPARC][INFO] 17          -36.2226      0.4489    434.07
+[SPARC][INFO] 18          -36.1867      0.3578    346.01
+[SPARC][INFO] 19          -36.1157      0.3750    362.62
+[SPARC][INFO] 20          -36.0832      0.3889    376.06
+[SPARC][INFO] 21          -36.1286      0.4783    462.52
+[SPARC][INFO] 22          -36.1031      0.4758    460.11
+[SPARC][INFO] 23          -35.9840      0.4275    413.42
+[SPARC][INFO] 24          -35.8859      0.4613    446.05
+[SPARC][INFO] 25          -35.8728      0.3685    356.33
+[SPARC][INFO] 26          -35.9063      0.4347    420.38
+[SPARC][INFO] 27          -35.8810      0.5612    542.68
+[SPARC][INFO] 28          -35.7412      0.4459    431.18
+[SPARC][INFO] 29          -35.6976      0.3403    329.06
+[SPARC][INFO] 30          -35.8400      0.4303    416.15
+[SPARC][INFO] 31          -35.8778      0.5090    492.25
+[SPARC][INFO] 32          -35.7686      0.4119    398.29
+[SPARC][INFO] 33          -35.6717      0.3943    381.33
+[SPARC][INFO] 34          -35.6934      0.5029    486.36
+[SPARC][INFO] 35          -35.7478      0.6445    623.27
+[SPARC][INFO] 36          -35.7461      0.6945    671.60
+[SPARC][INFO] 37          -35.6889      0.7183    694.63
+[SPARC][INFO] 38          -35.6965      0.6410    619.83
+[SPARC][INFO] 39          -35.6911      0.6979    674.87
+[SPARC][INFO] 40          -35.6265      0.6637    641.82
+[SPARC][INFO] 41          -35.4807      0.4759    460.24
+[SPARC][INFO] 42          -35.3755      0.4066    393.21
+[SPARC][INFO] 43          -35.3597      0.3828    370.18
+[SPARC][INFO] 44          -35.3743      0.4440    429.37
+[SPARC][INFO] 45          -35.4090      0.5522    534.02
+[SPARC][INFO] 46          -35.4245      0.6613    639.49
+[SPARC][INFO] 47          -35.3969      0.6299    609.10
+[SPARC][INFO] 48          -35.3696      0.6707    648.64
+[SPARC][INFO] 49          -35.3791      0.4236    409.65
+[SPARC][INFO] 50          -35.4203      0.4278    413.70
+[SPARC][INFO] 51          -35.4323      0.4209    407.06
+[SPARC][INFO] 52          -35.4316      0.5435    525.63
+[SPARC][INFO] 53          -35.4327      0.5625    543.97
+[SPARC][INFO] 54          -35.4106      0.5695    550.76
+[SPARC][INFO] 55          -35.3328      0.5496    531.48
+[SPARC][INFO] 56          -35.2475      0.4699    454.41
+[SPARC][INFO] 57          -35.2143      0.5795    560.44
+[SPARC][INFO] 58          -35.2551      0.6700    647.94
+[SPARC][INFO] 59          -35.2854      0.6490    627.63
+[SPARC][INFO] 60          -35.2499      0.5581    539.70
+[SPARC][INFO] 61          -35.1886      0.4355    421.14
+[SPARC][INFO] 62          -35.1675      0.4475    432.80
+[SPARC][INFO] 63          -35.2040      0.5858    566.48
+[SPARC][INFO] 64          -35.2531      0.6822    659.76
+[SPARC][INFO] 65          -35.2280      0.6112    591.03
+[SPARC][INFO] 66          -35.1469      0.4710    455.46
+[SPARC][INFO] 67          -35.0930      0.4568    441.74
+[SPARC][INFO] 68          -35.0993      0.5321    514.53
+[SPARC][INFO] 69          -35.1107      0.4106    397.04
+[SPARC][INFO] 70          -35.1045      0.5400    522.16
+[SPARC][INFO] 71          -35.1060      0.5608    542.32
+[SPARC][INFO] 72          -35.1250      0.4998    483.33
+[SPARC][INFO] 73          -35.1356      0.4670    451.58
+[SPARC][INFO] 74          -35.0840      0.4055    392.11
+[SPARC][INFO] 75          -35.0340      0.3581    346.32
+[SPARC][INFO] 76          -35.0603      0.3694    357.19
+[SPARC][INFO] 77          -35.1080      0.3851    372.39
+[SPARC][INFO] 78          -35.1672      0.4656    450.28
+[SPARC][INFO] 79          -35.2064      0.5767    557.72
+[SPARC][INFO] 80          -35.1772      0.3991    385.99
+[SPARC][INFO] 81          -35.1192      0.4026    389.31
+[SPARC][INFO] 82          -35.1020      0.4788    463.06
+[SPARC][INFO] 83          -35.1221      0.5639    545.29
+[SPARC][INFO] 84          -35.1639      0.6604    638.59
+[SPARC][INFO] 85          -35.1461      0.5336    516.05
+[SPARC][INFO] 86          -35.0342      0.4676    452.19
+[SPARC][INFO] 87          -34.9520      0.2617    253.10
+[SPARC][INFO] 88          -34.9815      0.4768    461.10
+[SPARC][INFO] 89          -35.0614      0.6125    592.32
+[SPARC][INFO] 90          -35.0811      0.8403    812.65
+[SPARC][INFO] 91          -34.9792      0.5989    579.19
+[SPARC][INFO] 92          -34.9364      0.4471    432.41
+[SPARC][INFO] 93          -34.9579      0.5502    532.03
+[SPARC][INFO] 94          -34.9439      0.4822    466.35
+[SPARC][INFO] 95          -34.8832      0.3977    384.60
+[SPARC][INFO] 96          -34.8437      0.3618    349.92
+[SPARC][INFO] 97          -34.8337      0.3194    308.86
+[SPARC][INFO] 98          -34.8145      0.3300    319.09
+[SPARC][INFO] 99          -34.7605      0.3819    369.31
+[SPARC][INFO] 100         -34.6998      0.3240    313.36
+[SPARC][INFO] 
+[SPARC][INFO] ============================================================
+[SPARC][INFO] PLUMED Bias Force Correction
+[SPARC][INFO]   Trajectory   : iter_000000/00.dft/AseMD.traj
+[SPARC][INFO]   CV forces    : iter_000000/00.dft/cv_force
+[SPARC][INFO]   CV derivs    : iter_000000/00.dft/cv_derivs
+[SPARC][INFO]   CVs (1): [[1, 8]]
+[SPARC][INFO]   Trajectory   : 101 frames, 8 atoms
+[SPARC][INFO]   Parsed 101 derivative frames x 1 CVs from cv_derivs (6 atomic params + 9 cell params ignored)
+[SPARC][INFO]   --- Validation ---
+[SPARC][INFO]   Net force |ΣF| (should be ~0 after correction):
+[SPARC][INFO]     Biased    — mean: 0.0000  max: 0.0000 eV/Å
+[SPARC][INFO]     Corrected — mean: 0.0000  max: 0.0000 eV/Å
+[SPARC][INFO]     PASS: net force is negligible after correction
+[SPARC][INFO]   ------------------
+[SPARC][INFO]   |F_bias|  mean=3.1269  max=7.7049 eV/Å
+[SPARC][INFO]   |F_total| mean=4.8870  max=10.1831 eV/Å
+[SPARC][INFO]   Bias/Total ratio : 0.6758
+[SPARC][INFO]   Most affected atoms (1-based):
+[SPARC][INFO]     atom    8 : 5.4366 eV/Å
+[SPARC][INFO]     atom    1 : 5.4366 eV/Å
+[SPARC][INFO]   Corrected trajectory written -> iter_000000/00.dft/AseMD.traj
+[SPARC][INFO] ============================================================
+[SPARC][INFO] 
+2026-04-20 11:55:52,088 - WARNING - To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[SPARC][INFO] PyTorch backend is functional
+[SPARC][INFO] Detected DeePMD-kit v3 with PYTORCH backend
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                         ACTIVE LEARNING CYCLE : DISABLED                        
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+
+         ######  ########     ###    ########   ######  
+        ##    ## ##     ##   ## ##   ##     ## ##    ## 
+        ##       ##     ##  ##   ##  ##     ## ##       
+         ######  ########  ##     ## ########  ##       
+              ## ##        ######### ##   ##   ##       
+        ##    ## ##        ##     ## ##    ##  ##    ## 
+         ######  ##        ##     ## ##     ##  ###### 
+         --v0.2.0
+
+[SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning
+[SPARC][INFO] Version: 0.2.0
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Working directory: /home/rverma7/My_Program/0.3_sparc/examples/VASP
+[SPARC][INFO] Configuration file: input.yaml
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     YAML configuration loaded successfully!                     
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Using structure file: AmmoniaBorate.xyz
+[SPARC][INFO] WORKFLOW PARAMETERS :
+[SPARC][INFO] ---------------------
+[SPARC][INFO] Structure FileName/s           AmmoniaBorate.xyz
+[SPARC][INFO] Number of Atoms                8
+[SPARC][INFO] Chemical Formula               H6BN
+[SPARC][INFO] 
+[SPARC][INFO] DFT Engine                     VASP
+[SPARC][INFO] DFT Tempelate File             INCAR
+[SPARC][INFO] DFT Executable                 mpirun -np 4 vasp_std
+[SPARC][INFO] 
+[SPARC][INFO] Active Learning                Disabled
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] 
+[SPARC][INFO] Setting up VASP calculator...
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]               VASP INPUT PARAMETERS               
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] | SYSTEM : 13-Butadiene
+[SPARC][INFO] | ISTART : 0
+[SPARC][INFO] | ICHARG : 2
+[SPARC][INFO] | ISPIN  : 1
+[SPARC][INFO] | ENCUT  : 300.0
+[SPARC][INFO] | LCHARG : False
+[SPARC][INFO] | LWAVE  : False
+[SPARC][INFO] | ISMEAR : 0
+[SPARC][INFO] | SIGMA  : 0.05
+[SPARC][INFO] | EDIFF  : 1e-05
+[SPARC][INFO] | LPLANE : True
+[SPARC][INFO] | NCORE  : 2
+[SPARC][INFO] | LSCALU : False
+[SPARC][INFO] | NSIM   : 4
+[SPARC][INFO] | NWRITE : 2
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] VASP Calculator Setup Successfully!
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Ab-initio MD using NVT-Langevin at 300K                     
+[SPARC][INFO] MD Ensemble                    NVT
+[SPARC][INFO] Temperature                    300.0 K
+[SPARC][INFO] MD Thermostat                  Langevin
+[SPARC][INFO] Timestep                       1.00 fs
+[SPARC][INFO] AIMD Steps                     100
+[SPARC][INFO] Output Trajectory              AseMD.traj
+[SPARC][INFO] Output Logfile                 AseMD.log
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] PLUMED ENABLED FOR MD SIMULATION
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] PLUMED output files will be written in iter_000000/00.dft
++++ Loading the PLUMED kernel runtime +++
++++ PLUMED_KERNEL="/home/rverma7/anaconda3/envs/sparcGNN/lib/libplumedKernel.so" +++
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang.^3)
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0           -36.0932      0.3102    300.00
+[SPARC][INFO] 1           -36.0892      0.2877    278.18
+[SPARC][INFO] 2           -36.0801      0.2828    273.44
+[SPARC][INFO] 3           -36.1229      0.3306    319.66
+[SPARC][INFO] 4           -36.2257      0.4655    450.17
+[SPARC][INFO] 5           -36.2975      0.4800    464.19
+[SPARC][INFO] 6           -36.3391      0.5659    547.26
+[SPARC][INFO] 7           -36.3871      0.5931    573.57
+[SPARC][INFO] 8           -36.4049      0.7032    680.00
+[SPARC][INFO] 9           -36.4267      0.7643    739.08
+[SPARC][INFO] 10          -36.3747      0.7160    692.37
+[SPARC][INFO] 11          -36.3257      0.7943    768.09
+[SPARC][INFO] 12          -36.2899      0.7096    686.23
+[SPARC][INFO] 13          -36.2508      0.6158    595.54
+[SPARC][INFO] 14          -36.2241      0.4440    429.36
+[SPARC][INFO] 15          -36.2183      0.5610    542.51
+[SPARC][INFO] 16          -36.2228      0.5541    535.86
+[SPARC][INFO] 17          -36.2151      0.4539    438.93
+[SPARC][INFO] 18          -36.1821      0.3739    361.54
+[SPARC][INFO] 19          -36.1284      0.2682    259.38
+[SPARC][INFO] 20          -36.1091      0.3398    328.56
+[SPARC][INFO] 21          -36.1097      0.3695    357.36
+[SPARC][INFO] 22          -36.0843      0.3582    346.42
+[SPARC][INFO] 23          -36.0150      0.3346    323.55
+[SPARC][INFO] 24          -35.9512      0.3256    314.91
+[SPARC][INFO] 25          -35.9576      0.2831    273.77
+[SPARC][INFO] 26          -35.9785      0.4544    439.43
+[SPARC][INFO] 27          -35.9541      0.3532    341.58
+[SPARC][INFO] 28          -35.9073      0.3467    335.29
+[SPARC][INFO] 29          -35.8365      0.2893    279.74
+[SPARC][INFO] 30          -35.8038      0.3327    321.72
+[SPARC][INFO] 31          -35.7966      0.3478    336.29
+[SPARC][INFO] 32          -35.7792      0.3825    369.88
+[SPARC][INFO] 33          -35.7331      0.3198    309.25
+[SPARC][INFO] 34          -35.7387      0.4225    408.57
+[SPARC][INFO] 35          -35.7498      0.4406    426.04
+[SPARC][INFO] 36          -35.7465      0.4607    445.48
+[SPARC][INFO] 37          -35.7037      0.3435    332.16
+[SPARC][INFO] 38          -35.6369      0.3666    354.54
+[SPARC][INFO] 39          -35.5704      0.3116    301.32
+[SPARC][INFO] 40          -35.5711      0.3950    382.00
+[SPARC][INFO] 41          -35.6028      0.4798    463.96
+[SPARC][INFO] 42          -35.6129      0.4646    449.30
+[SPARC][INFO] 43          -35.5688      0.5907    571.25
+[SPARC][INFO] 44          -35.4479      0.4914    475.23
+[SPARC][INFO] 45          -35.3691      0.4631    447.81
+[SPARC][INFO] 46          -35.3711      0.4517    436.84
+[SPARC][INFO] 47          -35.4164      0.5903    570.86
+[SPARC][INFO] 48          -35.4695      0.5366    518.94
+[SPARC][INFO] 49          -35.4744      0.5798    560.72
+[SPARC][INFO] 50          -35.4679      0.5018    485.27
+[SPARC][INFO] 51          -35.4178      0.4900    473.88
+[SPARC][INFO] 52          -35.3658      0.4836    467.63
+[SPARC][INFO] 53          -35.3215      0.5427    524.81
+[SPARC][INFO] 54          -35.2844      0.6402    619.10
+[SPARC][INFO] 55          -35.3056      0.6394    618.35
+[SPARC][INFO] 56          -35.3341      0.6839    661.40
+[SPARC][INFO] 57          -35.3097      0.6851    662.56
+[SPARC][INFO] 58          -35.2279      0.6554    633.76
+[SPARC][INFO] 59          -35.1823      0.6386    617.53
+[SPARC][INFO] 60          -35.1942      0.5326    515.04
+[SPARC][INFO] 61          -35.2261      0.5840    564.75
+[SPARC][INFO] 62          -35.2540      0.6623    640.44
+[SPARC][INFO] 63          -35.2399      0.7006    677.53
+[SPARC][INFO] 64          -35.2371      0.8255    798.32
+[SPARC][INFO] 65          -35.2238      0.7379    713.60
+[SPARC][INFO] 66          -35.2821      0.9006    870.91
+[SPARC][INFO] 67          -35.3064      0.8211    794.00
+[SPARC][INFO] 68          -35.2150      0.6413    620.20
+[SPARC][INFO] 69          -35.0903      0.5362    518.58
+[SPARC][INFO] 70          -35.0333      0.5211    503.94
+[SPARC][INFO] 71          -35.0741      0.4553    440.27
+[SPARC][INFO] 72          -35.1148      0.4354    421.06
+[SPARC][INFO] 73          -35.1048      0.4013    388.09
+[SPARC][INFO] 74          -35.0432      0.3939    380.89
+[SPARC][INFO] 75          -35.0429      0.5004    483.90
+[SPARC][INFO] 76          -35.1059      0.4649    449.60
+[SPARC][INFO] 77          -35.1349      0.4884    472.26
+[SPARC][INFO] 78          -35.0874      0.4448    430.11
+[SPARC][INFO] 79          -35.0550      0.2460    237.91
+[SPARC][INFO] 80          -35.0648      0.3586    346.76
+[SPARC][INFO] 81          -35.0618      0.3073    297.19
+[SPARC][INFO] 82          -35.0623      0.3904    377.51
+[SPARC][INFO] 83          -35.0152      0.4059    392.51
+[SPARC][INFO] 84          -34.9273      0.2640    255.30
+[SPARC][INFO] 85          -34.9878      0.4363    421.96
+[SPARC][INFO] 86          -35.0874      0.6428    621.60
+[SPARC][INFO] 87          -35.0173      0.6986    675.54
+[SPARC][INFO] 88          -34.9183      0.4329    418.63
+[SPARC][INFO] 89          -34.9430      0.5341    516.53
+[SPARC][INFO] 90          -35.0071      0.6755    653.24
+[SPARC][INFO] 91          -35.0453      0.6060    586.07
+[SPARC][INFO] 92          -35.0010      0.4470    432.28
+[SPARC][INFO] 93          -34.9583      0.4693    453.82
+[SPARC][INFO] 94          -35.0039      0.5567    538.37
+[SPARC][INFO] 95          -35.0565      0.7230    699.19
+[SPARC][INFO] 96          -35.0302      0.6086    588.58
+[SPARC][INFO] 97          -34.9359      0.4682    452.75
+[SPARC][INFO] 98          -34.8662      0.3375    326.35
+[SPARC][INFO] 99          -34.8583      0.4601    444.89
+[SPARC][INFO] 100         -34.8388      0.3931    380.11
+[SPARC][INFO] 
+[SPARC][INFO] ============================================================
+[SPARC][INFO] PLUMED Bias Force Correction
+[SPARC][INFO]   Trajectory   : iter_000000/00.dft/AseMD.traj
+[SPARC][INFO]   CV forces    : iter_000000/00.dft/cv_force
+[SPARC][INFO]   CV derivs    : iter_000000/00.dft/cv_derivs
+[SPARC][INFO]   CVs (1): [[1, 8]]
+[SPARC][INFO]   Trajectory   : 101 frames, 8 atoms
+[SPARC][INFO]   Parsed 101 derivative frames x 1 CVs from cv_derivs (6 atomic params + 9 cell params ignored)
+[SPARC][INFO]   --- Validation ---
+[SPARC][INFO]   Net force |ΣF| (should be ~0 after correction):
+[SPARC][INFO]     Biased    — mean: 0.0000  max: 0.0000 eV/Å
+[SPARC][INFO]     Corrected — mean: 0.0000  max: 0.0000 eV/Å
+[SPARC][INFO]     PASS: net force is negligible after correction
+[SPARC][INFO]   ------------------
+[SPARC][INFO]   |F_bias|  mean=3.2454  max=9.7854 eV/Å
+[SPARC][INFO]   |F_total| mean=4.7507  max=10.5543 eV/Å
+[SPARC][INFO]   Bias/Total ratio : 0.7137
+[SPARC][INFO]   Most affected atoms (1-based):
+[SPARC][INFO]     atom    8 : 6.8887 eV/Å
+[SPARC][INFO]     atom    1 : 6.8887 eV/Å
+[SPARC][INFO]   Corrected trajectory written -> iter_000000/00.dft/AseMD.traj
+[SPARC][INFO] ============================================================
+[SPARC][INFO] 
+2026-04-20 12:25:43,738 - WARNING - To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[SPARC][INFO] PyTorch backend is functional
+[SPARC][INFO] Detected DeePMD-kit v3 with PYTORCH backend
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                         ACTIVE LEARNING CYCLE : DISABLED                        
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 

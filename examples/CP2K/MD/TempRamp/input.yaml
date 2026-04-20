@@ -1,0 +1,41 @@
+# ============================================================
+# SPARC - CP2K Temperature Ramp (NVT, linear heating/cooling)
+# Ammonia Borane (NH3BH3), PBE/DZVP-MOLOPT
+# ============================================================
+# TempRamp: linearly ramps temperature from temp_start to temp_end
+# over the full simulation. Only supported with NVT ensemble.
+# Useful for: annealing, finding phase transitions, pre-equilibration.
+
+general:
+  structure_file: "../../../AmmoniaBorate.xyz"
+
+dft_calculator:
+  engine: "CP2K"
+  template_file: "cp2k_template.inp"
+  exe_command: "mpirun -np 2 /home/prg/Softwares/cp2k_gcc/exe/local/cp2k_shell.psmp"
+
+cp2k:
+    xc: 'PADE'
+    basis_set_file: 'BASIS_MOLOPT'
+    potential_file: 'GTH_POTENTIALS'
+
+aimd_setup:
+  ensemble: "NVT"
+  temperature: 100                      # temp_start [K] — initial temperature
+  temp_start: 100                       # Linear ramp start [K]
+  temp_end: 500                         # Linear ramp end [K] (triggers TemperatureRamp)
+  thermostat:
+    type: "Langevin"
+    friction: 0.10
+  timestep_fs: 1.0
+  steps: 500                           # Temperature spans 100->500 K over 2000 steps
+  log_frequency: 1
+  restart: false
+  plumed:
+    enabled: false
+
+output:
+  log_file: "AseMD.log"
+  xyz_file: "AseTraj.xyz"
+  aimdtraj_file: "AseMD.traj"
+  dptraj_file: "dpmd.traj"

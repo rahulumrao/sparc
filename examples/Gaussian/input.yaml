@@ -1,0 +1,33 @@
+# ============================================================
+# SPARC - Gaussian Example (Ammonia Borane, NH3BH3)
+# ============================================================
+# Gaussian is a non-periodic quantum chemistry code.
+# Requires a licensed Gaussian 16 (g16) or Gaussian 09 (g09) installation.
+# Run from this directory:
+
+general:
+  structure_file: "AmmoniaBorate.xyz"
+
+dft_calculator:
+  engine: "Gaussian"
+  template_file: "gaussian_template.inp"
+  exe_command: "g16"                   # Or full path: /path/to/g16
+
+aimd_setup:
+  ensemble: "NVT"
+  temperature: 300
+  thermostat:
+    type: "Langevin"
+    friction: 0.10
+  timestep_fs: 1.0
+  steps: 100
+  log_frequency: 1
+  restart: false
+  plumed:
+    enabled: false
+
+output:
+  log_file: "AseMD.log"
+  xyz_file: "AseTraj.xyz"
+  aimdtraj_file: "AseMD.traj"
+  dptraj_file: "dpmd.traj"

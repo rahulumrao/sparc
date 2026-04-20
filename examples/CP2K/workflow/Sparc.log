@@ -1,0 +1,1887 @@
+================================================================================
+BEGIN CALCULATION - 2026-04-17 16:08:54
+================================================================================
+
+
+         ######  ########     ###    ########   ######  
+        ##    ## ##     ##   ## ##   ##     ## ##    ## 
+        ##       ##     ##  ##   ##  ##     ## ##       
+         ######  ########  ##     ## ########  ##       
+              ## ##        ######### ##   ##   ##       
+        ##    ## ##        ##     ## ##    ##  ##    ## 
+         ######  ##        ##     ## ##     ##  ###### 
+         --v0.2.0
+
+[SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning
+[SPARC][INFO] Version: 0.2.0
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Working directory: /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow
+[SPARC][INFO] Configuration file: input.yaml
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     YAML configuration loaded successfully!                     
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Using structure file: AmmoniaBorate.xyz
+[SPARC][INFO] WORKFLOW PARAMETERS :
+[SPARC][INFO] ---------------------
+[SPARC][INFO] Structure FileName/s           AmmoniaBorate.xyz
+[SPARC][INFO] Number of Atoms                8
+[SPARC][INFO] Chemical Formula               H6BN
+[SPARC][INFO] 
+[SPARC][INFO] DFT Engine                     CP2K
+[SPARC][INFO] DFT Tempelate File             cp2k_template.inp
+[SPARC][INFO] DFT Executable                 mpirun -np 2 /home/prg/Softwares/cp2k_gcc/exe/local/cp2k_shell.psmp
+[SPARC][INFO] 
+[SPARC][INFO] MLIP Training                  Enabled
+[SPARC][INFO] MLIP Training Filename         input.json
+[SPARC][INFO] MLIP Training Data             DeePMD_training/00.data
+[SPARC][INFO] Number of MLIP Models          3
+[SPARC][INFO] 
+[SPARC][INFO] Active Learning                Enabled
+[SPARC][INFO] AL Iterations                  4
+[SPARC][INFO] Force deviation range          [0.10, 0.35] eV/Å
+[SPARC][INFO] Restarting AL Iterations       Disabled
+[SPARC][INFO] 
+[SPARC][INFO] Distance Constraints           3
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] 
+[SPARC][INFO] Setting up CP2K calculator...
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]                  CP2K PARAMETERS                  
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]   Xc                           PADE
+[SPARC][INFO]   Max_scf                      500
+[SPARC][INFO]   Basis_set_file               BASIS_MOLOPT
+[SPARC][INFO]   Potential_file               GTH_POTENTIALS
+[SPARC][INFO]   Label                        cp2k/job
+[SPARC][INFO]   Template_file                cp2k_template.inp
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]                CP2K TEMPLATE INPUT                
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]   &GLOBAL
+[SPARC][INFO]   ECHO_INPUT
+[SPARC][INFO]   &END GLOBAL
+[SPARC][INFO]   &FORCE_EVAL
+[SPARC][INFO]   &DFT
+[SPARC][INFO]   CHARGE 0
+[SPARC][INFO]   MULTIPLICITY 1
+[SPARC][INFO]   &MGRID
+[SPARC][INFO]   CUTOFF 400
+[SPARC][INFO]   REL_CUTOFF 50
+[SPARC][INFO]   NGRIDS 3
+[SPARC][INFO]   &END MGRID
+[SPARC][INFO]   &QS
+[SPARC][INFO]   METHOD GPW #GAPW
+[SPARC][INFO]   EPS_DEFAULT 1.0E-10
+[SPARC][INFO]   EPS_PGF_ORB 1.0E-12
+[SPARC][INFO]   EXTRAPOLATION ASPC
+[SPARC][INFO]   EXTRAPOLATION_ORDER 3
+[SPARC][INFO]   &END QS
+[SPARC][INFO]   &SCF
+[SPARC][INFO]   EPS_SCF 1.0E-4
+[SPARC][INFO]   &OT
+[SPARC][INFO]   PRECONDITIONER FULL_ALL
+[SPARC][INFO]   &END
+[SPARC][INFO]   &OUTER_SCF
+[SPARC][INFO]   EPS_SCF 1.0E-4
+[SPARC][INFO]   MAX_SCF 3
+[SPARC][INFO]   &END
+[SPARC][INFO]   SCF_GUESS RESTART
+[SPARC][INFO]   &END SCF
+[SPARC][INFO]   &END DFT
+[SPARC][INFO]   &SUBSYS
+[SPARC][INFO]   &KIND B
+[SPARC][INFO]   ELEMENT B
+[SPARC][INFO]   POTENTIAL GTH-PADE
+[SPARC][INFO]   BASIS_SET SZV-MOLOPT-SR-GTH
+[SPARC][INFO]   &END KIND
+[SPARC][INFO]   &KIND N
+[SPARC][INFO]   ELEMENT N
+[SPARC][INFO]   POTENTIAL GTH-PADE
+[SPARC][INFO]   BASIS_SET SZV-MOLOPT-SR-GTH
+[SPARC][INFO]   &END KIND
+[SPARC][INFO]   &KIND H
+[SPARC][INFO]   ELEMENT H
+[SPARC][INFO]   POTENTIAL GTH-PADE
+[SPARC][INFO]   BASIS_SET SZV-MOLOPT-SR-GTH
+[SPARC][INFO]   &END KIND
+[SPARC][INFO]   &END SUBSYS
+[SPARC][INFO]   &END FORCE_EVAL
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] CP2K calculator setup successfully
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Ab-initio MD using NVT-Langevin at 300K                     
+[SPARC][INFO] MD Ensemble                    NVT
+[SPARC][INFO] Temperature                    300.0 K
+[SPARC][INFO] MD Thermostat                  Langevin
+[SPARC][INFO] Timestep                       1.00 fs
+[SPARC][INFO] AIMD Steps                     500
+[SPARC][INFO] Output Trajectory              AseMD.traj
+[SPARC][INFO] Output Logfile                 AseMD.log
+[SPARC][INFO] 
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang.^3)
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.6867      0.3102    300.00    0.3078   1728.00
+[SPARC][INFO] 2          -439.9528      0.4793    463.48    0.2542   1728.00
+[SPARC][INFO] 4          -440.2267      0.7936    767.49    0.1517   1728.00
+[SPARC][INFO] 6          -440.2845      0.6961    673.20    0.1236   1728.00
+[SPARC][INFO] 8          -440.3999      0.8040    777.53    0.1036   1728.00
+[SPARC][INFO] 10         -440.3291      0.4591    443.98   -0.0441   1728.00
+[SPARC][INFO] 12         -440.2473      0.3874    374.64   -0.2717   1728.00
+[SPARC][INFO] 14         -440.3672      0.3814    368.79   -0.2508   1728.00
+[SPARC][INFO] 16         -440.4714      0.4899    473.71   -0.0549   1728.00
+[SPARC][INFO] 18         -440.4239      0.4233    409.40    0.0793   1728.00
+[SPARC][INFO] 20         -440.2594      0.2509    242.64    0.0721   1728.00
+[SPARC][INFO] 22         -440.3887      0.3219    311.27   -0.1785   1728.00
+[SPARC][INFO] 24         -440.2779      0.2064    199.62   -0.2633   1728.00
+[SPARC][INFO] 26         -440.3631      0.3075    297.41   -0.1104   1728.00
+[SPARC][INFO] 28         -440.4223      0.4793    463.50    0.0157   1728.00
+[SPARC][INFO] 30         -440.3462      0.3138    303.44    0.0553   1728.00
+[SPARC][INFO] 32         -440.4364      0.4082    394.76   -0.0291   1728.00
+[SPARC][INFO] 34         -440.3499      0.2897    280.14   -0.0549   1728.00
+[SPARC][INFO] 36         -440.2676      0.4209    407.07   -0.0105   1728.00
+[SPARC][INFO] 38         -440.3300      0.5489    530.77    0.0179   1728.00
+[SPARC][INFO] 40         -440.2629      0.4584    443.29   -0.0041   1728.00
+[SPARC][INFO] 42         -440.1657      0.3232    312.59    0.0167   1728.00
+[SPARC][INFO] 44         -440.2803      0.5746    555.67    0.1086   1728.00
+[SPARC][INFO] 46         -440.4398      0.7114    687.93    0.0569   1728.00
+[SPARC][INFO] 48         -440.3668      0.5196    502.45   -0.0927   1728.00
+[SPARC][INFO] 50         -440.3550      0.4103    396.77   -0.0923   1728.00
+[SPARC][INFO] 52         -440.3128      0.3332    322.22   -0.0513   1728.00
+[SPARC][INFO] 54         -440.3430      0.3123    302.00    0.0344   1728.00
+[SPARC][INFO] 56         -440.4705      0.4781    462.32   -0.0295   1728.00
+[SPARC][INFO] 58         -440.4895      0.4817    465.86   -0.0980   1728.00
+[SPARC][INFO] 60         -440.4550      0.4512    436.37   -0.0405   1728.00
+[SPARC][INFO] 62         -440.4000      0.4382    423.71    0.0097   1728.00
+[SPARC][INFO] 64         -440.1520      0.2510    242.68    0.0139   1728.00
+[SPARC][INFO] 66         -440.2741      0.3339    322.90   -0.0173   1728.00
+[SPARC][INFO] 68         -440.4623      0.4293    415.16   -0.0348   1728.00
+[SPARC][INFO] 70         -440.3928      0.4351    420.72    0.0222   1728.00
+[SPARC][INFO] 72         -440.4678      0.5649    546.27   -0.0209   1728.00
+[SPARC][INFO] 74         -440.2214      0.4416    427.04   -0.0367   1728.00
+[SPARC][INFO] 76         -440.0683      0.2028    196.08   -0.0178   1728.00
+[SPARC][INFO] 78         -440.2160      0.4458    431.13    0.0581   1728.00
+[SPARC][INFO] 80         -440.3689      0.4118    398.22    0.1242   1728.00
+[SPARC][INFO] 82         -440.3728      0.3535    341.84    0.1977   1728.00
+[SPARC][INFO] 84         -440.4147      0.3735    361.21    0.0802   1728.00
+[SPARC][INFO] 86         -440.2727      0.2886    279.06   -0.1033   1728.00
+[SPARC][INFO] 88         -440.2684      0.2110    204.00   -0.1253   1728.00
+[SPARC][INFO] 90         -440.4343      0.3738    361.46    0.0483   1728.00
+[SPARC][INFO] 92         -440.4742      0.3571    345.37    0.1923   1728.00
+[SPARC][INFO] 94         -440.3371      0.2704    261.50    0.1107   1728.00
+[SPARC][INFO] 96         -440.4331      0.3817    369.14   -0.0660   1728.00
+[SPARC][INFO] 98         -440.4314      0.2930    283.32   -0.1144   1728.00
+[SPARC][INFO] 100        -440.3065      0.3062    296.06   -0.0388   1728.00
+[SPARC][INFO] 102        -440.3665      0.3000    290.12   -0.0230   1728.00
+[SPARC][INFO] 104        -440.2864      0.3010    291.11    0.0307   1728.00
+[SPARC][INFO] 106        -440.4112      0.4485    433.71    0.0059   1728.00
+[SPARC][INFO] 108        -440.2510      0.3767    364.26   -0.0619   1728.00
+[SPARC][INFO] 110        -440.4723      0.5192    502.10   -0.1051   1728.00
+[SPARC][INFO] 112        -440.3199      0.5949    575.25   -0.0151   1728.00
+[SPARC][INFO] 114        -440.2285      0.3474    335.93    0.0247   1728.00
+[SPARC][INFO] 116        -440.3350      0.3988    385.69   -0.0287   1728.00
+[SPARC][INFO] 118        -440.2451      0.3160    305.63    0.0360   1728.00
+[SPARC][INFO] 120        -440.3943      0.4237    409.73    0.0376   1728.00
+[SPARC][INFO] 122        -440.3424      0.3322    321.25   -0.0311   1728.00
+[SPARC][INFO] 124        -440.3732      0.3370    325.86   -0.0490   1728.00
+[SPARC][INFO] 126        -440.4568      0.2822    272.90   -0.0095   1728.00
+[SPARC][INFO] 128        -440.4557      0.3291    318.28    0.0883   1728.00
+[SPARC][INFO] 130        -440.4428      0.4134    399.79    0.1512   1728.00
+[SPARC][INFO] 132        -440.4297      0.2790    269.84    0.1538   1728.00
+[SPARC][INFO] 134        -440.4363      0.1919    185.59    0.0311   1728.00
+[SPARC][INFO] 136        -440.4241      0.2674    258.57   -0.0687   1728.00
+[SPARC][INFO] 138        -440.4220      0.3130    302.68   -0.0356   1728.00
+[SPARC][INFO] 140        -440.4894      0.3314    320.46    0.0313   1728.00
+[SPARC][INFO] 142        -440.4492      0.1948    188.37    0.0388   1728.00
+[SPARC][INFO] 144        -440.5628      0.3719    359.65   -0.0429   1728.00
+[SPARC][INFO] 146        -440.4875      0.4162    402.49   -0.1474   1728.00
+[SPARC][INFO] 148        -440.4497      0.3262    315.48   -0.0992   1728.00
+[SPARC][INFO] 150        -440.3697      0.3301    319.19    0.0222   1728.00
+[SPARC][INFO] 152        -440.3734      0.2688    259.89    0.0413   1728.00
+[SPARC][INFO] 154        -440.4646      0.3547    343.00   -0.0452   1728.00
+[SPARC][INFO] 156        -440.4158      0.3555    343.83   -0.1487   1728.00
+[SPARC][INFO] 158        -440.5353      0.4925    476.27   -0.0660   1728.00
+[SPARC][INFO] 160        -440.4039      0.4555    440.46    0.0488   1728.00
+[SPARC][INFO] 162        -440.4034      0.4499    435.09   -0.0061   1728.00
+[SPARC][INFO] 164        -440.3297      0.3473    335.86   -0.0485   1728.00
+[SPARC][INFO] 166        -440.3269      0.4752    459.55    0.0018   1728.00
+[SPARC][INFO] 168        -440.2603      0.2749    265.86   -0.0143   1728.00
+[SPARC][INFO] 170        -440.2665      0.2510    242.75   -0.1122   1728.00
+[SPARC][INFO] 172        -440.2700      0.3454    333.99   -0.1233   1728.00
+[SPARC][INFO] 174        -440.3806      0.3322    321.27   -0.0655   1728.00
+[SPARC][INFO] 176        -440.5095      0.3424    331.14    0.0782   1728.00
+[SPARC][INFO] 178        -440.3848      0.2145    207.46    0.1373   1728.00
+[SPARC][INFO] 180        -440.5666      0.3270    316.19    0.0168   1728.00
+[SPARC][INFO] 182        -440.4794      0.2365    228.67   -0.0220   1728.00
+[SPARC][INFO] 184        -440.4523      0.2135    206.46   -0.0947   1728.00
+[SPARC][INFO] 186        -440.4984      0.3980    384.85   -0.0967   1728.00
+[SPARC][INFO] 188        -440.3588      0.2590    250.43   -0.0834   1728.00
+[SPARC][INFO] 190        -440.4192      0.4148    401.12   -0.1305   1728.00
+[SPARC][INFO] 192        -440.4354      0.4764    460.70   -0.1302   1728.00
+[SPARC][INFO] 194        -440.3121      0.3382    327.10   -0.0462   1728.00
+[SPARC][INFO] 196        -440.3788      0.5924    572.85   -0.0864   1728.00
+[SPARC][INFO] 198        -440.2989      0.4709    455.37   -0.1248   1728.00
+[SPARC][INFO] 200        -440.0082      0.3203    309.71   -0.1045   1728.00
+[SPARC][INFO] 202        -440.2961      0.4236    409.68   -0.0155   1728.00
+[SPARC][INFO] 204        -440.2933      0.3961    383.02    0.0838   1728.00
+[SPARC][INFO] 206        -440.2131      0.2265    219.03    0.0504   1728.00
+[SPARC][INFO] 208        -440.3485      0.3888    375.96   -0.0659   1728.00
+[SPARC][INFO] 210        -440.3829      0.6058    585.79    0.0301   1728.00
+[SPARC][INFO] 212        -440.2554      0.4745    458.90    0.1655   1728.00
+[SPARC][INFO] 214        -440.2671      0.3175    307.04    0.0668   1728.00
+[SPARC][INFO] 216        -440.3839      0.3659    353.80   -0.1125   1728.00
+[SPARC][INFO] 218        -440.5053      0.2981    288.32   -0.1070   1728.00
+[SPARC][INFO] 220        -440.6029      0.3953    382.22    0.0572   1728.00
+[SPARC][INFO] 222        -440.5579      0.2772    268.09    0.1606   1728.00
+[SPARC][INFO] 224        -440.4717      0.2188    211.61    0.1030   1728.00
+[SPARC][INFO] 226        -440.4761      0.3222    311.58   -0.0445   1728.00
+[SPARC][INFO] 228        -440.4432      0.2357    227.94   -0.1010   1728.00
+[SPARC][INFO] 230        -440.4860      0.2895    279.97    0.0589   1728.00
+[SPARC][INFO] 232        -440.4799      0.3370    325.85    0.2071   1728.00
+[SPARC][INFO] 234        -440.4958      0.3559    344.17    0.1365   1728.00
+[SPARC][INFO] 236        -440.5066      0.3789    366.39   -0.1050   1728.00
+[SPARC][INFO] 238        -440.2853      0.2135    206.45   -0.1195   1728.00
+[SPARC][INFO] 240        -440.3129      0.2580    249.49    0.0038   1728.00
+[SPARC][INFO] 242        -440.5101      0.4292    415.04    0.1148   1728.00
+[SPARC][INFO] 244        -440.5159      0.2659    257.12    0.1540   1728.00
+[SPARC][INFO] 246        -440.4978      0.3066    296.49   -0.0256   1728.00
+[SPARC][INFO] 248        -440.5099      0.2950    285.24   -0.1291   1728.00
+[SPARC][INFO] 250        -440.5553      0.3272    316.45   -0.0284   1728.00
+[SPARC][INFO] 252        -440.4909      0.2738    264.74    0.0978   1728.00
+[SPARC][INFO] 254        -440.6100      0.2794    270.23   -0.0015   1728.00
+[SPARC][INFO] 256        -440.5401      0.2162    209.09   -0.1305   1728.00
+[SPARC][INFO] 258        -440.5094      0.2238    216.46   -0.2260   1728.00
+[SPARC][INFO] 260        -440.5054      0.2254    217.94   -0.1502   1728.00
+[SPARC][INFO] 262        -440.5021      0.2499    241.65    0.0516   1728.00
+[SPARC][INFO] 264        -440.6349      0.3751    362.76    0.0779   1728.00
+[SPARC][INFO] 266        -440.5344      0.2060    199.23    0.0053   1728.00
+[SPARC][INFO] 268        -440.5146      0.2005    193.85   -0.0446   1728.00
+[SPARC][INFO] 270        -440.5361      0.2976    287.74   -0.0151   1728.00
+[SPARC][INFO] 272        -440.4124      0.2600    251.39    0.0707   1728.00
+[SPARC][INFO] 274        -440.5952      0.3748    362.46   -0.0636   1728.00
+[SPARC][INFO] 276        -440.5768      0.3812    368.60   -0.0598   1728.00
+[SPARC][INFO] 278        -440.4402      0.2848    275.42   -0.0289   1728.00
+[SPARC][INFO] 280        -440.5745      0.3554    343.70   -0.0056   1728.00
+[SPARC][INFO] 282        -440.5333      0.2619    253.27    0.0086   1728.00
+[SPARC][INFO] 284        -440.5570      0.2343    226.58    0.0007   1728.00
+[SPARC][INFO] 286        -440.5333      0.2777    268.51   -0.0113   1728.00
+[SPARC][INFO] 288        -440.4759      0.1459    141.09   -0.0794   1728.00
+[SPARC][INFO] 290        -440.4848      0.1926    186.24   -0.1179   1728.00
+[SPARC][INFO] 292        -440.3939      0.2048    198.02   -0.0040   1728.00
+[SPARC][INFO] 294        -440.5396      0.3936    380.65   -0.0052   1728.00
+[SPARC][INFO] 296        -440.4785      0.2760    266.92   -0.0733   1728.00
+[SPARC][INFO] 298        -440.4548      0.2222    214.84   -0.1942   1728.00
+[SPARC][INFO] 300        -440.4286      0.2474    239.26   -0.1059   1728.00
+[SPARC][INFO] 302        -440.4669      0.4450    430.38    0.0420   1728.00
+[SPARC][INFO] 304        -440.5153      0.4339    419.62    0.0317   1728.00
+[SPARC][INFO] 306        -440.5341      0.5240    506.75   -0.0608   1728.00
+[SPARC][INFO] 308        -440.6053      0.7207    696.94   -0.1048   1728.00
+[SPARC][INFO] 310        -440.4055      0.4417    427.15    0.0472   1728.00
+[SPARC][INFO] 312        -440.3880      0.3097    299.53    0.0393   1728.00
+[SPARC][INFO] 314        -440.3759      0.2542    245.85    0.0298   1728.00
+[SPARC][INFO] 316        -440.4012      0.2327    225.00    0.0488   1728.00
+[SPARC][INFO] 318        -440.4365      0.3111    300.82    0.0872   1728.00
+[SPARC][INFO] 320        -440.3914      0.3635    351.56    0.0601   1728.00
+[SPARC][INFO] 322        -440.4237      0.2986    288.74   -0.0973   1728.00
+[SPARC][INFO] 324        -440.4406      0.2940    284.31   -0.1686   1728.00
+[SPARC][INFO] 326        -440.5004      0.3460    334.62   -0.1047   1728.00
+[SPARC][INFO] 328        -440.5733      0.3483    336.79    0.0326   1728.00
+[SPARC][INFO] 330        -440.4576      0.2546    246.19   -0.0143   1728.00
+[SPARC][INFO] 332        -440.4794      0.2617    253.06   -0.1143   1728.00
+[SPARC][INFO] 334        -440.5221      0.2630    254.33   -0.0864   1728.00
+[SPARC][INFO] 336        -440.4357      0.3167    306.22   -0.0518   1728.00
+[SPARC][INFO] 338        -440.3564      0.2578    249.29   -0.0069   1728.00
+[SPARC][INFO] 340        -440.4031      0.2934    283.73   -0.0372   1728.00
+[SPARC][INFO] 342        -440.4555      0.3148    304.47   -0.1156   1728.00
+[SPARC][INFO] 344        -440.5070      0.3740    361.67   -0.0496   1728.00
+[SPARC][INFO] 346        -440.5434      0.3724    360.17    0.0701   1728.00
+[SPARC][INFO] 348        -440.5240      0.2396    231.70    0.1595   1728.00
+[SPARC][INFO] 350        -440.4832      0.2189    211.68    0.1074   1728.00
+[SPARC][INFO] 352        -440.4784      0.2708    261.90   -0.0879   1728.00
+[SPARC][INFO] 354        -440.3774      0.1733    167.60   -0.1402   1728.00
+[SPARC][INFO] 356        -440.4983      0.2859    276.44   -0.0187   1728.00
+[SPARC][INFO] 358        -440.4954      0.3247    313.99    0.0918   1728.00
+[SPARC][INFO] 360        -440.5435      0.3120    301.76    0.0724   1728.00
+[SPARC][INFO] 362        -440.4737      0.2599    251.29   -0.0527   1728.00
+[SPARC][INFO] 364        -440.4261      0.2861    276.68   -0.0622   1728.00
+[SPARC][INFO] 366        -440.4492      0.4005    387.29    0.0516   1728.00
+[SPARC][INFO] 368        -440.2411      0.4573    442.27    0.1809   1728.00
+[SPARC][INFO] 370        -440.4176      0.4832    467.31    0.0203   1728.00
+[SPARC][INFO] 372        -440.3781      0.2708    261.88   -0.1171   1728.00
+[SPARC][INFO] 374        -440.3660      0.4823    466.45   -0.0414   1728.00
+[SPARC][INFO] 376        -440.4969      0.4814    465.49    0.0133   1728.00
+[SPARC][INFO] 378        -440.3032      0.2938    284.13   -0.0323   1728.00
+[SPARC][INFO] 380        -440.3582      0.2503    242.03   -0.1200   1728.00
+[SPARC][INFO] 382        -440.4316      0.4016    388.32   -0.1135   1728.00
+[SPARC][INFO] 384        -440.3308      0.3387    327.53    0.0402   1728.00
+[SPARC][INFO] 386        -440.3890      0.5204    503.26    0.0743   1728.00
+[SPARC][INFO] 388        -440.3846      0.3088    298.61   -0.0561   1728.00
+[SPARC][INFO] 390        -440.5349      0.3319    320.92   -0.1084   1728.00
+[SPARC][INFO] 392        -440.3973      0.1166    112.78   -0.0121   1728.00
+[SPARC][INFO] 394        -440.5495      0.3335    322.55   -0.0149   1728.00
+[SPARC][INFO] 396        -440.3917      0.1694    163.82    0.0062   1728.00
+[SPARC][INFO] 398        -440.4207      0.3615    349.56    0.0147   1728.00
+[SPARC][INFO] 400        -440.4505      0.3148    304.41    0.0335   1728.00
+[SPARC][INFO] 402        -440.4638      0.3875    374.73    0.0287   1728.00
+[SPARC][INFO] 404        -440.3839      0.3588    346.95   -0.0307   1728.00
+[SPARC][INFO] 406        -440.4777      0.4055    392.14   -0.0224   1728.00
+[SPARC][INFO] 408        -440.4740      0.4763    460.60    0.0253   1728.00
+[SPARC][INFO] 410        -440.3526      0.2481    239.90    0.0482   1728.00
+[SPARC][INFO] 412        -440.4435      0.3108    300.56   -0.0085   1728.00
+[SPARC][INFO] 414        -440.3843      0.1871    180.96   -0.0096   1728.00
+[SPARC][INFO] 416        -440.4512      0.3147    304.32    0.0346   1728.00
+[SPARC][INFO] 418        -440.2158      0.3043    294.26    0.0635   1728.00
+[SPARC][INFO] 420        -440.3695      0.3678    355.65   -0.1082   1728.00
+[SPARC][INFO] 422        -440.4617      0.4490    434.25   -0.1472   1728.00
+[SPARC][INFO] 424        -440.5734      0.4291    414.96   -0.0377   1728.00
+[SPARC][INFO] 426        -440.5265      0.3432    331.87    0.0489   1728.00
+[SPARC][INFO] 428        -440.3576      0.2848    275.40   -0.0120   1728.00
+[SPARC][INFO] 430        -440.3094      0.1984    191.84   -0.0939   1728.00
+[SPARC][INFO] 432        -440.4860      0.3956    382.61   -0.1327   1728.00
+[SPARC][INFO] 434        -440.4876      0.2806    271.35    0.0037   1728.00
+[SPARC][INFO] 436        -440.4377      0.3088    298.62    0.0560   1728.00
+[SPARC][INFO] 438        -440.5897      0.4455    430.82    0.0526   1728.00
+[SPARC][INFO] 440        -440.5035      0.3266    315.79    0.1102   1728.00
+[SPARC][INFO] 442        -440.4263      0.2724    263.38    0.0570   1728.00
+[SPARC][INFO] 444        -440.4911      0.3281    317.26   -0.0247   1728.00
+[SPARC][INFO] 446        -440.4429      0.2808    271.56   -0.0390   1728.00
+[SPARC][INFO] 448        -440.4567      0.3063    296.18    0.0058   1728.00
+[SPARC][INFO] 450        -440.4793      0.4502    435.40    0.1118   1728.00
+[SPARC][INFO] 452        -440.3269      0.3208    310.25    0.2056   1728.00
+[SPARC][INFO] 454        -440.4673      0.5056    488.95    0.0249   1728.00
+[SPARC][INFO] 456        -440.3071      0.2178    210.59   -0.0931   1728.00
+[SPARC][INFO] 458        -440.3743      0.2585    250.02   -0.0038   1728.00
+[SPARC][INFO] 460        -440.5371      0.6473    625.97    0.1613   1728.00
+[SPARC][INFO] 462        -440.4255      0.3406    329.35    0.0999   1728.00
+[SPARC][INFO] 464        -440.4538      0.4234    409.47   -0.1077   1728.00
+[SPARC][INFO] 466        -440.3737      0.2523    243.97   -0.0507   1728.00
+[SPARC][INFO] 468        -440.3611      0.3360    324.90    0.1251   1728.00
+[SPARC][INFO] 470        -440.2147      0.1750    169.27    0.1248   1728.00
+[SPARC][INFO] 472        -440.3791      0.3513    339.76   -0.0379   1728.00
+[SPARC][INFO] 474        -440.2667      0.3064    296.29   -0.0149   1728.00
+[SPARC][INFO] 476        -440.4424      0.3675    355.42    0.0043   1728.00
+[SPARC][INFO] 478        -440.4044      0.4441    429.48    0.0817   1728.00
+[SPARC][INFO] 480        -440.3968      0.5015    484.94   -0.0078   1728.00
+[SPARC][INFO] 482        -440.3040      0.2979    288.11   -0.1427   1728.00
+[SPARC][INFO] 484        -440.4974      0.3985    385.32   -0.2001   1728.00
+[SPARC][INFO] 486        -440.3521      0.4053    391.92   -0.0333   1728.00
+[SPARC][INFO] 488        -440.4720      0.5423    524.38    0.0789   1728.00
+[SPARC][INFO] 490        -440.4674      0.4686    453.19    0.0357   1728.00
+[SPARC][INFO] 492        -440.2197      0.2929    283.23   -0.1339   1728.00
+[SPARC][INFO] 494        -440.4186      0.5112    494.38   -0.2027   1728.00
+[SPARC][INFO] 496        -440.2391      0.3696    357.46    0.0546   1728.00
+[SPARC][INFO] 498        -440.4321      0.5137    496.81    0.0458   1728.00
+[SPARC][INFO] 500        -440.5361      0.4067    393.27   -0.1250   1728.00
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Processing AIMD Trajectory for MLIP Training
+[SPARC][INFO] Training ensemble of 3 models
+[SPARC][INFO] Backend: DeePMD-kit
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Loaded 251 frames
+[SPARC][INFO] 
+[SPARC][INFO] DATA PROCESSING
+[SPARC][INFO] -----------------
+[SPARC][INFO] Trajectory file                iter_000000/00.dft/AseMD.traj
+[SPARC][INFO] Total frames                   251
+[SPARC][INFO] Frames used                    241
+[SPARC][INFO] Training frames                192 (80%)
+[SPARC][INFO] Validation frames              49 (20%)
+[SPARC][INFO] 
+[SPARC][INFO] Original directory: /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow
+[SPARC][INFO] PyTorch backend is functional
+[SPARC][INFO] Detected DeePMD-kit v3 with PYTORCH backend
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  DeePMD-kit v3 Training
+[SPARC][INFO]  Backend: PYTORCH
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO]  Directory: iter_000000/01.train/training_1
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO] Directory                      iter_000000/01.train/training_1
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_1.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-17 17:53:34,256] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-17 17:53:36,098] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-17 17:53:36,098] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-17 17:53:37,126] DEEPMD INFO    # number of test data : 49 
+[2026-04-17 17:53:37,126] DEEPMD INFO    Energy MAE         : 4.004218e-03 eV
+[2026-04-17 17:53:37,126] DEEPMD INFO    Energy RMSE        : 5.221195e-03 eV
+[2026-04-17 17:53:37,126] DEEPMD INFO    Energy MAE/Natoms  : 5.005272e-04 eV
+[2026-04-17 17:53:37,126] DEEPMD INFO    Energy RMSE/Natoms : 6.526493e-04 eV
+[2026-04-17 17:53:37,126] DEEPMD INFO    Force  MAE         : 1.921792e-02 eV/Å
+[2026-04-17 17:53:37,126] DEEPMD INFO    Force  RMSE        : 2.531992e-02 eV/Å
+[2026-04-17 17:53:37,126] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-17 17:53:37,126] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-17 17:53:37,126] DEEPMD INFO    # number of systems : 1
+[2026-04-17 17:53:37,126] DEEPMD INFO    Energy MAE         : 4.004218e-03 eV
+[2026-04-17 17:53:37,126] DEEPMD INFO    Energy RMSE        : 5.221195e-03 eV
+[2026-04-17 17:53:37,126] DEEPMD INFO    Energy MAE/Natoms  : 5.005272e-04 eV
+[2026-04-17 17:53:37,126] DEEPMD INFO    Energy RMSE/Natoms : 6.526493e-04 eV
+[2026-04-17 17:53:37,126] DEEPMD INFO    Force  MAE         : 1.921792e-02 eV/Å
+[2026-04-17 17:53:37,126] DEEPMD INFO    Force  RMSE        : 2.531992e-02 eV/Å
+[2026-04-17 17:53:37,126] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO]  Directory: iter_000000/01.train/training_2
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO] Directory                      iter_000000/01.train/training_2
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_2.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-17 18:36:38,596] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-17 18:36:40,441] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-17 18:36:40,441] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-17 18:36:41,488] DEEPMD INFO    # number of test data : 49 
+[2026-04-17 18:36:41,488] DEEPMD INFO    Energy MAE         : 4.115459e-03 eV
+[2026-04-17 18:36:41,488] DEEPMD INFO    Energy RMSE        : 5.852026e-03 eV
+[2026-04-17 18:36:41,488] DEEPMD INFO    Energy MAE/Natoms  : 5.144323e-04 eV
+[2026-04-17 18:36:41,488] DEEPMD INFO    Energy RMSE/Natoms : 7.315033e-04 eV
+[2026-04-17 18:36:41,488] DEEPMD INFO    Force  MAE         : 2.026680e-02 eV/Å
+[2026-04-17 18:36:41,488] DEEPMD INFO    Force  RMSE        : 2.753570e-02 eV/Å
+[2026-04-17 18:36:41,488] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-17 18:36:41,488] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-17 18:36:41,488] DEEPMD INFO    # number of systems : 1
+[2026-04-17 18:36:41,488] DEEPMD INFO    Energy MAE         : 4.115459e-03 eV
+[2026-04-17 18:36:41,488] DEEPMD INFO    Energy RMSE        : 5.852026e-03 eV
+[2026-04-17 18:36:41,488] DEEPMD INFO    Energy MAE/Natoms  : 5.144323e-04 eV
+[2026-04-17 18:36:41,488] DEEPMD INFO    Energy RMSE/Natoms : 7.315033e-04 eV
+[2026-04-17 18:36:41,488] DEEPMD INFO    Force  MAE         : 2.026680e-02 eV/Å
+[2026-04-17 18:36:41,488] DEEPMD INFO    Force  RMSE        : 2.753570e-02 eV/Å
+[2026-04-17 18:36:41,488] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO]  Directory: iter_000000/01.train/training_3
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO] Directory                      iter_000000/01.train/training_3
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_3.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-17 19:19:12,592] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-17 19:19:14,430] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-17 19:19:14,430] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-17 19:19:15,451] DEEPMD INFO    # number of test data : 49 
+[2026-04-17 19:19:15,452] DEEPMD INFO    Energy MAE         : 4.106178e-03 eV
+[2026-04-17 19:19:15,452] DEEPMD INFO    Energy RMSE        : 5.428309e-03 eV
+[2026-04-17 19:19:15,452] DEEPMD INFO    Energy MAE/Natoms  : 5.132723e-04 eV
+[2026-04-17 19:19:15,452] DEEPMD INFO    Energy RMSE/Natoms : 6.785386e-04 eV
+[2026-04-17 19:19:15,452] DEEPMD INFO    Force  MAE         : 2.063242e-02 eV/Å
+[2026-04-17 19:19:15,452] DEEPMD INFO    Force  RMSE        : 2.691053e-02 eV/Å
+[2026-04-17 19:19:15,452] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-17 19:19:15,452] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-17 19:19:15,452] DEEPMD INFO    # number of systems : 1
+[2026-04-17 19:19:15,452] DEEPMD INFO    Energy MAE         : 4.106178e-03 eV
+[2026-04-17 19:19:15,452] DEEPMD INFO    Energy RMSE        : 5.428309e-03 eV
+[2026-04-17 19:19:15,452] DEEPMD INFO    Energy MAE/Natoms  : 5.132723e-04 eV
+[2026-04-17 19:19:15,452] DEEPMD INFO    Energy RMSE/Natoms : 6.785386e-04 eV
+[2026-04-17 19:19:15,452] DEEPMD INFO    Force  MAE         : 2.063242e-02 eV/Å
+[2026-04-17 19:19:15,452] DEEPMD INFO    Force  RMSE        : 2.691053e-02 eV/Å
+[2026-04-17 19:19:15,452] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]               Running 2 ML-MD simulation(s) for NVT-Nose at 350.0K              
+[SPARC][INFO] MD Ensemble                    NVT
+[SPARC][INFO] Temperature                    350.0 K
+[SPARC][INFO] MD Thermostat                  Nose
+[SPARC][INFO] Timestep                       1.00 fs
+[SPARC][INFO] ML-MD Steps                    5000
+[SPARC][INFO] Output Trajectory              dpmd.traj
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000000/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter0_dpmd_0.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.8371      0.3619    350.00    0.2001   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.307752 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4819      0.3843    371.64   -0.0673   1728.00
+[SPARC][INFO] 400        -440.4456      0.4656    450.24    0.2589   1728.00
+[SPARC][INFO] 600        -440.4521      0.3103    300.07    0.1549   1728.00
+[SPARC][INFO] 800        -440.1601      0.1646    159.18    0.0218   1728.00
+[SPARC][INFO] 1000       -440.5577      0.4161    402.40    0.1270   1728.00
+[SPARC][INFO] 1200       -440.6756      0.6557    634.08   -0.0304   1728.00
+[SPARC][INFO] 1400       -440.3403      0.3091    298.87   -0.3114   1728.00
+[SPARC][INFO] 1600       -440.4024      0.3330    322.06   -0.0567   1728.00
+[SPARC][INFO] 1800       -440.3131      0.3177    307.26    0.1878   1728.00
+[SPARC][INFO] 2000       -440.2605      0.1799    173.97    0.0433   1728.00
+[SPARC][INFO] 2200       -440.4412      0.4391    424.66   -0.0057   1728.00
+[SPARC][INFO] 2400       -440.4757      0.4253    411.24    0.0210   1728.00
+[SPARC][INFO] 2600       -440.3472      0.3199    309.40   -0.2069   1728.00
+[SPARC][INFO] 2800       -440.5637      0.4257    411.71    0.0152   1728.00
+[SPARC][INFO] 3000       -440.2859      0.2762    267.07    0.1407   1728.00
+[SPARC][INFO] 3200       -440.5104      0.2938    284.12   -0.1809   1728.00
+[SPARC][INFO] 3400       -440.3641      0.4932    476.92   -0.1457   1728.00
+[SPARC][INFO] 3600       -440.3830      0.1797    173.77    0.0967   1728.00
+[SPARC][INFO] 3800       -440.4173      0.4014    388.21   -0.1625   1728.00
+[SPARC][INFO] 4000       -440.4878      0.3366    325.48   -0.2007   1728.00
+[SPARC][INFO] 4200       -440.3959      0.3995    386.37   -0.0486   1728.00
+[SPARC][INFO] 4400       -440.4497      0.3977    384.61   -0.0739   1728.00
+[SPARC][INFO] 4600       -440.4843      0.4121    398.51    0.1210   1728.00
+[SPARC][INFO] 4800       -440.4586      0.4989    482.45    0.1129   1728.00
+[SPARC][INFO] 5000       -440.5370      0.3679    355.75   -0.0822   1728.00
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000000/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter0_dpmd_1.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.8371      0.3619    350.00    0.2001   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.371628 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4691      0.4113    397.77   -0.0740   1728.00
+[SPARC][INFO] 400        -440.2231      0.2164    209.30    0.3665   1728.00
+[SPARC][INFO] 600        -440.3360      0.2842    274.85    0.2001   1728.00
+[SPARC][INFO] 800        -440.3253      0.2948    285.07    0.0362   1728.00
+[SPARC][INFO] 1000       -440.1397      0.3001    290.18    0.3587   1728.00
+[SPARC][INFO] 1200       -440.3867      0.2312    223.59   -0.0787   1728.00
+[SPARC][INFO] 1400       -440.5204      0.6462    624.89    0.1683   1728.00
+[SPARC][INFO] 1600       -440.6149      0.5489    530.81    0.1153   1728.00
+[SPARC][INFO] 1800       -440.5811      0.6202    599.81   -0.0320   1728.00
+[SPARC][INFO] 2000       -440.2895      0.2032    196.50    0.2015   1728.00
+[SPARC][INFO] 2200       -440.4036      0.3294    318.53   -0.0631   1728.00
+[SPARC][INFO] 2400       -440.4539      0.4270    412.92   -0.1630   1728.00
+[SPARC][INFO] 2600       -440.5161      0.3309    320.00   -0.0409   1728.00
+[SPARC][INFO] 2800       -440.4368      0.6001    580.28    0.1492   1728.00
+[SPARC][INFO] 3000       -440.6198      0.4559    440.86   -0.0882   1728.00
+[SPARC][INFO] 3200       -440.3328      0.3261    315.33   -0.2070   1728.00
+[SPARC][INFO] 3400       -440.3598      0.3019    291.94   -0.2302   1728.00
+[SPARC][INFO] 3600       -440.3672      0.2893    279.74   -0.1221   1728.00
+[SPARC][INFO] 3800       -440.2684      0.2807    271.49    0.1626   1728.00
+[SPARC][INFO] 4000       -440.4639      0.1960    189.53   -0.0885   1728.00
+[SPARC][INFO] 4200       -440.3233      0.2750    265.98    0.1171   1728.00
+[SPARC][INFO] 4400       -440.2847      0.2700    261.15    0.3069   1728.00
+[SPARC][INFO] 4600       -440.3682      0.1382    133.65   -0.0656   1728.00
+[SPARC][INFO] 4800       -440.5167      0.5439    525.99    0.0492   1728.00
+[SPARC][INFO] 5000       -440.5826      0.3596    347.76    0.1089   1728.00
+[SPARC][INFO] 
+[SPARC][INFO] QUERY-BY-COMMITTEE: MODEL DEVIATION ANALYSIS
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration                      0
+[SPARC][INFO] Number of models               3
+[SPARC][INFO] Deviation range                [0.10, 0.35] eV/Å
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Model Path: iter_000000/01.train                    
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                       Using the following models:                       
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                            frozen_model_1.pth                           
+[SPARC][INFO]                            frozen_model_2.pth                           
+[SPARC][INFO]                            frozen_model_3.pth                           
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]           Model deviation calculation completed successfully!           
+[SPARC][INFO]          Results saved in: iter_000000/02.dpmd/model_dev_0.out          
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Selection Summary:
+[SPARC][INFO]   Candidates in deviation range [0.10, 0.35] eV/Å: 34
+[SPARC][INFO]   Skipped (RMSD < 0.050 Å): 30
+[SPARC][INFO]   Final selected structures: 4
+[SPARC][INFO]   Candidates trajectory: iter_000000/02.dpmd/dft_candidates/candidates.extxyz
+[SPARC][INFO]   RMSD details written to: iter_000000/02.dpmd/dft_candidates/rmsd_filtering.dat
+[SPARC][INFO] ==========================================================================================
+
+[SPARC][INFO] Candidate summary saved to: iter_000000/02.dpmd/dft_candidates/candidates_summary.csv
+
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                         ACTIVE LEARNING CYCLE : ENABLED                         
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Maximum Iterations: 4
+[SPARC][INFO] Force Deviation Thresholds: [0.1, 0.35] eV/Å
+[SPARC][INFO] MLIP Ensemble Size: 3 models
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                          ACTIVE LEARNING ITERATION 1/4                          
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration Directory            iter_000001
+[SPARC][INFO] 
+[SPARC][INFO] MD Configuration:
+[SPARC][INFO]   Ensemble                     NVT
+[SPARC][INFO]   Thermostat                   Nose
+[SPARC][INFO]   Temperature                  350.0 K
+[SPARC][INFO]   MD Steps                     5000
+[SPARC][INFO]   Timestep                     1.00 fs
+[SPARC][INFO]   Log Frequency                20
+[SPARC][INFO] Restart Exploration            DISABLED (iteration 0)
+[SPARC][INFO] 
+[SPARC][INFO] Model Deviation Criteria:
+[SPARC][INFO]   Min Force Deviation          0.1 eV/Ang.
+[SPARC][INFO]   Max Force Deviation          0.35 eV/Ang.
+[SPARC][INFO] 
+[SPARC][INFO] Training Configuration:
+[SPARC][INFO]   Number of Models             3
+[SPARC][INFO]   Training Data Dir            DeePMD_training/00.data
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000001
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000001
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Iteration 1 | Computing DFT energies/forces for 4 candidates
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Setting up CP2K calculator...
+[SPARC][INFO] CP2K calculator setup successfully
+[SPARC][INFO] Candidate:     1 | Epot: -440.132326 [eV]
+[SPARC][INFO] Candidate:     2 | Epot: -440.299762 [eV]
+[SPARC][INFO] Candidate:     3 | Epot: -440.179179 [eV]
+[SPARC][INFO] Candidate:     4 | Epot: -440.271949 [eV]
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Processing Data for MLIP Re-Training
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]   Iteration [0]
+[SPARC][INFO]    → Checking File : iter_000000/00.dft/AseMD.traj
+[SPARC][INFO]    → Added Frames  : 251
+
+[SPARC][INFO]   Iteration [1]
+[SPARC][INFO]    → Checking File : iter_000001/00.dft/AseMD.traj
+[SPARC][INFO]    → Added Frames  : 4
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                 Total Frames in Combined Trajectory: 255                
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Loaded 255 frames
+[SPARC][INFO] 
+[SPARC][INFO] DATA PROCESSING
+[SPARC][INFO] -----------------
+[SPARC][INFO] Trajectory file                TrajCombined.traj
+[SPARC][INFO] Total frames                   255
+[SPARC][INFO] Frames used                    255
+[SPARC][INFO] Training frames                204 (80%)
+[SPARC][INFO] Validation frames              51 (20%)
+[SPARC][INFO] 
+[SPARC][INFO] Original directory: /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  DeePMD-kit v3 Training
+[SPARC][INFO]  Backend: PYTORCH
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO]  Directory: iter_000001/01.train/training_1
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO] Directory                      iter_000001/01.train/training_1
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_1.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-17 20:25:13,101] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-17 20:25:15,030] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-17 20:25:15,030] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-17 20:25:16,072] DEEPMD INFO    # number of test data : 51 
+[2026-04-17 20:25:16,073] DEEPMD INFO    Energy MAE         : 4.477470e-03 eV
+[2026-04-17 20:25:16,073] DEEPMD INFO    Energy RMSE        : 5.789697e-03 eV
+[2026-04-17 20:25:16,073] DEEPMD INFO    Energy MAE/Natoms  : 5.596838e-04 eV
+[2026-04-17 20:25:16,073] DEEPMD INFO    Energy RMSE/Natoms : 7.237121e-04 eV
+[2026-04-17 20:25:16,073] DEEPMD INFO    Force  MAE         : 2.236428e-02 eV/Å
+[2026-04-17 20:25:16,073] DEEPMD INFO    Force  RMSE        : 3.074515e-02 eV/Å
+[2026-04-17 20:25:16,073] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-17 20:25:16,073] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-17 20:25:16,073] DEEPMD INFO    # number of systems : 1
+[2026-04-17 20:25:16,073] DEEPMD INFO    Energy MAE         : 4.477470e-03 eV
+[2026-04-17 20:25:16,073] DEEPMD INFO    Energy RMSE        : 5.789697e-03 eV
+[2026-04-17 20:25:16,073] DEEPMD INFO    Energy MAE/Natoms  : 5.596838e-04 eV
+[2026-04-17 20:25:16,073] DEEPMD INFO    Energy RMSE/Natoms : 7.237121e-04 eV
+[2026-04-17 20:25:16,073] DEEPMD INFO    Force  MAE         : 2.236428e-02 eV/Å
+[2026-04-17 20:25:16,073] DEEPMD INFO    Force  RMSE        : 3.074515e-02 eV/Å
+[2026-04-17 20:25:16,073] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO]  Directory: iter_000001/01.train/training_2
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO] Directory                      iter_000001/01.train/training_2
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_2.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-17 21:58:11,656] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-17 21:58:13,541] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-17 21:58:13,541] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-17 21:58:14,601] DEEPMD INFO    # number of test data : 51 
+[2026-04-17 21:58:14,601] DEEPMD INFO    Energy MAE         : 3.681705e-03 eV
+[2026-04-17 21:58:14,601] DEEPMD INFO    Energy RMSE        : 4.922646e-03 eV
+[2026-04-17 21:58:14,601] DEEPMD INFO    Energy MAE/Natoms  : 4.602131e-04 eV
+[2026-04-17 21:58:14,601] DEEPMD INFO    Energy RMSE/Natoms : 6.153307e-04 eV
+[2026-04-17 21:58:14,601] DEEPMD INFO    Force  MAE         : 1.972320e-02 eV/Å
+[2026-04-17 21:58:14,602] DEEPMD INFO    Force  RMSE        : 2.714116e-02 eV/Å
+[2026-04-17 21:58:14,602] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-17 21:58:14,602] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-17 21:58:14,602] DEEPMD INFO    # number of systems : 1
+[2026-04-17 21:58:14,602] DEEPMD INFO    Energy MAE         : 3.681705e-03 eV
+[2026-04-17 21:58:14,602] DEEPMD INFO    Energy RMSE        : 4.922646e-03 eV
+[2026-04-17 21:58:14,602] DEEPMD INFO    Energy MAE/Natoms  : 4.602131e-04 eV
+[2026-04-17 21:58:14,602] DEEPMD INFO    Energy RMSE/Natoms : 6.153307e-04 eV
+[2026-04-17 21:58:14,602] DEEPMD INFO    Force  MAE         : 1.972320e-02 eV/Å
+[2026-04-17 21:58:14,602] DEEPMD INFO    Force  RMSE        : 2.714116e-02 eV/Å
+[2026-04-17 21:58:14,602] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO]  Directory: iter_000001/01.train/training_3
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO] Directory                      iter_000001/01.train/training_3
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_3.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-17 23:24:09,205] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-17 23:24:11,039] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-17 23:24:11,039] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-17 23:24:12,032] DEEPMD INFO    # number of test data : 51 
+[2026-04-17 23:24:12,032] DEEPMD INFO    Energy MAE         : 2.659580e-03 eV
+[2026-04-17 23:24:12,032] DEEPMD INFO    Energy RMSE        : 3.552987e-03 eV
+[2026-04-17 23:24:12,032] DEEPMD INFO    Energy MAE/Natoms  : 3.324475e-04 eV
+[2026-04-17 23:24:12,032] DEEPMD INFO    Energy RMSE/Natoms : 4.441234e-04 eV
+[2026-04-17 23:24:12,032] DEEPMD INFO    Force  MAE         : 1.845645e-02 eV/Å
+[2026-04-17 23:24:12,032] DEEPMD INFO    Force  RMSE        : 2.566473e-02 eV/Å
+[2026-04-17 23:24:12,032] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-17 23:24:12,032] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-17 23:24:12,032] DEEPMD INFO    # number of systems : 1
+[2026-04-17 23:24:12,032] DEEPMD INFO    Energy MAE         : 2.659580e-03 eV
+[2026-04-17 23:24:12,032] DEEPMD INFO    Energy RMSE        : 3.552987e-03 eV
+[2026-04-17 23:24:12,032] DEEPMD INFO    Energy MAE/Natoms  : 3.324475e-04 eV
+[2026-04-17 23:24:12,032] DEEPMD INFO    Energy RMSE/Natoms : 4.441234e-04 eV
+[2026-04-17 23:24:12,032] DEEPMD INFO    Force  MAE         : 1.845645e-02 eV/Å
+[2026-04-17 23:24:12,032] DEEPMD INFO    Force  RMSE        : 2.566473e-02 eV/Å
+[2026-04-17 23:24:12,032] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Running 2 ML-MD with updated models (NVT-Nose)
+[SPARC][INFO] Restart Exploration: ENABLED (frame: ('candidates',))
+[SPARC][INFO] ================================================================================
+[SPARC][WARNING]  Warning: Could not load from previous iteration: Invalid restart_mode: ('candidates',). Options: 'last', 'random', 'candidates'
+[SPARC][INFO]  Falling back to original structure
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000000/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter1_dpmd_0.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.8371      0.3619    350.00    0.2001   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.296351 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4698      0.4324    418.15   -0.0301   1728.00
+[SPARC][INFO] 400        -440.6598      0.6460    624.71    0.0749   1728.00
+[SPARC][INFO] 600        -440.3658      0.4079    394.48    0.0567   1728.00
+[SPARC][INFO] 800        -440.2716      0.2226    215.22    0.0212   1728.00
+[SPARC][INFO] 1000       -440.2366      0.5857    566.42   -0.1184   1728.00
+[SPARC][INFO] 1200       -440.2792      0.1514    146.41   -0.2328   1728.00
+[SPARC][INFO] 1400       -440.1574      0.4281    414.02   -0.0881   1728.00
+[SPARC][INFO] 1600       -440.3852      0.4071    393.68    0.2417   1728.00
+[SPARC][INFO] 1800       -440.3704      0.2985    288.66    0.0417   1728.00
+[SPARC][INFO] 2000       -440.3498      0.5326    515.05    0.0811   1728.00
+[SPARC][INFO] 2200       -440.4586      0.3021    292.12   -0.0484   1728.00
+[SPARC][INFO] 2400       -440.5150      0.5023    485.72   -0.2120   1728.00
+[SPARC][INFO] 2600       -440.4485      0.4018    388.58    0.1042   1728.00
+[SPARC][INFO] 2800       -440.3851      0.2844    274.99   -0.0919   1728.00
+[SPARC][INFO] 3000       -440.3139      0.2721    263.10   -0.1977   1728.00
+[SPARC][INFO] 3200       -440.3824      0.4278    413.69   -0.2336   1728.00
+[SPARC][INFO] 3400       -440.3904      0.3644    352.41   -0.1878   1728.00
+[SPARC][INFO] 3600       -440.3287      0.2829    273.55    0.0631   1728.00
+[SPARC][INFO] 3800       -440.4528      0.3381    327.00    0.0441   1728.00
+[SPARC][INFO] 4000       -440.3587      0.3460    334.58   -0.1692   1728.00
+[SPARC][INFO] 4200       -440.4915      0.2330    225.28   -0.1897   1728.00
+[SPARC][INFO] 4400       -440.4200      0.3783    365.81    0.2634   1728.00
+[SPARC][INFO] 4600       -440.6253      0.2991    289.20   -0.0808   1728.00
+[SPARC][INFO] 4800       -440.5490      0.2322    224.57   -0.1335   1728.00
+[SPARC][INFO] 5000       -440.4387      0.3503    338.75    0.1433   1728.00
+[SPARC][WARNING]  Warning: Could not load from previous iteration: Invalid restart_mode: ('candidates',). Options: 'last', 'random', 'candidates'
+[SPARC][INFO]  Falling back to original structure
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000000/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter1_dpmd_1.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.8371      0.3619    350.00    0.2001   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.250491 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4327      0.3816    368.98   -0.0348   1728.00
+[SPARC][INFO] 400        -440.2915      0.2840    274.61    0.1482   1728.00
+[SPARC][INFO] 600        -440.1627      0.1339    129.45    0.3713   1728.00
+[SPARC][INFO] 800        -440.3798      0.3531    341.43    0.0553   1728.00
+[SPARC][INFO] 1000       -440.1737      0.3857    373.00    0.2015   1728.00
+[SPARC][INFO] 1200       -440.3532      0.1962    189.71    0.2138   1728.00
+[SPARC][INFO] 1400       -440.1633      0.3320    321.11   -0.1026   1728.00
+[SPARC][INFO] 1600       -440.5649      0.5127    495.83   -0.1348   1728.00
+[SPARC][INFO] 1800       -440.5372      0.4855    469.50    0.0071   1728.00
+[SPARC][INFO] 2000       -440.4642      0.5662    547.56    0.0253   1728.00
+[SPARC][INFO] 2200       -440.6067      0.4353    420.96    0.1403   1728.00
+[SPARC][INFO] 2400       -440.5609      0.5636    544.99    0.0644   1728.00
+[SPARC][INFO] 2600       -440.3963      0.2402    232.30   -0.1583   1728.00
+[SPARC][INFO] 2800       -440.2060      0.1736    167.91   -0.2790   1728.00
+[SPARC][INFO] 3000       -440.2667      0.2277    220.23   -0.2453   1728.00
+[SPARC][INFO] 3200       -440.5011      0.1121    108.44   -0.0243   1728.00
+[SPARC][INFO] 3400       -440.5128      0.3730    360.67   -0.0136   1728.00
+[SPARC][INFO] 3600       -440.5341      0.6260    605.38   -0.0667   1728.00
+[SPARC][INFO] 3800       -440.5688      0.3567    344.99   -0.1425   1728.00
+[SPARC][INFO] 4000       -440.5175      0.4939    477.59   -0.0431   1728.00
+[SPARC][INFO] 4200       -440.3663      0.3573    345.52    0.0852   1728.00
+[SPARC][INFO] 4400       -440.4470      0.2771    267.95    0.0589   1728.00
+[SPARC][INFO] 4600       -440.4932      0.6205    600.00   -0.1208   1728.00
+[SPARC][INFO] 4800       -440.3642      0.2882    278.68   -0.0559   1728.00
+[SPARC][INFO] 5000       -440.2524      0.3777    365.21   -0.0752   1728.00
+[SPARC][INFO] 
+[SPARC][INFO] QUERY-BY-COMMITTEE: MODEL DEVIATION ANALYSIS
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration                      1
+[SPARC][INFO] Number of models               3
+[SPARC][INFO] Deviation range                [0.10, 0.35] eV/Å
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Model Path: iter_000001/01.train                    
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                       Using the following models:                       
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                            frozen_model_1.pth                           
+[SPARC][INFO]                            frozen_model_2.pth                           
+[SPARC][INFO]                            frozen_model_3.pth                           
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]           Model deviation calculation completed successfully!           
+[SPARC][INFO]          Results saved in: iter_000001/02.dpmd/model_dev_1.out          
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Selection Summary:
+[SPARC][INFO]   Candidates in deviation range [0.10, 0.35] eV/Å: 5
+[SPARC][INFO]   Skipped (RMSD < 0.050 Å): 3
+[SPARC][INFO]   Final selected structures: 2
+[SPARC][INFO]   Candidates trajectory: iter_000001/02.dpmd/dft_candidates/candidates.extxyz
+[SPARC][INFO]   RMSD details written to: iter_000001/02.dpmd/dft_candidates/rmsd_filtering.dat
+[SPARC][INFO] ==========================================================================================
+
+[SPARC][INFO] Candidate summary saved to: iter_000001/02.dpmd/dft_candidates/candidates_summary.csv
+
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                          ACTIVE LEARNING ITERATION 2/4                          
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration Directory            iter_000002
+[SPARC][INFO] 
+[SPARC][INFO] MD Configuration:
+[SPARC][INFO]   Ensemble                     NVT
+[SPARC][INFO]   Thermostat                   Nose
+[SPARC][INFO]   Temperature                  350.0 K
+[SPARC][INFO]   MD Steps                     5000
+[SPARC][INFO]   Timestep                     1.00 fs
+[SPARC][INFO]   Log Frequency                20
+[SPARC][INFO] Restart Exploration            DISABLED (iteration 0)
+[SPARC][INFO] 
+[SPARC][INFO] Model Deviation Criteria:
+[SPARC][INFO]   Min Force Deviation          0.1 eV/Ang.
+[SPARC][INFO]   Max Force Deviation          0.35 eV/Ang.
+[SPARC][INFO] 
+[SPARC][INFO] Training Configuration:
+[SPARC][INFO]   Number of Models             3
+[SPARC][INFO]   Training Data Dir            DeePMD_training/00.data
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000002
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000002
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Iteration 2 | Computing DFT energies/forces for 2 candidates
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Setting up CP2K calculator...
+[SPARC][INFO] CP2K calculator setup successfully
+[SPARC][INFO] Candidate:     1 | Epot: -439.993830 [eV]
+[SPARC][INFO] Candidate:     2 | Epot: -440.099027 [eV]
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Processing Data for MLIP Re-Training
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]   Loaded 255 existing frames from TrajCombined.traj
+[SPARC][INFO]   Iteration [2]
+[SPARC][INFO]    → Checking File : iter_000002/00.dft/AseMD.traj
+[SPARC][INFO]    → Added Frames  : 2
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                 Total Frames in Combined Trajectory: 257                
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Loaded 257 frames
+[SPARC][INFO] 
+[SPARC][INFO] DATA PROCESSING
+[SPARC][INFO] -----------------
+[SPARC][INFO] Trajectory file                TrajCombined.traj
+[SPARC][INFO] Total frames                   257
+[SPARC][INFO] Frames used                    257
+[SPARC][INFO] Training frames                205 (80%)
+[SPARC][INFO] Validation frames              52 (20%)
+[SPARC][INFO] 
+[SPARC][INFO] Original directory: /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  DeePMD-kit v3 Training
+[SPARC][INFO]  Backend: PYTORCH
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO]  Directory: iter_000002/01.train/training_1
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO] Directory                      iter_000002/01.train/training_1
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_1.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 00:26:08,049] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 00:26:09,829] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 00:26:09,829] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 00:26:10,826] DEEPMD INFO    # number of test data : 52 
+[2026-04-18 00:26:10,827] DEEPMD INFO    Energy MAE         : 4.948121e-03 eV
+[2026-04-18 00:26:10,827] DEEPMD INFO    Energy RMSE        : 7.148253e-03 eV
+[2026-04-18 00:26:10,827] DEEPMD INFO    Energy MAE/Natoms  : 6.185151e-04 eV
+[2026-04-18 00:26:10,827] DEEPMD INFO    Energy RMSE/Natoms : 8.935317e-04 eV
+[2026-04-18 00:26:10,827] DEEPMD INFO    Force  MAE         : 2.274853e-02 eV/Å
+[2026-04-18 00:26:10,827] DEEPMD INFO    Force  RMSE        : 3.114624e-02 eV/Å
+[2026-04-18 00:26:10,827] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 00:26:10,827] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 00:26:10,827] DEEPMD INFO    # number of systems : 1
+[2026-04-18 00:26:10,827] DEEPMD INFO    Energy MAE         : 4.948121e-03 eV
+[2026-04-18 00:26:10,827] DEEPMD INFO    Energy RMSE        : 7.148253e-03 eV
+[2026-04-18 00:26:10,827] DEEPMD INFO    Energy MAE/Natoms  : 6.185151e-04 eV
+[2026-04-18 00:26:10,827] DEEPMD INFO    Energy RMSE/Natoms : 8.935317e-04 eV
+[2026-04-18 00:26:10,827] DEEPMD INFO    Force  MAE         : 2.274853e-02 eV/Å
+[2026-04-18 00:26:10,827] DEEPMD INFO    Force  RMSE        : 3.114624e-02 eV/Å
+[2026-04-18 00:26:10,827] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO]  Directory: iter_000002/01.train/training_2
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO] Directory                      iter_000002/01.train/training_2
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_2.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 01:07:14,967] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 01:07:16,737] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 01:07:16,737] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 01:07:17,734] DEEPMD INFO    # number of test data : 52 
+[2026-04-18 01:07:17,735] DEEPMD INFO    Energy MAE         : 4.027527e-03 eV
+[2026-04-18 01:07:17,735] DEEPMD INFO    Energy RMSE        : 6.025780e-03 eV
+[2026-04-18 01:07:17,735] DEEPMD INFO    Energy MAE/Natoms  : 5.034409e-04 eV
+[2026-04-18 01:07:17,735] DEEPMD INFO    Energy RMSE/Natoms : 7.532225e-04 eV
+[2026-04-18 01:07:17,735] DEEPMD INFO    Force  MAE         : 2.256132e-02 eV/Å
+[2026-04-18 01:07:17,735] DEEPMD INFO    Force  RMSE        : 3.095118e-02 eV/Å
+[2026-04-18 01:07:17,735] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 01:07:17,735] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 01:07:17,735] DEEPMD INFO    # number of systems : 1
+[2026-04-18 01:07:17,735] DEEPMD INFO    Energy MAE         : 4.027527e-03 eV
+[2026-04-18 01:07:17,735] DEEPMD INFO    Energy RMSE        : 6.025780e-03 eV
+[2026-04-18 01:07:17,735] DEEPMD INFO    Energy MAE/Natoms  : 5.034409e-04 eV
+[2026-04-18 01:07:17,735] DEEPMD INFO    Energy RMSE/Natoms : 7.532225e-04 eV
+[2026-04-18 01:07:17,735] DEEPMD INFO    Force  MAE         : 2.256132e-02 eV/Å
+[2026-04-18 01:07:17,735] DEEPMD INFO    Force  RMSE        : 3.095118e-02 eV/Å
+[2026-04-18 01:07:17,735] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO]  Directory: iter_000002/01.train/training_3
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO] Directory                      iter_000002/01.train/training_3
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_3.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 01:48:12,122] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 01:48:13,870] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 01:48:13,870] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 01:48:14,864] DEEPMD INFO    # number of test data : 52 
+[2026-04-18 01:48:14,864] DEEPMD INFO    Energy MAE         : 3.147243e-03 eV
+[2026-04-18 01:48:14,864] DEEPMD INFO    Energy RMSE        : 4.413918e-03 eV
+[2026-04-18 01:48:14,864] DEEPMD INFO    Energy MAE/Natoms  : 3.934054e-04 eV
+[2026-04-18 01:48:14,864] DEEPMD INFO    Energy RMSE/Natoms : 5.517398e-04 eV
+[2026-04-18 01:48:14,864] DEEPMD INFO    Force  MAE         : 2.090101e-02 eV/Å
+[2026-04-18 01:48:14,864] DEEPMD INFO    Force  RMSE        : 2.893744e-02 eV/Å
+[2026-04-18 01:48:14,864] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 01:48:14,864] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 01:48:14,864] DEEPMD INFO    # number of systems : 1
+[2026-04-18 01:48:14,864] DEEPMD INFO    Energy MAE         : 3.147243e-03 eV
+[2026-04-18 01:48:14,864] DEEPMD INFO    Energy RMSE        : 4.413918e-03 eV
+[2026-04-18 01:48:14,864] DEEPMD INFO    Energy MAE/Natoms  : 3.934054e-04 eV
+[2026-04-18 01:48:14,864] DEEPMD INFO    Energy RMSE/Natoms : 5.517398e-04 eV
+[2026-04-18 01:48:14,864] DEEPMD INFO    Force  MAE         : 2.090101e-02 eV/Å
+[2026-04-18 01:48:14,864] DEEPMD INFO    Force  RMSE        : 2.893744e-02 eV/Å
+[2026-04-18 01:48:14,864] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Running 2 ML-MD with updated models (NVT-Nose)
+[SPARC][INFO] Restart Exploration: ENABLED (frame: ('candidates',))
+[SPARC][INFO] ================================================================================
+[SPARC][WARNING]  Warning: Could not load from previous iteration: Invalid restart_mode: ('candidates',). Options: 'last', 'random', 'candidates'
+[SPARC][INFO]  Falling back to original structure
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000001/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter2_dpmd_0.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.6776      0.3619    350.00    0.3096   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.554452 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4695      0.4284    414.28   -0.1747   1728.00
+[SPARC][INFO] 400        -440.4155      0.3668    354.67    0.1184   1728.00
+[SPARC][INFO] 600        -440.4762      0.5088    492.06   -0.2350   1728.00
+[SPARC][INFO] 800        -440.5405      0.5039    487.31    0.0093   1728.00
+[SPARC][INFO] 1000       -439.9809      0.2972    287.41   -0.1610   1728.00
+[SPARC][INFO] 1200       -440.2762      0.1647    159.23   -0.2517   1728.00
+[SPARC][INFO] 1400       -440.2022      0.5170    499.99    0.0817   1728.00
+[SPARC][INFO] 1600       -440.4803      0.3295    318.63   -0.1881   1728.00
+[SPARC][INFO] 1800       -440.1620      0.3388    327.67   -0.1912   1728.00
+[SPARC][INFO] 2000       -440.5874      0.3737    361.43    0.1409   1728.00
+[SPARC][INFO] 2200       -440.2556      0.3576    345.81   -0.1565   1728.00
+[SPARC][INFO] 2400       -440.6336      0.3677    355.56    0.0946   1728.00
+[SPARC][INFO] 2600       -440.5844      0.5594    540.97   -0.0675   1728.00
+[SPARC][INFO] 2800       -440.3021      0.2932    283.58    0.0886   1728.00
+[SPARC][INFO] 3000       -440.5249      0.3227    312.08    0.0521   1728.00
+[SPARC][INFO] 3200       -440.4072      0.4366    422.22    0.0679   1728.00
+[SPARC][INFO] 3400       -440.3735      0.2194    212.20    0.1906   1728.00
+[SPARC][INFO] 3600       -440.2340      0.3091    298.95    0.1242   1728.00
+[SPARC][INFO] 3800       -440.4865      0.4458    431.14   -0.0107   1728.00
+[SPARC][INFO] 4000       -440.4455      0.1575    152.33    0.2046   1728.00
+[SPARC][INFO] 4200       -440.4563      0.4942    477.90    0.0003   1728.00
+[SPARC][INFO] 4400       -440.5226      0.3938    380.79   -0.0090   1728.00
+[SPARC][INFO] 4600       -440.5466      0.4173    403.51    0.0050   1728.00
+[SPARC][INFO] 4800       -440.3294      0.3565    344.74    0.1450   1728.00
+[SPARC][INFO] 5000       -440.6325      0.6032    583.33   -0.0829   1728.00
+[SPARC][WARNING]  Warning: Could not load from previous iteration: Invalid restart_mode: ('candidates',). Options: 'last', 'random', 'candidates'
+[SPARC][INFO]  Falling back to original structure
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000001/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter2_dpmd_1.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.6776      0.3619    350.00    0.3096   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.448681 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4347      0.4045    391.13   -0.0902   1728.00
+[SPARC][INFO] 400        -440.4344      0.4860    470.01    0.0170   1728.00
+[SPARC][INFO] 600        -440.4048      0.2173    210.09   -0.2447   1728.00
+[SPARC][INFO] 800        -440.5066      0.4890    472.86    0.0710   1728.00
+[SPARC][INFO] 1000       -440.5316      0.2635    254.78    0.2180   1728.00
+[SPARC][INFO] 1200       -440.3609      0.3512    339.59   -0.1329   1728.00
+[SPARC][INFO] 1400       -440.5856      0.2490    240.76    0.0583   1728.00
+[SPARC][INFO] 1600       -440.4617      0.3677    355.59   -0.0532   1728.00
+[SPARC][INFO] 1800       -440.4957      0.1312    126.84   -0.2248   1728.00
+[SPARC][INFO] 2000       -440.2815      0.2589    250.36   -0.0931   1728.00
+[SPARC][INFO] 2200       -440.4726      0.2350    227.24    0.0755   1728.00
+[SPARC][INFO] 2400       -440.5391      0.4781    462.35   -0.1261   1728.00
+[SPARC][INFO] 2600       -440.5658      0.4628    447.51   -0.0065   1728.00
+[SPARC][INFO] 2800       -440.5150      0.2857    276.33    0.1968   1728.00
+[SPARC][INFO] 3000       -440.5339      0.5507    532.58   -0.1552   1728.00
+[SPARC][INFO] 3200       -440.4865      0.1884    182.19    0.0650   1728.00
+[SPARC][INFO] 3400       -440.3983      0.3144    304.01   -0.1187   1728.00
+[SPARC][INFO] 3600       -440.4899      0.1472    142.36   -0.1393   1728.00
+[SPARC][INFO] 3800       -440.4892      0.4041    390.79    0.0249   1728.00
+[SPARC][INFO] 4000       -440.5335      0.2552    246.75    0.0382   1728.00
+[SPARC][INFO] 4200       -440.5497      0.5696    550.83    0.0421   1728.00
+[SPARC][INFO] 4400       -440.5260      0.2613    252.67   -0.0354   1728.00
+[SPARC][INFO] 4600       -440.4948      0.3941    381.09   -0.1179   1728.00
+[SPARC][INFO] 4800       -440.6243      0.4475    432.72    0.0190   1728.00
+[SPARC][INFO] 5000       -440.4769      0.3751    362.74   -0.0406   1728.00
+[SPARC][INFO] 
+[SPARC][INFO] QUERY-BY-COMMITTEE: MODEL DEVIATION ANALYSIS
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration                      2
+[SPARC][INFO] Number of models               3
+[SPARC][INFO] Deviation range                [0.10, 0.35] eV/Å
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Model Path: iter_000002/01.train                    
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                       Using the following models:                       
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                            frozen_model_1.pth                           
+[SPARC][INFO]                            frozen_model_2.pth                           
+[SPARC][INFO]                            frozen_model_3.pth                           
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]           Model deviation calculation completed successfully!           
+[SPARC][INFO]          Results saved in: iter_000002/02.dpmd/model_dev_2.out          
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Selection Summary:
+[SPARC][INFO]   Candidates in deviation range [0.10, 0.35] eV/Å: 20
+[SPARC][INFO]   Skipped (RMSD < 0.050 Å): 17
+[SPARC][INFO]   Final selected structures: 3
+[SPARC][INFO]   Candidates trajectory: iter_000002/02.dpmd/dft_candidates/candidates.extxyz
+[SPARC][INFO]   RMSD details written to: iter_000002/02.dpmd/dft_candidates/rmsd_filtering.dat
+[SPARC][INFO] ==========================================================================================
+
+[SPARC][INFO] Candidate summary saved to: iter_000002/02.dpmd/dft_candidates/candidates_summary.csv
+
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                          ACTIVE LEARNING ITERATION 3/4                          
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration Directory            iter_000003
+[SPARC][INFO] 
+[SPARC][INFO] MD Configuration:
+[SPARC][INFO]   Ensemble                     NVT
+[SPARC][INFO]   Thermostat                   Nose
+[SPARC][INFO]   Temperature                  350.0 K
+[SPARC][INFO]   MD Steps                     5000
+[SPARC][INFO]   Timestep                     1.00 fs
+[SPARC][INFO]   Log Frequency                20
+[SPARC][INFO] Restart Exploration            DISABLED (iteration 0)
+[SPARC][INFO] 
+[SPARC][INFO] Model Deviation Criteria:
+[SPARC][INFO]   Min Force Deviation          0.1 eV/Ang.
+[SPARC][INFO]   Max Force Deviation          0.35 eV/Ang.
+[SPARC][INFO] 
+[SPARC][INFO] Training Configuration:
+[SPARC][INFO]   Number of Models             3
+[SPARC][INFO]   Training Data Dir            DeePMD_training/00.data
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000003
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000003
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Iteration 3 | Computing DFT energies/forces for 3 candidates
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Setting up CP2K calculator...
+[SPARC][INFO] CP2K calculator setup successfully
+[SPARC][INFO] Candidate:     1 | Epot: -439.997072 [eV]
+[SPARC][INFO] Candidate:     2 | Epot: -440.195067 [eV]
+[SPARC][INFO] Candidate:     3 | Epot: -440.136819 [eV]
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Processing Data for MLIP Re-Training
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]   Loaded 257 existing frames from TrajCombined.traj
+[SPARC][INFO]   Iteration [3]
+[SPARC][INFO]    → Checking File : iter_000003/00.dft/AseMD.traj
+[SPARC][INFO]    → Added Frames  : 3
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                 Total Frames in Combined Trajectory: 260                
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Loaded 260 frames
+[SPARC][INFO] 
+[SPARC][INFO] DATA PROCESSING
+[SPARC][INFO] -----------------
+[SPARC][INFO] Trajectory file                TrajCombined.traj
+[SPARC][INFO] Total frames                   260
+[SPARC][INFO] Frames used                    260
+[SPARC][INFO] Training frames                208 (80%)
+[SPARC][INFO] Validation frames              52 (20%)
+[SPARC][INFO] 
+[SPARC][INFO] Original directory: /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  DeePMD-kit v3 Training
+[SPARC][INFO]  Backend: PYTORCH
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO]  Directory: iter_000003/01.train/training_1
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO] Directory                      iter_000003/01.train/training_1
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_1.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 02:39:29,781] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 02:39:31,535] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 02:39:31,535] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 02:39:32,511] DEEPMD INFO    # number of test data : 52 
+[2026-04-18 02:39:32,511] DEEPMD INFO    Energy MAE         : 5.390681e-03 eV
+[2026-04-18 02:39:32,511] DEEPMD INFO    Energy RMSE        : 7.610357e-03 eV
+[2026-04-18 02:39:32,511] DEEPMD INFO    Energy MAE/Natoms  : 6.738352e-04 eV
+[2026-04-18 02:39:32,511] DEEPMD INFO    Energy RMSE/Natoms : 9.512946e-04 eV
+[2026-04-18 02:39:32,511] DEEPMD INFO    Force  MAE         : 2.306203e-02 eV/Å
+[2026-04-18 02:39:32,511] DEEPMD INFO    Force  RMSE        : 3.209365e-02 eV/Å
+[2026-04-18 02:39:32,511] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 02:39:32,511] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 02:39:32,511] DEEPMD INFO    # number of systems : 1
+[2026-04-18 02:39:32,511] DEEPMD INFO    Energy MAE         : 5.390681e-03 eV
+[2026-04-18 02:39:32,511] DEEPMD INFO    Energy RMSE        : 7.610357e-03 eV
+[2026-04-18 02:39:32,511] DEEPMD INFO    Energy MAE/Natoms  : 6.738352e-04 eV
+[2026-04-18 02:39:32,511] DEEPMD INFO    Energy RMSE/Natoms : 9.512946e-04 eV
+[2026-04-18 02:39:32,511] DEEPMD INFO    Force  MAE         : 2.306203e-02 eV/Å
+[2026-04-18 02:39:32,511] DEEPMD INFO    Force  RMSE        : 3.209365e-02 eV/Å
+[2026-04-18 02:39:32,511] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO]  Directory: iter_000003/01.train/training_2
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO] Directory                      iter_000003/01.train/training_2
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_2.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 03:20:31,856] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 03:20:33,618] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 03:20:33,618] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 03:20:34,592] DEEPMD INFO    # number of test data : 52 
+[2026-04-18 03:20:34,592] DEEPMD INFO    Energy MAE         : 3.923338e-03 eV
+[2026-04-18 03:20:34,592] DEEPMD INFO    Energy RMSE        : 5.100495e-03 eV
+[2026-04-18 03:20:34,592] DEEPMD INFO    Energy MAE/Natoms  : 4.904172e-04 eV
+[2026-04-18 03:20:34,592] DEEPMD INFO    Energy RMSE/Natoms : 6.375619e-04 eV
+[2026-04-18 03:20:34,592] DEEPMD INFO    Force  MAE         : 2.201985e-02 eV/Å
+[2026-04-18 03:20:34,592] DEEPMD INFO    Force  RMSE        : 2.946113e-02 eV/Å
+[2026-04-18 03:20:34,592] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 03:20:34,593] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 03:20:34,593] DEEPMD INFO    # number of systems : 1
+[2026-04-18 03:20:34,593] DEEPMD INFO    Energy MAE         : 3.923338e-03 eV
+[2026-04-18 03:20:34,593] DEEPMD INFO    Energy RMSE        : 5.100495e-03 eV
+[2026-04-18 03:20:34,593] DEEPMD INFO    Energy MAE/Natoms  : 4.904172e-04 eV
+[2026-04-18 03:20:34,593] DEEPMD INFO    Energy RMSE/Natoms : 6.375619e-04 eV
+[2026-04-18 03:20:34,593] DEEPMD INFO    Force  MAE         : 2.201985e-02 eV/Å
+[2026-04-18 03:20:34,593] DEEPMD INFO    Force  RMSE        : 2.946113e-02 eV/Å
+[2026-04-18 03:20:34,593] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO]  Directory: iter_000003/01.train/training_3
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO] Directory                      iter_000003/01.train/training_3
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_3.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 04:01:36,471] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 04:01:38,233] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 04:01:38,233] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 04:01:39,229] DEEPMD INFO    # number of test data : 52 
+[2026-04-18 04:01:39,229] DEEPMD INFO    Energy MAE         : 3.457395e-03 eV
+[2026-04-18 04:01:39,229] DEEPMD INFO    Energy RMSE        : 4.383047e-03 eV
+[2026-04-18 04:01:39,229] DEEPMD INFO    Energy MAE/Natoms  : 4.321743e-04 eV
+[2026-04-18 04:01:39,229] DEEPMD INFO    Energy RMSE/Natoms : 5.478808e-04 eV
+[2026-04-18 04:01:39,229] DEEPMD INFO    Force  MAE         : 2.095852e-02 eV/Å
+[2026-04-18 04:01:39,229] DEEPMD INFO    Force  RMSE        : 2.822237e-02 eV/Å
+[2026-04-18 04:01:39,229] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 04:01:39,229] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 04:01:39,229] DEEPMD INFO    # number of systems : 1
+[2026-04-18 04:01:39,229] DEEPMD INFO    Energy MAE         : 3.457395e-03 eV
+[2026-04-18 04:01:39,229] DEEPMD INFO    Energy RMSE        : 4.383047e-03 eV
+[2026-04-18 04:01:39,229] DEEPMD INFO    Energy MAE/Natoms  : 4.321743e-04 eV
+[2026-04-18 04:01:39,229] DEEPMD INFO    Energy RMSE/Natoms : 5.478808e-04 eV
+[2026-04-18 04:01:39,229] DEEPMD INFO    Force  MAE         : 2.095852e-02 eV/Å
+[2026-04-18 04:01:39,229] DEEPMD INFO    Force  RMSE        : 2.822237e-02 eV/Å
+[2026-04-18 04:01:39,229] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Running 2 ML-MD with updated models (NVT-Nose)
+[SPARC][INFO] Restart Exploration: ENABLED (frame: ('candidates',))
+[SPARC][INFO] ================================================================================
+[SPARC][WARNING]  Warning: Could not load from previous iteration: Invalid restart_mode: ('candidates',). Options: 'last', 'random', 'candidates'
+[SPARC][INFO]  Falling back to original structure
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000002/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter3_dpmd_0.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.6730      0.3619    350.00    0.3066   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.407896 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4115      0.3610    349.07   -0.0650   1728.00
+[SPARC][INFO] 400        -440.4271      0.3693    357.17    0.0088   1728.00
+[SPARC][INFO] 600        -440.2505      0.2540    245.64    0.0216   1728.00
+[SPARC][INFO] 800        -440.4970      0.4615    446.31    0.1673   1728.00
+[SPARC][INFO] 1000       -440.0972      0.3752    362.84   -0.1668   1728.00
+[SPARC][INFO] 1200       -440.2911      0.1513    146.33   -0.2522   1728.00
+[SPARC][INFO] 1400       -439.9650      0.2699    261.03    0.1064   1728.00
+[SPARC][INFO] 1600       -440.3414      0.1676    162.07   -0.0698   1728.00
+[SPARC][INFO] 1800       -440.0707      0.2225    215.13   -0.2889   1728.00
+[SPARC][INFO] 2000       -440.3729      0.1491    144.16   -0.0012   1728.00
+[SPARC][INFO] 2200       -440.2003      0.2556    247.21   -0.1061   1728.00
+[SPARC][INFO] 2400       -440.2847      0.2339    226.18   -0.2732   1728.00
+[SPARC][INFO] 2600       -440.2353      0.2251    217.64   -0.0769   1728.00
+[SPARC][INFO] 2800       -440.6714      0.8530    824.92    0.0148   1728.00
+[SPARC][INFO] 3000       -440.4097      0.2483    240.08   -0.0094   1728.00
+[SPARC][INFO] 3200       -439.9824      0.2637    255.02    0.2077   1728.00
+[SPARC][INFO] 3400       -440.4474      0.2471    238.95   -0.1243   1728.00
+[SPARC][INFO] 3600       -440.4524      0.5903    570.83   -0.1110   1728.00
+[SPARC][INFO] 3800       -440.4182      0.1726    166.95    0.2272   1728.00
+[SPARC][INFO] 4000       -440.3229      0.2970    287.18    0.0387   1728.00
+[SPARC][INFO] 4200       -440.6228      0.5068    490.05   -0.1311   1728.00
+[SPARC][INFO] 4400       -440.5466      0.4241    410.14   -0.0345   1728.00
+[SPARC][INFO] 4600       -440.5494      0.5741    555.17    0.0148   1728.00
+[SPARC][INFO] 4800       -440.4703      0.1798    173.90    0.0905   1728.00
+[SPARC][INFO] 5000       -440.4295      0.4550    439.99    0.0906   1728.00
+[SPARC][WARNING]  Warning: Could not load from previous iteration: Invalid restart_mode: ('candidates',). Options: 'last', 'random', 'candidates'
+[SPARC][INFO]  Falling back to original structure
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000002/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter3_dpmd_1.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.6730      0.3619    350.00    0.3066   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.464018 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4020      0.3986    385.45   -0.1756   1728.00
+[SPARC][INFO] 400        -440.4356      0.3700    357.82    0.0401   1728.00
+[SPARC][INFO] 600        -440.1592      0.2474    239.25   -0.0119   1728.00
+[SPARC][INFO] 800        -440.3436      0.3097    299.49    0.2037   1728.00
+[SPARC][INFO] 1000       -440.2941      0.6500    628.60   -0.1993   1728.00
+[SPARC][INFO] 1200       -440.3396      0.2506    242.34   -0.1744   1728.00
+[SPARC][INFO] 1400       -440.2190      0.4399    425.36    0.1020   1728.00
+[SPARC][INFO] 1600       -440.3161      0.1876    181.46   -0.3448   1728.00
+[SPARC][INFO] 1800       -440.3100      0.4528    437.87   -0.3152   1728.00
+[SPARC][INFO] 2000       -440.3953      0.2009    194.26    0.1270   1728.00
+[SPARC][INFO] 2200       -440.4665      0.5567    538.39   -0.2391   1728.00
+[SPARC][INFO] 2400       -440.3681      0.3763    363.88   -0.2864   1728.00
+[SPARC][INFO] 2600       -440.3490      0.3453    333.91   -0.0176   1728.00
+[SPARC][INFO] 2800       -440.3868      0.4806    464.76   -0.0454   1728.00
+[SPARC][INFO] 3000       -440.5547      0.3637    351.76    0.0707   1728.00
+[SPARC][INFO] 3200       -440.2367      0.4240    410.01   -0.3427   1728.00
+[SPARC][INFO] 3400       -440.4408      0.3004    290.50    0.0650   1728.00
+[SPARC][INFO] 3600       -440.5238      0.4615    446.33    0.1891   1728.00
+[SPARC][INFO] 3800       -440.2961      0.4608    445.66   -0.1962   1728.00
+[SPARC][INFO] 4000       -440.4122      0.3522    340.58    0.1002   1728.00
+[SPARC][INFO] 4200       -440.5216      0.5633    544.69    0.0361   1728.00
+[SPARC][INFO] 4400       -440.2936      0.4221    408.23   -0.0509   1728.00
+[SPARC][INFO] 4600       -440.4534      0.3215    310.87    0.1331   1728.00
+[SPARC][INFO] 4800       -440.4050      0.6513    629.87   -0.0489   1728.00
+[SPARC][INFO] 5000       -440.3194      0.2065    199.66    0.1206   1728.00
+[SPARC][INFO] 
+[SPARC][INFO] QUERY-BY-COMMITTEE: MODEL DEVIATION ANALYSIS
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration                      3
+[SPARC][INFO] Number of models               3
+[SPARC][INFO] Deviation range                [0.10, 0.35] eV/Å
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Model Path: iter_000003/01.train                    
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                       Using the following models:                       
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                            frozen_model_1.pth                           
+[SPARC][INFO]                            frozen_model_2.pth                           
+[SPARC][INFO]                            frozen_model_3.pth                           
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]           Model deviation calculation completed successfully!           
+[SPARC][INFO]          Results saved in: iter_000003/02.dpmd/model_dev_3.out          
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Selection Summary:
+[SPARC][INFO]   Candidates in deviation range [0.10, 0.35] eV/Å: 15
+[SPARC][INFO]   Skipped (RMSD < 0.050 Å): 11
+[SPARC][INFO]   Final selected structures: 4
+[SPARC][INFO]   Candidates trajectory: iter_000003/02.dpmd/dft_candidates/candidates.extxyz
+[SPARC][INFO]   RMSD details written to: iter_000003/02.dpmd/dft_candidates/rmsd_filtering.dat
+[SPARC][INFO] ==========================================================================================
+
+[SPARC][INFO] Candidate summary saved to: iter_000003/02.dpmd/dft_candidates/candidates_summary.csv
+
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                          ACTIVE LEARNING ITERATION 4/4                          
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration Directory            iter_000004
+[SPARC][INFO] 
+[SPARC][INFO] MD Configuration:
+[SPARC][INFO]   Ensemble                     NVT
+[SPARC][INFO]   Thermostat                   Nose
+[SPARC][INFO]   Temperature                  350.0 K
+[SPARC][INFO]   MD Steps                     5000
+[SPARC][INFO]   Timestep                     1.00 fs
+[SPARC][INFO]   Log Frequency                20
+[SPARC][INFO] Restart Exploration            DISABLED (iteration 0)
+[SPARC][INFO] 
+[SPARC][INFO] Model Deviation Criteria:
+[SPARC][INFO]   Min Force Deviation          0.1 eV/Ang.
+[SPARC][INFO]   Max Force Deviation          0.35 eV/Ang.
+[SPARC][INFO] 
+[SPARC][INFO] Training Configuration:
+[SPARC][INFO]   Number of Models             3
+[SPARC][INFO]   Training Data Dir            DeePMD_training/00.data
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000004
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000004
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Iteration 4 | Computing DFT energies/forces for 4 candidates
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Setting up CP2K calculator...
+[SPARC][INFO] CP2K calculator setup successfully
+[SPARC][INFO] Candidate:     1 | Epot: -439.992228 [eV]
+[SPARC][INFO] Candidate:     2 | Epot: -440.021590 [eV]
+[SPARC][INFO] Candidate:     3 | Epot: -440.209548 [eV]
+[SPARC][INFO] Candidate:     4 | Epot: -440.059898 [eV]
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Processing Data for MLIP Re-Training
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]   Loaded 260 existing frames from TrajCombined.traj
+[SPARC][INFO]   Iteration [4]
+[SPARC][INFO]    → Checking File : iter_000004/00.dft/AseMD.traj
+[SPARC][INFO]    → Added Frames  : 4
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                 Total Frames in Combined Trajectory: 264                
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Loaded 264 frames
+[SPARC][INFO] 
+[SPARC][INFO] DATA PROCESSING
+[SPARC][INFO] -----------------
+[SPARC][INFO] Trajectory file                TrajCombined.traj
+[SPARC][INFO] Total frames                   264
+[SPARC][INFO] Frames used                    264
+[SPARC][INFO] Training frames                211 (80%)
+[SPARC][INFO] Validation frames              53 (20%)
+[SPARC][INFO] 
+[SPARC][INFO] Original directory: /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  DeePMD-kit v3 Training
+[SPARC][INFO]  Backend: PYTORCH
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO]  Directory: iter_000004/01.train/training_1
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 1/3
+[SPARC][INFO] Directory                      iter_000004/01.train/training_1
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_1.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 05:01:10,452] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 05:01:12,207] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 05:01:12,207] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 05:01:13,178] DEEPMD INFO    # number of test data : 53 
+[2026-04-18 05:01:13,178] DEEPMD INFO    Energy MAE         : 3.637574e-03 eV
+[2026-04-18 05:01:13,178] DEEPMD INFO    Energy RMSE        : 4.997150e-03 eV
+[2026-04-18 05:01:13,178] DEEPMD INFO    Energy MAE/Natoms  : 4.546968e-04 eV
+[2026-04-18 05:01:13,178] DEEPMD INFO    Energy RMSE/Natoms : 6.246437e-04 eV
+[2026-04-18 05:01:13,178] DEEPMD INFO    Force  MAE         : 1.974492e-02 eV/Å
+[2026-04-18 05:01:13,178] DEEPMD INFO    Force  RMSE        : 2.659340e-02 eV/Å
+[2026-04-18 05:01:13,178] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 05:01:13,178] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 05:01:13,178] DEEPMD INFO    # number of systems : 1
+[2026-04-18 05:01:13,178] DEEPMD INFO    Energy MAE         : 3.637574e-03 eV
+[2026-04-18 05:01:13,178] DEEPMD INFO    Energy RMSE        : 4.997150e-03 eV
+[2026-04-18 05:01:13,178] DEEPMD INFO    Energy MAE/Natoms  : 4.546968e-04 eV
+[2026-04-18 05:01:13,178] DEEPMD INFO    Energy RMSE/Natoms : 6.246437e-04 eV
+[2026-04-18 05:01:13,178] DEEPMD INFO    Force  MAE         : 1.974492e-02 eV/Å
+[2026-04-18 05:01:13,178] DEEPMD INFO    Force  RMSE        : 2.659340e-02 eV/Å
+[2026-04-18 05:01:13,178] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO]  Directory: iter_000004/01.train/training_2
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 2/3
+[SPARC][INFO] Directory                      iter_000004/01.train/training_2
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_2.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 05:41:54,590] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 05:41:56,354] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 05:41:56,354] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 05:41:57,331] DEEPMD INFO    # number of test data : 53 
+[2026-04-18 05:41:57,331] DEEPMD INFO    Energy MAE         : 5.293129e-03 eV
+[2026-04-18 05:41:57,331] DEEPMD INFO    Energy RMSE        : 7.154438e-03 eV
+[2026-04-18 05:41:57,331] DEEPMD INFO    Energy MAE/Natoms  : 6.616412e-04 eV
+[2026-04-18 05:41:57,331] DEEPMD INFO    Energy RMSE/Natoms : 8.943048e-04 eV
+[2026-04-18 05:41:57,331] DEEPMD INFO    Force  MAE         : 2.325425e-02 eV/Å
+[2026-04-18 05:41:57,331] DEEPMD INFO    Force  RMSE        : 3.165962e-02 eV/Å
+[2026-04-18 05:41:57,331] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 05:41:57,331] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 05:41:57,331] DEEPMD INFO    # number of systems : 1
+[2026-04-18 05:41:57,331] DEEPMD INFO    Energy MAE         : 5.293129e-03 eV
+[2026-04-18 05:41:57,331] DEEPMD INFO    Energy RMSE        : 7.154438e-03 eV
+[2026-04-18 05:41:57,331] DEEPMD INFO    Energy MAE/Natoms  : 6.616412e-04 eV
+[2026-04-18 05:41:57,331] DEEPMD INFO    Energy RMSE/Natoms : 8.943048e-04 eV
+[2026-04-18 05:41:57,331] DEEPMD INFO    Force  MAE         : 2.325425e-02 eV/Å
+[2026-04-18 05:41:57,331] DEEPMD INFO    Force  RMSE        : 3.165962e-02 eV/Å
+[2026-04-18 05:41:57,331] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO]  Directory: iter_000004/01.train/training_3
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]  Training Model 3/3
+[SPARC][INFO] Directory                      iter_000004/01.train/training_3
+[SPARC][INFO] Running command: dp --pt train input.json
+[SPARC][INFO] Freezing model: dp --pt freeze -o frozen_model_3.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] DeepMD Model Evaluation Results
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] [2026-04-18 06:22:40,896] DEEPMD WARNING To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/e3nn/o3/_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/home/rverma7/anaconda3/envs/sparcGNN/lib/python3.10/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.6.0 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+[2026-04-18 06:22:42,672] DEEPMD INFO    # ---------------output of dp test--------------- 
+[2026-04-18 06:22:42,672] DEEPMD INFO    # testing system : /home/rverma7/My_Program/0.3_sparc/examples/CP2K/workflow/DeePMD_training/00.data/validation_data
+[2026-04-18 06:22:43,642] DEEPMD INFO    # number of test data : 53 
+[2026-04-18 06:22:43,642] DEEPMD INFO    Energy MAE         : 3.617338e-03 eV
+[2026-04-18 06:22:43,642] DEEPMD INFO    Energy RMSE        : 4.628362e-03 eV
+[2026-04-18 06:22:43,642] DEEPMD INFO    Energy MAE/Natoms  : 4.521672e-04 eV
+[2026-04-18 06:22:43,642] DEEPMD INFO    Energy RMSE/Natoms : 5.785453e-04 eV
+[2026-04-18 06:22:43,642] DEEPMD INFO    Force  MAE         : 2.095143e-02 eV/Å
+[2026-04-18 06:22:43,642] DEEPMD INFO    Force  RMSE        : 2.803588e-02 eV/Å
+[2026-04-18 06:22:43,642] DEEPMD INFO    # ----------------------------------------------- 
+[2026-04-18 06:22:43,642] DEEPMD INFO    # ----------weighted average of errors----------- 
+[2026-04-18 06:22:43,642] DEEPMD INFO    # number of systems : 1
+[2026-04-18 06:22:43,642] DEEPMD INFO    Energy MAE         : 3.617338e-03 eV
+[2026-04-18 06:22:43,642] DEEPMD INFO    Energy RMSE        : 4.628362e-03 eV
+[2026-04-18 06:22:43,642] DEEPMD INFO    Energy MAE/Natoms  : 4.521672e-04 eV
+[2026-04-18 06:22:43,642] DEEPMD INFO    Energy RMSE/Natoms : 5.785453e-04 eV
+[2026-04-18 06:22:43,642] DEEPMD INFO    Force  MAE         : 2.095143e-02 eV/Å
+[2026-04-18 06:22:43,642] DEEPMD INFO    Force  RMSE        : 2.803588e-02 eV/Å
+[2026-04-18 06:22:43,642] DEEPMD INFO    # -----------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Running 2 ML-MD with updated models (NVT-Nose)
+[SPARC][INFO] Restart Exploration: ENABLED (frame: ('candidates',))
+[SPARC][INFO] ================================================================================
+[SPARC][WARNING]  Warning: Could not load from previous iteration: Invalid restart_mode: ('candidates',). Options: 'last', 'random', 'candidates'
+[SPARC][INFO]  Falling back to original structure
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000003/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter4_dpmd_0.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.6747      0.3619    350.00    0.3026   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.489621 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.5157      0.5012    484.73   -0.1282   1728.00
+[SPARC][INFO] 400        -440.6209      0.5542    535.98    0.0031   1728.00
+[SPARC][INFO] 600        -440.4641      0.5437    525.82    0.2077   1728.00
+[SPARC][INFO] 800        -440.5628      0.5416    523.75   -0.1533   1728.00
+[SPARC][INFO] 1000       -440.1960      0.5558    537.51   -0.2623   1728.00
+[SPARC][INFO] 1200       -440.3819      0.2875    278.04    0.1868   1728.00
+[SPARC][INFO] 1400       -440.3914      0.6451    623.81    0.2042   1728.00
+[SPARC][INFO] 1600       -440.5880      0.4620    446.80   -0.1892   1728.00
+[SPARC][INFO] 1800       -440.3360      0.4922    475.99   -0.1464   1728.00
+[SPARC][INFO] 2000       -440.4565      0.2526    244.28    0.1466   1728.00
+[SPARC][INFO] 2200       -440.4235      0.5300    512.50    0.0957   1728.00
+[SPARC][INFO] 2400       -440.4733      0.4844    468.44   -0.1788   1728.00
+[SPARC][INFO] 2600       -440.2935      0.2842    274.87   -0.0509   1728.00
+[SPARC][INFO] 2800       -440.4738      0.4381    423.70    0.0979   1728.00
+[SPARC][INFO] 3000       -440.5085      0.5973    577.65    0.0422   1728.00
+[SPARC][INFO] 3200       -440.3034      0.2408    232.82   -0.1260   1728.00
+[SPARC][INFO] 3400       -440.4474      0.4398    425.27   -0.1528   1728.00
+[SPARC][INFO] 3600       -440.5455      0.5898    570.38   -0.1163   1728.00
+[SPARC][INFO] 3800       -440.3885      0.2840    274.63    0.0815   1728.00
+[SPARC][INFO] 4000       -440.2154      0.3395    328.35   -0.2237   1728.00
+[SPARC][INFO] 4200       -440.4997      0.4299    415.70   -0.2886   1728.00
+[SPARC][INFO] 4400       -440.0866      0.5469    528.92   -0.0900   1728.00
+[SPARC][INFO] 4600       -440.1969      0.2217    214.38    0.0446   1728.00
+[SPARC][INFO] 4800       -440.3097      0.1952    188.79   -0.1468   1728.00
+[SPARC][INFO] 5000       -439.9098      0.1203    116.31   -0.2319   1728.00
+[SPARC][WARNING]  Warning: Could not load from previous iteration: Invalid restart_mode: ('candidates',). Options: 'last', 'random', 'candidates'
+[SPARC][INFO]  Falling back to original structure
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] DeepPotential model successfully loaded and tested:
+[SPARC][INFO]   Model: iter_000003/01.train/training_1/frozen_model_1.pth
+[SPARC][INFO]   Backend: PYTORCH
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]             
+
+[SPARC][INFO] Output Logfile: Iter4_dpmd_1.log
+[SPARC][INFO] ================================================================================
+
+[SPARC][INFO] 
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3) 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0          -439.6747      0.3619    350.00    0.3026   1728.00
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -440.463525 eV
+[SPARC][INFO] Threshold limit: +/- 2.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 200        -440.4007      0.3337    322.66   -0.2493   1728.00
+[SPARC][INFO] 400        -440.3318      0.2848    275.42    0.1361   1728.00
+[SPARC][INFO] 600        -440.4716      0.4559    440.86    0.1857   1728.00
+[SPARC][INFO] 800        -440.5879      0.5473    529.30   -0.1824   1728.00
+[SPARC][INFO] 1000       -439.9185      0.1741    168.32   -0.1922   1728.00
+[SPARC][INFO] 1200       -440.4191      0.2683    259.42   -0.1354   1728.00
+[SPARC][INFO] 1400       -439.9893      0.2930    283.30    0.0564   1728.00
+[SPARC][INFO] 1600       -440.4308      0.2415    233.57    0.0091   1728.00
+[SPARC][INFO] 1800       -440.0081      0.1475    142.62   -0.3731   1728.00
+[SPARC][INFO] 2000       -440.4556      0.2109    203.92   -0.1505   1728.00
+[SPARC][INFO] 2200       -440.0878      0.1525    147.51    0.1319   1728.00
+[SPARC][INFO] 2400       -440.4479      0.1359    131.45   -0.1213   1728.00
+[SPARC][INFO] 2600       -440.1870      0.1568    151.68   -0.2058   1728.00
+[SPARC][INFO] 2800       -440.3395      0.2399    231.95   -0.2386   1728.00
+[SPARC][INFO] 3000       -440.4311      0.2729    263.86   -0.0616   1728.00
+[SPARC][INFO] 3200       -440.2936      0.2824    273.05    0.1004   1728.00
+[SPARC][INFO] 3400       -440.4066      0.1504    145.41   -0.2050   1728.00
+[SPARC][INFO] 3600       -440.2414      0.3314    320.47   -0.2210   1728.00
+[SPARC][INFO] 3800       -440.6445      0.4398    425.35    0.0469   1728.00
+[SPARC][INFO] 4000       -440.6355      0.2799    270.68    0.0732   1728.00
+[SPARC][INFO] 4200       -440.3991      0.4350    420.62    0.0324   1728.00
+[SPARC][INFO] 4400       -440.4113      0.2006    194.03    0.0695   1728.00
+[SPARC][INFO] 4600       -440.5434      0.4961    479.78   -0.0058   1728.00
+[SPARC][INFO] 4800       -440.1932      0.1513    146.27    0.3819   1728.00
+[SPARC][INFO] 5000       -440.5399      0.3462    334.78    0.1536   1728.00
+[SPARC][INFO] 
+[SPARC][INFO] QUERY-BY-COMMITTEE: MODEL DEVIATION ANALYSIS
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Iteration                      4
+[SPARC][INFO] Number of models               3
+[SPARC][INFO] Deviation range                [0.10, 0.35] eV/Å
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Model Path: iter_000004/01.train                    
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                       Using the following models:                       
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                            frozen_model_1.pth                           
+[SPARC][INFO]                            frozen_model_2.pth                           
+[SPARC][INFO]                            frozen_model_3.pth                           
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]           Model deviation calculation completed successfully!           
+[SPARC][INFO]          Results saved in: iter_000004/02.dpmd/model_dev_4.out          
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Selection Summary:
+[SPARC][INFO]   Candidates in deviation range [0.10, 0.35] eV/Å: 2
+[SPARC][INFO]   Skipped (RMSD < 0.050 Å): 0
+[SPARC][INFO]   Final selected structures: 2
+[SPARC][INFO]   Candidates trajectory: iter_000004/02.dpmd/dft_candidates/candidates.extxyz
+[SPARC][INFO]   RMSD details written to: iter_000004/02.dpmd/dft_candidates/rmsd_filtering.dat
+[SPARC][INFO] ==========================================================================================
+
+[SPARC][INFO] Candidate summary saved to: iter_000004/02.dpmd/dft_candidates/candidates_summary.csv
+
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                        ACTIVE LEARNING WORKFLOW COMPLETED                       
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Total iterations : 4
+[SPARC][INFO] Final models saved in : iter_000004/01.train
+[SPARC][INFO] ================================================================================
+
+================================================================================
+END CALCULATION - 2026-04-18 06:25:06
+Total Runtime: 14:16:11.344714
+================================================================================

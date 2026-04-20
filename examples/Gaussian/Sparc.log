@@ -1,0 +1,194 @@
+================================================================================
+BEGIN CALCULATION - 2026-04-20 12:36:30
+================================================================================
+
+
+         ######  ########     ###    ########   ######  
+        ##    ## ##     ##   ## ##   ##     ## ##    ## 
+        ##       ##     ##  ##   ##  ##     ## ##       
+         ######  ########  ##     ## ########  ##       
+              ## ##        ######### ##   ##   ##       
+        ##    ## ##        ##     ## ##    ##  ##    ## 
+         ######  ##        ##     ## ##     ##  ###### 
+         --v0.2.0
+
+[SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning
+[SPARC][INFO] Version: 0.2.0
+
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Working directory: /gpfs_common/share03/pfaendtnergroup/rverma7/MLP/sparc/testGaussian
+[SPARC][INFO] Configuration file: input.yaml
+[SPARC][INFO] 
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     YAML configuration loaded successfully!                     
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][WARNING] WARNING: Structure has periodic cell/PBC but the calculator is non-periodic.
+[SPARC][WARNING]          Removing cell and PBC. This will not affect the calculation.
+[SPARC][INFO] 
+[SPARC][INFO] Using structure file: AmmoniaBorate.xyz
+[SPARC][INFO] WORKFLOW PARAMETERS :
+[SPARC][INFO] ---------------------
+[SPARC][INFO] Structure FileName/s           AmmoniaBorate.xyz
+[SPARC][INFO] Number of Atoms                8
+[SPARC][INFO] Chemical Formula               H6BN
+[SPARC][INFO] 
+[SPARC][INFO] DFT Engine                     Gaussian
+[SPARC][INFO] DFT Tempelate File             gaussian_template.inp
+[SPARC][INFO] DFT Executable                 g16
+[SPARC][INFO] 
+[SPARC][INFO] Active Learning                Disabled
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] 
+[SPARC][INFO] Setting up Gaussian calculator...
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]         GAUSSIAN CALCULATOR (non-periodic)        
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO]   Command                  g16
+[SPARC][INFO]   Label                    gaussian/gaussian
+[SPARC][INFO]   method                   HF
+[SPARC][INFO]   basis                    STO-3G
+[SPARC][INFO]   mem                      2GB
+[SPARC][INFO]   scf                      qc,maxcycle=200
+[SPARC][INFO]   mult                     1
+[SPARC][INFO]   charge                   0
+[SPARC][INFO]   nprocshared              2
+[SPARC][INFO]   force                    (enabled)
+[SPARC][INFO] --------------------------------------------------
+[SPARC][INFO] Gaussian calculator setup successfully
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     Ab-initio MD using NVT-Langevin at 300K                     
+[SPARC][INFO] MD Ensemble                    NVT
+[SPARC][INFO] Temperature                    300.0 K
+[SPARC][INFO] MD Thermostat                  Langevin
+[SPARC][INFO] Timestep                       1.00 fs
+[SPARC][INFO] AIMD Steps                     100
+[SPARC][INFO] Output Trajectory              AseMD.traj
+[SPARC][INFO] Output Logfile                 AseMD.log
+[SPARC][INFO] 
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang.^3)
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] 0         -2219.3910      0.3102    300.00
+[SPARC][INFO] 1         -2219.4684      0.4039    390.59
+[SPARC][INFO] 2         -2219.6238      0.4403    425.78
+[SPARC][INFO] 3         -2219.7965      0.5085    491.75
+[SPARC][INFO] 4         -2219.9683      0.6811    658.65
+[SPARC][INFO] 5         -2219.9670      0.5826    563.42
+[SPARC][INFO] 6         -2219.9659      0.5064    489.71
+[SPARC][INFO] 7         -2220.1095      0.4749    459.27
+[SPARC][INFO] 8         -2220.2866      0.5749    555.96
+[SPARC][INFO] 9         -2220.2577      0.4745    458.90
+[SPARC][INFO] 10        -2220.0743      0.2285    220.99
+[SPARC][INFO] 11        -2220.1160      0.2147    207.64
+[SPARC][INFO] 12        -2220.1927      0.2459    237.78
+[SPARC][INFO] 13        -2220.1781      0.3151    304.71
+[SPARC][INFO] 14        -2220.1166      0.1843    178.23
+[SPARC][INFO] 15        -2220.1346      0.2950    285.32
+[SPARC][INFO] 16        -2220.1598      0.2691    260.28
+[SPARC][INFO] 17        -2220.1608      0.2673    258.48
+[SPARC][INFO] 18        -2220.0868      0.2550    246.57
+[SPARC][INFO] 19        -2220.1277      0.2944    284.67
+[SPARC][INFO] 20        -2220.1822      0.4377    423.28
+[SPARC][INFO] 21        -2220.1397      0.3114    301.12
+[SPARC][INFO] 22        -2220.1172      0.3273    316.54
+[SPARC][INFO] 23        -2220.1331      0.4015    388.26
+[SPARC][INFO] 24        -2220.1223      0.2906    280.99
+[SPARC][INFO] 25        -2220.0896      0.2041    197.39
+[SPARC][INFO] 26        -2220.0975      0.2007    194.07
+[SPARC][INFO] 27        -2220.1986      0.4649    449.59
+[SPARC][INFO] 28        -2220.2071      0.4154    401.73
+[SPARC][INFO] 29        -2220.1157      0.2648    256.03
+[SPARC][INFO] 30        -2220.0421      0.2732    264.24
+[SPARC][INFO] 31        -2220.0363      0.2078    200.99
+[SPARC][INFO] 32        -2220.0815      0.2850    275.60
+[SPARC][INFO] 33        -2220.1449      0.3762    363.84
+[SPARC][INFO] 34        -2220.1119      0.3496    338.11
+[SPARC][INFO] 35        -2220.0069      0.4097    396.18
+[SPARC][INFO] 36        -2220.0401      0.4746    458.93
+[SPARC][INFO] 37        -2220.1308      0.6304    609.60
+[SPARC][INFO] 38        -2220.1049      0.5087    491.94
+[SPARC][INFO] 39        -2220.0306      0.4932    476.90
+[SPARC][INFO] 40        -2220.0131      0.3252    314.47
+[SPARC][INFO] 41        -2220.0406      0.4009    387.70
+[SPARC][INFO] 42        -2220.1622      0.4005    387.26
+[SPARC][INFO] 43        -2220.1773      0.2938    284.16
+[SPARC][INFO] 44        -2220.1080      0.4075    394.08
+[SPARC][INFO] 45        -2220.1036      0.3142    303.88
+[SPARC][INFO] 46        -2220.1065      0.2919    282.26
+[SPARC][INFO] 47        -2220.0777      0.1949    188.50
+[SPARC][INFO] 48        -2220.1182      0.2759    266.84
+[SPARC][INFO] 49        -2220.2139      0.4417    427.13
+[SPARC][INFO] 50        -2220.2520      0.7157    692.08
+[SPARC][INFO] 51        -2220.1540      0.5898    570.38
+[SPARC][INFO] 52        -2220.0570      0.3580    346.23
+[SPARC][INFO] 53        -2220.0332      0.4251    411.12
+[SPARC][INFO] 54        -2220.0125      0.3639    351.92
+[SPARC][INFO] 55        -2219.9397      0.2426    234.64
+[SPARC][INFO] 56        -2219.8470      0.2784    269.19
+[SPARC][INFO] 57        -2219.7989      0.1946    188.18
+[SPARC][INFO] 58        -2219.8636      0.2619    253.30
+[SPARC][INFO] 59        -2219.9553      0.3686    356.46
+[SPARC][INFO] 60        -2219.9249      0.3130    302.70
+[SPARC][INFO] 61        -2219.9374      0.2227    215.40
+[SPARC][INFO] 62        -2220.0579      0.5131    496.18
+[SPARC][INFO] 63        -2220.1181      0.4593    444.15
+[SPARC][INFO] 64        -2220.0943      0.2300    222.44
+[SPARC][INFO] 65        -2220.1295      0.3184    307.94
+[SPARC][INFO] 66        -2220.2230      0.5244    507.16
+[SPARC][INFO] 67        -2220.2460      0.5189    501.78
+[SPARC][INFO] 68        -2220.1776      0.5000    483.47
+[SPARC][INFO] 69        -2220.1067      0.4875    471.39
+[SPARC][INFO] 70        -2220.1003      0.5128    495.93
+[SPARC][INFO] 71        -2220.0465      0.4915    475.26
+[SPARC][INFO] 72        -2219.9658      0.3765    364.07
+[SPARC][INFO] 73        -2219.8944      0.3733    361.00
+[SPARC][INFO] 74        -2219.9168      0.5314    513.91
+[SPARC][INFO] 75        -2219.9315      0.5264    509.03
+[SPARC][INFO] 76        -2219.9017      0.4858    469.81
+[SPARC][INFO] 77        -2219.7783      0.3007    290.81
+[SPARC][INFO] 78        -2219.6761      0.2489    240.67
+[SPARC][INFO] 79        -2219.7539      0.3030    293.00
+[SPARC][INFO] 80        -2219.9229      0.4650    449.65
+[SPARC][INFO] 81        -2220.0168      0.5270    509.61
+[SPARC][INFO] 82        -2220.0207      0.4175    403.73
+[SPARC][INFO] 83        -2220.0429      0.5926    573.04
+[SPARC][INFO] 84        -2220.0544      0.5409    523.07
+[SPARC][INFO] 85        -2219.9851      0.4334    419.13
+[SPARC][INFO] 86        -2219.9631      0.4039    390.57
+[SPARC][INFO] 87        -2220.0216      0.3953    382.23
+[SPARC][INFO] 88        -2220.0343      0.3177    307.26
+[SPARC][INFO] 89        -2220.0555      0.3824    369.80
+[SPARC][INFO] 90        -2220.0621      0.3032    293.22
+[SPARC][INFO] 91        -2220.0785      0.4233    409.35
+[SPARC][INFO] 92        -2220.0644      0.4063    392.95
+[SPARC][INFO] 93        -2220.0140      0.4275    413.41
+[SPARC][INFO] 94        -2219.9200      0.4120    398.45
+[SPARC][INFO] 95        -2219.9388      0.3330    321.99
+[SPARC][INFO] 96        -2220.0810      0.4001    386.92
+[SPARC][INFO] 97        -2220.1809      0.5849    565.61
+[SPARC][INFO] 98        -2220.1732      0.4427    428.08
+[SPARC][INFO] 99        -2220.1998      0.4461    431.36
+[SPARC][INFO] 100       -2220.2221      0.5463    528.28
+cuequivariance or cuequivariance_torch is not available. Cuequivariance acceleration will be disabled.
+[SPARC][INFO] PyTorch backend is functional
+[SPARC][INFO] Detected DeePMD-kit v3 with PYTORCH backend
+[SPARC][INFO] 
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                         ACTIVE LEARNING CYCLE : DISABLED                        
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] 
+
+================================================================================
+END CALCULATION - 2026-04-20 12:51:57
+Total Runtime: 0:15:27.467085
+================================================================================

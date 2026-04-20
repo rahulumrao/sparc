@@ -1,0 +1,32 @@
+# ============================================================
+# SPARC - ORCA NVT (Canonical) Ensemble
+# Ammonia Borane (NH3BH3), PBE (non-periodic)
+# ============================================================
+# NVT: constant Number, Volume, Temperature.
+
+general:
+  structure_file: "../../../AmmoniaBorate.xyz"
+
+dft_calculator:
+  engine: "ORCA"
+  template_file: "orca_template.inp"
+  exe_command: "/home/rverma7/Softwares/ORCA/orca"
+
+aimd_setup:
+  ensemble: "NVT"
+  temperature: 300                     # Target temperature [K]
+  thermostat:
+    type: "Nose"                   # "Langevin" or "Nose"
+    tdamp: 10.0
+  timestep_fs: 1.0
+  steps: 250
+  log_frequency: 1
+  restart: false
+  plumed:
+    enabled: false
+
+output:
+  log_file: "AseMD.log"
+  xyz_file: "AseTraj.xyz"
+  aimdtraj_file: "AseMD.traj"
+  dptraj_file: "dpmd.traj"
