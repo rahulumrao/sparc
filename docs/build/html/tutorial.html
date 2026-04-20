@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="[1] Workflow Analysis" href="notebooks/analysisAmmoniaBorate.html" />
+    <link rel="prev" title="Input File" href="yaml.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#mlip-setup">MLIP Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory Structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ammonia-borate-nh-3bh-3">Ammonia Borate (NH<span class="math notranslate nohighlight">\(_3\)</span>BH<span class="math notranslate nohighlight">\(_3\)</span>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preparation">Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#execute-sparc">Execute SPARC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#training-ml-models">Training ML Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-ml-md">Running ML/MD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#active-learning-loop">Active Learning Loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#monitor-workflow">Monitor Workflow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#plumed-plugin">PLUMED Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-step">Next Step</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/workflow_overview.html">Workflow Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-1-dft-aimd-00-dft">Stage 1 — DFT / AIMD (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/active_learning.html">Active Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/dft_engines.html#vasp">VASP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/dft_engines.html#cp2k">CP2K</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/dft_engines.html#orca">ORCA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/dft_engines.html#xtb">xTB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/dft_engines.html#quantum-espresso-qe">Quantum ESPRESSO (QE)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/dft_engines.html#gaussian">Gaussian</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/fine_tuning.html">Fine-Tuning vs. Training From Scratch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/fine_tuning.html#training-from-scratch-default">Training from scratch (default)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/fine_tuning.html#fine-tuning-a-deepmd-universal-model">Fine-tuning a DeePMD universal model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/fine_tuning.html#when-to-use-fine-tuning">When to use fine-tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/plumed_enhanced_sampling.html">Enhanced Sampling with PLUMED</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/plumed_enhanced_sampling.html#any-plumed-collective-variable-or-bias-can-be-used">Any PLUMED collective variable or bias can be used</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/plumed_enhanced_sampling.html#example-sprint-coordinates">Example: SPRINT coordinates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/plumed_enhanced_sampling.html#umbrella-sampling">Umbrella sampling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">DFT Calculator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.input_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.input_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.dft_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.dft_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.print_screen"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.print_screen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.cp2k"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.espresso"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.espresso()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.gaussian"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.gaussian()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.orca"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.vasp"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator.xtb"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.dft_calculator"><code class="docutils literal notranslate"><span class="pre">dft_calculator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#supported-backends">Supported Backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.update_json"><code class="docutils literal notranslate"><span class="pre">update_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#graph-neural-network-potentials-gnn">Graph Neural Network Potentials (GNN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="finetune.html">Fine-Tuning Universal Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="finetune.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finetune.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finetune.html#deepmd-fine-tuning">DeePMD Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finetune.html#integration-with-active-learning">Integration with Active Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finetune.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finetune.html#module-sparc.src.finetune">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="finetune.html#sparc.src.finetune.deepmd_finetune"><code class="docutils literal notranslate"><span class="pre">deepmd_finetune()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="finetune.html#sparc.src.finetune.finetune_training"><code class="docutils literal notranslate"><span class="pre">finetune_training()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="finetune.html#sparc.src.finetune.mace_finetune"><code class="docutils literal notranslate"><span class="pre">mace_finetune()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="finetune.html#sparc.src.finetune.setup_MACE_calculator"><code class="docutils literal notranslate"><span class="pre">setup_MACE_calculator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#module-sparc.src.ase_md">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.CalculateDFTEnergy"><code class="docutils literal notranslate"><span class="pre">CalculateDFTEnergy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.ExecuteAbInitioDynamics"><code class="docutils literal notranslate"><span class="pre">ExecuteAbInitioDynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.ExecuteMlpDynamics"><code class="docutils literal notranslate"><span class="pre">ExecuteMlpDynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.NPT"><code class="docutils literal notranslate"><span class="pre">NPT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.NVE"><code class="docutils literal notranslate"><span class="pre">NVE()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.TemperatureRamp"><code class="docutils literal notranslate"><span class="pre">TemperatureRamp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.initialize_dynamics"><code class="docutils literal notranslate"><span class="pre">initialize_dynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="md.html#sparc.src.ase_md.lammps_md"><code class="docutils literal notranslate"><span class="pre">lammps_md()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataProcess.html">Data Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#train-validation-split">Train / Validation Split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#module-sparc.src.data_processing">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#sprint-coordinates">SPRINT Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#enabling-plumed-in-input-yaml">Enabling PLUMED in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#function">Function:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#example-directory-structure">Example Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#geometry-tab-details">Geometry Tab Details</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ChemView.html">ChemView</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-a-trajectory">Load a trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Atom-level-forces">Atom-level forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Cell-parameters">Cell parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Single-structure">Single structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Custom-property-names">Custom property names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ChemView.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChemView.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChemView.html#property-specs">Property Specs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ChemView.html#structure-level">Structure-level</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ChemView.html#atom-level">Atom-level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ChemView.html#auto-generated-names">Auto-generated Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChemView.html#constraints">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChemView.html#api-reference">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ChemView.html#sparc.src.utils.chemview.ChemView"><code class="docutils literal notranslate"><span class="pre">ChemView()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#core-modules">Core Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#development-installation">Development Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-style">Code Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#building-the-documentation">Building the Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#running-the-tests">Running the Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#pull-request-checklist">Pull Request Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#reporting-issues">Reporting Issues</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-tutorial">
+<span id="tutorial"></span><h1>Tutorial<a class="headerlink" href="#module-tutorial" title="Link to this heading"></a></h1>
+<p>Welcome to the SPARC tutorial!</p>
+<section id="ammonia-borate-nh-3bh-3">
+<h2>Ammonia Borate (NH<span class="math notranslate nohighlight">\(_3\)</span>BH<span class="math notranslate nohighlight">\(_3\)</span>)<a class="headerlink" href="#ammonia-borate-nh-3bh-3" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/AmmoniaBorate.png"><img alt="Ammonia Borate structure" src="_images/AmmoniaBorate.png" style="width: 400px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Schematic representation of B-N bond dissociation in NH<span class="math notranslate nohighlight">\(_3\)</span>BH<span class="math notranslate nohighlight">\(_3\)</span> .</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#introduction" id="id7">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#preparation" id="id8">Preparation</a></p></li>
+<li><p><a class="reference internal" href="#execute-sparc" id="id9">Execute SPARC</a></p></li>
+<li><p><a class="reference internal" href="#training-ml-models" id="id10">Training ML Models</a></p></li>
+<li><p><a class="reference internal" href="#running-ml-md" id="id11">Running ML/MD</a></p></li>
+<li><p><a class="reference internal" href="#active-learning-loop" id="id12">Active Learning Loop</a></p></li>
+<li><p><a class="reference internal" href="#monitor-workflow" id="id13">Monitor Workflow</a></p></li>
+<li><p><a class="reference internal" href="#plumed-plugin" id="id14">PLUMED Plugin</a></p></li>
+<li><p><a class="reference internal" href="#next-step" id="id15">Next Step</a></p></li>
+</ul>
+</nav>
+<section id="introduction">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading"></a></h3>
+<p>In this tutorial, we demonstrate how to run the <strong>SPARC</strong> workflow end-to-end. We will show how to:</p>
+<ol class="arabic simple">
+<li><p>Prepare input files (see <a class="reference internal" href="yaml.html#inputfile"><span class="std std-ref">Input File</span></a> for details),</p></li>
+<li><p>Prepare initial <em>ab initio</em> data,</p></li>
+<li><p>Train interatomic potentials with DeepMD-kit,</p></li>
+<li><p>Run machine learning molecular dynamics (ML/MD),</p></li>
+<li><p>Using <strong>active learning</strong> with <strong>Query-by-Committee (QbC)</strong> to adaptively improve the model.</p></li>
+</ol>
+</section>
+<section id="preparation">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Preparation</a><a class="headerlink" href="#preparation" title="Link to this heading"></a></h3>
+<p>First, create a new test directory and download the tutorial data. If you haven’t installed SPARC yet, see <a class="reference internal" href="install.html"><span class="doc">SPARC Installation Guide</span></a> or the <a class="reference internal" href="quickstart.html"><span class="doc">Quick Start Guide</span></a> guide.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>nh3bh3_test
+<span class="nb">cd</span><span class="w"> </span>nh3bh3_test
+wget<span class="w"> </span>https://github.com/rahulumrao/sparc/raw/main/examples/AmmoniaBorate.zip
+unzip<span class="w"> </span>AmmoniaBorate.zip
+</pre></div>
+</div>
+<p>You can also download the archive directly from <a class="reference external" href="https://github.com/rahulumrao/sparc/raw/main/examples/AmmoniaBorate.zip">here</a>.</p>
+<p>If you <span class="math notranslate nohighlight">\(cd\)</span> to the unpacked folder, it will have the following files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>AmmoniaBorate
+$<span class="w"> </span>ls
+INCAR<span class="w">  </span>POSCAR<span class="w">  </span>input.json<span class="w">  </span>input.yaml<span class="w">  </span>iter_000000<span class="w">  </span>plumed_dp.dat
+$<span class="w"> </span>tree<span class="w"> </span>iter_000000
+<span class="w">   </span>iter_000000
+<span class="w">   </span>└──<span class="w"> </span><span class="m">00</span>.dft
+<span class="w">      </span>└──<span class="w"> </span>AseMD.traj
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">POSCAR</span></code>: Initial structure in VASP format,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INCAR</span></code>: VASP input file,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plumed_dp.dat</span></code>: Plumed file,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>: SPARC workflow configuration file,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input.json</span></code>: DeepMD training parameters.</p></li>
+</ul>
+<p>The file <code class="docutils literal notranslate"><span class="pre">AseMD.traj</span></code> inside the folder <code class="docutils literal notranslate"><span class="pre">iter_000000/00.dft</span></code> contains the initial AIMD data computed with VASP to start the workflow. Now we only need to prepare the <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> ( see <a class="reference internal" href="yaml.html#inputfile"><span class="std std-ref">Input File</span></a>) file, which defines the entire SPARC workflow.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> defines the SPARC workflow, which is organized into four main steps:</p>
+<ol class="arabic simple">
+<li><p>Initial <strong>Data preparation</strong> with <em>ab initio</em> configurations</p></li>
+<li><p>Run DeepMD-kit for <strong>Training ML models</strong>  interatomic potential models,</p></li>
+<li><p>Use ASE MD engine together with Plumed to run <strong>Machine Learning Molecular Dynamics (ML/MD)</strong> sampling,</p></li>
+<li><p>Iteratively improve ML potential with <strong>Active learning</strong> by detecting poorly represented regions with new candidates.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p class="centered">
+<strong>Each file is included in this tutorial for reference.</strong></p></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">input.yaml</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># YAML configuration file for SPARC package</span>
+<span class="c1"># General settings</span>
+<span class="nt">general</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;POSCAR&quot;</span><span class="w">           </span><span class="c1"># Input structure</span>
+
+<span class="c1"># DFT calculator settings</span>
+<span class="nt">dft_calculator</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;VASP&quot;</span><span class="w">                     </span><span class="c1"># DFT engine name</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;INCAR&quot;</span><span class="w">            </span><span class="c1"># Path to INCAR file</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">16</span><span class="nv"> </span><span class="s">/path/to/VASP/bin/vasp_std&quot;</span><span class="w">  </span><span class="c1"># VASP executable</span>
+
+<span class="c1"># Ab initio MD settings</span>
+<span class="nt">aimd_setup</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span><span class="w">                    </span><span class="c1"># Ensemble for MD simulation</span>
+<span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">350.0</span><span class="w">                 </span><span class="c1"># Temperature in Kelvin</span>
+<span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">                   </span><span class="c1"># Timestep for MD simulation (fs)</span>
+<span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">                           </span><span class="c1"># Number of AIMD steps (0 = skip AIMD)</span>
+<span class="w">  </span><span class="nt">log_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">                   </span><span class="c1"># Output frequency in steps</span>
+<span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                     </span><span class="c1"># Resume from checkpoint</span>
+<span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span><span class="w">                     </span><span class="c1"># Nose-Hoover thermostat</span>
+<span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span><span class="w">                      </span><span class="c1"># Damping time (fs)</span>
+<span class="w">  </span><span class="nt">plumed</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                   </span><span class="c1"># Enable PLUMED for AIMD</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed_dft.dat&quot;</span>
+<span class="w">    </span><span class="nt">kT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.02585</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="c1"># MLIP training + ML-MD settings</span>
+<span class="nt">mlip_setup</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                    </span><span class="c1"># Enable MLIP training</span>
+<span class="w">  </span><span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Training_Data&quot;</span><span class="w">         </span><span class="c1"># Directory for training data</span>
+<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;input.json&quot;</span><span class="w">          </span><span class="c1"># DeepMD training input JSON</span>
+<span class="w">  </span><span class="nt">skip_min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">                        </span><span class="c1"># Skip first N frames</span>
+<span class="w">  </span><span class="nt">skip_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                     </span><span class="c1"># Skip frames beyond this index</span>
+<span class="w">  </span><span class="nt">num_models</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">                      </span><span class="c1"># Number of committee models</span>
+<span class="w">  </span><span class="nt">MdSimulation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">                 </span><span class="c1"># Run ML-MD simulation</span>
+<span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">                   </span><span class="c1"># ML-MD timestep (fs)</span>
+<span class="w">  </span><span class="nt">md_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500000</span><span class="w">                   </span><span class="c1"># ML-MD steps</span>
+<span class="w">  </span><span class="nt">multiple_run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">                    </span><span class="c1"># Independent MD runs</span>
+<span class="w">  </span><span class="nt">log_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w">                  </span><span class="c1"># Output frequency in steps</span>
+<span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span>
+<span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span>
+<span class="w">  </span><span class="nt">plumed</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">                    </span><span class="c1"># Enable PLUMED for ML-MD</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed_dp.dat&quot;</span>
+<span class="w">    </span><span class="nt">kT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.02585</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="c1"># Active Learning</span>
+<span class="nt">active_learning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">                </span><span class="c1"># Enable active learning loop</span>
+<span class="nt">learning_restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">              </span><span class="c1"># Resume AL from checkpoint</span>
+<span class="nt">latest_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                   </span><span class="c1"># Model path on restart</span>
+<span class="nt">iteration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w">                         </span><span class="c1"># Maximum AL iterations</span>
+<span class="nt">model_dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">f_min_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w">                    </span><span class="c1"># Lower force deviation threshold (eV/Å)</span>
+<span class="w">  </span><span class="nt">f_max_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span><span class="w">                     </span><span class="c1"># Upper force deviation threshold (eV/Å)</span>
+
+<span class="c1"># Distance sanity checks (optional)</span>
+<span class="nt">distance_metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pair</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">7</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">min_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="w">    </span><span class="nt">max_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7.0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pair</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">7</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">min_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.8</span>
+<span class="w">    </span><span class="nt">max_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.5</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pair</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">6</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">min_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.8</span>
+<span class="w">    </span><span class="nt">max_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.5</span>
+
+<span class="c1"># Output file names (all optional)</span>
+<span class="nt">output</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">log_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AseMD.log&quot;</span>
+<span class="w">  </span><span class="nt">xyz_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AseTraj.xyz&quot;</span>
+<span class="w">  </span><span class="nt">aimdtraj_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AseMD.traj&quot;</span>
+<span class="w">  </span><span class="nt">dptraj_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dpmd.traj&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">input.json</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="w">   </span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; model parameters&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type_map&quot;</span><span class="p">:</span><span class="w">     </span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;N&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;descriptor&quot;</span><span class="w"> </span><span class="p">:{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w">             </span><span class="s2">&quot;se_e2_a&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;sel&quot;</span><span class="p">:</span><span class="w">              </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;rcut_smth&quot;</span><span class="p">:</span><span class="w">        </span><span class="mf">0.50</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;rcut&quot;</span><span class="p">:</span><span class="w">             </span><span class="mf">6.00</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;neuron&quot;</span><span class="p">:</span><span class="w">           </span><span class="p">[</span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;resnet_dt&quot;</span><span class="p">:</span><span class="w">        </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;axis_neuron&quot;</span><span class="p">:</span><span class="w">      </span><span class="mi">16</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w">             </span><span class="mi">12123</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot; that&#39;s all&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;fitting_net&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;neuron&quot;</span><span class="p">:</span><span class="w">           </span><span class="p">[</span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;resnet_dt&quot;</span><span class="p">:</span><span class="w">        </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w">             </span><span class="mi">12123</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot; that&#39;s all&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot; that&#39;s all&quot;</span>
+<span class="w">   </span><span class="p">},</span>
+
+<span class="w">   </span><span class="nt">&quot;learning_rate&quot;</span><span class="w"> </span><span class="p">:{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;exp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;decay_steps&quot;</span><span class="p">:</span><span class="w">  </span><span class="mi">5000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;start_lr&quot;</span><span class="p">:</span><span class="w">     </span><span class="mf">0.001</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stop_lr&quot;</span><span class="p">:</span><span class="w">      </span><span class="mf">3.51e-8</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">   </span><span class="p">},</span>
+
+<span class="w">   </span><span class="nt">&quot;loss&quot;</span><span class="w"> </span><span class="p">:{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;ener&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;start_pref_e&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.02</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;limit_pref_e&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;start_pref_f&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;limit_pref_f&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;start_pref_v&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;limit_pref_v&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot; that&#39;s all&quot;</span>
+<span class="w">   </span><span class="p">},</span>
+
+<span class="w">   </span><span class="nt">&quot;training&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;training_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;systems&quot;</span><span class="p">:</span><span class="w">          </span><span class="p">[</span><span class="s2">&quot;training_data&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;batch_size&quot;</span><span class="p">:</span><span class="w">       </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;validation_data&quot;</span><span class="p">:{</span>
+<span class="w">            </span><span class="nt">&quot;systems&quot;</span><span class="p">:</span><span class="w">          </span><span class="p">[</span><span class="s2">&quot;validation_data&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;batch_size&quot;</span><span class="p">:</span><span class="w">       </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;numb_btch&quot;</span><span class="p">:</span><span class="w">        </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;numb_steps&quot;</span><span class="p">:</span><span class="w">   </span><span class="mi">500000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w">         </span><span class="mi">12123</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;disp_file&quot;</span><span class="p">:</span><span class="w">    </span><span class="s2">&quot;lcurve.out&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;disp_freq&quot;</span><span class="p">:</span><span class="w">    </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;save_freq&quot;</span><span class="p">:</span><span class="w">    </span><span class="mi">10000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">   </span><span class="p">},</span>
+
+<span class="w">   </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">INCAR</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># Global Parameters #</span>
+<span class="na">SYSTEM</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">NH3BH3</span>
+<span class="na">ISTART</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0</span>
+<span class="na">ICHARG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">2</span>
+<span class="na">ISPIN</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">1</span>
+<span class="na">ENCUT</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">300</span>
+<span class="na">LCHARG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">.FALSE.</span>
+<span class="na">LWAVE</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">.FALSE.</span>
+<span class="c1"># Electronic Relaxation #</span>
+<span class="na">ISMEAR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0</span>
+<span class="na">SIGMA</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">0.05</span>
+<span class="na">EDIFF</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">1E-05</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">POSCAR</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>NH3BH3
+<span class="m">1</span>.0000000000000000
+<span class="m">12</span>.0000000000000000<span class="w">    </span><span class="m">0</span>.0000000000000000<span class="w">    </span><span class="m">0</span>.0000000000000000
+<span class="m">0</span>.0000000000000000<span class="w">   </span><span class="m">12</span>.0000000000000000<span class="w">    </span><span class="m">0</span>.0000000000000000
+<span class="m">0</span>.0000000000000000<span class="w">    </span><span class="m">0</span>.0000000000000000<span class="w">   </span><span class="m">12</span>.0000000000000000
+B<span class="w">    </span>H<span class="w">    </span>N
+<span class="m">1</span><span class="w">     </span><span class="m">6</span><span class="w">     </span><span class="m">1</span>
+Direct
+<span class="m">0</span>.3779049269710626<span class="w">  </span><span class="m">0</span>.4608129327206285<span class="w">  </span><span class="m">0</span>.3686019834737309
+<span class="m">0</span>.6453715677372998<span class="w">  </span><span class="m">0</span>.5804071143184686<span class="w">  </span><span class="m">0</span>.7242016573374457
+<span class="m">0</span>.5854579728428035<span class="w">  </span><span class="m">0</span>.5273358295291573<span class="w">  </span><span class="m">0</span>.6234820843519628
+<span class="m">0</span>.6923831185069531<span class="w">  </span><span class="m">0</span>.6059197989660134<span class="w">  </span><span class="m">0</span>.5995049316749146
+<span class="m">0</span>.4105296494597752<span class="w">  </span><span class="m">0</span>.4845721146109838<span class="w">  </span><span class="m">0</span>.2757983426625543
+<span class="m">0</span>.3076168814930469<span class="w">  </span><span class="m">0</span>.3940802010339866<span class="w">  </span><span class="m">0</span>.3962878597352457
+<span class="m">0</span>.4170584773274015<span class="w">  </span><span class="m">0</span>.4942723187483011<span class="w">  </span><span class="m">0</span>.4581363881549123
+<span class="m">0</span>.6647284028152569<span class="w">  </span><span class="m">0</span>.5421008292213045<span class="w">  </span><span class="m">0</span>.6505695389414967
+</pre></div>
+</div>
+</div>
+</section>
+<section id="execute-sparc">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Execute SPARC</a><a class="headerlink" href="#execute-sparc" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sparc<span class="w"> </span>-i<span class="w"> </span>input.yaml
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Ensure all environment variables are properly set before execution.
+See the <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quick Start Guide</span></a> section for details.</p>
+</div>
+<p>This launches the <strong>first iteration (``iter_000000``)</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>iter_000000/
+├──<span class="w"> </span><span class="m">00</span>.dft<span class="w">    </span><span class="c1"># Ab initio reference data</span>
+├──<span class="w"> </span><span class="m">01</span>.train<span class="w">  </span><span class="c1"># Training of ML models</span>
+└──<span class="w"> </span><span class="m">02</span>.dpmd<span class="w">   </span><span class="c1"># ML-driven MD simulation</span>
+</pre></div>
+</div>
+</section>
+<section id="training-ml-models">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Training ML Models</a><a class="headerlink" href="#training-ml-models" title="Link to this heading"></a></h3>
+<p>SPARC automatically collects <em>ab initio</em> data and prepares training/validation sets. It then launches MLIP training. Depending on user settings, SPARC trains <em>n</em> models and creates separate <code class="docutils literal notranslate"><span class="pre">training_n</span></code> directories.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">input.json</span></code> file is native to the <strong>DeePMD-kit</strong> package. See the <a class="reference external" href="https://docs.deepmodeling.com/projects/deepmd/en/stable/train/train-input.html#training">DeepMD training documentation</a> for a full list of parameters.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>iter_000000/01.train/training_1
+$<span class="w"> </span>less<span class="w"> </span>lcurve.out
+<span class="c1">#  step      rmse_val    rmse_trn    rmse_e_val  rmse_e_trn    rmse_f_val  rmse_f_trn         lr</span>
+<span class="c1"># If there is no available reference data, rmse_*_{val,trn} will print nan</span>
+<span class="m">0</span><span class="w">           </span><span class="m">3</span>.99e+01<span class="w">    </span><span class="m">3</span>.18e+01<span class="w">      </span><span class="m">9</span>.27e-01<span class="w">    </span><span class="m">9</span>.28e-01<span class="w">      </span><span class="m">1</span>.26e+00<span class="w">    </span><span class="m">1</span>.01e+00<span class="w">    </span><span class="m">1</span>.0e-03
+<span class="m">1000</span><span class="w">        </span><span class="m">6</span>.78e+00<span class="w">    </span><span class="m">6</span>.19e+00<span class="w">      </span><span class="m">8</span>.65e-01<span class="w">    </span><span class="m">8</span>.59e-01<span class="w">      </span><span class="m">2</span>.14e-01<span class="w">    </span><span class="m">1</span>.95e-01<span class="w">    </span><span class="m">1</span>.0e-03
+<span class="m">2000</span><span class="w">        </span><span class="m">4</span>.98e+00<span class="w">    </span><span class="m">4</span>.83e+00<span class="w">      </span><span class="m">1</span>.77e-01<span class="w">    </span><span class="m">1</span>.57e-01<span class="w">      </span><span class="m">1</span>.57e-01<span class="w">    </span><span class="m">1</span>.53e-01<span class="w">    </span><span class="m">1</span>.0e-03
+<span class="m">3000</span><span class="w">        </span><span class="m">2</span>.00e+00<span class="w">    </span><span class="m">2</span>.75e+00<span class="w">      </span><span class="m">8</span>.99e-02<span class="w">    </span><span class="m">9</span>.15e-02<span class="w">      </span><span class="m">6</span>.32e-02<span class="w">    </span><span class="m">8</span>.69e-02<span class="w">    </span><span class="m">1</span>.0e-03
+.
+.
+<span class="m">497000</span><span class="w">      </span><span class="m">1</span>.14e-02<span class="w">    </span><span class="m">8</span>.39e-03<span class="w">      </span><span class="m">3</span>.95e-04<span class="w">    </span><span class="m">2</span>.66e-04<span class="w">      </span><span class="m">1</span>.12e-02<span class="w">    </span><span class="m">8</span>.20e-03<span class="w">    </span><span class="m">3</span>.9e-08
+<span class="m">498000</span><span class="w">      </span><span class="m">9</span>.45e-03<span class="w">    </span><span class="m">7</span>.52e-03<span class="w">      </span><span class="m">1</span>.51e-04<span class="w">    </span><span class="m">3</span>.71e-04<span class="w">      </span><span class="m">9</span>.26e-03<span class="w">    </span><span class="m">7</span>.30e-03<span class="w">    </span><span class="m">3</span>.9e-08
+<span class="m">499000</span><span class="w">      </span><span class="m">8</span>.35e-03<span class="w">    </span><span class="m">9</span>.65e-03<span class="w">      </span><span class="m">1</span>.84e-04<span class="w">    </span><span class="m">1</span>.48e-04<span class="w">      </span><span class="m">8</span>.17e-03<span class="w">    </span><span class="m">9</span>.46e-03<span class="w">    </span><span class="m">3</span>.9e-08
+<span class="m">500000</span><span class="w">      </span><span class="m">1</span>.97e-02<span class="w">    </span><span class="m">1</span>.04e-02<span class="w">      </span><span class="m">2</span>.98e-04<span class="w">    </span><span class="m">9</span>.08e-05<span class="w">      </span><span class="m">1</span>.94e-02<span class="w">    </span><span class="m">1</span>.02e-02<span class="w">    </span><span class="m">3</span>.5e-08
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can also visualize the learning process by plotting the <code class="docutils literal notranslate"><span class="pre">lcurve.out</span></code> file. See <a class="reference internal" href="oldanalysis.html#analysissection"><span class="std std-ref">Analysis</span></a> section.</p>
+</div>
+</section>
+<section id="running-ml-md">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Running ML/MD</a><a class="headerlink" href="#running-ml-md" title="Link to this heading"></a></h3>
+<p>Once models are trained, SPARC selects one of them to initiate ML/MD simulations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>iter_000000/02.dpmd
+$<span class="w"> </span>ls
+AseMolDyn.log<span class="w">  </span>COLVAR<span class="w">  </span>dpmd.traj<span class="w">  </span>HILLS_0<span class="w">  </span>HILLS_1<span class="w">  </span>Iter0_dpmd.log
+AseTraj.xyz<span class="w">    </span>dft_candidates<span class="w">   </span>model_dev_0.out<span class="w">   </span>set.000<span class="w">  </span>set.001
+type_map.raw<span class="w">   </span>type.raw
+</pre></div>
+</div>
+<p>SPARC tracks atomic force error across models:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>less<span class="w"> </span>model_dev_0.out
+$<span class="w"> </span><span class="c1"># iter_000000/02.dpmd</span>
+<span class="c1"># step      max_devi_v         min_devi_v         avg_devi_v         max_devi_f         min_devi_f         avg_devi_f             devi_e</span>
+<span class="w">   </span><span class="m">0</span><span class="w">       </span><span class="m">4</span>.288987e-02<span class="w">       </span><span class="m">1</span>.236075e-03<span class="w">       </span><span class="m">2</span>.209929e-02<span class="w">       </span><span class="m">8</span>.148417e-01<span class="w">       </span><span class="m">5</span>.249647e-02<span class="w">       </span><span class="m">3</span>.124690e-01<span class="w">       </span><span class="m">3</span>.175687e-02
+<span class="w">   </span><span class="m">1</span><span class="w">       </span><span class="m">9</span>.956690e-02<span class="w">       </span><span class="m">2</span>.644640e-03<span class="w">       </span><span class="m">4</span>.849840e-02<span class="w">       </span><span class="m">4</span>.707522e-01<span class="w">       </span><span class="m">9</span>.577766e-02<span class="w">       </span><span class="m">2</span>.531237e-01<span class="w">       </span><span class="m">1</span>.749532e-02
+<span class="w">   </span><span class="m">2</span><span class="w">       </span><span class="m">1</span>.359298e-01<span class="w">       </span><span class="m">5</span>.290284e-03<span class="w">       </span><span class="m">6</span>.208815e-02<span class="w">       </span><span class="m">3</span>.054830e-01<span class="w">       </span><span class="m">6</span>.672351e-02<span class="w">       </span><span class="m">1</span>.852998e-01<span class="w">       </span><span class="m">2</span>.692625e-02
+<span class="w">   </span><span class="m">3</span><span class="w">       </span><span class="m">8</span>.619494e-02<span class="w">       </span><span class="m">1</span>.549988e-02<span class="w">       </span><span class="m">4</span>.847261e-02<span class="w">       </span><span class="m">2</span>.494638e-01<span class="w">       </span><span class="m">9</span>.084693e-03<span class="w">       </span><span class="m">1</span>.613021e-01<span class="w">       </span><span class="m">2</span>.746094e-02
+<span class="w">   </span><span class="m">4</span><span class="w">       </span><span class="m">1</span>.177004e-01<span class="w">       </span><span class="m">5</span>.339600e-03<span class="w">       </span><span class="m">5</span>.895431e-02<span class="w">       </span><span class="m">2</span>.977156e-01<span class="w">       </span><span class="m">2</span>.450532e-02<span class="w">       </span><span class="m">1</span>.692072e-01<span class="w">       </span><span class="m">3</span>.893455e-02
+</pre></div>
+</div>
+<p>Frames with atomic forces between the thresholds are automatically flagged as candidates for relabeling using <em>ab intio</em> and are stored in <code class="docutils literal notranslate"><span class="pre">iter_000000/02.dpmd/dft_candidates</span></code> folder. These will appear in the <strong>next iteration</strong> folder.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ls<span class="w"> </span>iter_000000/02.dpmd/dft_candidates
+<span class="m">0001</span><span class="w"> </span><span class="m">0002</span><span class="w"> </span><span class="m">0003</span><span class="w"> </span><span class="m">0004</span><span class="w"> </span><span class="m">0005</span><span class="w"> </span><span class="m">0006</span><span class="w"> </span><span class="m">0007</span><span class="w"> </span><span class="m">0008</span><span class="w"> </span><span class="m">0009</span><span class="w"> </span><span class="m">0010</span>
+$<span class="w"> </span>tree<span class="w"> </span>iter_000000/02.dpmd/dft_candidates
+<span class="w">   </span>├──<span class="w"> </span><span class="m">0001</span>
+<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>POSCAR
+<span class="w">   </span>├──<span class="w"> </span><span class="m">0002</span>
+<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>POSCAR
+</pre></div>
+</div>
+</section>
+<section id="active-learning-loop">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Active Learning Loop</a><a class="headerlink" href="#active-learning-loop" title="Link to this heading"></a></h3>
+<p>The workflow continues automatically:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>iter_000001/
+├──<span class="w"> </span><span class="m">00</span>.dft
+├──<span class="w"> </span><span class="m">01</span>.train
+└──<span class="w"> </span><span class="m">02</span>.dpmd
+</pre></div>
+</div>
+<p>Each AL cycle consists of:</p>
+<ol class="arabic simple">
+<li><p>Selecting new candidate structures,</p></li>
+<li><p>Relabeling with <em>ab initio</em>,</p></li>
+<li><p>Retraining ML models,</p></li>
+<li><p>Running ML/MD with updated potentials.</p></li>
+</ol>
+</section>
+<section id="monitor-workflow">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Monitor Workflow</a><a class="headerlink" href="#monitor-workflow" title="Link to this heading"></a></h3>
+<p>SPARC provides utilities for monitoring the workflow. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotForceDeviation</span>
+<span class="n">PlotForceDeviation</span><span class="p">(</span><span class="s2">&quot;iter_000000/02.dpmd/&quot;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See the notebook for analysis functions and figures:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="plumed-plugin">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">PLUMED Plugin</a><a class="headerlink" href="#plumed-plugin" title="Link to this heading"></a></h3>
+<p>SPARC is primarily designed to streamline the generation of training data. By using it with <strong>PLUMED</strong> plugin, standard molecular dynamics simulations can be extended beyond equilibrium sampling. This enables the ML potential to explore new regions of configurational space by applying appropriate acceleration or biasing strategies.</p>
+<p>To enable PLUMED, set the <code class="docutils literal notranslate"><span class="pre">plumed</span></code> block under <code class="docutils literal notranslate"><span class="pre">mlip_setup</span></code> in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mlip_setup</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">plumed</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed_dp.dat&quot;</span>
+</pre></div>
+</div>
+<p>An example PLUMED input file (<code class="docutils literal notranslate"><span class="pre">plumed_dp.dat</span></code>) is provided in this tutorial. It defines
+the collective variables and biasing scheme for the NH<span class="math notranslate nohighlight">\(_3\)</span>BH<span class="math notranslate nohighlight">\(_3\)</span> system.
+See the <a class="reference external" href="https://www.plumed.org/">PLUMED documentation</a> for details on constructing
+custom CVs and bias potentials.</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">plumed_dp.dat</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># PLUMED</span>
+<span class="na">d1</span><span class="o">:</span><span class="w"> </span><span class="s">DISTANCE ATOMS=1,8</span>
+
+<span class="na">UPPER_WALLS ARG</span><span class="o">=</span><span class="s">d1 AT=0.55 KAPPA=100000.0 EXP=2 EPS=1 OFFSET=0 LABEL=uwall</span>
+
+<span class="c1"># Define species for contact matrix</span>
+<span class="c1"># n=6, m=12, R0=0.265(nm) [B/N-B/N], and R0=0.222(nm) [C-H]</span>
+<span class="na">DENSITY SPECIES</span><span class="o">=</span><span class="s">1  LABEL=B</span>
+<span class="na">DENSITY SPECIES</span><span class="o">=</span><span class="s">2-7 LABEL=H</span>
+<span class="na">DENSITY SPECIES</span><span class="o">=</span><span class="s">8 LABEL=N</span>
+
+<span class="c1"># B-B B-H B-N H-H H-N N-N</span>
+<span class="na">contact_mat</span><span class="o">:</span><span class="w"> </span><span class="s">CONTACT_MATRIX ATOMS=B,H,N SWITCH11={RATIONAL D_0=0.0 R_0=0.800 NN=6 MM=12} SWITCH12={RATIONAL D_0=0.0 R_0=0.125 NN=6 MM=12}  SWITCH13={RATIONAL D_0=0.0 R_0=0.222 NN=6 MM=12} SWITCH22={RATIONAL D_0=0.0 R_0=0.500 NN=6 MM=12} SWITCH23={RATIONAL D_0=0.0 R_0=0.125 NN=6 MM=12} SWITCH33={RATIONAL D_0=0.0 R_0=0.800 NN=6 MM=12}</span>
+
+<span class="c1"># SPRINT coordinate</span>
+<span class="na">ss</span><span class="o">:</span><span class="w"> </span><span class="s">SPRINT MATRIX=contact_mat</span>
+
+<span class="c1"># PbMetaD</span>
+<span class="na">pb</span><span class="o">:</span><span class="w"> </span><span class="s">PBMETAD ARG=ss.coord-0,ss.coord-7 SIGMA=0.1,0.1 HEIGHT=2.0 PACE=1000 FILE=HILLS_0,HILLS_1</span>
+
+<span class="c1">#</span>
+<span class="na">PRINT ARG</span><span class="o">=</span><span class="s">d1,ss.*,pb.* FILE=COLVAR STRIDE=3</span>
+
+<span class="c1"># FLUSH data</span>
+<span class="na">FLUSH STRIDE</span><span class="o">=</span><span class="s">250</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="next-step">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Next Step</a><a class="headerlink" href="#next-step" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Try replacing the system with your own molecule.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="yaml.html" class="btn btn-neutral float-left" title="Input File" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="notebooks/analysisAmmoniaBorate.html" class="btn btn-neutral float-right" title="[1] Workflow Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+/* Justify text in the main content */
+div.document {
+    text-align: justify;
+}
+
+/* ASE-style code block with light grey background and black text */
+.highlight pre {
+    background: #f0f0f0; /* Light grey background */
+    color: #000000; /* Black text */
+    border-left: 4px solid #009900; /* Green accent border */
+    padding: 10px;
+    font-family: Helvetica, Arial, sans-serif; /* Use Helvetica, fallback to Arial or sans-serif */
+    font-size: 14px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+/* Inline code block with light grey background and black text */
+code {
+    background: #f0f0f0; /* Light grey background */
+    color: #000000; /* Black text */
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: Helvetica, Arial, sans-serif; /* Use Helvetica */
+}
+
+
+

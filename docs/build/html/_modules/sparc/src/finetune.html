@@ -1,0 +1,916 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sparc.src.finetune &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#mlip-setup">MLIP Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#distance-metrics">Distance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#directory-structure">Directory Structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#ammonia-borate-nh-3bh-3">Ammonia Borate (NH<span class="math notranslate nohighlight">\(_3\)</span>BH<span class="math notranslate nohighlight">\(_3\)</span>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#preparation">Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#execute-sparc">Execute SPARC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#training-ml-models">Training ML Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#running-ml-md">Running ML/MD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#active-learning-loop">Active Learning Loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#monitor-workflow">Monitor Workflow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#plumed-plugin">PLUMED Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#next-step">Next Step</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../calculator.html">DFT Calculator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#classes">Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.input_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.input_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.dft_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.dft_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.print_screen"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.print_screen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.vasp"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.cp2k"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.orca"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.xtb"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id0"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.espresso"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.espresso()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.gaussian"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.gaussian()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id1"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id2"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id3"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.dft_calculator"><code class="docutils literal notranslate"><span class="pre">dft_calculator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.update_json"><code class="docutils literal notranslate"><span class="pre">update_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../finetune.html">Fine-Tuning Universal Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#deepmd-fine-tuning">DeePMD Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#mace-fine-tuning">MACE Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#integration-with-active-learning">Integration with Active Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#module-sparc.src.finetune">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetune.html#sparc.src.finetune.deepmd_finetune"><code class="docutils literal notranslate"><span class="pre">deepmd_finetune()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetune.html#sparc.src.finetune.finetune_training"><code class="docutils literal notranslate"><span class="pre">finetune_training()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetune.html#sparc.src.finetune.mace_finetune"><code class="docutils literal notranslate"><span class="pre">mace_finetune()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetune.html#sparc.src.finetune.setup_MACE_calculator"><code class="docutils literal notranslate"><span class="pre">setup_MACE_calculator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#module-sparc.src.ase_md">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.CalculateDFTEnergy"><code class="docutils literal notranslate"><span class="pre">CalculateDFTEnergy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.ExecuteAbInitioDynamics"><code class="docutils literal notranslate"><span class="pre">ExecuteAbInitioDynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.ExecuteMlpDynamics"><code class="docutils literal notranslate"><span class="pre">ExecuteMlpDynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.NPT"><code class="docutils literal notranslate"><span class="pre">NPT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.NVE"><code class="docutils literal notranslate"><span class="pre">NVE()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.TemperatureRamp"><code class="docutils literal notranslate"><span class="pre">TemperatureRamp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.initialize_dynamics"><code class="docutils literal notranslate"><span class="pre">initialize_dynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.lammps_md"><code class="docutils literal notranslate"><span class="pre">lammps_md()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#id0"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#id1"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../DataProcess.html">Data Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#train-validation-split">Train / Validation Split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#module-sparc.src.data_processing">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis.html">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../analysis.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../workflow.html#function">Function:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#example-directory-structure">Example Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#geometry-tab-details">Geometry Tab Details</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ChemView.html">ChemView</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chemview.html">ChemView</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Load-a-trajectory">Load a trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Atom-level-forces">Atom-level forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Cell-parameters">Cell parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Single-structure">Single structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Custom-property-names">Custom property names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#property-specs">Property Specs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../ChemView.html#structure-level">Structure-level</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ChemView.html#atom-level">Atom-level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#auto-generated-names">Auto-generated Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#constraints">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#api-reference">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../ChemView.html#sparc.src.utils.chemview.ChemView"><code class="docutils literal notranslate"><span class="pre">ChemView()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/index.html#core-modules">Core Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/index.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/workflow_overview.html">Workflow Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-1-dft-aimd-00-dft">Stage 1 — DFT / AIMD (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/active_learning.html">Active Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#vasp">VASP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#cp2k">CP2K</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#orca">ORCA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#xtb">xTB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#quantum-espresso-qe">Quantum ESPRESSO (QE)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#gaussian">Gaussian</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/fine_tuning.html">Fine-Tuning vs. Training From Scratch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#training-from-scratch-default">Training from scratch (default)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#fine-tuning-universal-models">Fine-tuning universal models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#when-to-use-fine-tuning">When to use fine-tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html">Enhanced Sampling with PLUMED</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#recommended-strategy-sprint-pbmetad">Recommended strategy: SPRINT + PBMetaD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#umbrella-sampling">Umbrella sampling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#development-installation">Development Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#code-style">Code Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#building-the-documentation">Building the Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#running-the-tests">Running the Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#pull-request-checklist">Pull Request Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#reporting-issues">Reporting Issues</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sparc.src.finetune</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sparc.src.finetune</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+<span class="c1"># finetune.py</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Fine-tuning module for universal ML potentials.</span>
+
+<span class="sd">Supports:</span>
+
+<span class="sd">1. DeePMD fine-tuning via DeePMD-kit v3 (dp --pt finetune)</span>
+<span class="sd">   Works with DPA-1, DPA-2, DPA-3 and other DeePMD models</span>
+<span class="sd">2. MACE fine-tuning via mace_run_train --foundation_model</span>
+
+<span class="sd">Both produce frozen models compatible with the SPARC active learning workflow.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1">################################################################</span>
+<span class="c1"># Local imports</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcLog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.deepmd</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_version</span><span class="p">,</span> <span class="n">update_json</span>
+
+<span class="c1">################################################################</span>
+<span class="c1"># Configure logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1">################################################################</span>
+<span class="c1"># DeePMD Fine-tuning (DPA-1, DPA-2, DPA-3, etc.)</span>
+<span class="c1">################################################################</span>
+
+<div class="viewcode-block" id="deepmd_finetune">
+<a class="viewcode-back" href="../../../finetune.html#sparc.src.finetune.deepmd_finetune">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">deepmd_finetune</span><span class="p">(</span>
+    <span class="n">datadir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">atom_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">training_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">num_models</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;input.json&#39;</span><span class="p">,</span>
+    <span class="n">pretrained_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;DPA3.pt&#39;</span><span class="p">,</span>
+    <span class="n">model_branch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fine-tune a DeePMD universal model on system-specific DFT data.</span>
+
+<span class="sd">    Uses DeePMD-kit v3 `dp --pt finetune` command which initializes</span>
+<span class="sd">    from a pre-trained checkpoint (DPA-1, DPA-2, DPA-3, etc.) and</span>
+<span class="sd">    adapts to local data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datadir : str</span>
+<span class="sd">        Path to directory containing training_data/ and validation_data/</span>
+<span class="sd">    atom_types : list</span>
+<span class="sd">        List of atomic species (e.g., [&#39;O&#39;, &#39;H&#39;])</span>
+<span class="sd">    training_dir : str</span>
+<span class="sd">        Directory where training_1/, training_2/, etc. will be created</span>
+<span class="sd">    num_models : int</span>
+<span class="sd">        Number of models to fine-tune (for ensemble/QbC)</span>
+<span class="sd">    input_file : str</span>
+<span class="sd">        Path to DeepMD input JSON configuration</span>
+<span class="sd">    pretrained_model : str</span>
+<span class="sd">        Path to pre-trained model file (.pt)</span>
+<span class="sd">    learning_rate : float, optional</span>
+<span class="sd">        Override starting learning rate for fine-tuning</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Name of the frozen model file (e.g., &#39;frozen_model_2.pth&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">original_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">training_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Validate pre-trained model</span>
+    <span class="n">pretrained_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">original_dir</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pretrained_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Pre-trained model not found: </span><span class="si">{</span><span class="n">pretrained_path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Provide a valid path to a DPA model (.pt file)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">version</span><span class="p">,</span> <span class="n">backend</span> <span class="o">=</span> <span class="n">get_version</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;DeePMD fine-tuning requires DeePMD-kit v3 or later&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">!=</span> <span class="s1">&#39;pytorch&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;DeePMD fine-tuning requires PyTorch backend&quot;</span><span class="p">)</span>
+
+    <span class="n">model_ext</span> <span class="o">=</span> <span class="s1">&#39;.pth&#39;</span>
+    <span class="n">frozen_model_name</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;DeePMD FINE-TUNING&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Pre-trained model : </span><span class="si">{</span><span class="n">pretrained_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Number of models  : </span><span class="si">{</span><span class="n">num_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data directory    : </span><span class="si">{</span><span class="n">datadir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_models</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">folder_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;training_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">training_dir</span><span class="p">,</span> <span class="n">folder_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fine-tuning Model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">num_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Directory: </span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Load and update JSON configuration</span>
+            <span class="n">input_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">original_dir</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">input_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input file not found: </span><span class="si">{</span><span class="n">input_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">config_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="n">update_json</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="n">datadir</span><span class="p">,</span> <span class="n">atom_types</span><span class="p">)</span>
+
+            <span class="c1"># Override learning rate if specified</span>
+            <span class="k">if</span> <span class="n">learning_rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;learning_rate&#39;</span> <span class="ow">in</span> <span class="n">config_data</span><span class="p">:</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;learning_rate&#39;</span><span class="p">][</span><span class="s1">&#39;start_lr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">learning_rate</span>
+
+            <span class="c1"># Write updated config</span>
+            <span class="n">config_output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_output_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+            <span class="c1"># Build fine-tune command</span>
+            <span class="c1"># DeePMD-kit v3: dp --pt train input.json --finetune model.pt</span>
+            <span class="n">finetune_cmd</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--pt&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span>
+                <span class="n">input_file</span><span class="p">,</span>
+                <span class="s1">&#39;--finetune&#39;</span><span class="p">,</span> <span class="n">pretrained_path</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">model_branch</span><span class="p">:</span>
+                <span class="n">finetune_cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--model-branch&#39;</span><span class="p">,</span> <span class="n">model_branch</span><span class="p">])</span>
+
+            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Command: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">finetune_cmd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Stream output live so user can monitor training progress</span>
+            <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+                <span class="n">finetune_cmd</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">dir_name</span><span class="p">,</span>
+                <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">output_lines</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
+                <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">process</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span>
+                    <span class="n">process</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">finetune_cmd</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_lines</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DeePMD fine-tuning completed for model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Freeze the fine-tuned model</span>
+            <span class="n">frozen_model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;frozen_model_</span><span class="si">{</span><span class="n">i</span><span class="si">}{</span><span class="n">model_ext</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">freeze_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--pt&#39;</span><span class="p">,</span> <span class="s1">&#39;freeze&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">]</span>
+
+            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Freezing: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">freeze_cmd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">freeze_cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">dir_name</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> frozen: </span><span class="si">{</span><span class="n">frozen_model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">error_output</span> <span class="o">=</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">output</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: Fine-tuning failed for model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Details: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                <span class="c1"># Print last 10 lines of output for diagnostics</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]:</span>
+                    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  &gt; </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Check for common errors and provide actionable guidance</span>
+            <span class="k">if</span> <span class="s1">&#39;No module named&#39;</span> <span class="ow">in</span> <span class="n">error_output</span><span class="p">:</span>
+                <span class="n">missing</span> <span class="o">=</span> <span class="n">error_output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;No module named&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MISSING DEPENDENCY: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Make sure you have activated the correct conda environment&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  with DeePMD-kit and PyTorch installed.&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;unexpected keyword argument&#39;</span> <span class="ow">in</span> <span class="n">error_output</span> <span class="ow">or</span> <span class="s1">&#39;got an unexpected&#39;</span> <span class="ow">in</span> <span class="n">error_output</span><span class="p">:</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;  This is likely a VERSION MISMATCH between the pre-trained model&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  and your installed DeePMD-kit (v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Pre-trained model: </span><span class="si">{</span><span class="n">pretrained_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;  Solutions:&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;    1. Upgrade DeePMD-kit:  pip install --upgrade deepmd-kit[torch]&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;    2. Use a model compatible with your DeePMD-kit version&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;       e.g., DPA-2 models work with DeePMD-kit v3.0.x&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DeePMD fine-tuning complete. </span><span class="si">{</span><span class="n">num_models</span><span class="si">}</span><span class="s2"> models trained.&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">frozen_model_name</span></div>
+
+
+
+<span class="c1">################################################################</span>
+<span class="c1"># MACE Fine-tuning</span>
+<span class="c1">################################################################</span>
+
+<div class="viewcode-block" id="mace_finetune">
+<a class="viewcode-back" href="../../../finetune.html#sparc.src.finetune.mace_finetune">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">mace_finetune</span><span class="p">(</span>
+    <span class="n">datadir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">atom_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">training_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">num_models</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">pretrained_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;medium&#39;</span><span class="p">,</span>
+    <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+    <span class="n">stress_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;stress&#39;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fine-tune MACE foundation model on system-specific DFT data.</span>
+
+<span class="sd">    Uses mace_run_train with --foundation_model flag for transfer learning</span>
+<span class="sd">    from pre-trained MACE-MP-0 models.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datadir : str</span>
+<span class="sd">        Path to directory containing training_data/ and validation_data/</span>
+<span class="sd">    atom_types : list</span>
+<span class="sd">        List of atomic species (e.g., [&#39;O&#39;, &#39;H&#39;])</span>
+<span class="sd">    training_dir : str</span>
+<span class="sd">        Directory where training_1/, training_2/, etc. will be created</span>
+<span class="sd">    num_models : int</span>
+<span class="sd">        Number of models to fine-tune (for ensemble/QbC)</span>
+<span class="sd">    pretrained_model : str</span>
+<span class="sd">        Foundation model name (&#39;small&#39;, &#39;medium&#39;, &#39;large&#39;) or path to .model file</span>
+<span class="sd">    num_epochs : int</span>
+<span class="sd">        Number of fine-tuning epochs (default: 100)</span>
+<span class="sd">    learning_rate : float</span>
+<span class="sd">        Learning rate for fine-tuning (default: 0.001)</span>
+<span class="sd">    batch_size : int</span>
+<span class="sd">        Batch size (default: 4)</span>
+<span class="sd">    device : str</span>
+<span class="sd">        Device for training: &#39;cpu&#39; or &#39;cuda&#39; (default: &#39;cpu&#39;)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Name of the fine-tuned model file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">training_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Resolve pretrained_model: built-in names pass through, file paths get resolved</span>
+    <span class="n">builtin_names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;small&#39;</span><span class="p">,</span> <span class="s1">&#39;medium&#39;</span><span class="p">,</span> <span class="s1">&#39;large&#39;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">pretrained_model</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">builtin_names</span><span class="p">:</span>
+        <span class="n">resolved_model</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">pretrained_model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resolved_model</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;MACE model not found: </span><span class="si">{</span><span class="n">resolved_model</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Provide a valid path or use a built-in name: </span><span class="si">{</span><span class="n">builtin_names</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">pretrained_model</span> <span class="o">=</span> <span class="n">resolved_model</span>
+
+    <span class="c1"># Convert DeepMD npy data to extxyz for MACE</span>
+    <span class="n">train_xyz</span> <span class="o">=</span> <span class="n">_convert_deepmd_to_extxyz</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="s1">&#39;training_data&#39;</span><span class="p">)</span>
+    <span class="n">valid_xyz</span> <span class="o">=</span> <span class="n">_convert_deepmd_to_extxyz</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="s1">&#39;validation_data&#39;</span><span class="p">)</span>
+
+    <span class="n">frozen_model_name</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;MACE FINE-TUNING&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Foundation model  : </span><span class="si">{</span><span class="n">pretrained_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Number of models  : </span><span class="si">{</span><span class="n">num_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Epochs            : </span><span class="si">{</span><span class="n">num_epochs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Device            : </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_models</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">folder_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;training_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">training_dir</span><span class="p">,</span> <span class="n">folder_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;mace_finetuned_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">frozen_model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;frozen_model_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.model&quot;</span>
+
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fine-tuning Model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">num_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Directory: </span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Build MACE fine-tuning command</span>
+            <span class="n">mace_cmd</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;mace_run_train&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span>
+                <span class="s1">&#39;--foundation_model&#39;</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="p">,</span>
+                <span class="s1">&#39;--train_file&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">train_xyz</span><span class="p">),</span>
+                <span class="s1">&#39;--valid_file&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">valid_xyz</span><span class="p">),</span>
+                <span class="sa">f</span><span class="s1">&#39;--lr=</span><span class="si">{</span><span class="n">learning_rate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;--batch_size=</span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;--max_num_epochs=</span><span class="si">{</span><span class="n">num_epochs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;--device=</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;--seed=</span><span class="si">{</span><span class="mi">40</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;--energy_key=energy&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;--forces_key=forces&#39;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;--stress_key=</span><span class="si">{</span><span class="n">stress_key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;--E0s=average&#39;</span><span class="p">,</span>
+            <span class="p">]</span>
+
+            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Command: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mace_cmd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Stream output live so user can monitor training progress</span>
+            <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+                <span class="n">mace_cmd</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">dir_name</span><span class="p">,</span>
+                <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">output_lines</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
+                <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">process</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span>
+                    <span class="n">process</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">mace_cmd</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_lines</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MACE fine-tuning completed for model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># MACE outputs: {model_name}.model and {model_name}_compiled.model</span>
+            <span class="n">source_model</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.model&quot;</span><span class="p">)</span>
+            <span class="n">target_model</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source_model</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">source_model</span><span class="p">,</span> <span class="n">target_model</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Model saved: </span><span class="si">{</span><span class="n">frozen_model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Expected MACE model not found: </span><span class="si">{</span><span class="n">source_model</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: MACE fine-tuning failed for model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Details: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MACE fine-tuning complete. </span><span class="si">{</span><span class="n">num_models</span><span class="si">}</span><span class="s2"> models trained.&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">frozen_model_name</span></div>
+
+
+
+<span class="c1">################################################################</span>
+<span class="c1"># Data Conversion Utilities</span>
+<span class="c1">################################################################</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_convert_deepmd_to_extxyz</span><span class="p">(</span><span class="n">datadir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert DeepMD npy data to extended XYZ format for MACE.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datadir : str</span>
+<span class="sd">        Base data directory containing training_data/ or validation_data/</span>
+<span class="sd">    subset : str</span>
+<span class="sd">        Subdirectory name (&#39;training_data&#39; or &#39;validation_data&#39;)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Path</span>
+<span class="sd">        Path to the generated .xyz file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">dpdata</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span> <span class="k">as</span> <span class="n">ase_write</span>
+
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="n">subset</span><span class="p">)</span>
+    <span class="n">output_xyz</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">datadir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subset</span><span class="si">}</span><span class="s2">.xyz&quot;</span>
+
+    <span class="k">if</span> <span class="n">output_xyz</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">output_xyz</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Using existing </span><span class="si">{</span><span class="n">output_xyz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_xyz</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Converting </span><span class="si">{</span><span class="n">data_path</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">output_xyz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load DeepMD npy data</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">dpdata</span><span class="o">.</span><span class="n">LabeledSystem</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;deepmd/npy&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Convert to ASE atoms and write extxyz</span>
+    <span class="c1"># dpdata attaches a SinglePointCalculator with energy/forces automatically</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">get_nframes</span><span class="p">()):</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;ase/structure&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+
+    <span class="n">ase_write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output_xyz</span><span class="p">),</span> <span class="n">frames</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;extxyz&#39;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Converted </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span><span class="si">}</span><span class="s2"> frames to </span><span class="si">{</span><span class="n">output_xyz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output_xyz</span>
+
+
+<span class="c1">################################################################</span>
+<span class="c1"># Dispatcher</span>
+<span class="c1">################################################################</span>
+
+<div class="viewcode-block" id="finetune_training">
+<a class="viewcode-back" href="../../../finetune.html#sparc.src.finetune.finetune_training">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">finetune_training</span><span class="p">(</span>
+    <span class="n">finetune_config</span><span class="p">,</span>
+    <span class="n">datadir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">atom_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">training_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">num_models</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;input.json&#39;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dispatch fine-tuning to the appropriate backend (DeePMD or MACE).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    finetune_config : FineTuneConfig</span>
+<span class="sd">        Fine-tuning configuration from input.yaml</span>
+<span class="sd">    datadir : str</span>
+<span class="sd">        Path to training data directory</span>
+<span class="sd">    atom_types : list</span>
+<span class="sd">        Atomic species list</span>
+<span class="sd">    training_dir : str</span>
+<span class="sd">        Output directory for trained models</span>
+<span class="sd">    num_models : int</span>
+<span class="sd">        Number of ensemble models</span>
+<span class="sd">    input_file : str</span>
+<span class="sd">        DeepMD JSON config (used by DeePMD fine-tuning only)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Frozen model filename</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model_type</span> <span class="o">=</span> <span class="n">finetune_config</span><span class="o">.</span><span class="n">model_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UNIVERSAL MODEL FINE-TUNING: </span><span class="si">{</span><span class="n">model_type</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+    <span class="c1"># Use finetune-specific input file if provided, otherwise fall back to mlip_setup.input_file</span>
+    <span class="n">ft_input_file</span> <span class="o">=</span> <span class="n">finetune_config</span><span class="o">.</span><span class="n">input_file</span> <span class="ow">or</span> <span class="n">input_file</span>
+
+    <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;deepmd&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">deepmd_finetune</span><span class="p">(</span>
+            <span class="n">datadir</span><span class="o">=</span><span class="n">datadir</span><span class="p">,</span>
+            <span class="n">atom_types</span><span class="o">=</span><span class="n">atom_types</span><span class="p">,</span>
+            <span class="n">training_dir</span><span class="o">=</span><span class="n">training_dir</span><span class="p">,</span>
+            <span class="n">num_models</span><span class="o">=</span><span class="n">num_models</span><span class="p">,</span>
+            <span class="n">input_file</span><span class="o">=</span><span class="n">ft_input_file</span><span class="p">,</span>
+            <span class="n">pretrained_model</span><span class="o">=</span><span class="n">finetune_config</span><span class="o">.</span><span class="n">pretrained_model</span><span class="p">,</span>
+            <span class="n">model_branch</span><span class="o">=</span><span class="n">finetune_config</span><span class="o">.</span><span class="n">model_branch</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="n">finetune_config</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;mace&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mace_finetune</span><span class="p">(</span>
+            <span class="n">datadir</span><span class="o">=</span><span class="n">datadir</span><span class="p">,</span>
+            <span class="n">atom_types</span><span class="o">=</span><span class="n">atom_types</span><span class="p">,</span>
+            <span class="n">training_dir</span><span class="o">=</span><span class="n">training_dir</span><span class="p">,</span>
+            <span class="n">num_models</span><span class="o">=</span><span class="n">num_models</span><span class="p">,</span>
+            <span class="n">pretrained_model</span><span class="o">=</span><span class="n">finetune_config</span><span class="o">.</span><span class="n">pretrained_model</span><span class="p">,</span>
+            <span class="n">num_epochs</span><span class="o">=</span><span class="n">finetune_config</span><span class="o">.</span><span class="n">num_epochs</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="n">finetune_config</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">finetune_config</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">finetune_config</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown fine-tune model type: &#39;</span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Supported: &#39;deepmd&#39;, &#39;mace&#39;&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="c1">################################################################</span>
+<span class="c1"># MACE ASE Calculator Setup</span>
+<span class="c1">################################################################</span>
+
+<div class="viewcode-block" id="setup_MACE_calculator">
+<a class="viewcode-back" href="../../../finetune.html#sparc.src.finetune.setup_MACE_calculator">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_MACE_calculator</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Setup a MACE calculator for an ASE atoms object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atoms : ase.Atoms</span>
+<span class="sd">        Atomic structure</span>
+<span class="sd">    model_path : str</span>
+<span class="sd">        Path to the MACE .model file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        (atoms_with_calc, calculator)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ase</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atoms</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MACE model not found: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">mace.calculators</span><span class="w"> </span><span class="kn">import</span> <span class="n">MACECalculator</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="n">MACECalculator</span><span class="p">(</span><span class="n">model_paths</span><span class="o">=</span><span class="n">model_path</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;MACE not installed. Install with: pip install mace-torch&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">system</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">)</span>
+
+    <span class="c1"># Test calculator</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span>
+    <span class="n">forces</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_forces</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">forces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MACE model loaded and tested:&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Model: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Energy: </span><span class="si">{</span><span class="n">energy</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;MACE calculator failed to compute energy/forces&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">calc</span></div>
+
+
+
+<span class="c1">################################################################</span>
+<span class="c1"># END OF FILE</span>
+<span class="c1">################################################################</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

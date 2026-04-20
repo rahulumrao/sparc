@@ -1,0 +1,637 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sparc.src.plumed_wrapper &mdash; SPARC 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f7b18df9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SPARC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">SPARC Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#example-input-file">Example Input File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#md-simulation">1. MD Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#active-learning">3. Active Learning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../yaml.html">Input File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../yaml.html#general-settings">General Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#dft-calculator">DFT Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#mlip-setup">MLIP Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#distance-metrics">Distance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#directory-structure">Directory Structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#ammonia-borate-nh-3bh-3">Ammonia Borate (NH<span class="math notranslate nohighlight">\(_3\)</span>BH<span class="math notranslate nohighlight">\(_3\)</span>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#preparation">Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#execute-sparc">Execute SPARC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#training-ml-models">Training ML Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#running-ml-md">Running ML/MD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#active-learning-loop">Active Learning Loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#monitor-workflow">Monitor Workflow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#plumed-plugin">PLUMED Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#next-step">Next Step</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../calculator.html">DFT Calculator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#classes">Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.input_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.input_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.dft_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.dft_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.print_screen"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.print_screen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.vasp"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.cp2k"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.orca"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.xtb"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id0"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.espresso"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.espresso()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.gaussian"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.gaussian()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id1"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id2"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id3"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.dft_calculator"><code class="docutils literal notranslate"><span class="pre">dft_calculator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepmd.html">DeepMD Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.update_json"><code class="docutils literal notranslate"><span class="pre">update_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../finetune.html">Fine-Tuning Universal Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#deepmd-fine-tuning">DeePMD Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#mace-fine-tuning">MACE Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#integration-with-active-learning">Integration with Active Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#module-sparc.src.finetune">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetune.html#sparc.src.finetune.deepmd_finetune"><code class="docutils literal notranslate"><span class="pre">deepmd_finetune()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetune.html#sparc.src.finetune.finetune_training"><code class="docutils literal notranslate"><span class="pre">finetune_training()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetune.html#sparc.src.finetune.mace_finetune"><code class="docutils literal notranslate"><span class="pre">mace_finetune()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetune.html#sparc.src.finetune.setup_MACE_calculator"><code class="docutils literal notranslate"><span class="pre">setup_MACE_calculator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md.html">Molecular Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#module-sparc.src.ase_md">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.CalculateDFTEnergy"><code class="docutils literal notranslate"><span class="pre">CalculateDFTEnergy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.ExecuteAbInitioDynamics"><code class="docutils literal notranslate"><span class="pre">ExecuteAbInitioDynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.ExecuteMlpDynamics"><code class="docutils literal notranslate"><span class="pre">ExecuteMlpDynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.LangevinNVT"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.NPT"><code class="docutils literal notranslate"><span class="pre">NPT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.NVE"><code class="docutils literal notranslate"><span class="pre">NVE()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.NoseNVT"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.TemperatureRamp"><code class="docutils literal notranslate"><span class="pre">TemperatureRamp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.initialize_dynamics"><code class="docutils literal notranslate"><span class="pre">initialize_dynamics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.lammps_md"><code class="docutils literal notranslate"><span class="pre">lammps_md()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#functions">Functions:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#id0"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../md.html#id1"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../DataProcess.html">Data Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#train-validation-split">Train / Validation Split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#module-sparc.src.data_processing">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../DataProcess.html#sparc.src.data_processing.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../DataProcess.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plumed_wrapper.html">Plumed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis.html">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../analysis.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../workflow.html#function">Function:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#sparc.src.utils.workflow.WorkFlowAnalysis"><code class="docutils literal notranslate"><span class="pre">WorkFlowAnalysis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#example-directory-structure">Example Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../workflow.html#geometry-tab-details">Geometry Tab Details</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ChemView.html">ChemView</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chemview.html">ChemView</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Load-a-trajectory">Load a trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Atom-level-forces">Atom-level forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Cell-parameters">Cell parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Single-structure">Single structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Custom-property-names">Custom property names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#property-specs">Property Specs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../ChemView.html#structure-level">Structure-level</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ChemView.html#atom-level">Atom-level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#auto-generated-names">Auto-generated Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#constraints">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#api-reference">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../ChemView.html#sparc.src.utils.chemview.ChemView"><code class="docutils literal notranslate"><span class="pre">ChemView()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/index.html#core-modules">Core Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/index.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/workflow_overview.html">Workflow Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-1-dft-aimd-00-dft">Stage 1 — DFT / AIMD (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/active_learning.html">Active Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#vasp">VASP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#cp2k">CP2K</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#orca">ORCA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#xtb">xTB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#quantum-espresso-qe">Quantum ESPRESSO (QE)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#gaussian">Gaussian</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/fine_tuning.html">Fine-Tuning vs. Training From Scratch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#training-from-scratch-default">Training from scratch (default)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#fine-tuning-universal-models">Fine-tuning universal models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#when-to-use-fine-tuning">When to use fine-tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html">Enhanced Sampling with PLUMED</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#recommended-strategy-sprint-pbmetad">Recommended strategy: SPRINT + PBMetaD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#umbrella-sampling">Umbrella sampling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#development-installation">Development Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#code-style">Code Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#building-the-documentation">Building the Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#running-the-tests">Running the Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#pull-request-checklist">Pull Request Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#reporting-issues">Reporting Issues</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SPARC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sparc.src.plumed_wrapper</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sparc.src.plumed_wrapper</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+<span class="c1"># plumed_wrapper.py</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PLUMED wrapper module for enhanced sampling MD simulations.</span>
+
+<span class="sd">This module provides integration between ASE calculators and PLUMED</span>
+<span class="sd">for enhanced sampling techniques like metadynamics and umbrella sampling.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="c1">################################################################</span>
+<span class="c1"># Third party imports</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atoms</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ase.units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.plumed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Plumed</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.calculator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calculator</span>
+
+<span class="c1">################################################################</span>
+<span class="c1"># Local imports</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.deepmd</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_DeepPotential</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.ase_md</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoseNVT</span><span class="p">,</span> <span class="n">LangevinNVT</span><span class="p">,</span> <span class="n">NPT</span><span class="p">,</span> <span class="n">NVE</span><span class="p">,</span> <span class="n">ExecuteMlpDynamics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcLog</span>
+
+<span class="c1">################################################################</span>
+
+<div class="viewcode-block" id="modify_forces">
+<a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">modify_forces</span><span class="p">(</span>
+    <span class="n">calculator</span><span class="p">:</span> <span class="n">Calculator</span><span class="p">,</span>
+    <span class="n">system</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">,</span>
+    <span class="n">timestep</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">kT</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">plumed_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">iteration</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">PlumedLog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;PLUMED.log&#39;</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up and return a PLUMED wrapped ASE calculator for molecular dynamics.</span>
+<span class="sd">    </span>
+<span class="sd">    This function reads a PLUMED input file and wraps an existing ASE calculator</span>
+<span class="sd">    to apply biasing forces during MD. Useful for enhanced sampling simulations.</span>
+<span class="sd">    </span>
+<span class="sd">    For more information, see the ASE documentation:</span>
+<span class="sd">    https://wiki.fysik.dtu.dk/ase/ase/calculators/plumed.html</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    calculator : ase.calculators.Calculator</span>
+<span class="sd">        The underlying ASE calculator for the system (e.g., DeepMD, VASP, CP2K)</span>
+<span class="sd">    system : ase.Atoms</span>
+<span class="sd">        The atomic configuration to which the calculator is applied</span>
+<span class="sd">    timestep : float</span>
+<span class="sd">        Integration timestep used in the MD simulation (already in ASE units)</span>
+<span class="sd">    kT : float, optional</span>
+<span class="sd">        Thermal energy (k_B * T) in eV. If None, defaults to 300 K (0.02585 eV)</span>
+<span class="sd">    restart : bool</span>
+<span class="sd">        Restart option for PLUMED</span>
+<span class="sd">    plumed_input : str</span>
+<span class="sd">        Path to the PLUMED input file (e.g., &quot;plumed.dat&quot;)</span>
+<span class="sd">    iteration : str</span>
+<span class="sd">        Directory name for PLUMED output files</span>
+<span class="sd">    PlumedLog : str, optional</span>
+<span class="sd">        PLUMED log filename (default: &#39;PLUMED.log&#39;)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ase.calculators.plumed.Plumed</span>
+<span class="sd">        The PLUMED-wrapped ASE calculator</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Ensure iteration directory exists</span>
+    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span>
+    <span class="n">out_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">log_path</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="n">PlumedLog</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+    
+    <span class="c1"># Open the PLUMED input file and read its contents</span>
+    <span class="n">setup</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">plumed_input</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)]</span>
+    
+    <span class="n">modified_setup</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">setup</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;FILE=&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="c1"># Extract the part after FILE= and handle multiple filenames</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;FILE=&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">filenames</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># Get the filenames</span>
+                <span class="n">filenames</span> <span class="o">=</span> <span class="n">filenames</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>  <span class="c1"># Handle multiple filenames</span>
+                <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">]</span>
+                <span class="n">new_filenames</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;FILE=</span><span class="si">{</span><span class="n">new_filenames</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">modified_setup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PLUMED output files will be written in </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">kT</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kT</span> <span class="o">=</span> <span class="mf">8.617333e-5</span> <span class="o">*</span> <span class="mi">300</span>  <span class="c1"># Boltzmann in eV/K at 300K</span>
+    
+    <span class="c1"># Initialize PLUMED calculator</span>
+    <span class="n">plumed_calc</span> <span class="o">=</span> <span class="n">Plumed</span><span class="p">(</span>
+        <span class="n">calc</span><span class="o">=</span><span class="n">calculator</span><span class="p">,</span>
+        <span class="nb">input</span><span class="o">=</span><span class="n">modified_setup</span><span class="p">,</span>
+        <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="o">=</span><span class="n">system</span><span class="p">,</span>
+        <span class="n">kT</span><span class="o">=</span><span class="n">kT</span><span class="p">,</span>
+        <span class="n">log</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">log_path</span><span class="p">),</span>
+        <span class="n">restart</span><span class="o">=</span><span class="n">restart</span>
+    <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">plumed_calc</span></div>
+
+
+
+<span class="c1">################################################################</span>
+
+<div class="viewcode-block" id="umbrella">
+<a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">umbrella</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">,</span>
+    <span class="n">us_dir</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">dp_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">dp_model</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up and run umbrella sampling simulations with PLUMED biasing.</span>
+
+<span class="sd">    This function reads a configuration file defining umbrella sampling windows</span>
+<span class="sd">    and applies restraining forces to collective variables for each window.</span>
+<span class="sd">    Supports NVE, NVT (Nose-Hoover, Langevin), and NPT ensembles.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : SparcConfig or dict</span>
+<span class="sd">        Configuration object or dictionary from input.yaml</span>
+<span class="sd">    us_dir : dict</span>
+<span class="sd">        Dictionary with &#39;dpmd_dir&#39; key specifying base directory for windows</span>
+<span class="sd">    dp_path : str</span>
+<span class="sd">        Path to DeepMD model directory</span>
+<span class="sd">    dp_model : str</span>
+<span class="sd">        Name of the DeepMD model file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Handle both SparcConfig dataclass and dict</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.read_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcConfig</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">SparcConfig</span><span class="p">):</span>
+        <span class="n">us_config_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">plumed</span><span class="o">.</span><span class="n">umbrella_sampling</span><span class="o">.</span><span class="n">config_file</span>
+        <span class="n">ensemble</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">ensemble</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">temperature</span>
+        <span class="n">thermostat_type</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">thermostat</span><span class="o">.</span><span class="n">type</span>
+        <span class="n">MDSteps</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">md_steps</span>
+        <span class="n">timestep_fs</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">timestep_fs</span>
+        <span class="n">log_frequency</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">log_frequency</span>
+        <span class="n">epot_threshold</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="p">,</span> <span class="s1">&#39;epot_threshold&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">plumed_kT</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">plumed</span><span class="o">.</span><span class="n">kT</span>
+        <span class="n">plumed_restart</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">plumed</span><span class="o">.</span><span class="n">restart</span>
+        <span class="n">dptraj_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dptraj_file</span>
+        <span class="n">distance_metrics</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">distance_metrics</span>
+        <span class="n">tdamp</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">thermostat</span><span class="o">.</span><span class="n">tdamp</span>
+        <span class="n">friction</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">thermostat</span><span class="o">.</span><span class="n">friction</span>
+        <span class="n">temp_start</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">temperature</span>
+        <span class="n">temp_end</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">temp_end</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mlip_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mlip_setup&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">thermostat_config</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thermostat&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">us_config_file</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="p">[</span><span class="s1">&#39;plumed&#39;</span><span class="p">][</span><span class="s1">&#39;umbrella_sampling&#39;</span><span class="p">][</span><span class="s1">&#39;config_file&#39;</span><span class="p">]</span>
+        <span class="n">ensemble</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;NVT&#39;</span><span class="p">)</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+        <span class="n">thermostat_type</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;Nose&#39;</span><span class="p">)</span>
+        <span class="n">MDSteps</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;md_steps&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">timestep_fs</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timestep_fs&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">log_frequency</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;log_frequency&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">epot_threshold</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;epot_threshold&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">plumed_kT</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;plumed&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span> <span class="mf">0.02585</span><span class="p">)</span>
+        <span class="n">plumed_restart</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;plumed&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;restart&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">dptraj_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dptraj_file&#39;</span><span class="p">,</span> <span class="s1">&#39;dpmd.traj&#39;</span><span class="p">)</span>
+        <span class="n">distance_metrics</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;distance_metrics&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">tdamp</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tdamp&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">friction</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;friction&#39;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">temp_start</span> <span class="o">=</span> <span class="n">temperature</span>
+        <span class="n">temp_end</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temp_end&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Load umbrella sampling configuration</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">us_config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">umbrella_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Umbrella Sampling: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">umbrella_config</span><span class="p">[</span><span class="s1">&#39;umbrella_windows&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> windows&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ensemble: </span><span class="si">{</span><span class="n">ensemble</span><span class="si">}</span><span class="s2"> | Thermostat: </span><span class="si">{</span><span class="n">thermostat_type</span><span class="si">}</span><span class="s2"> | Temperature: </span><span class="si">{</span><span class="n">temperature</span><span class="si">}</span><span class="s2"> K</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Loop over umbrella windows</span>
+    <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">window</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">umbrella_config</span><span class="p">[</span><span class="s1">&#39;umbrella_windows&#39;</span><span class="p">]):</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running Umbrella Sampling for window </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">struct_file</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="s1">&#39;structure&#39;</span><span class="p">]</span>
+        <span class="n">plumed_file</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="s1">&#39;plumed_file&#39;</span><span class="p">]</span>
+        <span class="n">window_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">us_dir</span><span class="p">[</span><span class="s1">&#39;dpmd_dir&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">window_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">usmd_log</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;usmd.log&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Load structure and re-initialize system and calculator</span>
+        <span class="n">dp_atoms</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">struct_file</span><span class="p">)</span>
+        <span class="n">dp_atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">window_dir</span><span class="p">,</span> <span class="s2">&quot;input.xyz&quot;</span><span class="p">))</span>
+        
+        <span class="n">dp_atoms</span><span class="p">,</span> <span class="n">dp_calc</span> <span class="o">=</span> <span class="n">setup_DeepPotential</span><span class="p">(</span>
+            <span class="n">atoms</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
+            <span class="n">model_path</span><span class="o">=</span><span class="n">dp_path</span><span class="p">,</span>
+            <span class="n">model_name</span><span class="o">=</span><span class="n">dp_model</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create dynamics object based on ensemble</span>
+        <span class="k">if</span> <span class="n">ensemble</span> <span class="o">==</span> <span class="s1">&#39;NVE&#39;</span><span class="p">:</span>
+            <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">NVE</span><span class="p">(</span><span class="n">system</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep_fs</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ensemble</span> <span class="o">==</span> <span class="s1">&#39;NPT&#39;</span><span class="p">:</span>
+            <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">NPT</span><span class="p">(</span>
+                <span class="n">system</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep_fs</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+                <span class="n">tau_t</span><span class="o">=</span><span class="n">tdamp</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tau_p</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># NVT</span>
+            <span class="k">if</span> <span class="n">thermostat_type</span> <span class="o">==</span> <span class="s1">&#39;Nose&#39;</span><span class="p">:</span>
+                <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">NoseNVT</span><span class="p">(</span>
+                    <span class="n">atoms</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep_fs</span><span class="p">,</span>
+                    <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">tdamp</span><span class="o">=</span><span class="n">tdamp</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">LangevinNVT</span><span class="p">(</span>
+                    <span class="n">atoms</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep_fs</span><span class="p">,</span>
+                    <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">friction</span><span class="o">=</span><span class="n">friction</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+        
+        <span class="c1"># Wrap with PLUMED (timestep needs to be in ASE units for PLUMED)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; → Window </span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2"> | Structure: </span><span class="si">{</span><span class="n">struct_file</span><span class="si">}</span><span class="s2"> | PLUMED: </span><span class="si">{</span><span class="n">plumed_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">dp_atoms</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">modify_forces</span><span class="p">(</span>
+            <span class="n">calculator</span><span class="o">=</span><span class="n">dp_calc</span><span class="p">,</span>
+            <span class="n">system</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
+            <span class="n">timestep</span><span class="o">=</span><span class="n">timestep_fs</span> <span class="o">*</span> <span class="n">ase</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+            <span class="n">kT</span><span class="o">=</span><span class="n">plumed_kT</span><span class="p">,</span>
+            <span class="n">restart</span><span class="o">=</span><span class="n">plumed_restart</span><span class="p">,</span>
+            <span class="n">plumed_input</span><span class="o">=</span><span class="n">plumed_file</span><span class="p">,</span>
+            <span class="n">iteration</span><span class="o">=</span><span class="n">window_dir</span><span class="p">,</span>
+            <span class="n">PlumedLog</span><span class="o">=</span><span class="s1">&#39;PLUMED.log&#39;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Run MD</span>
+        <span class="n">ExecuteMlpDynamics</span><span class="p">(</span>
+            <span class="n">system</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
+            <span class="n">dyn</span><span class="o">=</span><span class="n">dyn_dp</span><span class="p">,</span>
+            <span class="n">steps</span><span class="o">=</span><span class="n">MDSteps</span><span class="p">,</span>
+            <span class="n">pace</span><span class="o">=</span><span class="n">log_frequency</span><span class="p">,</span>
+            <span class="n">log_filename</span><span class="o">=</span><span class="n">usmd_log</span><span class="p">,</span>
+            <span class="n">trajfile</span><span class="o">=</span><span class="n">dptraj_file</span><span class="p">,</span>
+            <span class="n">dir_name</span><span class="o">=</span><span class="n">us_dir</span><span class="p">[</span><span class="s1">&#39;dpmd_dir&#39;</span><span class="p">],</span>
+            <span class="n">distance_metrics</span><span class="o">=</span><span class="n">distance_metrics</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ensemble</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">thermostat_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">epot_threshold</span><span class="o">=</span><span class="n">epot_threshold</span><span class="p">,</span>
+            <span class="n">temp_start</span><span class="o">=</span><span class="n">temp_start</span><span class="p">,</span>
+            <span class="n">temp_end</span><span class="o">=</span><span class="n">temp_end</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="c1">################################################################</span>
+<span class="c1"># END OF FILE</span>
+<span class="c1">################################################################</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

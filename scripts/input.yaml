@@ -1,0 +1,120 @@
+# ============================================================
+# SPARC Workflow Configuration
+# ============================================================
+
+# -------------------------------
+# General Settings
+# -------------------------------
+general:
+  structure_file: "AmmoniaBorate.xyz"              # Input structure file
+
+# -------------------------------
+# DFT Calculator Settings
+# -------------------------------
+dft_calculator:
+  engine: "xTB"                        # Supported: ORCA | VASP | CP2K | xTB
+  template_file: "xtb_template.inp"                # Template for VASP input
+  exe_command: "OMP_NUM_THREADS=4 /home/rverma7/anaconda3/envs/sparcGNN/bin/xtb" 
+
+# -------------------------------
+# AIMD Setup (ASE-based DFT-MD)
+# -------------------------------
+aimd_setup:
+  ensemble: "NVT"                       # Supported: NVT | NPT | NVE
+  tau_t: 10                             # TimeConstant for Berendsen Temperature
+  tau_p: 200                            # TimeConstant for Berendsen Pressure
+  pressure: 100                         # Desired pressure [eV/Ang^3]
+  compressibility: 1.0e-8               # Compressibility of material [Ang^3/eV]
+  temperature: 300                      # Temperature [K]
+  thermostat:
+    type: "Langevin"                    # Name of the thermostat
+    friction: 0.15                      # Friction Coefficient 
+  timestep_fs: 1.0                      # Timestep [fs]
+  steps: 0                           # Number of MD steps
+  log_frequency: 2                      # Print frequency
+  restart: false                        # Continue from previous run
+
+  plumed:                               # PLUMED coupling (optional)
+    enabled: True
+    plumed_file: "plumed.dat"           # PLUMED Filename
+    restart: False
+    kT: 0.02585                         # Thermal Energy [eV]
+
+# -------------------------------
+# DeepMD (MLIP) Setup
+# -------------------------------
+mlip_setup:
+  training: False                       # Enable DeepMD training
+  data_dir: "DeePMD_training/00.data"   # Training data directory
+  input_file: "input.json"              # DeepMD input JSON
+  skip_min: 10                          # Skip starting 'n' frames from training data
+  skip_max: null                        # Skip last 'n' frames from training data
+  num_models: 2                         # Number of ML model to be trained
+  MdSimulation: False                    # Run ML/MD simulation
+  restart: False                          # Resume ML-MD from checkpoint
+  ensemble: "NVT"                       # Ensemble
+  temperature: 300.0                    # Temperature [K]
+  thermostat:
+    type: "Nose"                        # Thermostat name
+    tdamp: 25.0                         # Damping parameter for NoseHoover Chain
+  timestep_fs: 1.0                      # Timestep for MD step
+  md_steps: 50000                       # Number of ML/MD steps
+  multiple_run: 2                       # Repeat MD with new velocities
+  log_frequency: 40                     # Print frequency
+
+  plumed:                               # Enable plumed [True/False (default)]
+    enabled: True
+    plumed_file: "plumed.dat"        # PLUMED filename
+    restart: False
+    kT: 0.02585
+    umbrella_sampling:                  # Enable Umbrella Sampling
+      enabled: False
+      config_file: "umbrella_sampling.yaml" # List of configurations for Umbrella Sampling
+
+# -------------------------------
+# Fine-tuning Universal Models
+# -------------------------------
+finetune:
+  enabled: False                        # Set True to enable fine-tuning
+  model_type: "deepmd"                  # "deepmd" (DPA-1/2/3) or "mace"
+  pretrained_model: "DPA3.pt"           # Path to pre-trained model or MACE name (small/medium/large)
+  model_branch: "Omat24"               # Multi-task model branch (e.g., "Omat24", "Organic_Reactions")
+  input_file: "input_finetune.json"     # Fine-tune JSON config (null = use mlip_setup.input_file)
+  num_epochs: 100                       # Fine-tuning epochs (MACE only)
+  learning_rate: 0.001                  # Starting learning rate
+  batch_size: 4                         # Batch size (MACE only)
+  device: "cpu"                         # "cpu" or "cuda" (MACE only)
+
+# -------------------------------
+# Active Learning Settings
+# -------------------------------
+active_learning: True
+learning_restart: True                 # If AL restart [True/False (default)]
+latest_model: 'iter_000001/01.train/training_1/frozen_model_1.pb'
+iteration: 5
+model_dev:
+  f_min_dev: 0.1                        # Minimum allowed atomic force deviation
+  f_max_dev: 0.3                        # Maximum allowed atomic force deviation
+
+# -------------------------------
+# Distance / Structural Metrics
+# -------------------------------
+distance_metrics:
+  - pair: [0, 7]
+    min_distance: 1.0  # Minimum allowed distance in Angstroms
+    max_distance: 7.0  # Maximum allowed distance in Angstroms
+  - pair: [1, 7]
+    min_distance: 0.8  # Minimum allowed distance in Angstroms
+    max_distance: 1.5  # Maximum allowed distance in Angstroms
+  - pair: [0, 6]
+    min_distance: 0.8  # Minimum allowed distance in Angstroms
+    max_distance: 1.5  # Maximum allowed distance in Angstroms
+
+# -------------------------------
+# Output Settings
+# -------------------------------
+output:
+  log_file: "AseMD.log"
+  xyz_file: "AseTraj.xyz"
+  aimdtraj_file: "AseMD.traj"
+  dptraj_file: "dpmd.traj"
