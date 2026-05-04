@@ -7,7 +7,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Documentation Status](https://readthedocs.org/projects/sparc/badge/)](https://docs-sparc.readthedocs.io/en/latest/)
 [![CI](https://github.com/rahulumrao/sparc/actions/workflows/ci.yaml/badge.svg)](https://github.com/rahulumrao/sparc/actions)
-[![DOI](https://zenodo.org/badge/924292507.svg)](https://doi.org/10.5281/zenodo.19389277)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18261342.svg)](https://doi.org/10.5281/zenodo.18261342)
 
 **S**mart **P**otential with **A**tomistic **R**are Events and **C**ontinuous Learning
 
