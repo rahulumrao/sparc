@@ -21,7 +21,7 @@ authors:
     affiliation: "1"
 
 affiliations:
- - name: Department of Chemical and Biomolecular Engineering, North Carolina State University, Raleigh, USA
+ - name: Department of Chemical and Biomolecular Engineering, North Carolina State University, Raleigh, United States of America
    index: 1
 date: 18 September 2025
 bibliography: ref.bib
