@@ -285,7 +285,7 @@ If you use this software or the dataset in your research, please cite:
 
 ```bibtex
 
-@article{sparc_joss,
+@article{joss,
   author  = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
   title   = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
   journal = {Journal of Open Source Software},
