@@ -7,7 +7,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Documentation Status](https://readthedocs.org/projects/sparc/badge/)](https://docs-sparc.readthedocs.io/en/latest/)
 [![CI](https://github.com/rahulumrao/sparc/actions/workflows/ci.yaml/badge.svg)](https://github.com/rahulumrao/sparc/actions)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18261342.svg)](https://doi.org/10.5281/zenodo.18261342)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.09468/status.svg)](https://doi.org/10.21105/joss.09468)
 
 **S**mart **P**otential with **A**tomistic **R**are Events and **C**ontinuous Learning
 
@@ -284,6 +284,20 @@ pre-commit run --all-files
 If you use this software or the dataset in your research, please cite:
 
 ```bibtex
+
+@article{sparc_joss,
+  author  = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
+  title   = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
+  journal = {Journal of Open Source Software},
+  volume  = {11},
+  number  = {120},
+  pages   = {9468},
+  year    = {2026},
+  month   = {apr},
+  doi     = {10.21105/joss.09468},
+  url     = {https://doi.org/10.21105/joss.09468}
+}
+
 @software{sparc,
   author = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
   doi    = {https://doi.org/10.5281/zenodo.19389278},

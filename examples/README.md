@@ -1,5 +1,7 @@
 # SPARC MLIP Workflow Dataset
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18261342.svg)](https://doi.org/10.5281/zenodo.18261342)
+
 The dataset is archived on Zenodo which includes all necessary inputs, configuration, and corresponding output data.
 Files are organized to re-run the workflow from scratch and inspect the results generated in this work.
 
