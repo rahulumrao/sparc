@@ -30,7 +30,11 @@ def parse_orca_template(template_path: str):
       'mult': int   (default 1 if not found)
     """
     p = Path(template_path)
-    if not p.exists():
+    try:
+        exists = p.exists()
+    except PermissionError:
+        exists = False
+    if not exists:
         raise FileNotFoundError(f"ORCA template not found: {template_path}")
 
     keyword = None

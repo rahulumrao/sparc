@@ -72,7 +72,11 @@ def qe_template(template_path: str) -> dict:
         'koffset'           : tuple of 3 ints, or None (only set if template has offset)
     """
     p = Path(template_path)
-    if not p.exists():
+    try:
+        exists = p.exists()
+    except PermissionError:
+        exists = False
+    if not exists:
         raise FileNotFoundError(f"QE template not found: {template_path}")
 
     with p.open() as f:

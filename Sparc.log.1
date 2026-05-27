@@ -1,0 +1,37 @@
+================================================================================
+BEGIN CALCULATION - 2026-05-26 22:35:06
+================================================================================
+
+
+         ######  ########     ###    ########   ######  
+        ##    ## ##     ##   ## ##   ##     ## ##    ## 
+        ##       ##     ##  ##   ##  ##     ## ##       
+         ######  ########  ##     ## ########  ##       
+              ## ##        ######### ##   ##   ##       
+        ##    ## ##        ##     ## ##    ##  ##    ## 
+         ######  ##        ##     ## ##     ##  ###### 
+         --v0.2.0
+
+usage: sparc [-h] [-i INPUT_FILE] [--analysis] [--forcecorrect]
+
+SPARC — Smart Potential with Atomistic Rare Events and Continuous Learning
+
+options:
+  -h, --help            show this help message and exit
+  -i INPUT_FILE, --input_file INPUT_FILE
+                        Input YAML configuration file (default: input.yaml)
+  --analysis            Run analysis mode (use 'sparc --analysis -h' for options)
+  --forcecorrect        Run force correction mode (use 'sparc --forcecorrect -h' for options)
+
+modes:
+  sparc -i input.yaml            Run main workflow (AIMD / MLIP training / ML-MD / AL)
+  sparc --analysis [args]        Analyse model deviation and training data
+  sparc --forcecorrect [args]    Remove PLUMED bias forces from AIMD trajectory
+
+run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options.
+        
+
+================================================================================
+END CALCULATION - 2026-05-26 22:35:06
+Total Runtime: 0:00:00.001205
+================================================================================

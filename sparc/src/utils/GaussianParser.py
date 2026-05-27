@@ -48,7 +48,11 @@ def gaussian_template(template_path: str) -> dict:
         'charge' and 'multiplicity' are converted to 'charge' and 'mult'.
     """
     p = Path(template_path)
-    if not p.exists():
+    try:
+        exists = p.exists()
+    except PermissionError:
+        exists = False
+    if not exists:
         raise FileNotFoundError(f"Gaussian template not found: {template_path}")
 
     params = {}
