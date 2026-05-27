@@ -51,7 +51,6 @@ To use a k-point grid, add the following to the template:
 
 import re
 from pathlib import Path
-from sparc.src.utils.logger import SparcLog
 
 
 def qe_template(template_path: str) -> dict:
@@ -81,43 +80,40 @@ def qe_template(template_path: str) -> dict:
 
     # ── Parse namelists (&CONTROL ... /, &SYSTEM ... /, etc.) ──
     input_data = {}
-    namelist_re = re.compile(
-        r'&(\w+)\s*\n(.*?)\n\s*/', re.DOTALL | re.IGNORECASE
-    )
+    namelist_re = re.compile(r"&(\w+)\s*\n(.*?)\n\s*/", re.DOTALL | re.IGNORECASE)
     for match in namelist_re.finditer(raw):
-        section_name = match.group(1).upper()
         body = match.group(2)
         for line in body.splitlines():
             line = line.strip()
-            if not line or line.startswith('!'):
+            if not line or line.startswith("!"):
                 continue
             # Handle comma-separated parameters on the same line
-            for part in line.split(','):
+            for part in line.split(","):
                 part = part.strip()
-                if '=' not in part:
+                if "=" not in part:
                     continue
-                key, val = part.split('=', 1)
+                key, val = part.split("=", 1)
                 key = key.strip().lower()
                 val = _convert_qe_value(val.strip())
                 input_data[key] = val
 
     # Extract pseudo_dir before passing to ASE (ASE handles it via profile)
-    pseudo_dir = input_data.pop('pseudo_dir', None)
+    pseudo_dir = input_data.pop("pseudo_dir", None)
     if isinstance(pseudo_dir, str):
         pseudo_dir = pseudo_dir.strip("'\"")
 
     # ── Parse ATOMIC_SPECIES card ──
     pseudopotentials = {}
     species_re = re.compile(
-        r'ATOMIC_SPECIES\s*\n(.*?)(?=\n\s*(?:ATOMIC_POSITIONS|K_POINTS|'
-        r'CELL_PARAMETERS|CONSTRAINTS|OCCUPATIONS|ATOMIC_FORCES|&|\Z))',
-        re.DOTALL | re.IGNORECASE
+        r"ATOMIC_SPECIES\s*\n(.*?)(?=\n\s*(?:ATOMIC_POSITIONS|K_POINTS|"
+        r"CELL_PARAMETERS|CONSTRAINTS|OCCUPATIONS|ATOMIC_FORCES|&|\Z))",
+        re.DOTALL | re.IGNORECASE,
     )
     m = species_re.search(raw)
     if m:
         for line in m.group(1).splitlines():
             line = line.strip()
-            if not line or line.startswith('!') or line.startswith('#'):
+            if not line or line.startswith("!") or line.startswith("#"):
                 continue
             parts = line.split()
             if len(parts) >= 3:
@@ -131,28 +127,28 @@ def qe_template(template_path: str) -> dict:
     kpts = None
     koffset = None
     kpts_re = re.compile(
-        r'K_POINTS\s*[\{\(]?\s*(\w+)\s*[\}\)]?\s*\n(.*?)(?=\n\s*(?:&|\Z|[A-Z_]+\s))',
-        re.DOTALL | re.IGNORECASE
+        r"K_POINTS\s*[\{\(]?\s*(\w+)\s*[\}\)]?\s*\n(.*?)(?=\n\s*(?:&|\Z|[A-Z_]+\s))",
+        re.DOTALL | re.IGNORECASE,
     )
     km = kpts_re.search(raw)
     if km:
         kpts_type = km.group(1).lower()
         kpts_body = km.group(2).strip()
-        if kpts_type in ('automatic', 'auto'):
+        if kpts_type in ("automatic", "auto"):
             parts = kpts_body.split()
             if len(parts) >= 3:
                 kpts = (int(parts[0]), int(parts[1]), int(parts[2]))
             if len(parts) >= 6:
                 koffset = (int(parts[3]), int(parts[4]), int(parts[5]))
-        elif kpts_type == 'gamma':
+        elif kpts_type == "gamma":
             kpts = None  # ASE uses kpts=None for gamma-only
 
     return {
-        'input_data': input_data,
-        'pseudopotentials': pseudopotentials,
-        'pseudo_dir': pseudo_dir,
-        'kpts': kpts,
-        'koffset': koffset,
+        "input_data": input_data,
+        "pseudopotentials": pseudopotentials,
+        "pseudo_dir": pseudo_dir,
+        "kpts": kpts,
+        "koffset": koffset,
     }
 
 
@@ -163,21 +159,22 @@ def _convert_qe_value(val: str):
     Handles Fortran-style booleans (.true./.false.), integers, floats
     (including 'd' exponent notation), and quoted strings.
     """
-    v = val.strip().rstrip(',')
+    v = val.strip().rstrip(",")
 
     # Fortran booleans
-    if v.lower() in ('.true.', '.t.'):
+    if v.lower() in (".true.", ".t."):
         return True
-    if v.lower() in ('.false.', '.f.'):
+    if v.lower() in (".false.", ".f."):
         return False
 
     # Quoted string
-    if (v.startswith("'") and v.endswith("'")) or \
-       (v.startswith('"') and v.endswith('"')):
+    if (v.startswith("'") and v.endswith("'")) or (
+        v.startswith('"') and v.endswith('"')
+    ):
         return v[1:-1]
 
     # Fortran 'd' exponent -> 'e'
-    v_num = v.lower().replace('d', 'e')
+    v_num = v.lower().replace("d", "e")
 
     # Try int first, then float
     try:

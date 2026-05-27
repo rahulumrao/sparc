@@ -30,7 +30,6 @@ Example template (gaussian_template.inp)
 """
 
 from pathlib import Path
-from sparc.src.utils.logger import SparcLog
 
 
 def gaussian_template(template_path: str) -> dict:
@@ -56,36 +55,47 @@ def gaussian_template(template_path: str) -> dict:
     with p.open() as f:
         for line in f:
             line = line.strip()
-            if not line or line.startswith('#') or line.startswith('!'):
+            if not line or line.startswith("#") or line.startswith("!"):
                 continue
-            if '=' not in line:
+            if "=" not in line:
                 continue
-            key, val = line.split('=', 1)
+            key, val = line.split("=", 1)
             key = key.strip().lower()
             val = val.strip()
             params[key] = val
 
     # ── Required parameters ──
-    if 'method' not in params:
+    if "method" not in params:
         raise ValueError("Gaussian template missing 'method' (e.g. b3lyp, mp2, hf)")
-    if 'basis' not in params:
+    if "basis" not in params:
         raise ValueError("Gaussian template missing 'basis' (e.g. 6-31G*, cc-pVDZ)")
 
     # ── Normalize keys for ASE ──
     # ASE expects 'mult' not 'multiplicity'
-    if 'multiplicity' in params:
-        params['mult'] = int(params.pop('multiplicity'))
-    if 'charge' in params:
-        params['charge'] = int(params.pop('charge'))
+    if "multiplicity" in params:
+        params["mult"] = int(params.pop("multiplicity"))
+    if "charge" in params:
+        params["charge"] = int(params.pop("charge"))
 
     # ASE recognises 'nprocshared' as Link0 — map 'nproc' to 'nprocshared'
-    if 'nproc' in params:
-        params['nprocshared'] = params.pop('nproc')
+    if "nproc" in params:
+        params["nprocshared"] = params.pop("nproc")
 
     # Try numeric conversion for remaining values
     for k in list(params):
-        if k in ('method', 'basis', 'mem', 'chk', 'oldchk', 'scf',
-                 'extra', 'save', 'charge', 'mult', 'nprocshared'):
+        if k in (
+            "method",
+            "basis",
+            "mem",
+            "chk",
+            "oldchk",
+            "scf",
+            "extra",
+            "save",
+            "charge",
+            "mult",
+            "nprocshared",
+        ):
             continue
         v = params[k]
         try:

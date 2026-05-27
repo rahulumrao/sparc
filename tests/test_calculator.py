@@ -10,25 +10,23 @@ Covers:
 - Gaussian template parser and calculator setup (PREFIX command fix)
 - Error handling for missing configs
 """
+
 from __future__ import annotations
 
-import os
-from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pytest
-
 from sparc.src.calculator import (
+    CalculatorError,
     SetupDFTCalculator,
     dft_calculator,
-    CalculatorError,
 )
-from sparc.src.utils.read_input import SparcConfig, ConfigurationError
-
+from sparc.src.utils.read_input import ConfigurationError
 
 # ============================================================
 # SetupDFTCalculator initialization
 # ============================================================
+
 
 class TestCalculatorSetup:
     """Test calculator setup class."""
@@ -56,6 +54,7 @@ class TestCalculatorSetup:
 # Engine dispatch
 # ============================================================
 
+
 class TestEngineDispatch:
     """Test dft_calculator routes to the correct engine."""
 
@@ -81,19 +80,17 @@ class TestEngineDispatch:
 # ORCA Parser & Calculator
 # ============================================================
 
+
 class TestORCA:
     """Test ORCA template parser and calculator setup."""
 
     def test_orca_parser_basic(self, tmp_path):
         """Parse a basic ORCA template."""
         from sparc.src.utils.OrcaParser import parse_orca_template
+
         template = tmp_path / "orca.inp"
         template.write_text(
-            "! PBE def2-SVP TightSCF\n"
-            "*xyz 0 1\n"
-            "H 0.0 0.0 0.0\n"
-            "H 0.0 0.0 0.74\n"
-            "*\n"
+            "! PBE def2-SVP TightSCF\n*xyz 0 1\nH 0.0 0.0 0.0\nH 0.0 0.0 0.74\n*\n"
         )
         result = parse_orca_template(str(template))
         assert result["orcasimpleinput"] == "PBE def2-SVP TightSCF"
@@ -103,12 +100,9 @@ class TestORCA:
     def test_orca_parser_charge_mult(self, tmp_path):
         """Parse charge and multiplicity from template."""
         from sparc.src.utils.OrcaParser import parse_orca_template
+
         template = tmp_path / "orca.inp"
-        template.write_text(
-            "! B3LYP 6-31G*\n"
-            "*xyz -1 2\n"
-            "*\n"
-        )
+        template.write_text("! B3LYP 6-31G*\n*xyz -1 2\n*\n")
         result = parse_orca_template(str(template))
         assert result["charge"] == -1
         assert result["multi"] == 2
@@ -116,15 +110,9 @@ class TestORCA:
     def test_orca_parser_with_blocks(self, tmp_path):
         """Parse ORCA template with %pal block."""
         from sparc.src.utils.OrcaParser import parse_orca_template
+
         template = tmp_path / "orca.inp"
-        template.write_text(
-            "! PBE def2-SVP\n"
-            "%pal\n"
-            "  nprocs 4\n"
-            "end\n"
-            "*xyz 0 1\n"
-            "*\n"
-        )
+        template.write_text("! PBE def2-SVP\n%pal\n  nprocs 4\nend\n*xyz 0 1\n*\n")
         result = parse_orca_template(str(template))
         assert "nprocs" in result["orcablocks"]
         assert result["orcasimpleinput"] == "PBE def2-SVP"
@@ -132,6 +120,7 @@ class TestORCA:
     def test_orca_parser_missing_keyword(self, tmp_path):
         """Template without '!' line should raise."""
         from sparc.src.utils.OrcaParser import parse_orca_template
+
         template = tmp_path / "bad.inp"
         template.write_text("*xyz 0 1\n*\n")
         with pytest.raises(ValueError, match="missing"):
@@ -139,6 +128,7 @@ class TestORCA:
 
     def test_orca_parser_file_not_found(self):
         from sparc.src.utils.OrcaParser import parse_orca_template
+
         with pytest.raises(FileNotFoundError):
             parse_orca_template("/nonexistent/orca.inp")
 
@@ -146,11 +136,7 @@ class TestORCA:
         """Test ORCA calculator object creation."""
         monkeypatch.chdir(tmp_path)
         template = tmp_path / "orca.inp"
-        template.write_text(
-            "! PBE def2-SVP\n"
-            "*xyz 0 1\n"
-            "*\n"
-        )
+        template.write_text("! PBE def2-SVP\n*xyz 0 1\n*\n")
         config = {
             "dft_calculator": {
                 "engine": "ORCA",
@@ -172,12 +158,14 @@ class TestORCA:
 # xTB Parser & Calculator
 # ============================================================
 
+
 class TestXTB:
     """Test xTB template parser and calculator setup."""
 
     def test_xtb_parser_basic(self, tmp_path):
         """Parse a basic xTB template."""
         from sparc.src.utils.xTBParser import xtb_template
+
         template = tmp_path / "xtb.inp"
         template.write_text(
             "# xTB template\n"
@@ -199,6 +187,7 @@ class TestXTB:
     def test_xtb_parser_solvent(self, tmp_path):
         """Parse xTB template with solvent settings."""
         from sparc.src.utils.xTBParser import xtb_template
+
         template = tmp_path / "xtb.inp"
         template.write_text(
             "method = GFN2-xTB\n"
@@ -214,12 +203,10 @@ class TestXTB:
     def test_xtb_parser_none_solvent(self, tmp_path):
         """Solvent = None should parse as Python None."""
         from sparc.src.utils.xTBParser import xtb_template
+
         template = tmp_path / "xtb.inp"
         template.write_text(
-            "method = GFN2-xTB\n"
-            "charge = 0\n"
-            "multiplicity = 1\n"
-            "solvent = None\n"
+            "method = GFN2-xTB\ncharge = 0\nmultiplicity = 1\nsolvent = None\n"
         )
         result = xtb_template(str(template))
         assert result["solvent"] is None
@@ -227,12 +214,10 @@ class TestXTB:
     def test_xtb_parser_comments_ignored(self, tmp_path):
         """Lines starting with '#' should be ignored."""
         from sparc.src.utils.xTBParser import xtb_template
+
         template = tmp_path / "xtb.inp"
         template.write_text(
-            "# This is a comment\n"
-            "method = GFN1-xTB\n"
-            "# another comment\n"
-            "charge = 1\n"
+            "# This is a comment\nmethod = GFN1-xTB\n# another comment\ncharge = 1\n"
         )
         result = xtb_template(str(template))
         assert result["method"] == "GFN1-xTB"
@@ -290,12 +275,14 @@ class TestXTB:
 # QE Parser & Calculator
 # ============================================================
 
+
 class TestQE:
     """Test Quantum ESPRESSO template parser and calculator setup."""
 
     def test_qe_parser_namelists(self, tmp_path):
         """Parse QE namelists (CONTROL, SYSTEM, ELECTRONS)."""
         from sparc.src.utils.QEParser import qe_template
+
         template = tmp_path / "qe.in"
         template.write_text(
             "&CONTROL\n"
@@ -327,6 +314,7 @@ class TestQE:
     def test_qe_parser_kpoints(self, tmp_path):
         """Parse K_POINTS card."""
         from sparc.src.utils.QEParser import qe_template
+
         template = tmp_path / "qe.in"
         template.write_text(
             "&CONTROL\n"
@@ -349,6 +337,7 @@ class TestQE:
     def test_qe_parser_gamma(self, tmp_path):
         """Gamma-only k-points should return kpts=None."""
         from sparc.src.utils.QEParser import qe_template
+
         template = tmp_path / "qe.in"
         template.write_text(
             "&CONTROL\n/\n&SYSTEM\n  ecutwfc = 40\n/\n&ELECTRONS\n/\n"
@@ -361,6 +350,7 @@ class TestQE:
     def test_qe_parser_fortran_booleans(self, tmp_path):
         """Fortran .true./.false. should convert to Python booleans."""
         from sparc.src.utils.QEParser import qe_template
+
         template = tmp_path / "qe.in"
         template.write_text(
             "&CONTROL\n"
@@ -376,6 +366,7 @@ class TestQE:
 
     def test_qe_parser_file_not_found(self):
         from sparc.src.utils.QEParser import qe_template
+
         with pytest.raises(FileNotFoundError):
             qe_template("/nonexistent/qe.in")
 
@@ -409,12 +400,14 @@ class TestQE:
 # Gaussian Parser & Calculator
 # ============================================================
 
+
 class TestGaussian:
     """Test Gaussian template parser and calculator setup."""
 
     def test_gaussian_parser_basic(self, tmp_path):
         """Parse a basic Gaussian template."""
         from sparc.src.utils.GaussianParser import gaussian_template
+
         template = tmp_path / "gauss.inp"
         template.write_text(
             "# Gaussian template\n"
@@ -434,13 +427,10 @@ class TestGaussian:
     def test_gaussian_parser_with_link0(self, tmp_path):
         """Parse Gaussian template with Link0 parameters."""
         from sparc.src.utils.GaussianParser import gaussian_template
+
         template = tmp_path / "gauss.inp"
         template.write_text(
-            "method = HF\n"
-            "basis = STO-3G\n"
-            "mem = 4GB\n"
-            "nprocshared = 8\n"
-            "chk = job.chk\n"
+            "method = HF\nbasis = STO-3G\nmem = 4GB\nnprocshared = 8\nchk = job.chk\n"
         )
         result = gaussian_template(str(template))
         assert result["mem"] == "4GB"
@@ -450,12 +440,9 @@ class TestGaussian:
     def test_gaussian_parser_nproc_renamed(self, tmp_path):
         """'nproc' should be mapped to 'nprocshared' for ASE."""
         from sparc.src.utils.GaussianParser import gaussian_template
+
         template = tmp_path / "gauss.inp"
-        template.write_text(
-            "method = HF\n"
-            "basis = STO-3G\n"
-            "nproc = 4\n"
-        )
+        template.write_text("method = HF\nbasis = STO-3G\nnproc = 4\n")
         result = gaussian_template(str(template))
         assert "nproc" not in result
         assert result["nprocshared"] == "4"
@@ -463,6 +450,7 @@ class TestGaussian:
     def test_gaussian_parser_missing_method(self, tmp_path):
         """Missing method should raise ValueError."""
         from sparc.src.utils.GaussianParser import gaussian_template
+
         template = tmp_path / "gauss.inp"
         template.write_text("basis = STO-3G\n")
         with pytest.raises(ValueError, match="missing 'method'"):
@@ -471,6 +459,7 @@ class TestGaussian:
     def test_gaussian_parser_missing_basis(self, tmp_path):
         """Missing basis should raise ValueError."""
         from sparc.src.utils.GaussianParser import gaussian_template
+
         template = tmp_path / "gauss.inp"
         template.write_text("method = HF\n")
         with pytest.raises(ValueError, match="missing 'basis'"):
@@ -478,6 +467,7 @@ class TestGaussian:
 
     def test_gaussian_parser_file_not_found(self):
         from sparc.src.utils.GaussianParser import gaussian_template
+
         with pytest.raises(FileNotFoundError):
             gaussian_template("/nonexistent/gauss.inp")
 
@@ -495,7 +485,9 @@ class TestGaussian:
             }
         }
 
-        with patch("ase.calculators.gaussian.Gaussian.__init__", return_value=None) as mock_init:
+        with patch(
+            "ase.calculators.gaussian.Gaussian.__init__", return_value=None
+        ) as mock_init:
             setup = SetupDFTCalculator(config)
             try:
                 setup.gaussian()

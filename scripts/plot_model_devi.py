@@ -1,7 +1,8 @@
-import os
 import glob
-import numpy as np
+import os
+
 import matplotlib.pyplot as plt
+
 
 def main():
     # Root directory containing iter_* folders
@@ -33,9 +34,9 @@ def main():
             # Extract data from lines (skip header lines)
             for line in lines[2:]:  # Skip first two header lines
                 cols = line.split()
-                if len(cols) >= 5:  
+                if len(cols) >= 5:
                     try:
-                        steps.append(int(cols[0])) 
+                        steps.append(int(cols[0]))
                         max_devi_f.append(float(cols[4]))  # read: max_devi_f
                     except ValueError:
                         continue
@@ -49,25 +50,35 @@ def main():
     plt.figure(figsize=(8, 6))
     for model, data in data_dict.items():
         for iter_num, steps, max_devi_f in sorted(data):
-            plt.plot(steps, max_devi_f, linestyle="-", lw=2, label=f"{model} (iter: {iter_num})", marker='o', ms=5, alpha=1.0)
+            plt.plot(
+                steps,
+                max_devi_f,
+                linestyle="-",
+                lw=2,
+                label=f"{model} (iter: {iter_num})",
+                marker="o",
+                ms=5,
+                alpha=1.0,
+            )
 
     plt.xlim(0, None)
     plt.xlabel("Points", fontsize=18)
     plt.ylabel(r"Max. Force Deviation ($\rm{eV/\AA}$)", fontsize=18)
-    plt.title("Force deviation from each iteration/s", fontsize=16, color='blue')
+    plt.title("Force deviation from each iteration/s", fontsize=16, color="blue")
 
     plt.xticks(fontsize=17)
     plt.yticks(fontsize=17)
     plt.legend(fontsize=12)
 
     plt.legend()
-    plt.grid(ls='-.')
+    plt.grid(ls="-.")
     plt.savefig("model_devi.png", dpi=300)
     # plt.show()
+
 
 if __name__ == "__main__":
     main()
 
-#===================================================================================================#
-#                                     END OF FILE 
-#===================================================================================================#  
+# ===================================================================================================#
+#                                     END OF FILE
+# ===================================================================================================#

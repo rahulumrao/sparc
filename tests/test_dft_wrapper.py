@@ -4,17 +4,17 @@ Tests for DFT calculator wrappers (sparc/src/calculator.py).
 Updated for v0.2: includes all six engines (ORCA, xTB, CP2K, VASP, QE, Gaussian).
 Skips when external executables are not available.
 """
+
 from __future__ import annotations
 
 import json
 import os
 import shutil
-from pathlib import Path
 import warnings
+from pathlib import Path
 
 import pytest
-
-from sparc.src.calculator import dft_calculator, CalculatorError
+from sparc.src.calculator import CalculatorError, dft_calculator
 
 
 def _which(name: str) -> str | None:
@@ -25,9 +25,8 @@ def _which(name: str) -> str | None:
 # ORCA
 # ============================================================
 
-def test_orca_calculator_wrapper(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-):
+
+def test_orca_calculator_wrapper(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """
     Runs ORCA via SPARC dft_calculator module using a template file.
     Skips if orca is not available.
@@ -56,6 +55,7 @@ def test_orca_calculator_wrapper(
     monkeypatch.chdir(run_dir)
 
     from ase.build import molecule
+
     atoms = molecule("H2O")
     atoms.center(vacuum=3.0)
 
@@ -85,8 +85,12 @@ def test_orca_calculator_wrapper(
     dF = max_force - ref_force
 
     print("\nORCA regression check:")
-    print(f"  Energy (eV):     ref={ref_energy:.8f}  cur={energy_ev:.8f}  diff={dE:.6e}")
-    print(f"  Max force (eV/Å): ref={ref_force:.8f}  cur={max_force:.8f}  diff={dF:.6e}")
+    print(
+        f"  Energy (eV):     ref={ref_energy:.8f}  cur={energy_ev:.8f}  diff={dE:.6e}"
+    )
+    print(
+        f"  Max force (eV/Å): ref={ref_force:.8f}  cur={max_force:.8f}  diff={dF:.6e}"
+    )
 
     assert abs(dE) <= energy_tol, (
         f"Energy mismatch: diff={dE:.6e} eV (tol={energy_tol:.3e})"
@@ -100,9 +104,8 @@ def test_orca_calculator_wrapper(
 # xTB
 # ============================================================
 
-def test_xtb_calculator_wrapper(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-):
+
+def test_xtb_calculator_wrapper(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """
     Runs xTB via SPARC dft_calculator module using a template file.
     Skips if xtb is not available.
@@ -131,6 +134,7 @@ def test_xtb_calculator_wrapper(
     monkeypatch.chdir(run_dir)
 
     from ase.build import molecule
+
     atoms = molecule("H2O")
     atoms.center(vacuum=3.0)
 
@@ -164,8 +168,12 @@ def test_xtb_calculator_wrapper(
     dF = max_force - ref_force
 
     print("\nxTB regression check:")
-    print(f"  Energy (eV):     ref={ref_energy:.8f}  cur={energy_ev:.8f}  diff={dE:.6e}")
-    print(f"  Max force (eV/Å): ref={ref_force:.8f}  cur={max_force:.8f}  diff={dF:.6e}")
+    print(
+        f"  Energy (eV):     ref={ref_energy:.8f}  cur={energy_ev:.8f}  diff={dE:.6e}"
+    )
+    print(
+        f"  Max force (eV/Å): ref={ref_force:.8f}  cur={max_force:.8f}  diff={dF:.6e}"
+    )
 
     assert abs(dE) <= energy_tol, (
         f"Energy mismatch: diff={dE:.6e} eV (tol={energy_tol:.3e})"
@@ -179,9 +187,8 @@ def test_xtb_calculator_wrapper(
 # CP2K
 # ============================================================
 
-def test_cp2k_calculator_wrapper(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-):
+
+def test_cp2k_calculator_wrapper(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """
     Runs CP2K via SPARC dft_calculator module using a template file.
     Skips if cp2k_shell.psmp is not available.
@@ -213,6 +220,7 @@ def test_cp2k_calculator_wrapper(
     monkeypatch.chdir(run_dir)
 
     from ase.build import molecule
+
     atoms = molecule("H2O")
     atoms.center(vacuum=3.0)
 
@@ -247,9 +255,8 @@ def test_cp2k_calculator_wrapper(
 # VASP
 # ============================================================
 
-def test_vasp_calculator_wrapper(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-):
+
+def test_vasp_calculator_wrapper(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """
     Runs VASP via SPARC dft_calculator module using a INCAR template.
     Skips if vasp_std is not available.
@@ -280,6 +287,7 @@ def test_vasp_calculator_wrapper(
     monkeypatch.chdir(run_dir)
 
     from ase.build import molecule
+
     atoms = molecule("H2O")
     atoms.center(vacuum=3.0)
     atoms.set_pbc([True, True, True])
@@ -299,6 +307,7 @@ def test_vasp_calculator_wrapper(
 
     atoms.calc = calc
     from ase.config import ASEEnvDeprecationWarning
+
     warnings.filterwarnings("ignore", category=ASEEnvDeprecationWarning)
 
     energy_ev = atoms.get_potential_energy()
@@ -318,9 +327,8 @@ def test_vasp_calculator_wrapper(
 # QE
 # ============================================================
 
-def test_qe_calculator_wrapper(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-):
+
+def test_qe_calculator_wrapper(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """
     Test QE calculator setup. Skips if pw.x is not available.
     """
@@ -357,9 +365,8 @@ def test_qe_calculator_wrapper(
 # Gaussian
 # ============================================================
 
-def test_gaussian_calculator_wrapper(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-):
+
+def test_gaussian_calculator_wrapper(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """
     Test Gaussian calculator setup. Skips if g16/g09 is not available.
     """

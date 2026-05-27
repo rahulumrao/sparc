@@ -5,34 +5,28 @@ All plotting functions preserve original logic from plot_utils.py.
 Shared utilities are imported from main.py.
 """
 
-import os
 import glob
+import os
+
+import dpdata
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator, FormatStrFormatter
-import dpdata
 import seaborn as sns
-from scipy.stats import gaussian_kde
-from scipy.interpolate import interp1d
+from matplotlib.ticker import FormatStrFormatter, MaxNLocator
 
 # Import shared utilities from main.py
 from .main import (
-    get_iteration_dirs,
-    load_trajectory,
-    extract_iteration_number,
-    compute_rmse,
     compute_mae,
-    ReadColvar,
-    get_2dSurface,
-    get_1dSurface,
-    ViewTraj
+    compute_rmse,
+    extract_iteration_number,
+    get_iteration_dirs,
 )
-
 
 ########################################################################################################
 # Parity plots for energy and forces
 ########################################################################################################
+
 
 def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
     """
@@ -91,29 +85,36 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
 
     # === Energy Parity Plot ===
     if type in ("all", "energy"):
-        ax_energy.scatter(e_true, e_pred, c='blue', alpha=0.7, s=40, edgecolors='k')
-        ax_energy.plot([e_true.min(), e_true.max()], [e_true.min(), e_true.max()], 'r--', lw=1.2)
-        
+        ax_energy.scatter(e_true, e_pred, c="blue", alpha=0.7, s=40, edgecolors="k")
+        ax_energy.plot(
+            [e_true.min(), e_true.max()], [e_true.min(), e_true.max()], "r--", lw=1.2
+        )
+
         rmse_e = compute_rmse(e_true, e_pred)
         mae_e = compute_mae(e_true, e_pred)
-        
-        ax_energy.text(0.05, 0.90,
-                      f"RMSE = {rmse_e:.4f} {e_unit}\nMAE = {mae_e:.4f} {e_unit}",
-                      transform=ax_energy.transAxes,
-                      fontsize=12, verticalalignment='top', color='blue')
+
+        ax_energy.text(
+            0.05,
+            0.90,
+            f"RMSE = {rmse_e:.4f} {e_unit}\nMAE = {mae_e:.4f} {e_unit}",
+            transform=ax_energy.transAxes,
+            fontsize=12,
+            verticalalignment="top",
+            color="blue",
+        )
         ax_energy.set_xlabel(f"Observed (DFT) [{e_unit}]", fontsize=14)
         ax_energy.set_ylabel(f"Predicted (MLP) [{e_unit}]", fontsize=14)
         ax_energy.set_title("(A) Energy", fontsize=16)
-        ax_energy.xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
-        ax_energy.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+        ax_energy.xaxis.set_major_formatter(FormatStrFormatter("%.2f"))
+        ax_energy.yaxis.set_major_formatter(FormatStrFormatter("%.2f"))
         ax_energy.xaxis.set_major_locator(MaxNLocator(nbins=6))
         ax_energy.yaxis.set_major_locator(MaxNLocator(nbins=6))
         ax_energy.tick_params(labelsize=12)
-        ax_energy.grid(ls='--', alpha=0.7)
+        ax_energy.grid(ls="--", alpha=0.7)
 
     # === Force Parity Plots ===
     if type in ("all", "forces"):
-        components = ['fx', 'fy', 'fz']
+        components = ["fx", "fy", "fz"]
         for i, comp in enumerate(components):
             if type == "forces":
                 ax = axes[i]
@@ -123,26 +124,31 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
 
             f_t = f_true[:, i]
             f_p = f_pred[:, i]
-            
+
             rmse_f = compute_rmse(f_t, f_p)
             mae_f = compute_mae(f_t, f_p)
 
-            ax.scatter(f_t, f_p, c='blue', alpha=0.6, s=30, edgecolors='k')
-            ax.plot([f_t.min(), f_t.max()], [f_t.min(), f_t.max()], 'r--', lw=1.2)
-            ax.text(0.05, 0.90,
-                   f"RMSE = {rmse_f:.4f} eV/Å\nMAE = {mae_f:.4f} eV/Å",
-                   transform=ax.transAxes,
-                   fontsize=12, verticalalignment='top', color='blue')
+            ax.scatter(f_t, f_p, c="blue", alpha=0.6, s=30, edgecolors="k")
+            ax.plot([f_t.min(), f_t.max()], [f_t.min(), f_t.max()], "r--", lw=1.2)
+            ax.text(
+                0.05,
+                0.90,
+                f"RMSE = {rmse_f:.4f} eV/Å\nMAE = {mae_f:.4f} eV/Å",
+                transform=ax.transAxes,
+                fontsize=12,
+                verticalalignment="top",
+                color="blue",
+            )
             ax.set_xlabel(r"Observed (DFT) [eV/$\rm{\AA}$]", fontsize=14)
             ax.set_ylabel(r"Predicted (MLP) [eV/$\rm{\AA}$]", fontsize=14)
-            ax.set_title(f"({chr(66+i)}) {comp}", fontsize=16)
+            ax.set_title(f"({chr(66 + i)}) {comp}", fontsize=16)
             ax.tick_params(labelsize=12)
-            ax.grid(ls='--', alpha=0.7)
+            ax.grid(ls="--", alpha=0.7)
 
     plt.tight_layout()
-    
+
     if save_fig:
-        plt.savefig(save_fig, bbox_inches='tight')
+        plt.savefig(save_fig, bbox_inches="tight")
         print(f"[ANALYSIS][INFO] Saved parity plot to: {save_fig}")
     else:
         plt.show()
@@ -151,6 +157,7 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
 ########################################################################################################
 # Plot Learning Curve
 ########################################################################################################
+
 
 def PlotLcurve(lcurve_file, save_fig=None):
     """
@@ -179,11 +186,11 @@ def PlotLcurve(lcurve_file, save_fig=None):
         "rmse_e_val": "RMSE Energy (val)",
         "rmse_e_trn": "RMSE Energy (train)",
         "rmse_f_val": "RMSE Force (val)",
-        "rmse_f_trn": "RMSE Force (train)"
+        "rmse_f_trn": "RMSE Force (train)",
     }
 
     plt.figure(figsize=(8, 6), dpi=250)
-    
+
     for key, label in legends.items():
         if key in data.columns:
             plt.loglog(data["step"], data[key], label=label, lw=2.2, alpha=0.9)
@@ -192,13 +199,13 @@ def PlotLcurve(lcurve_file, save_fig=None):
     plt.ylabel("Loss", fontsize=14)
     plt.title("DeepMD Learning Curve", fontsize=16, pad=10)
     plt.legend(fontsize=12)
-    plt.grid(which='both', ls='--', alpha=0.4)
+    plt.grid(which="both", ls="--", alpha=0.4)
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
     plt.tight_layout()
 
     if save_fig:
-        plt.savefig(save_fig, bbox_inches='tight')
+        plt.savefig(save_fig, bbox_inches="tight")
         print(f"[ANALYSIS][INFO] Saved learning curve plot to: {save_fig}")
     else:
         plt.show()
@@ -208,7 +215,10 @@ def PlotLcurve(lcurve_file, save_fig=None):
 # Plot error in Forces from various DeepMD models
 ########################################################################################################
 
-def PlotForceDeviation(root_dir=".", iteration_window="all", target_iteration=None, dmin=0.05, dmax=0.5):
+
+def PlotForceDeviation(
+    root_dir=".", iteration_window="all", target_iteration=None, dmin=0.05, dmax=0.5
+):
     """
     Parses model_dev_*.out files from iter_* directories (or a specific range/iteration/all),
     extracts max force deviation, and plots the results.
@@ -237,7 +247,7 @@ def PlotForceDeviation(root_dir=".", iteration_window="all", target_iteration=No
 
         # Find all model_dev_*.out files
         model_files = sorted(glob.glob(os.path.join(dpmd_dir, "model_dev_*.out")))
-        
+
         for model_file in model_files:
             model_name = os.path.basename(model_file)
             steps = []
@@ -269,19 +279,29 @@ def PlotForceDeviation(root_dir=".", iteration_window="all", target_iteration=No
 
     for model, data in data_dict.items():
         for iter_num, steps, max_devi_f in sorted(data):
-            plt.plot(steps, max_devi_f, linestyle="-", lw=2.2, label=f"Iter: {iter_num}", 
-                    marker='o', ms=5, alpha=0.7)
+            plt.plot(
+                steps,
+                max_devi_f,
+                linestyle="-",
+                lw=2.2,
+                label=f"Iter: {iter_num}",
+                marker="o",
+                ms=5,
+                alpha=0.7,
+            )
 
-    plt.axhline(y=dmin, color='black', lw=2, ls='--', alpha=0.4)
-    plt.axhline(y=dmax, color='black', lw=2, ls='--', alpha=0.4)
-    plt.fill_between([0, max(steps) if steps else 1], dmin, dmax, color='grey', alpha=0.3)
+    plt.axhline(y=dmin, color="black", lw=2, ls="--", alpha=0.4)
+    plt.axhline(y=dmax, color="black", lw=2, ls="--", alpha=0.4)
+    plt.fill_between(
+        [0, max(steps) if steps else 1], dmin, dmax, color="grey", alpha=0.3
+    )
     plt.xlim(0, None)
     plt.xlabel("Candidates", fontsize=22)
     plt.ylabel(r"Max. Force Deviation ($\rm{eV/\AA}$)", fontsize=22)
     plt.xticks(fontsize=20)
     plt.yticks(fontsize=20)
-    plt.legend(fontsize=16, loc='upper center', bbox_to_anchor=(0.5, 1.0), ncol=ncol)
-    plt.grid(ls='-.')
+    plt.legend(fontsize=16, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.grid(ls="-.")
     plt.show()
 
 
@@ -289,7 +309,13 @@ def PlotForceDeviation(root_dir=".", iteration_window="all", target_iteration=No
 # Plot Potential energy from Labelled candidates
 ########################################################################################################
 
-def PlotPotentialEnergy(root_dir=".", iteration_window="all", target_iteration=None, traj_filename="AseMD.traj"):
+
+def PlotPotentialEnergy(
+    root_dir=".",
+    iteration_window="all",
+    target_iteration=None,
+    traj_filename="AseMD.traj",
+):
     """
     Parses trajectory files from iter_* directories (or a specific range/iteration/all),
     extracts potential energy, and plots the results.
@@ -326,6 +352,7 @@ def PlotPotentialEnergy(root_dir=".", iteration_window="all", target_iteration=N
 
         # Read trajectory file
         from ase.io import read
+
         traj = read(traj_path, index=":")
 
         # Extract potential energies
@@ -342,8 +369,16 @@ def PlotPotentialEnergy(root_dir=".", iteration_window="all", target_iteration=N
     ncol = min(num_iterations, 6)
 
     for iter_num, energies in sorted(energy_dict.items()):
-        plt.plot(range(len(energies)), energies, marker='o', linestyle='-', lw=2, 
-                label=f"Iter {iter_num}", ms=5, alpha=0.9)
+        plt.plot(
+            range(len(energies)),
+            energies,
+            marker="o",
+            linestyle="-",
+            lw=2,
+            label=f"Iter {iter_num}",
+            ms=5,
+            alpha=0.9,
+        )
 
     # Labels and formatting
     plt.xlabel("Labelled Candidates", fontsize=20)
@@ -351,14 +386,15 @@ def PlotPotentialEnergy(root_dir=".", iteration_window="all", target_iteration=N
     plt.xlim(0, None)
     plt.xticks(fontsize=17)
     plt.yticks(fontsize=17)
-    plt.legend(fontsize=12, loc='upper center', bbox_to_anchor=(0.5, 1.0), ncol=ncol)
-    plt.grid(ls='-.')
+    plt.legend(fontsize=12, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.grid(ls="-.")
     plt.show()
 
 
 ########################################################################################################
 # Plot Distribution of Properties
 ########################################################################################################
+
 
 def PlotDistribution(
     root_dir=".",
@@ -367,7 +403,7 @@ def PlotDistribution(
     traj_filename="AseMD.traj",
     type="line",  # Options: "line", "kde", "hist"
     get="energy",  # "energy" or "distance:i,j"
-    **kwargs
+    **kwargs,
 ):
     """
     Plot potential energy or bond distance from ASE trajectories across iter_* folders.
@@ -384,7 +420,7 @@ def PlotDistribution(
     elif is_distance:
         try:
             i, j = map(int, get.split(":")[1].split(","))
-        except:
+        except Exception:
             raise ValueError("For distance, use format: 'distance:i,j'")
     else:
         raise ValueError("get must be 'energy' or 'distance:i,j'")
@@ -395,12 +431,13 @@ def PlotDistribution(
         iter_num = extract_iteration_number(iter_dir)
         dpmd_dir = os.path.join(iter_dir, "00.dft")
         traj_path = os.path.join(dpmd_dir, traj_filename)
-        
+
         if not os.path.isfile(traj_path):
             print(f"Warning: {traj_filename} not found in {dpmd_dir}")
             continue
 
         from ase.io import read
+
         traj = read(traj_path, index=":")
 
         if is_distance and symbol_pair is None and len(traj) > max(i, j):
@@ -420,13 +457,13 @@ def PlotDistribution(
 
     # Determine labels
     if is_energy:
-        if type=='line':
+        if type == "line":
             xlabel = "Candidates"
             ylabel = "Potential Energy (eV)"
-        elif type=='kde':
+        elif type == "kde":
             xlabel = "Potential Energy (eV)"
             ylabel = "Density"
-        elif type=='hist':
+        elif type == "hist":
             xlabel = "Potential Energy (eV)"
             ylabel = "P(Energy)"
     elif is_distance:
@@ -445,31 +482,34 @@ def PlotDistribution(
 
         if type == "line":
             plt.plot(
-                range(len(values)), values,
+                range(len(values)),
+                values,
                 label=label,
-                marker=kwargs.get("marker", 'o'),
-                linestyle=kwargs.get("linestyle", '-'),
+                marker=kwargs.get("marker", "o"),
+                linestyle=kwargs.get("linestyle", "-"),
                 linewidth=kwargs.get("linewidth", 2),
                 markersize=kwargs.get("ms", 5),
                 alpha=kwargs.get("alpha", 0.9),
-                color=kwargs.get("color", None)
+                color=kwargs.get("color", None),
             )
         elif type == "kde":
             sns.kdeplot(
-                values, label=label,
+                values,
+                label=label,
                 linewidth=kwargs.get("linewidth", 2),
                 fill=kwargs.get("fill", True),
                 alpha=kwargs.get("alpha", 0.4),
-                linestyle=kwargs.get("linestyle", '-'),
-                color=kwargs.get("color", None)
+                linestyle=kwargs.get("linestyle", "-"),
+                color=kwargs.get("color", None),
             )
         elif type == "hist":
             plt.hist(
-                values, bins=kwargs.get("bins", 25),
+                values,
+                bins=kwargs.get("bins", 25),
                 edgecolor=kwargs.get("edgecolor", "black"),
                 alpha=kwargs.get("alpha", 0.7),
                 label=label,
-                color=kwargs.get("color", None)
+                color=kwargs.get("color", None),
             )
         else:
             raise ValueError("type must be 'line', 'kde', or 'hist'.")
@@ -480,8 +520,8 @@ def PlotDistribution(
         plt.xlim(0, None)
     plt.xticks(fontsize=22)
     plt.yticks(fontsize=22)
-    plt.legend(fontsize=16, loc='upper center', bbox_to_anchor=(0.5, 1.0), ncol=ncol)
-    plt.grid(ls='-.')
+    plt.legend(fontsize=16, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.grid(ls="-.")
     plt.tight_layout()
     plt.show()
 
@@ -489,6 +529,7 @@ def PlotDistribution(
 ########################################################################################################
 # Plot Potential Energy Surface
 ########################################################################################################
+
 
 def PlotPES(
     root_dir=".",
@@ -498,7 +539,7 @@ def PlotPES(
     distance_pair=(0, 7),
     type="kde",  # "kde", "heatmap", or "hexbin"
     bins=(50, 50),
-    **kwargs
+    **kwargs,
 ):
     """
     Plot energy vs. bond distance across trajectories as a 2D KDE, heatmap, or hexbin.
@@ -516,12 +557,13 @@ def PlotPES(
     for iter_dir in selected_dirs:
         iter_num = extract_iteration_number(iter_dir)
         traj_path = os.path.join(iter_dir, "00.dft", traj_filename)
-        
+
         if not os.path.isfile(traj_path):
             print(f" Iter {iter_num:>2}: MISSING ({traj_filename})")
             continue
 
         from ase.io import read
+
         traj = read(traj_path, index=":")
         num_frames = len(traj)
         print(f" Iter {iter_num:>2}: {num_frames} frames")
@@ -556,20 +598,18 @@ def PlotPES(
 
     if type == "kde":
         sns.kdeplot(
-            x=x, y=y, ax=ax,
+            x=x,
+            y=y,
+            ax=ax,
             fill=True,
             cmap=kwargs.pop("cmap", "viridis"),
             levels=100,
             thresh=0.05,
-            **kwargs
+            **kwargs,
         )
     elif type == "heatmap":
         h = ax.hist2d(
-            x, y,
-            bins=bins,
-            cmap=kwargs.pop("cmap", "plasma"),
-            cmin=1,
-            **kwargs
+            x, y, bins=bins, cmap=kwargs.pop("cmap", "plasma"), cmin=1, **kwargs
         )
         cb = fig.colorbar(h[3], ax=ax, pad=0.01)
         cb.set_label("Counts", fontsize=16)
@@ -578,12 +618,7 @@ def PlotPES(
         cmap = kwargs.pop("cmap", "inferno")
         gridsize = bins[0] if isinstance(bins, (tuple, list)) else bins
         hb = ax.hexbin(
-            x, y,
-            gridsize=gridsize,
-            cmap=cmap,
-            mincnt=1,
-            linewidths=0.3,
-            **kwargs
+            x, y, gridsize=gridsize, cmap=cmap, mincnt=1, linewidths=0.3, **kwargs
         )
         cb = fig.colorbar(hb, ax=ax, pad=0.01)
         cb.set_label("Counts", fontsize=20)
@@ -600,8 +635,8 @@ def PlotPES(
 
     ax.set_xlabel(bond_label, fontsize=20)
     ax.set_ylabel("Potential Energy (eV)", fontsize=20)
-    ax.tick_params(axis='both', labelsize=16)
-    ax.grid(ls='--', alpha=0.3)
+    ax.tick_params(axis="both", labelsize=16)
+    ax.grid(ls="--", alpha=0.3)
     fig.subplots_adjust(right=0.98, left=0.12, top=0.95, bottom=0.12)
     plt.show()
 
@@ -610,7 +645,13 @@ def PlotPES(
 # Plot Temperature from Deep Potential Dynamics
 ########################################################################################################
 
-def PlotTemp(root_dir=".", iteration_window="all", target_iteration=None, traj_filename="dpmd.traj"):
+
+def PlotTemp(
+    root_dir=".",
+    iteration_window="all",
+    target_iteration=None,
+    traj_filename="dpmd.traj",
+):
     """
     Parses trajectory files from iter_* directories (or a specific range/iteration/all),
     extracts temperature, and plots the results.
@@ -618,7 +659,9 @@ def PlotTemp(root_dir=".", iteration_window="all", target_iteration=None, traj_f
     [Full docstring preserved from original]
     """
     if traj_filename is None:
-        traj_filename = input("Enter the trajectory filename (default: dpmd.traj): ") or "dpmd.traj"
+        traj_filename = (
+            input("Enter the trajectory filename (default: dpmd.traj): ") or "dpmd.traj"
+        )
 
     temp_dict = {}
     selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
@@ -638,6 +681,7 @@ def PlotTemp(root_dir=".", iteration_window="all", target_iteration=None, traj_f
 
         # Read trajectory file
         from ase.io import read
+
         traj = read(traj_path, index=":")
 
         # Extract temperatures
@@ -654,8 +698,16 @@ def PlotTemp(root_dir=".", iteration_window="all", target_iteration=None, traj_f
     ncol = min(num_iterations, 6)
 
     for iter_num, temperatures in sorted(temp_dict.items()):
-        plt.plot(range(len(temperatures)), temperatures, marker='o', linestyle='-', 
-                lw=2.2, label=f"Iter {iter_num}", ms=5, alpha=0.8)
+        plt.plot(
+            range(len(temperatures)),
+            temperatures,
+            marker="o",
+            linestyle="-",
+            lw=2.2,
+            label=f"Iter {iter_num}",
+            ms=5,
+            alpha=0.8,
+        )
         mean_temp = np.mean(temperatures)
         print(f"Mean Temperature (K) from Iteration {iter_num} := {mean_temp:.2f}")
 
@@ -665,8 +717,8 @@ def PlotTemp(root_dir=".", iteration_window="all", target_iteration=None, traj_f
     plt.xlim(0, None)
     plt.xticks(fontsize=17)
     plt.yticks(fontsize=17)
-    plt.legend(fontsize=12, loc='upper center', bbox_to_anchor=(0.5, 1.0), ncol=ncol)
-    plt.grid(ls='-.')
+    plt.legend(fontsize=12, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.grid(ls="-.")
     plt.show()
 
 

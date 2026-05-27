@@ -10,28 +10,28 @@ Usage:
 
 from . import matplot
 from .main import (
+    ReadColvar,
+    ViewTraj,
+    compute_mae,
+    compute_rmse,
+    extract_iteration_number,
+    get_1dSurface,
+    get_2dSurface,
     get_iteration_dirs,
     load_trajectory,
-    extract_iteration_number,
-    compute_rmse,
-    compute_mae,
-    ReadColvar,
-    get_2dSurface,
-    get_1dSurface,
-    ViewTraj
 )
 
 __all__ = [
-    'matplot',
-    'get_iteration_dirs',
-    'load_trajectory',
-    'extract_iteration_number',
-    'compute_rmse',
-    'compute_mae',
-    'ReadColvar',
-    'get_2dSurface',
-    'get_1dSurface',
-    'ViewTraj'
+    "matplot",
+    "get_iteration_dirs",
+    "load_trajectory",
+    "extract_iteration_number",
+    "compute_rmse",
+    "compute_mae",
+    "ReadColvar",
+    "get_2dSurface",
+    "get_1dSurface",
+    "ViewTraj",
 ]
 
-__version__ = '0.2'
+__version__ = "0.2"

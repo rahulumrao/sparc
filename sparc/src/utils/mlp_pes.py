@@ -10,22 +10,24 @@ Example usage (from within SPARC CLI):
 """
 
 import os
-import sys
-import argparse
 import time
-import numpy as np
+
+from ase import Atoms
 
 # Third party import
-from ase.io import read
-from ase import Atoms
-#from deepmd.calculator import DP
+from ase.io import iread, read
+
+# from deepmd.calculator import DP
 from deepmd.tf.calculator import DP
+from joblib import Parallel, delayed
 
 # Local import
 from sparc.src.utils.logger import SparcLog
-#--------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------
 # Extract DFT Energy for one frame
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def dft_energy_single(frame, bond):
     """
     Compute DFT bond distance and total potential energy for a given frame.
@@ -45,9 +47,10 @@ def dft_energy_single(frame, bond):
     e = frame.get_potential_energy()
     return d, e
 
-#--------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------
 # Setup ML Calculator
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def dpmd_calculator(atom, model):
     """
     Attach DeepMD calculator to ASE Atoms object.
@@ -64,9 +67,10 @@ def dpmd_calculator(atom, model):
     """
     return Atoms(atom, calculator=DP(model))
 
-#--------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------
 # Extract ML Energy for one frame and one model
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def ml_energy_single(frame, model_path):
     """
     Compute ML-predicted potential energy for a frame using a DeepMD model.
@@ -85,9 +89,10 @@ def ml_energy_single(frame, model_path):
     e = atoms.get_potential_energy()
     return e
 
-#--------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------
 # Prompt for iteration numbers or use all
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def get_selected_iters(all_iter_dirs):
     """
     Prompt user to select specific iteration folders from available ones.
@@ -101,27 +106,29 @@ def get_selected_iters(all_iter_dirs):
     --------
     list : Selected iteration directory names
     """
-    SparcLog("\nAvailable iteration folders:", level='INFO')
+    SparcLog("\nAvailable iteration folders:", level="INFO")
     for i, name in enumerate(all_iter_dirs):
-        SparcLog(f"[{i}] {name}", level='INFO')
+        SparcLog(f"[{i}] {name}", level="INFO")
 
-    inp = input("\nEnter space-separated iteration numbers to compute (press Enter for all): ").strip()
+    inp = input(
+        "\nEnter space-separated iteration numbers to compute (press Enter for all): "
+    ).strip()
 
     if inp:
         try:
             selected_indices = [int(i) for i in inp.split()]
             return [all_iter_dirs[i] for i in selected_indices]
         except Exception as e:
-            SparcLog(f"Invalid input. Error: {e}", level='ERROR')
+            SparcLog(f"Invalid input. Error: {e}", level="ERROR")
             exit(1)
     else:
         return all_iter_dirs
+
+
 # ------------------------------------------------------------------------------
 # Main Function: Compare DFT and ML Energies
 # ------------------------------------------------------------------------------
-from ase.io import iread
-from tqdm import tqdm
-from joblib import Parallel, delayed
+
 
 def get_energies(dft_file, ifmt, skip, model, bond, out, npar):
     """
@@ -136,7 +143,7 @@ def get_energies(dft_file, ifmt, skip, model, bond, out, npar):
     skip : int
         Skip every n-th frame
     model: str
-        Full path to frozen model name 
+        Full path to frozen model name
     bond : list of two ints
         Atom indices for bond distance
     out : str
@@ -150,19 +157,18 @@ def get_energies(dft_file, ifmt, skip, model, bond, out, npar):
     all_iter_dirs = sorted([d for d in os.listdir() if d.startswith("iter_")])
     iter_dirs = get_selected_iters(all_iter_dirs)
     model_paths = {
-        iter_dir: os.path.join(iter_dir, f"01.train/{model}")
-        for iter_dir in iter_dirs
+        iter_dir: os.path.join(iter_dir, f"01.train/{model}") for iter_dir in iter_dirs
     }
 
     # Step 2: Logging
-    traj = read(dft_file, index=f'::{skip}', format=ifmt)
-    SparcLog('*' * 80)
+    traj = read(dft_file, index=f"::{skip}", format=ifmt)
+    SparcLog("*" * 80)
     SparcLog(f"Total Number of Frames: {len(traj)}")
     SparcLog(f"Parallel per-frame, npar={npar}")
     SparcLog(f"Using Model: {model}")
     SparcLog(f"Using bond indices: {bond[0]} and {bond[1]}")
     SparcLog(f"Writing output to: {out}")
-    SparcLog('*' * 70)
+    SparcLog("*" * 70)
     time.sleep(1)
 
     # Step 3: Open file and write header
@@ -182,7 +188,7 @@ def get_energies(dft_file, ifmt, skip, model, bond, out, npar):
             try:
                 d, e_dft = dft_energy_single(frame, bond)
             except Exception as e:
-                SparcLog(f"Skipping frame {i}: {e}", level='WARNING')
+                SparcLog(f"Skipping frame {i}: {e}", level="WARNING")
                 continue
 
             # Parallel prediction across models for this frame
@@ -199,9 +205,11 @@ def get_energies(dft_file, ifmt, skip, model, bond, out, npar):
             f.flush()
 
     SparcLog(f"Energy data saved to {out}")
-#--------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------
 # End of File
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 # def get_energies(dft_file, ifmt, skip, bond, out):
 #     """
 #     Extract DFT and ML energies for each frame and write to CSV.
@@ -257,6 +265,6 @@ def get_energies(dft_file, ifmt, skip, model, bond, out, npar):
 #             f.flush()
 
 #     SparcLog(f"Energy data saved to {out}", origin='ANALYSIS')
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 # End of File
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 from sparc.src.forcecorrection.compute_bias import (
     compute_bias_forces,
-    remove_bias,
     correction_summary,
+    remove_bias,
 )
 from sparc.src.forcecorrection.corrector import correct_aimd_forces
 

@@ -6,9 +6,9 @@ Covers:
 - Candidates written to single candidates.extxyz file
 - No candidates case
 """
+
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 import numpy as np
@@ -17,10 +17,10 @@ from ase.build import molecule
 from ase.calculators.emt import EMT
 from ase.io import write as ase_write
 
-
 # ============================================================
 # Fixtures
 # ============================================================
+
 
 @pytest.fixture
 def model_devi_data(tmp_path):
@@ -45,11 +45,15 @@ def model_devi_data(tmp_path):
     # Create fake model deviation file (dp model-devi format)
     # Columns: step max_devi_v min_devi_v avg_devi_v max_devi_f min_devi_f avg_devi_f
     devi_path = tmp_path / "model_devi.out"
-    lines = ["#  step  max_devi_v  min_devi_v  avg_devi_v  max_devi_f  min_devi_f  avg_devi_f\n"]
+    lines = [
+        "#  step  max_devi_v  min_devi_v  avg_devi_v  max_devi_f  min_devi_f  avg_devi_f\n"
+    ]
     np.random.seed(42)
     for i in range(10):
         f_dev = np.random.uniform(0.0, 0.5)
-        lines.append(f"{i}  0.001  0.0005  0.0008  {f_dev:.6f}  {f_dev*0.5:.6f}  {f_dev*0.75:.6f}\n")
+        lines.append(
+            f"{i}  0.001  0.0005  0.0008  {f_dev:.6f}  {f_dev * 0.5:.6f}  {f_dev * 0.75:.6f}\n"
+        )
     devi_path.write_text("".join(lines))
 
     return str(traj_path), str(devi_path), tmp_path
@@ -59,6 +63,7 @@ def model_devi_data(tmp_path):
 # Return signature
 # ============================================================
 
+
 class TestLabellingReturnSignature:
     """Test that labelling() returns (bool, str, int) tuple."""
 
@@ -67,6 +72,7 @@ class TestLabellingReturnSignature:
         monkeypatch.chdir(tmp_path)
 
         from sparc.src.labelling import labelling
+
         result = labelling(
             trajfile=traj_path,
             outfile=devi_path,
@@ -86,6 +92,7 @@ class TestLabellingReturnSignature:
         monkeypatch.chdir(tmp_path)
 
         from sparc.src.labelling import labelling
+
         candidate_found, candidates_file, n_candidates = labelling(
             trajfile=traj_path,
             outfile=devi_path,
@@ -96,7 +103,9 @@ class TestLabellingReturnSignature:
 
         if candidate_found:
             assert Path(candidates_file).exists()
-            assert candidates_file.endswith(".extxyz") or candidates_file.endswith(".xyz")
+            assert candidates_file.endswith(".extxyz") or candidates_file.endswith(
+                ".xyz"
+            )
             assert n_candidates > 0
 
     def test_no_candidates(self, model_devi_data, monkeypatch):
@@ -105,11 +114,12 @@ class TestLabellingReturnSignature:
         monkeypatch.chdir(tmp_path)
 
         from sparc.src.labelling import labelling
+
         # Use thresholds that exclude everything
         result = labelling(
             trajfile=traj_path,
             outfile=devi_path,
-            min_lim=10.0,   # impossibly high
+            min_lim=10.0,  # impossibly high
             max_lim=20.0,
             output_dir=str(tmp_path / "candidates"),
         )

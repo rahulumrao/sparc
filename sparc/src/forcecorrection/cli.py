@@ -22,7 +22,7 @@ from sparc.src.forcecorrection.corrector import correct_aimd_forces
 def _parse_cv_atoms(value: str) -> list[int]:
     """Parse a comma-separated list of 1-based atom indices, e.g. '1,8'."""
     try:
-        indices = [int(x) for x in value.split(',')]
+        indices = [int(x) for x in value.split(",")]
     except ValueError:
         raise argparse.ArgumentTypeError(
             f"cv-atoms must be comma-separated integers (e.g. '1,8'), got: {value!r}"
@@ -54,7 +54,8 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     p.add_argument(
-        "--traj", "-t",
+        "--traj",
+        "-t",
         required=True,
         metavar="FILE",
         help="Trajectory file to correct (.traj or .xyz). Overwritten in-place.",
@@ -83,7 +84,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="PLUMED DUMPDERIVATIVES output filename (default: cv_derivs).",
     )
     p.add_argument(
-        "--output", "-o",
+        "--output",
+        "-o",
         default=None,
         metavar="FILE",
         help=(

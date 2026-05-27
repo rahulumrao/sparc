@@ -1,21 +1,26 @@
-
 import os
-import glob
-import shutil
-import numpy as np
-from datetime import datetime
 from copy import deepcopy
+from datetime import datetime
+
+import yaml
 from ase import units
+from ase.calculators.calculator import Calculator, all_changes
+from ase.calculators.lammpsrun import LAMMPS
+from ase.calculators.plumed import Plumed
 from ase.io import read, write
 from ase.md.md import MolecularDynamics
-from ase.calculators.lammpsrun import LAMMPS
-from ase.calculators.calculator import Calculator, all_changes
-from ase.calculators.plumed import Plumed
-import yaml
 
 
 class DeepMDLammpsCalculator(LAMMPS):
-    def __init__(self, model_files, label, command="lmp", tmp_dir="tmp", deepmd_opts=None, **kwargs):
+    def __init__(
+        self,
+        model_files,
+        label,
+        command="lmp",
+        tmp_dir="tmp",
+        deepmd_opts=None,
+        **kwargs,
+    ):
         if not isinstance(model_files, list):
             model_files = [model_files]
 
@@ -36,12 +41,16 @@ class DeepMDLammpsCalculator(LAMMPS):
         if self.deepmd_opts:
             pair_style_line += " " + " ".join(self.deepmd_opts)
 
-        self.parameters.update({
-            "pair_style": pair_style_line,
-            "pair_coeff": ["* *"],
-        })
+        self.parameters.update(
+            {
+                "pair_style": pair_style_line,
+                "pair_coeff": ["* *"],
+            }
+        )
 
-    def calculate(self, atoms=None, properties=None, system_changes=all_changes, set_atoms=True):
+    def calculate(
+        self, atoms=None, properties=None, system_changes=all_changes, set_atoms=True
+    ):
         self.set_deepmd_inputs()
         super().calculate(atoms, properties, system_changes)
 
@@ -68,8 +77,18 @@ class DeepMDLammpsCalculatorWithPlumed(Calculator):
 
 
 class DeepMDMD(MolecularDynamics):
-    def __init__(self, atoms, model_files, timestep_fs, command, specorder,
-                 output_prefix="deepmd", deepmd_opts=None, plumed_input=None, **kwargs):
+    def __init__(
+        self,
+        atoms,
+        model_files,
+        timestep_fs,
+        command,
+        specorder,
+        output_prefix="deepmd",
+        deepmd_opts=None,
+        plumed_input=None,
+        **kwargs,
+    ):
         self.specorder = specorder
         self.model_files = model_files
         self.output_prefix = output_prefix
@@ -95,7 +114,7 @@ class DeepMDMD(MolecularDynamics):
 
         compute_uncertainty_cmds = [
             "unc all deepmd/std/atom",
-            "MaxUnc all reduce max c_unc"
+            "MaxUnc all reduce max c_unc",
         ]
         dump_cmd = f"dump dmp all custom {params['dump_period']} tmp/{dump_file} id type x y z vx vy vz fx fy fz c_unc"
         thermo_cmd = f'thermoprint all print {params["dump_period"]} "$(step) $(temp) $(pe) $(pxx) $(pyy) $(pzz)" append tmp/{self.thermo_file}'
@@ -114,7 +133,7 @@ class DeepMDMD(MolecularDynamics):
             command=self.command,
             specorder=self.specorder,
             deepmd_opts=self.deepmd_opts,
-            **params
+            **params,
         )
 
         if self.plumed_input:
@@ -162,14 +181,18 @@ def load_from_yaml(yaml_file):
     plumed_input = config.get("plumed", {}).get("input_file")
     deepmd_opts = config["deepmd"].get("deepmd_opts", [])
 
-    return DeepMDMD(
-        atoms=atoms,
-        model_files=model_files,
-        timestep_fs=timestep,
-        command=command,
-        specorder=specorder,
-        output_prefix=output_prefix,
-        dump_period=dump_period,
-        deepmd_opts=deepmd_opts,
-        plumed_input=plumed_input
-    ), std_tol, nsteps
+    return (
+        DeepMDMD(
+            atoms=atoms,
+            model_files=model_files,
+            timestep_fs=timestep,
+            command=command,
+            specorder=specorder,
+            output_prefix=output_prefix,
+            dump_period=dump_period,
+            deepmd_opts=deepmd_opts,
+            plumed_input=plumed_input,
+        ),
+        std_tol,
+        nsteps,
+    )

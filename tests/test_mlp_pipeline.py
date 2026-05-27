@@ -3,10 +3,10 @@ Tests for DeepMD training pipeline (sparc/src/deepmd.py, sparc/src/data_processi
 
 Updated for v0.2: filesystem-first model detection (.pth vs .pb).
 """
+
 from __future__ import annotations
 
 import contextlib
-import json
 import os
 import shutil
 from pathlib import Path
@@ -64,10 +64,13 @@ def test_deepmd_pipeline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     dataset_dir = run_dir / "Dataset"
     training_dir = str(run_dir / "Training")
 
-    with open(os.devnull, "w") as devnull, contextlib.redirect_stdout(
-        devnull
-    ), contextlib.redirect_stderr(devnull):
+    with (
+        open(os.devnull, "w") as devnull,
+        contextlib.redirect_stdout(devnull),
+        contextlib.redirect_stderr(devnull),
+    ):
         from sparc.src.data_processing import get_data
+
         get_data(
             ase_traj=str(run_traj),
             dir_name=str(dataset_dir),
@@ -76,6 +79,7 @@ def test_deepmd_pipeline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         )
 
         from sparc.src.deepmd import deepmd_training
+
         frozen_model_name = deepmd_training(
             active_learning=False,
             datadir=str(dataset_dir),

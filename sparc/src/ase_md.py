@@ -8,54 +8,50 @@ This module provides MD simulation capabilities using ASE's MD integrators,
 supporting various ensembles (NVE, NVT, NPT) with different thermostats.
 """
 
-import os, sys
+import os
 import subprocess
+from typing import Dict, List, Optional
+
 import numpy as np
-from typing import Optional, Dict, Any, List
 
 ################################################################
 # Third party imports
-import ase.units
 from ase import Atoms, units
-from ase.md.verlet import VelocityVerlet
-from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
-from ase.md.nose_hoover_chain import NoseHooverChainNVT
-from ase.md.langevin import Langevin
-from ase.md.nptberendsen import NPTBerendsen
 from ase.md import MDLogger
+from ase.md.langevin import Langevin
+from ase.md.nose_hoover_chain import NoseHooverChainNVT
+from ase.md.nptberendsen import NPTBerendsen
+from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+from ase.md.verlet import VelocityVerlet
 
 ################################################################
 # Local imports
 from sparc.src.utils.logger import SparcLog
 from sparc.src.utils.utils import (
-    log_md_setup,
-    save_xyz,
-    save_checkpoint,
+    check_physical_limits,
     load_checkpoint,
-    check_physical_limits
+    log_md_setup,
+    save_checkpoint,
+    save_xyz,
 )
-from sparc.src.forcecorrection.corrector import correct_aimd_forces
 
 ################################################################
 # Helper Functions
 ################################################################
 
-#---------------------------------------
+
+# ---------------------------------------
 # Dynamics Initialization
-#---------------------------------------
+# ---------------------------------------
 def initialize_dynamics(
-    atoms: Atoms,
-    dyn_class,
-    timestep: float,
-    restart: bool = False,
-    **kwargs
+    atoms: Atoms, dyn_class, timestep: float, restart: bool = False, **kwargs
 ):
     """
     Initialize MD dynamics, optionally restarting from a checkpoint.
-    
+
     This is a unified initialization function that handles velocity initialization,
     checkpoint loading, and dynamics object creation for all ensemble types.
-    
+
     Parameters
     ----------
     atoms : ase.Atoms
@@ -68,7 +64,7 @@ def initialize_dynamics(
         If True, restart from checkpoint (default: False)
     **kwargs : dict
         Additional parameters for specific ensemble types
-    
+
     Returns
     -------
     dyn
@@ -82,32 +78,37 @@ def initialize_dynamics(
         "pressure_au": None,
         "taup": None,
         "compressibility_au": None,
-        "checkpoint_file": 'md_checkpoint.pkl'
+        "checkpoint_file": "md_checkpoint.pkl",
     }
-    
+
     cfg.update(kwargs)
-    checkpoint_file = cfg.pop('checkpoint_file')
-    
+    checkpoint_file = cfg.pop("checkpoint_file")
+
     if restart:
         atoms, mdstep = load_checkpoint(atoms, checkpoint_file)
     else:
         # Only initialize velocities if temperature is provided (not for NVE)
         if cfg["temperature"] is not None:
-            MaxwellBoltzmannDistribution(atoms, temperature_K=cfg["temperature"], force_temp=True)
-    
+            MaxwellBoltzmannDistribution(
+                atoms, temperature_K=cfg["temperature"], force_temp=True
+            )
+
     # Filter out None values and temperature (handled separately)
-    _kwargs = {k: v for k, v in cfg.items() if v is not None and k != 'temperature'}
-    
+    _kwargs = {k: v for k, v in cfg.items() if v is not None and k != "temperature"}
+
     # Create dynamics object
     if cfg["temperature"] is not None:
-        dyn = dyn_class(atoms, timestep=timestep, temperature_K=cfg["temperature"], **_kwargs)
+        dyn = dyn_class(
+            atoms, timestep=timestep, temperature_K=cfg["temperature"], **_kwargs
+        )
     else:
         dyn = dyn_class(atoms, timestep=timestep)
-    
+
     if restart:
         dyn.nsteps = mdstep
-    
+
     return dyn
+
 
 ################################################################
 # Temperature Ramping (Linear)
@@ -119,16 +120,16 @@ def TemperatureRamp(
     total_steps: int,
     temp_start: Optional[float] = None,
     temp_end: Optional[float] = None,
-    ensemble: str = "NVT"
+    ensemble: str = "NVT",
 ):
     """
     Apply linear temperature ramping to MD dynamics object.
-    
+
     Implements VASP-style temperature ramping:
         T(t) = T_start + (T_end - T_start) * (t / t_total)
-    
+
     Temperature ramping is only applicable to NVT ensemble.
-    
+
     Parameters
     ----------
     dyn : dynamics object
@@ -149,29 +150,40 @@ def TemperatureRamp(
     # Early return if no ramping specified
     if temp_start is None or temp_end is None:
         return
-    
-    # Check ensemble compatibility  
-    if ensemble.upper() == 'NVE':
+
+    # Check ensemble compatibility
+    if ensemble.upper() == "NVE":
         raise ValueError(
             "Temperature ramping not applicable for NVE ensemble (energy conservation). "
             "Remove 'temp_end' from YAML or change to ensemble: NVT"
         )
-    
-    if ensemble.upper() == 'NPT':
-        SparcLog(" Temperature ramping not recommended for NPT ensemble (pressure-temperature coupling).", level="WARNING")
-        SparcLog(" Solution: Use NVT for ramping, then switch to NPT at final temperature", level="WARNING")
-        SparcLog(" Alternative: Remove 'temp_end' from YAML configuration", level="WARNING")
+
+    if ensemble.upper() == "NPT":
+        SparcLog(
+            " Temperature ramping not recommended for NPT ensemble (pressure-temperature coupling).",
+            level="WARNING",
+        )
+        SparcLog(
+            " Solution: Use NVT for ramping, then switch to NPT at final temperature",
+            level="WARNING",
+        )
+        SparcLog(
+            " Alternative: Remove 'temp_end' from YAML configuration", level="WARNING"
+        )
         return
-    
-    if ensemble.upper() != 'NVT':
-        SparcLog(f" Temperature ramping only supported for NVT ensemble (current: {ensemble})", level="WARNING")
+
+    if ensemble.upper() != "NVT":
+        SparcLog(
+            f" Temperature ramping only supported for NVT ensemble (current: {ensemble})",
+            level="WARNING",
+        )
         SparcLog(" Solution: Set ensemble: NVT in YAML configuration", level="WARNING")
         return
-    
+
     # Avoid division by zero
     if total_steps == 0:
         return
-    
+
     # Calculate target temperature: T(t) = T_start + (T_end - T_start) * (t / t_total)
     progress = current_step / total_steps
     target_temp = temp_start + (temp_end - temp_start) * progress
@@ -182,39 +194,42 @@ def TemperatureRamp(
     # Apply temperature scaling
     if abs(scale - 1.0) > 1e-10:
         current_temp = atoms.get_temperature()
-        
+
         if current_temp > 0:
             velocity_scale = np.sqrt(target_temp / current_temp)
             velocities = atoms.get_velocities()
             atoms.set_velocities(velocities * velocity_scale)
-            
+
             # Update thermostat if supported
             # For Langevin thermostat (has set_temperature method)
-            if hasattr(dyn, 'set_temperature'):
+            if hasattr(dyn, "set_temperature"):
                 dyn.set_temperature(temperature_K=target_temp)
             # For Nose-Hoover thermostat (stores temperature in _kT)
-            elif hasattr(dyn, '_kT'):
+            elif hasattr(dyn, "_kT"):
                 dyn._kT = units.kB * target_temp
             # For thermostats that store temp attribute directly
-            elif hasattr(dyn, 'temp'):
+            elif hasattr(dyn, "temp"):
                 dyn.temp = units.kB * target_temp
+
+
 ################################################################
 # Thermostat Functions
 ################################################################
 
-#---------------------------------------
+
+# ---------------------------------------
 # Nose-Hoover Chain Thermostat
-#---------------------------------------
+# ---------------------------------------
 def NoseNVT(
     atoms: Atoms,
     timestep: float = 1,
     temperature: float = 300,
     tdamp: float = 10,
-    restart: bool = False
+    restart: bool = False,
 ):
     """
     Set up a Nose-Hoover chain NVT thermostat for MD simulation.
-    
+
     Parameters
     ----------
     atoms : ase.Atoms
@@ -227,34 +242,35 @@ def NoseNVT(
         The damping time for the thermostat in femtoseconds (default: 10 fs)
     restart : bool, optional
         If True, restart from checkpoint (default: False)
-    
+
     Returns
     -------
     dynamics
         The initialized NoseHooverChainNVT dynamics object
     """
     return initialize_dynamics(
-        atoms, NoseHooverChainNVT,
+        atoms,
+        NoseHooverChainNVT,
         timestep * units.fs,
         temperature=temperature,
         tdamp=tdamp * units.fs,
-        restart=restart
+        restart=restart,
     )
 
 
-#---------------------------------------
+# ---------------------------------------
 # Langevin Thermostat
-#---------------------------------------
+# ---------------------------------------
 def LangevinNVT(
     atoms: Atoms,
     timestep: float = 1,
     temperature: float = 300,
     friction: float = 0.01,
-    restart: bool = False
+    restart: bool = False,
 ):
     """
     Set up a Langevin thermostat for NVT MD simulation.
-    
+
     Parameters
     ----------
     atoms : ase.Atoms
@@ -267,24 +283,25 @@ def LangevinNVT(
         The friction coefficient in fs^-1 (default: 0.01)
     restart : bool, optional
         If True, restart from checkpoint (default: False)
-    
+
     Returns
     -------
     dynamics
         The initialized Langevin dynamics object
     """
     return initialize_dynamics(
-        atoms, Langevin,
+        atoms,
+        Langevin,
         timestep * units.fs,
         restart=restart,
         temperature=temperature,
-        friction=friction / units.fs
+        friction=friction / units.fs,
     )
 
 
-#---------------------------------------
+# ---------------------------------------
 # NPT Ensemble (Berendsen)
-#---------------------------------------
+# ---------------------------------------
 def NPT(
     system: Atoms,
     timestep: float,
@@ -294,7 +311,7 @@ def NPT(
     tau_p: float,
     compressibility: Optional[float] = None,
     restart: Optional[bool] = False,
-    **kwargs
+    **kwargs,
 ):
     """
     Set up NPT dynamics using ASE's NPTBerendsen integrator.
@@ -330,23 +347,26 @@ def NPT(
         compressibility = 7.1e-7  # Cu default in 1/bar (= 7.1e-12 Pa⁻¹)
 
     return initialize_dynamics(
-        system, NPTBerendsen, timestep * units.fs, restart=restart, temperature=temperature,
-        taut=tau_t * units.fs, pressure_au=pressure * units.bar, taup=tau_p * units.fs,
-        compressibility_au=compressibility / units.bar, **kwargs
+        system,
+        NPTBerendsen,
+        timestep * units.fs,
+        restart=restart,
+        temperature=temperature,
+        taut=tau_t * units.fs,
+        pressure_au=pressure * units.bar,
+        taup=tau_p * units.fs,
+        compressibility_au=compressibility / units.bar,
+        **kwargs,
     )
 
 
-#---------------------------------------
+# ---------------------------------------
 # NVE Ensemble
-#---------------------------------------
-def NVE(
-    system: Atoms,
-    timestep: float,
-    restart: Optional[bool] = False
-):
+# ---------------------------------------
+def NVE(system: Atoms, timestep: float, restart: Optional[bool] = False):
     """
     Set up NVE dynamics using ASE's VelocityVerlet integrator.
-    
+
     Parameters
     ----------
     system : ase.Atoms
@@ -355,24 +375,23 @@ def NVE(
         MD integration timestep in femtoseconds
     restart : bool, optional
         If True, restart from checkpoint (default: False)
-    
+
     Returns
     -------
     dynamics
         The initialized VelocityVerlet dynamics object
     """
-    return initialize_dynamics(
-        system, VelocityVerlet, timestep * units.fs, restart
-    )
+    return initialize_dynamics(system, VelocityVerlet, timestep * units.fs, restart)
 
 
 ################################################################
 # MD Execution Functions
 ################################################################
 
-#---------------------------------------
+
+# ---------------------------------------
 # Ab Initio MD
-#---------------------------------------
+# ---------------------------------------
 def ExecuteAbInitioDynamics(
     system: Atoms,
     dyn,
@@ -383,10 +402,11 @@ def ExecuteAbInitioDynamics(
     dir_name: str,
     name: str,
     temp_start: Optional[float] = None,
-    temp_end: Optional[float] = None ):
+    temp_end: Optional[float] = None,
+):
     """
     Run an ab initio MD simulation with DFT calculator.
-    
+
     Parameters
     ----------
     system : ase.Atoms
@@ -417,30 +437,43 @@ def ExecuteAbInitioDynamics(
     remaining_steps = steps - steps_completed
 
     SparcLog("")
-    SparcLog("-"*80)
+    SparcLog("-" * 80)
     if steps_completed > 0:
-        SparcLog(f"Resuming AIMD from step {steps_completed}, running {remaining_steps} more steps")
+        SparcLog(
+            f"Resuming AIMD from step {steps_completed}, running {remaining_steps} more steps"
+        )
     # Print table header
-    SparcLog(f"{'Step':<8} {'Epot (eV)':<12} {'Ekin (eV)':<12} {'Temp (K)':<10} {'P (GPa)':<10} {'V (Ang.^3)':<10}")
+    SparcLog(
+        f"{'Step':<8} {'Epot (eV)':<12} {'Ekin (eV)':<12} {'Temp (K)':<10} {'P (GPa)':<10} {'V (Ang.^3)':<10}"
+    )
     SparcLog("-" * 80)
 
     dyn.attach(lambda: save_checkpoint(dyn, system), interval=pace)
     dyn.attach(lambda: log_md_setup(dyn, system, dir_name), interval=pace)
-    dyn.attach(lambda: save_xyz(system, trajfile, 'a', dir_name), interval=pace)
+    dyn.attach(lambda: save_xyz(system, trajfile, "a", dir_name), interval=pace)
 
     # Extract base ensemble from name (e.g., 'NVT-Langevin' -> 'NVT')
-    ensemble = name.split('-')[0] if '-' in name else name
+    ensemble = name.split("-")[0] if "-" in name else name
 
     if temp_end is not None and temp_start is not None:
         for i_md in range(remaining_steps):
-            TemperatureRamp(dyn, system, steps_completed + i_md, steps, temp_start, temp_end, ensemble)
+            TemperatureRamp(
+                dyn,
+                system,
+                steps_completed + i_md,
+                steps,
+                temp_start,
+                temp_end,
+                ensemble,
+            )
             dyn.run(1)
     else:
         dyn.run(remaining_steps)
 
-#---------------------------------------
+
+# ---------------------------------------
 # Machine Learning Potential MD
-#---------------------------------------
+# ---------------------------------------
 def ExecuteMlpDynamics(
     system: Atoms,
     dyn,
@@ -454,7 +487,8 @@ def ExecuteMlpDynamics(
     epot_threshold: float,
     temp_start: Optional[float] = None,
     temp_end: Optional[float] = None,
-    restart: bool = False ):
+    restart: bool = False,
+):
     """
     Run a machine learning potential MD simulation with safety checks.
 
@@ -486,14 +520,14 @@ def ExecuteMlpDynamics(
         If True, resume from checkpoint in dir_name (default: False)
     """
     # Checkpoint file lives inside the simulation directory (e.g., 02.dpmd/)
-    checkpoint_file = os.path.join(str(dir_name), 'md_checkpoint.pkl')
+    checkpoint_file = os.path.join(str(dir_name), "md_checkpoint.pkl")
     steps_completed = 0
 
     if restart and os.path.exists(checkpoint_file):
         system, steps_completed = load_checkpoint(system, checkpoint_file)
         dyn.nsteps = steps_completed
         SparcLog("=" * 80)
-        SparcLog(f"RESTARTING ML-MD FROM CHECKPOINT")
+        SparcLog("RESTARTING ML-MD FROM CHECKPOINT")
         SparcLog(f"  Checkpoint : {checkpoint_file}")
         SparcLog(f"  Completed  : {steps_completed}/{steps} steps")
         SparcLog("=" * 80 + "\n")
@@ -507,10 +541,14 @@ def ExecuteMlpDynamics(
     SparcLog(f"MACHINE LEARNING POTENTIAL MD SIMULATION FOR [{name}]".center(80))
     SparcLog(f"Output Logfile: {log_filename}")
     if steps_completed > 0:
-        SparcLog(f"Resuming from step {steps_completed}, running {remaining_steps} more steps")
+        SparcLog(
+            f"Resuming from step {steps_completed}, running {remaining_steps} more steps"
+        )
     SparcLog("=" * 80)
     # Print table header
-    SparcLog(f"{'Step':<8} {'Epot (eV)':<12} {'Ekin (eV)':<12} {'Temp (K)':<10} {'P (GPa)':<10} {'V (Ang^3)':<10}")
+    SparcLog(
+        f"{'Step':<8} {'Epot (eV)':<12} {'Ekin (eV)':<12} {'Temp (K)':<10} {'P (GPa)':<10} {'V (Ang^3)':<10}"
+    )
     SparcLog("-" * 80)
     # Console output every 10*pace steps
     console_pace = 10 * pace
@@ -530,12 +568,12 @@ def ExecuteMlpDynamics(
     dyn.attach(logger, interval=pace)
 
     # Extract base ensemble from name (e.g., 'NVT-Langevin' -> 'NVT')
-    ensemble = name.split('-')[0] if '-' in name else name
+    ensemble = name.split("-")[0] if "-" in name else name
 
     # Capture reference energy from step 0 before any MD runs
     _epot0 = system.get_potential_energy()
     if isinstance(_epot0, (list, np.ndarray)):
-        _epot0 = float(_epot0.item() if hasattr(_epot0, 'item') else _epot0[0])
+        _epot0 = float(_epot0.item() if hasattr(_epot0, "item") else _epot0[0])
     else:
         _epot0 = float(_epot0)
     epot_ref = _epot0
@@ -545,19 +583,25 @@ def ExecuteMlpDynamics(
         SparcLog(f"Threshold limit: +/- {float(epot_threshold):.2f} eV", level="INFO")
     SparcLog("***********************************************************")
 
-    def _check_mlmd_safety(system, distance_metrics, epot_ref, epot_threshold, dir_name):
+    def _check_mlmd_safety(
+        system, distance_metrics, epot_ref, epot_threshold, dir_name
+    ):
         """Check safety conditions during MLMD. Returns (sim_failed, epot_ref)."""
         if distance_metrics and check_physical_limits(system, distance_metrics):
-            SparcLog("Physical limits exceeded. Stopping MLMD simulation!!!", level="WARNING")
+            SparcLog(
+                "Physical limits exceeded. Stopping MLMD simulation!!!", level="WARNING"
+            )
             return True, epot_ref
 
         epot = system.get_potential_energy()
         if isinstance(epot, (list, np.ndarray)):
-            epot = float(epot.item() if hasattr(epot, 'item') else epot[0])
+            epot = float(epot.item() if hasattr(epot, "item") else epot[0])
         else:
             epot = float(epot)
         if np.isnan(epot):
-            SparcLog("Potential Energy is NaN! Stopping MLMD simulation!", level="ERROR")
+            SparcLog(
+                "Potential Energy is NaN! Stopping MLMD simulation!", level="ERROR"
+            )
             return True, epot_ref
 
         if epot_threshold is not None:
@@ -567,12 +611,14 @@ def ExecuteMlpDynamics(
                 SparcLog(f"{f'Iteration {dir_name}':-^80}", level="ERROR")
                 SparcLog("Potential Energy Exceeded Limit", level="ERROR")
                 SparcLog(f"Reference Energy: {float(epot_ref):.2f} eV", level="ERROR")
-                SparcLog(f"Threshold Energy: {float(epot_threshold):.2f} eV", level="ERROR")
+                SparcLog(
+                    f"Threshold Energy: {float(epot_threshold):.2f} eV", level="ERROR"
+                )
                 SparcLog(f"Lower limit: {float(Llim):.2f} eV", level="ERROR")
                 SparcLog(f"Upper limit: {float(Ulim):.2f} eV", level="ERROR")
                 SparcLog(f"Current Energy: {float(epot):.2f} eV", level="ERROR")
                 SparcLog("Stopping MLMD Simulation!!!", level="ERROR")
-                SparcLog("-"*80, level="ERROR")
+                SparcLog("-" * 80, level="ERROR")
                 return True, epot_ref
 
         return False, epot_ref
@@ -584,28 +630,31 @@ def ExecuteMlpDynamics(
         for i_mlmd in range(steps_completed, steps):
             TemperatureRamp(dyn, system, i_mlmd, steps, temp_start, temp_end, ensemble)
             dyn.run(1)
-            sim_failed, epot_ref = _check_mlmd_safety(system, distance_metrics, epot_ref, epot_threshold, dir_name)
+            sim_failed, epot_ref = _check_mlmd_safety(
+                system, distance_metrics, epot_ref, epot_threshold, dir_name
+            )
             if sim_failed:
                 break
             if dyn.nsteps % pace == 0:
-                save_xyz(system, trajfile, 'a', dir_name)
+                save_xyz(system, trajfile, "a", dir_name)
     else:
         for _ in range(remaining_steps):
             dyn.run(1)
-            sim_failed, epot_ref = _check_mlmd_safety(system, distance_metrics, epot_ref, epot_threshold, dir_name)
+            sim_failed, epot_ref = _check_mlmd_safety(
+                system, distance_metrics, epot_ref, epot_threshold, dir_name
+            )
             if sim_failed:
                 break
             if dyn.nsteps % pace == 0:
-                save_xyz(system, trajfile, 'a', dir_name)
+                save_xyz(system, trajfile, "a", dir_name)
 
     # Final checkpoint
     save_checkpoint(dyn, system, checkpoint_file)
 
 
-
-#---------------------------------------
+# ---------------------------------------
 # DFT Energy Calculation
-#---------------------------------------
+# ---------------------------------------
 def CalculateDFTEnergy(
     idx: int,
     header: bool,
@@ -638,29 +687,26 @@ def CalculateDFTEnergy(
     SparcLog(f"Candidate: {idx:5d} | Epot: {epot:10.6f} [eV]")
 
     log_path = f"{dir_name}/{log_filename}"
-    with open(log_path, 'a') as f:
+    with open(log_path, "a") as f:
         if header:
             f.write(f"{'Candidate':>12} {'Epot[eV]':>14}\n")
         f.write(f"{idx:>12} {epot:>14.6f}\n")
 
-    save_xyz(system, trajfile, 'a', dir_name)
+    save_xyz(system, trajfile, "a", dir_name)
 
 
 ################################################################
 # LAMMPS MD Execution
 ################################################################
 
-#---------------------------------------
+
+# ---------------------------------------
 # LAMMPS Interface
-#---------------------------------------
-def lammps_md(
-    system: Atoms,
-    model_path: str,
-    model_name: str
-):
+# ---------------------------------------
+def lammps_md(system: Atoms, model_path: str, model_name: str):
     """
     Run a LAMMPS MD simulation.
-    
+
     Parameters
     ----------
     system : ase.Atoms
@@ -673,9 +719,9 @@ def lammps_md(
     SparcLog("\n" + "=" * 80)
     SparcLog("Starting LAMMPS MD Simulation".center(80))
     SparcLog("=" * 80)
-    
-    run_command = ['lmp', '-i', 'in.lammps']
-    
+
+    run_command = ["lmp", "-i", "in.lammps"]
+
     try:
         subprocess.run(run_command, check=True)
         SparcLog("\n" + "=" * 80)

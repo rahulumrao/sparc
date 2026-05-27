@@ -3,15 +3,13 @@ Tests for input parsing utilities.
 
 Updated for v0.2: uses SparcConfig dataclass-based parsing.
 """
+
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
-import numpy as np
 import pytest
 from ase.io import read
-
 from sparc.src.utils.read_incar import parse_incar
 from sparc.src.utils.utils import load_checkpoint
 

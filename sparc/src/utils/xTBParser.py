@@ -1,14 +1,14 @@
-import re
-import shutil
-from pathlib import Path
 from sparc.src.utils.logger import SparcLog
-#==================================================================================
+
+
+# ==================================================================================
 def xtb_template(template_path):
     """
     Parse a simple key=value text template for XTB.
     Lines starting with '#' and blank lines are ignored.
     Returns a dict with properly-typed values.
     """
+
     def _as_none(s: str):
         return None if s.strip().lower() in {"", "none", "null"} else s
 
@@ -29,8 +29,8 @@ def xtb_template(template_path):
         "accuracy": _as_float,
         "electronic_temperature": _as_float,
         "max_iterations": _as_int,
-        "solvent": _as_none,           # None means gas-phase
-        "solvent_method": _as_none,    # e.g. alpb / gbsa or None
+        "solvent": _as_none,  # None means gas-phase
+        "solvent_method": _as_none,  # e.g. alpb / gbsa or None
         "directory": _as_str,
         "label": _as_str,
     }
@@ -54,5 +54,7 @@ def xtb_template(template_path):
                     params[key] = val
             else:
                 # Unknown key: keep as string but warn
-                SparcLog(f"[XTB template] Unknown key '{key}' -> ignored", level="WARNING")
+                SparcLog(
+                    f"[XTB template] Unknown key '{key}' -> ignored", level="WARNING"
+                )
     return params

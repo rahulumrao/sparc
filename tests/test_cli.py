@@ -1,5 +1,5 @@
 import subprocess
-import sys
+
 
 def test_cli_help():
     # only works if entrypoint is installed as sparc

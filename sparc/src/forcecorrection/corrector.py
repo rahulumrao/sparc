@@ -22,15 +22,15 @@ from ase.io.trajectory import Trajectory
 
 from sparc.src.forcecorrection.compute_bias import (
     compute_bias_forces,
-    remove_bias,
     correction_summary,
+    remove_bias,
 )
 from sparc.src.utils.logger import SparcLog
-
 
 # ──────────────────────────────────────────────────────────────────────
 # PLUMED file parsers
 # ──────────────────────────────────────────────────────────────────────
+
 
 def _parse_cv_forces(filepath: Path) -> np.ndarray:
     """
@@ -50,7 +50,7 @@ def _parse_cv_forces(filepath: Path) -> np.ndarray:
     with open(filepath) as fh:
         for line in fh:
             s = line.strip()
-            if not s or s.startswith('#') or s.startswith('@'):
+            if not s or s.startswith("#") or s.startswith("@"):
                 continue
             cols = s.split()
             rows.append([float(c) for c in cols[1:]])  # skip time column
@@ -102,12 +102,12 @@ def _parse_cv_derivs(
     with open(filepath) as fh:
         for line in fh:
             s = line.strip()
-            if not s or s.startswith('#') or s.startswith('@'):
+            if not s or s.startswith("#") or s.startswith("@"):
                 continue
             cols = s.split()
-            t   = float(cols[0])
+            t = float(cols[0])
             param = int(float(cols[1]))
-            vals  = [float(c) for c in cols[2:]]  # one value per CV
+            vals = [float(c) for c in cols[2:]]  # one value per CV
 
             if len(vals) != ncvs:
                 raise ValueError(
@@ -121,7 +121,7 @@ def _parse_cv_derivs(
             if t != current_time:
                 frame_groups.append(current_block)
                 current_block = {}
-                current_time  = t
+                current_time = t
 
             current_block[param] = vals
 
@@ -144,10 +144,10 @@ def _parse_cv_derivs(
                 if p not in block:
                     raise ValueError(
                         f"{filepath}: frame {fi}, CV {k}: "
-                        f"missing parameter {p} (expected 0..{needed-1})"
+                        f"missing parameter {p} (expected 0..{needed - 1})"
                     )
                 local_atom = p // 3
-                xyz        = p % 3
+                xyz = p % 3
                 arr[fi, local_atom, xyz] = block[p][k]
 
         derivs_per_cv.append(arr)
@@ -164,6 +164,7 @@ def _parse_cv_derivs(
 # ──────────────────────────────────────────────────────────────────────
 # Validation checks
 # ──────────────────────────────────────────────────────────────────────
+
 
 def force_validation(
     f_total: np.ndarray,
@@ -183,12 +184,16 @@ def force_validation(
     """
     SparcLog("  --- Validation ---")
 
-    net_biased    = np.linalg.norm(f_total.sum(axis=1),    axis=1)  # (nframes,)
+    net_biased = np.linalg.norm(f_total.sum(axis=1), axis=1)  # (nframes,)
     net_corrected = np.linalg.norm(f_physical.sum(axis=1), axis=1)  # (nframes,)
 
     SparcLog("  Net force |ΣF| (should be ~0 after correction):")
-    SparcLog(f"    Biased    — mean: {net_biased.mean():.4f}  max: {net_biased.max():.4f} eV/Å")
-    SparcLog(f"    Corrected — mean: {net_corrected.mean():.4f}  max: {net_corrected.max():.4f} eV/Å")
+    SparcLog(
+        f"    Biased    — mean: {net_biased.mean():.4f}  max: {net_biased.max():.4f} eV/Å"
+    )
+    SparcLog(
+        f"    Corrected — mean: {net_corrected.mean():.4f}  max: {net_corrected.max():.4f} eV/Å"
+    )
 
     if net_corrected.mean() > net_biased.mean() + 1e-6:
         SparcLog(
@@ -198,7 +203,9 @@ def force_validation(
     elif net_corrected.mean() < 1e-3:
         SparcLog("    PASS: net force is negligible after correction")
     else:
-        SparcLog("    OK: net force reduced (small residual may come from cell/virial coupling)")
+        SparcLog(
+            "    OK: net force reduced (small residual may come from cell/virial coupling)"
+        )
 
     SparcLog("  ------------------")
 
@@ -206,6 +213,7 @@ def force_validation(
 # ──────────────────────────────────────────────────────────────────────
 # Main correction function
 # ──────────────────────────────────────────────────────────────────────
+
 
 def correct_aimd_forces(
     traj_path: Path,
@@ -241,10 +249,10 @@ def correct_aimd_forces(
     output_path : Path, optional
         Write corrected trajectory here. If None, overwrites traj_path in-place.
     """
-    traj_path   = Path(traj_path)
-    dft_dir     = Path(dft_dir) if dft_dir is not None else traj_path.parent or Path(".")
-    out_path    = Path(output_path) if output_path is not None else traj_path
-    force_path  = dft_dir / cv_force_file
+    traj_path = Path(traj_path)
+    dft_dir = Path(dft_dir) if dft_dir is not None else traj_path.parent or Path(".")
+    out_path = Path(output_path) if output_path is not None else traj_path
+    force_path = dft_dir / cv_force_file
     derivs_path = dft_dir / cv_derivs_file
 
     SparcLog("")
@@ -267,18 +275,20 @@ def correct_aimd_forces(
     # ── Read biased trajectory ──
     fmt = traj_path.suffix.lower()
     if fmt == ".traj":
-        with Trajectory(str(traj_path), 'r') as traj:
+        with Trajectory(str(traj_path), "r") as traj:
             frames = list(traj)
     else:
-        frames = read(str(traj_path), index=':')
+        frames = read(str(traj_path), index=":")
 
-    natoms  = len(frames[0])
+    natoms = len(frames[0])
     nframes = len(frames)
     SparcLog(f"  Trajectory   : {nframes} frames, {natoms} atoms")
 
     # ── Parse PLUMED files ──
-    f_cv_all   = _parse_cv_forces(force_path)    # (nsteps, ncvs)
-    derivs_all = _parse_cv_derivs(derivs_path, cv_atoms)  # list of (nframes, natoms_k, 3)
+    f_cv_all = _parse_cv_forces(force_path)  # (nsteps, ncvs)
+    derivs_all = _parse_cv_derivs(
+        derivs_path, cv_atoms
+    )  # list of (nframes, natoms_k, 3)
 
     ncvs = len(cv_atoms)
     if f_cv_all.shape[1] != ncvs:
@@ -294,8 +304,8 @@ def correct_aimd_forces(
             f"  WARNING: PLUMED has {f_cv_all.shape[0]} rows but trajectory "
             f"has {nframes} frames — using first {n} frames",
         )
-    frames     = frames[:n]
-    f_cv_all   = f_cv_all[:n]
+    frames = frames[:n]
+    f_cv_all = f_cv_all[:n]
     derivs_all = [d[:n] for d in derivs_all]
 
     # ── Stack biased forces from trajectory ──
@@ -305,7 +315,7 @@ def correct_aimd_forces(
     atom_indices_0based = [[a - 1 for a in cv] for cv in cv_atoms]
 
     # ── Compute and subtract bias ──
-    f_bias     = compute_bias_forces(f_cv_all, derivs_all, atom_indices_0based, natoms)
+    f_bias = compute_bias_forces(f_cv_all, derivs_all, atom_indices_0based, natoms)
     f_physical = remove_bias(f_total, f_bias)
 
     # ── Validate correction ──
@@ -313,13 +323,17 @@ def correct_aimd_forces(
 
     # ── Log diagnostics ──
     stats = correction_summary(f_total, f_bias)
-    SparcLog(f"  |F_bias|  mean={stats['bias_norm_mean']:.4f}  max={stats['bias_norm_max']:.4f} eV/Å")
-    SparcLog(f"  |F_total| mean={stats['total_norm_mean']:.4f}  max={stats['total_norm_max']:.4f} eV/Å")
+    SparcLog(
+        f"  |F_bias|  mean={stats['bias_norm_mean']:.4f}  max={stats['bias_norm_max']:.4f} eV/Å"
+    )
+    SparcLog(
+        f"  |F_total| mean={stats['total_norm_mean']:.4f}  max={stats['total_norm_max']:.4f} eV/Å"
+    )
     SparcLog(f"  Bias/Total ratio : {stats['bias_to_total_ratio']:.4f}")
-    if stats['top_atoms']:
+    if stats["top_atoms"]:
         SparcLog("  Most affected atoms (1-based):")
-        for idx, val in stats['top_atoms']:
-            SparcLog(f"    atom {idx+1:4d} : {val:.4f} eV/Å")
+        for idx, val in stats["top_atoms"]:
+            SparcLog(f"    atom {idx + 1:4d} : {val:.4f} eV/Å")
 
     # ── Overwrite trajectory with corrected forces ──
     corrected = []
@@ -330,7 +344,7 @@ def correct_aimd_forces(
         corrected.append(atoms)
 
     if fmt == ".traj":
-        with Trajectory(str(out_path), 'w') as out_traj:
+        with Trajectory(str(out_path), "w") as out_traj:
             for atoms in corrected:
                 out_traj.write(atoms)
     else:

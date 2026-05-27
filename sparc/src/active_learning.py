@@ -12,15 +12,17 @@ import os
 import subprocess
 from pathlib import Path
 
+import dpdata
+
 ################################################################
 # Third party imports
 import numpy as np
-import dpdata
+
+from sparc.src.labelling import labelling
 
 ################################################################
 # Local imports
 from sparc.src.utils.logger import SparcLog
-from sparc.src.labelling import labelling
 
 ################################################################
 
@@ -56,10 +58,13 @@ def _get_model_fparam_info(model_file: str):
     # ── Step 1: get numb_fparam via DeepPot (works for both .pth and .pb) ──
     try:
         from deepmd.infer import DeepPot
+
         dp = DeepPot(model_file)
         numb_fparam = dp.get_dim_fparam()
     except Exception as e:
-        SparcLog(f"Warning: could not load model {Path(model_file).name} to query fparam: {e}")
+        SparcLog(
+            f"Warning: could not load model {Path(model_file).name} to query fparam: {e}"
+        )
         return 0, []
 
     if numb_fparam == 0:
@@ -69,7 +74,7 @@ def _get_model_fparam_info(model_file: str):
     # DeepMD always writes out.json into the training_N/ directory with the full
     # serialized model config, including fitting_net.default_fparam.
     training_dir = Path(model_file).parent
-    json_out = training_dir / 'out.json'
+    json_out = training_dir / "out.json"
 
     if json_out.exists():
         try:
@@ -82,8 +87,10 @@ def _get_model_fparam_info(model_file: str):
             SparcLog(f"Warning: could not read default_fparam from {json_out}: {e}")
 
     # Fallback: zeros
-    SparcLog(f"Warning: out.json not found in {training_dir}, "
-             f"using zeros for fparam (numb_fparam={numb_fparam}).")
+    SparcLog(
+        f"Warning: out.json not found in {training_dir}, "
+        f"using zeros for fparam (numb_fparam={numb_fparam})."
+    )
     return numb_fparam, [0.0] * numb_fparam
 
 
@@ -95,9 +102,9 @@ def _search_fparam_in_config(config):
     or (0, []) if not found.
     """
     if isinstance(config, dict):
-        if 'numb_fparam' in config and config['numb_fparam'] > 0:
-            numb_fparam = int(config['numb_fparam'])
-            default_fparam = config.get('default_fparam', [0.0] * numb_fparam)
+        if "numb_fparam" in config and config["numb_fparam"] > 0:
+            numb_fparam = int(config["numb_fparam"])
+            default_fparam = config.get("default_fparam", [0.0] * numb_fparam)
             return numb_fparam, list(default_fparam)
         for v in config.values():
             result = _search_fparam_in_config(v)
@@ -124,7 +131,8 @@ def _apply_fparam_to_dataset(dataset, numb_fparam: int, default_fparam: list):
         Default fparam vector (from model config, e.g. [0.0, 1.0] for DPA-3)
     """
     try:
-        from dpdata.data_type import DataType, Axis
+        from dpdata.data_type import Axis, DataType
+
         dpdata.LabeledSystem.register_data_type(
             DataType("fparam", np.ndarray, (Axis.NFRAMES, -1), required=False)
         )
@@ -133,12 +141,15 @@ def _apply_fparam_to_dataset(dataset, numb_fparam: int, default_fparam: list):
 
     n_frames = dataset.get_nframes()
     fparam_array = np.tile(default_fparam, (n_frames, 1)).astype(np.float64)
-    dataset.data['fparam'] = fparam_array
+    dataset.data["fparam"] = fparam_array
 
-    SparcLog(f"  fparam set: {default_fparam} × {n_frames} frames (numb_fparam={numb_fparam})")
+    SparcLog(
+        f"  fparam set: {default_fparam} × {n_frames} frames (numb_fparam={numb_fparam})"
+    )
 
 
 ################################################################
+
 
 def QueryByCommittee(
     trajfile: str,
@@ -149,7 +160,7 @@ def QueryByCommittee(
     dpmd_data_path: str,
     iteration: int = 0,
     rmsd_threshold: float = 0.05,
-    exclude_hydrogen: bool = True
+    exclude_hydrogen: bool = True,
 ):
     """
     Find maximum deviation in atomic forces among multiple models using Query-by-Committee.
@@ -209,8 +220,10 @@ def QueryByCommittee(
         folder_path = os.path.join(model_path, folder)
         if folder.startswith("training_") and os.path.isdir(folder_path):
             model_number = folder.split("_")[1]
-            for ext in ['.pb', '.pth']:
-                model_file = os.path.join(folder_path, f"frozen_model_{model_number}{ext}")
+            for ext in [".pb", ".pth"]:
+                model_file = os.path.join(
+                    folder_path, f"frozen_model_{model_number}{ext}"
+                )
                 if os.path.exists(model_file):
                     model_names.append(model_file)
                     break
@@ -219,7 +232,11 @@ def QueryByCommittee(
 
     if len(model_names) < num_models:
         SparcLog("=" * 80)
-        SparcLog(f"Error: Found only {len(model_names)} models, but {num_models} are required".center(72))
+        SparcLog(
+            f"Error: Found only {len(model_names)} models, but {num_models} are required".center(
+                72
+            )
+        )
         SparcLog("Check the model_path!".center(72))
         SparcLog("=" * 80)
         raise ValueError(
@@ -238,19 +255,25 @@ def QueryByCommittee(
     # Universal models (e.g. DPA-3) use frame parameters (fparam). Read the
     # model's own default_fparam and apply it before writing so that
     # dp model-devi finds the required fparam.npy in every set directory.
-    dataset = dpdata.LabeledSystem(trajfile, fmt='ase/traj')
+    dataset = dpdata.LabeledSystem(trajfile, fmt="ase/traj")
 
     numb_fparam, default_fparam = _get_model_fparam_info(model_names[0])
     if numb_fparam > 0:
-        SparcLog(f"  Model requires fparam (numb_fparam={numb_fparam}), "
-                 f"applying default_fparam={default_fparam}")
+        SparcLog(
+            f"  Model requires fparam (numb_fparam={numb_fparam}), "
+            f"applying default_fparam={default_fparam}"
+        )
         _apply_fparam_to_dataset(dataset, numb_fparam, default_fparam)
 
     dataset.to_deepmd_npy(str(dpmd_data_path))
 
     # ── Run dp model-devi ────────────────────────────────────────────────────
     outfile = f"{str(dpmd_data_path)}/model_dev_{iteration}.out"
-    command = ["dp", "model-devi", "-m"] + model_names + ["-s", str(dpmd_data_path), "-o", str(outfile)]
+    command = (
+        ["dp", "model-devi", "-m"]
+        + model_names
+        + ["-s", str(dpmd_data_path), "-o", str(outfile)]
+    )
 
     try:
         subprocess.run(command, check=True)
@@ -273,10 +296,10 @@ def QueryByCommittee(
         max_lim,
         output_dir=f"{str(dpmd_data_path)}/dft_candidates",
         rmsd_threshold=rmsd_threshold,
-        exclude_hydrogen=exclude_hydrogen
+        exclude_hydrogen=exclude_hydrogen,
     )
 
-    with open('learning_state.log', 'a') as f:
+    with open("learning_state.log", "a") as f:
         f.write(f"\nIteration {iteration:06d}\n")
         f.write(f"Training data from: {trajfile}\n")
         f.write(f"Model deviation range: [{min_lim:.3f}, {max_lim:.3f}] eV/Å\n")

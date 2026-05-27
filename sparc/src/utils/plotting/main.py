@@ -3,19 +3,22 @@ Common utilities for plotting functions.
 Shared logic for iteration selection, data loading, and helper functions.
 """
 
-import os
 import glob
+import os
+from typing import List, Optional, Tuple, Union
+
 import numpy as np
 import pandas as pd
-from typing import Union, Tuple, List, Optional
 from ase.io import read
-from scipy.stats import gaussian_kde
 from scipy.interpolate import interp1d
+from scipy.stats import gaussian_kde
 
 
-def get_iteration_dirs(root_dir: str,
-                       iteration_window: Union[str, Tuple[int, int]] = "all",
-                       target_iteration: Optional[int] = None) -> List[str]:
+def get_iteration_dirs(
+    root_dir: str,
+    iteration_window: Union[str, Tuple[int, int]] = "all",
+    target_iteration: Optional[int] = None,
+) -> List[str]:
     """
     Get list of iteration directories based on selection criteria.
 
@@ -34,23 +37,23 @@ def get_iteration_dirs(root_dir: str,
         Sorted list of selected iteration directory paths
     """
     iter_dirs = sorted(glob.glob(os.path.join(root_dir, "iter_*")))
-    
+
     if target_iteration is not None:
         return [d for d in iter_dirs if int(d.split("_")[-1]) == target_iteration]
-    
+
     if iteration_window == "all":
         return iter_dirs
-    
+
     if isinstance(iteration_window, tuple):
         start, end = iteration_window
         return [d for d in iter_dirs if start <= int(d.split("_")[-1]) <= end]
-    
+
     return []
 
 
-def load_trajectory(iter_dir: str,
-                   subdir: str = "00.dft",
-                   traj_filename: str = "AseMD.traj") -> Optional[List]:
+def load_trajectory(
+    iter_dir: str, subdir: str = "00.dft", traj_filename: str = "AseMD.traj"
+) -> Optional[List]:
     """
     Load trajectory from iteration directory.
 
@@ -97,15 +100,16 @@ def compute_mae(true, pred) -> float:
 # Helper Functions (Moved from plotting backends)
 ########################################################################################################
 
+
 def ReadColvar(file_path="COLVAR"):
     """
     Read PLUMED COLVAR file.
-    
+
     Parameters
     ----------
     file_path : str
         Path to COLVAR file
-        
+
     Returns
     -------
     pd.DataFrame
@@ -113,8 +117,10 @@ def ReadColvar(file_path="COLVAR"):
     """
     with open(file_path, "r") as f:
         first_line = f.readline().strip()
-        column_names = first_line.split()[2:] if first_line.startswith("#! FIELDS") else None
-    return pd.read_csv(file_path, sep='\\s+', comment="#", names=column_names)
+        column_names = (
+            first_line.split()[2:] if first_line.startswith("#! FIELDS") else None
+        )
+    return pd.read_csv(file_path, sep="\\s+", comment="#", names=column_names)
 
 
 def get_2dSurface(traj, bonds, T=300):
@@ -184,7 +190,9 @@ def get_1dSurface(traj, bond):
     energies = energies[sorted_indices]
 
     # Interpolate
-    interp_func = interp1d(bond_lengths, energies, kind='linear', fill_value="extrapolate")
+    interp_func = interp1d(
+        bond_lengths, energies, kind="linear", fill_value="extrapolate"
+    )
     r_range = np.linspace(min(bond_lengths), max(bond_lengths), 200)
     F = interp_func(r_range)
     F -= np.nanmin(F)
@@ -215,7 +223,7 @@ def ViewTraj(traj, style="ball_and_stick", background="white", size=400):
     import nglview as nv
 
     if isinstance(traj, str):
-        traj = read(traj, index=':')
+        traj = read(traj, index=":")
 
     view = nv.NGLWidget(nv.ASETrajectory(traj))
     view.clear_representations()
@@ -229,16 +237,25 @@ def ViewTraj(traj, style="ball_and_stick", background="white", size=400):
     else:
         view.add_ball_and_stick()
 
-    view.add_label(selection='all', label_type='atomindex',
-                   color='black', zOffset=1.0, attachment='middle-center')
+    view.add_label(
+        selection="all",
+        label_type="atomindex",
+        color="black",
+        zOffset=1.0,
+        attachment="middle-center",
+    )
     view.background = background
     view.camera = "orthographic"
     view.center()
     view._set_size(f"{size}px", f"{size}px")
     view.parameters = {
-        "clipNear": 0, "clipFar": 100, "clipDist": -5,
-        "impostor": True, "fog": False, "antialias": True,
-        "autoRotate": False
+        "clipNear": 0,
+        "clipFar": 100,
+        "clipDist": -5,
+        "impostor": True,
+        "fog": False,
+        "antialias": True,
+        "autoRotate": False,
     }
 
     return view

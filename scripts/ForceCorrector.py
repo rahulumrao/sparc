@@ -85,11 +85,10 @@ from pathlib import Path
 from typing import Optional
 
 import numpy as np
-
 from ComputeBias import (
     compute_bias_forces,
-    remove_bias,
     correction_summary,
+    remove_bias,
 )
 
 logger = logging.getLogger("forceCorr")
@@ -106,8 +105,8 @@ BOHR_TO_ANG = 0.529177210903
 _STRESS_CONVERSIONS = {
     "ev/a^3": 1.0,
     "ev/ang^3": 1.0,
-    "au": HARTREE_TO_EV / (BOHR_TO_ANG ** 3),  # Hartree/Bohr^3
-    "gpa": 1.0 / 160.21766208,                  # 1 eV/A^3 = 160.2 GPa
+    "au": HARTREE_TO_EV / (BOHR_TO_ANG**3),  # Hartree/Bohr^3
+    "gpa": 1.0 / 160.21766208,  # 1 eV/A^3 = 160.2 GPa
 }
 
 
@@ -116,9 +115,7 @@ def stress_conversion_factor(unit: str) -> float:
     key = unit.lower().strip()
     if key not in _STRESS_CONVERSIONS:
         valid = ", ".join(_STRESS_CONVERSIONS.keys())
-        raise ValueError(
-            f"Unknown stress unit '{unit}'. Valid options: {valid}"
-        )
+        raise ValueError(f"Unknown stress unit '{unit}'. Valid options: {valid}")
     return _STRESS_CONVERSIONS[key]
 
 
@@ -126,9 +123,11 @@ def stress_conversion_factor(unit: str) -> float:
 # Data classes
 # ──────────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class CVSpec:
     """Specification for a single collective variable."""
+
     name: str
     atom_indices: list[int]  # 1-based
 
@@ -144,6 +143,7 @@ class CVSpec:
 @dataclass
 class Config:
     """Full run configuration."""
+
     frc_file: str
     cv_force_file: str
     cv_derivs_file: str
@@ -184,8 +184,7 @@ class Config:
             lines.append(f"    [{i + 1}] {cv}")
         if self.stress_file:
             lines.append(
-                f"  Stress file    : {self.stress_file} "
-                f"(unit: {self.stress_unit})"
+                f"  Stress file    : {self.stress_file} (unit: {self.stress_unit})"
             )
         if self.cell_file:
             lines.append(f"  Cell file      : {self.cell_file}")
@@ -218,6 +217,7 @@ class Config:
 # ──────────────────────────────────────────────────────────────────────
 # I/O — XYZ trajectory reader (forces or positions + energy)
 # ──────────────────────────────────────────────────────────────────────
+
 
 def read_xyz_trajectory(
     filename: str,
@@ -301,9 +301,7 @@ def read_xyz_trajectory(
                         f"(need >=4 columns): {parts}"
                     )
                 symbols.append(parts[0])
-                coords.append(
-                    [float(parts[1]), float(parts[2]), float(parts[3])]
-                )
+                coords.append([float(parts[1]), float(parts[2]), float(parts[3])])
 
             if symbols_ref is None:
                 symbols_ref = symbols
@@ -340,20 +338,15 @@ def write_xyz_vectors(
     with open(filename, "w") as f:
         for i, (t, frame) in enumerate(zip(times, data)):
             f.write(f"{len(symbols):6d}\n")
-            f.write(
-                f" i = {i:8d}, time = {t:12.3f}, "
-                f"E = {energy_placeholder:18.10f}\n"
-            )
+            f.write(f" i = {i:8d}, time = {t:12.3f}, E = {energy_placeholder:18.10f}\n")
             for sym, vec in zip(symbols, frame):
-                f.write(
-                    f"{sym:>3s} {vec[0]:20.10f} "
-                    f"{vec[1]:20.10f} {vec[2]:20.10f}\n"
-                )
+                f.write(f"{sym:>3s} {vec[0]:20.10f} {vec[1]:20.10f} {vec[2]:20.10f}\n")
 
 
 # ──────────────────────────────────────────────────────────────────────
 # I/O — CP2K cell file
 # ──────────────────────────────────────────────────────────────────────
+
 
 def parse_cp2k_cell_file(
     filename: str,
@@ -409,6 +402,7 @@ def parse_cp2k_cell_file(
 # I/O — CP2K stress tensor file
 # ──────────────────────────────────────────────────────────────────────
 
+
 def parse_cp2k_stress_file(
     filename: str,
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -448,19 +442,23 @@ def stress_3x3_to_voigt(stress_3x3: np.ndarray) -> np.ndarray:
 
     This is the convention used by ASE.
     """
-    return np.stack([
-        stress_3x3[:, 0, 0],  # xx
-        stress_3x3[:, 1, 1],  # yy
-        stress_3x3[:, 2, 2],  # zz
-        stress_3x3[:, 1, 2],  # yz
-        stress_3x3[:, 0, 2],  # xz
-        stress_3x3[:, 0, 1],  # xy
-    ], axis=1)
+    return np.stack(
+        [
+            stress_3x3[:, 0, 0],  # xx
+            stress_3x3[:, 1, 1],  # yy
+            stress_3x3[:, 2, 2],  # zz
+            stress_3x3[:, 1, 2],  # yz
+            stress_3x3[:, 0, 2],  # xz
+            stress_3x3[:, 0, 1],  # xy
+        ],
+        axis=1,
+    )
 
 
 # ──────────────────────────────────────────────────────────────────────
 # I/O — Extended XYZ writer
 # ──────────────────────────────────────────────────────────────────────
+
 
 def write_extxyz(
     filename: str,
@@ -499,9 +497,7 @@ def write_extxyz(
     if lattice is not None:
         if lattice.ndim == 2:
             # Static lattice, broadcast to all frames
-            lattice = np.broadcast_to(
-                lattice[None, :, :], (nframes, 3, 3)
-            ).copy()
+            lattice = np.broadcast_to(lattice[None, :, :], (nframes, 3, 3)).copy()
 
     with open(filename, "w") as f:
         for i in range(nframes):
@@ -515,9 +511,7 @@ def write_extxyz(
                 lat_str = " ".join(f"{v:.10f}" for v in L)
                 parts.append(f'Lattice="{lat_str}"')
 
-            parts.append(
-                'Properties=species:S:1:pos:R:3:forces:R:3'
-            )
+            parts.append("Properties=species:S:1:pos:R:3:forces:R:3")
             parts.append(f"energy={energies[i]:.10f}")
 
             if stress is not None:
@@ -544,6 +538,7 @@ def write_extxyz(
 # I/O — PLUMED header parsing
 # ──────────────────────────────────────────────────────────────────────
 
+
 def parse_fields_header(filename: str) -> Optional[list[str]]:
     """
     Extract field names from PLUMED's ``#! FIELDS`` header line.
@@ -561,6 +556,7 @@ def parse_fields_header(filename: str) -> Optional[list[str]]:
 # ──────────────────────────────────────────────────────────────────────
 # I/O — PLUMED DUMPFORCES (multi-column)
 # ──────────────────────────────────────────────────────────────────────
+
 
 def parse_cv_forces(
     filename: str,
@@ -616,8 +612,7 @@ def parse_cv_forces(
         )
 
     logger.info(
-        f"Read {len(times)} steps x {ncvs} CVs "
-        f"({', '.join(cv_names)}) from {filename}"
+        f"Read {len(times)} steps x {ncvs} CVs ({', '.join(cv_names)}) from {filename}"
     )
     return np.array(times), forces, cv_names
 
@@ -625,6 +620,7 @@ def parse_cv_forces(
 # ──────────────────────────────────────────────────────────────────────
 # I/O — PLUMED DUMPDERIVATIVES (multi-column)
 # ──────────────────────────────────────────────────────────────────────
+
 
 def parse_cv_derivs(
     filename: str,
@@ -640,9 +636,7 @@ def parse_cv_derivs(
     """
     path = Path(filename)
     if not path.exists():
-        raise FileNotFoundError(
-            f"PLUMED derivatives file not found: {filename}"
-        )
+        raise FileNotFoundError(f"PLUMED derivatives file not found: {filename}")
 
     ncvs = len(cv_specs)
 
@@ -731,6 +725,7 @@ def parse_cv_derivs(
 # Time alignment
 # ──────────────────────────────────────────────────────────────────────
 
+
 def align_by_time(
     xyz_times: np.ndarray,
     xyz_data: np.ndarray,
@@ -761,11 +756,10 @@ def align_by_time(
     if not np.allclose(
         plumed_force_times[:n_check],
         plumed_deriv_times[:n_check],
-        atol=tol, rtol=0,
+        atol=tol,
+        rtol=0,
     ):
-        diffs = np.abs(
-            plumed_force_times[:n_check] - plumed_deriv_times[:n_check]
-        )
+        diffs = np.abs(plumed_force_times[:n_check] - plumed_deriv_times[:n_check])
         idx = int(np.argmax(diffs > tol))
         raise ValueError(
             f"cv_force and cv_derivs times diverge near index {idx}: "
@@ -780,9 +774,7 @@ def align_by_time(
         )
 
     # Build lookup maps
-    plumed_map = {
-        round(t, 8): i for i, t in enumerate(plumed_force_times)
-    }
+    plumed_map = {round(t, 8): i for i, t in enumerate(plumed_force_times)}
     pos_map = (
         {round(t, 8): i for i, t in enumerate(pos_times)}
         if pos_times is not None
@@ -801,7 +793,9 @@ def align_by_time(
 
     # Collect matches
     out: dict[str, list] = {
-        "times": [], "forces": [], "cv_forces": [],
+        "times": [],
+        "forces": [],
+        "cv_forces": [],
         "matched_idx": [],
     }
     out_derivs = [[] for _ in derivs_all]
@@ -854,11 +848,7 @@ def align_by_time(
         xyz_t0 = xyz_times[0]
         xyz_t1 = xyz_times[1] if len(xyz_times) > 1 else xyz_t0
         pl_t0 = plumed_force_times[0]
-        pl_t1 = (
-            plumed_force_times[1]
-            if len(plumed_force_times) > 1
-            else pl_t0
-        )
+        pl_t1 = plumed_force_times[1] if len(plumed_force_times) > 1 else pl_t0
         raise ValueError(
             f"No matching times found between data sources.\n"
             f"  XYZ force times start: {xyz_t0}, {xyz_t1}, ...\n"
@@ -898,6 +888,7 @@ def align_by_time(
 # Bias force construction (delegates to bias_correction)
 # ──────────────────────────────────────────────────────────────────────
 
+
 def compute_total_bias(
     cv_specs: list[CVSpec],
     fcv_all: np.ndarray,
@@ -906,9 +897,7 @@ def compute_total_bias(
     nframes: int,
 ) -> np.ndarray:
     """Convert 1-based CVSpec atom indices to 0-based and call bias_correction."""
-    atom_indices_list = [
-        [a - 1 for a in cv.atom_indices] for cv in cv_specs
-    ]
+    atom_indices_list = [[a - 1 for a in cv.atom_indices] for cv in cv_specs]
     return compute_bias_forces(
         f_cv=fcv_all,
         ds_dR_list=dsdr_list,
@@ -920,6 +909,7 @@ def compute_total_bias(
 # ──────────────────────────────────────────────────────────────────────
 # Diagnostics (uses bias_correction, adds logging)
 # ──────────────────────────────────────────────────────────────────────
+
 
 def run_diagnostics(
     cv_specs: list[CVSpec],
@@ -951,6 +941,7 @@ def run_diagnostics(
 # Frame selection
 # ──────────────────────────────────────────────────────────────────────
 
+
 def apply_frame_selection_dict(
     aligned: dict,
     start: int = 0,
@@ -978,14 +969,14 @@ def apply_frame_selection_dict(
 # Config from YAML
 # ──────────────────────────────────────────────────────────────────────
 
+
 def load_config_yaml(path: str) -> Config:
     """Load configuration from a YAML file."""
     try:
         import yaml
     except ImportError:
         raise ImportError(
-            "PyYAML is required for --config. "
-            "Install with: pip install pyyaml"
+            "PyYAML is required for --config. Install with: pip install pyyaml"
         )
 
     with open(path) as f:
@@ -1013,8 +1004,12 @@ def load_config_yaml(path: str) -> Config:
         cv_derivs_file=d["cv_derivs"],
         cvs=cvs,
         pos_file=d.get("pos", None),
-        stress_file=stress_cfg.get("file", None) if isinstance(stress_cfg, dict) else None,
-        stress_unit=stress_cfg.get("unit", "au") if isinstance(stress_cfg, dict) else "au",
+        stress_file=stress_cfg.get("file", None)
+        if isinstance(stress_cfg, dict)
+        else None,
+        stress_unit=stress_cfg.get("unit", "au")
+        if isinstance(stress_cfg, dict)
+        else "au",
         cell_file=d.get("cell_file", None),
         lattice=lattice,
         pbc=pbc,
@@ -1034,6 +1029,7 @@ def load_config_yaml(path: str) -> Config:
 # Config from CLI
 # ──────────────────────────────────────────────────────────────────────
 
+
 def build_config_from_args(args: argparse.Namespace) -> Config:
     """Build Config from parsed CLI arguments."""
     if not args.cv_atoms:
@@ -1050,11 +1046,7 @@ def build_config_from_args(args: argparse.Namespace) -> Config:
     cvs = []
     for i, atoms_str in enumerate(args.cv_atoms):
         atoms = [int(x) for x in atoms_str.split(",")]
-        name = (
-            cv_names[i]
-            if cv_names and i < len(cv_names)
-            else f"cv{i + 1}"
-        )
+        name = cv_names[i] if cv_names and i < len(cv_names) else f"cv{i + 1}"
         cvs.append(CVSpec(name=name, atom_indices=atoms))
 
     if cv_names and len(cvs) != len(cv_names):
@@ -1109,6 +1101,7 @@ def build_config_from_args(args: argparse.Namespace) -> Config:
 # CLI
 # ──────────────────────────────────────────────────────────────────────
 
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
@@ -1147,28 +1140,29 @@ def build_parser() -> argparse.ArgumentParser:
 
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument(
-        "--config", metavar="YAML",
+        "--config",
+        metavar="YAML",
         help="YAML configuration file (alternative to CLI flags)",
     )
     mode.add_argument(
-        "--frc", metavar="FILE",
+        "--frc",
+        metavar="FILE",
         help="Biased force XYZ trajectory from CP2K",
     )
 
     cp2k = parser.add_argument_group("CP2K inputs")
     cp2k.add_argument(
-        "--pos", metavar="FILE",
+        "--pos",
+        metavar="FILE",
         help=(
             "CP2K position XYZ trajectory (has energy in Hartree). "
             "Required for --out-extxyz."
         ),
     )
     cp2k.add_argument(
-        "--stress", metavar="FILE",
-        help=(
-            "CP2K stress tensor file (XYZ-like, 3x3 per frame). "
-            "Optional."
-        ),
+        "--stress",
+        metavar="FILE",
+        help=("CP2K stress tensor file (XYZ-like, 3x3 per frame). Optional."),
     )
     cp2k.add_argument(
         "--stress-unit",
@@ -1179,15 +1173,19 @@ def build_parser() -> argparse.ArgumentParser:
 
     plumed = parser.add_argument_group("PLUMED inputs")
     plumed.add_argument(
-        "--cv-force", metavar="FILE",
+        "--cv-force",
+        metavar="FILE",
         help="PLUMED DUMPFORCES file (columns: time cv1 cv2 ...)",
     )
     plumed.add_argument(
-        "--cv-derivs", metavar="FILE",
+        "--cv-derivs",
+        metavar="FILE",
         help="PLUMED DUMPDERIVATIVES file",
     )
     plumed.add_argument(
-        "--cv-atoms", nargs="+", metavar="ATOMS",
+        "--cv-atoms",
+        nargs="+",
+        metavar="ATOMS",
         help=(
             "Comma-separated 1-based atom indices for each CV, "
             "one entry per CV in ARG= order. "
@@ -1198,71 +1196,94 @@ def build_parser() -> argparse.ArgumentParser:
     cell = parser.add_argument_group("cell / lattice")
     cell_ex = cell.add_mutually_exclusive_group()
     cell_ex.add_argument(
-        "--lattice", type=float, nargs="+", metavar="V",
+        "--lattice",
+        type=float,
+        nargs="+",
+        metavar="V",
         help=(
             "Lattice vectors: 9 values (ax ay az bx by bz cx cy cz) "
             "or 3 values (a b c) for orthorhombic. In Angstrom."
         ),
     )
     cell_ex.add_argument(
-        "--cell-file", metavar="FILE",
+        "--cell-file",
+        metavar="FILE",
         help="CP2K cell file (time-dependent lattice)",
     )
     cell.add_argument(
-        "--no-pbc", action="store_true",
+        "--no-pbc",
+        action="store_true",
         help="Set pbc to F F F (default: T T T)",
     )
 
     out = parser.add_argument_group("output options")
     out.add_argument(
-        "--out-extxyz", metavar="FILE",
+        "--out-extxyz",
+        metavar="FILE",
         help=(
             "Output extended XYZ with positions, corrected forces, "
             "energy (eV), and optionally stress — ready for ML training"
         ),
     )
     out.add_argument(
-        "--out-xyz", default="forces_unbiased.xyz",
+        "--out-xyz",
+        default="forces_unbiased.xyz",
         help="Output XYZ with corrected forces (default: forces_unbiased.xyz)",
     )
     out.add_argument(
-        "--out-flat", default="forces_unbiased.dat",
+        "--out-flat",
+        default="forces_unbiased.dat",
         help="Output flat array, nframes x 3N (default: forces_unbiased.dat)",
     )
     out.add_argument(
-        "--out-bias-xyz", default=None,
+        "--out-bias-xyz",
+        default=None,
         help="Write bias forces to XYZ for inspection",
     )
 
     sel = parser.add_argument_group("frame selection")
     sel.add_argument(
-        "--frame-start", type=int, default=0,
+        "--frame-start",
+        type=int,
+        default=0,
         help="First matched frame to include (default: 0)",
     )
     sel.add_argument(
-        "--frame-end", type=int, default=None,
+        "--frame-end",
+        type=int,
+        default=None,
         help="Last frame, exclusive (default: all)",
     )
     sel.add_argument(
-        "--frame-stride", type=int, default=1,
+        "--frame-stride",
+        type=int,
+        default=1,
         help="Frame stride (default: 1)",
     )
 
     misc = parser.add_argument_group("miscellaneous")
     misc.add_argument(
-        "--time-tol", type=float, default=1e-8,
+        "--time-tol",
+        type=float,
+        default=1e-8,
         help="Tolerance for time matching (default: 1e-8)",
     )
     misc.add_argument(
-        "--no-validate", action="store_true",
+        "--no-validate",
+        action="store_true",
         help="Skip diagnostic checks",
     )
     misc.add_argument(
-        "-v", "--verbose", action="count", default=0,
+        "-v",
+        "--verbose",
+        action="count",
+        default=0,
         help="Increase verbosity (-v info, -vv debug)",
     )
     misc.add_argument(
-        "-q", "--quiet", action="store_true",
+        "-q",
+        "--quiet",
+        action="store_true",
         help="Suppress all output except errors",
     )
 
@@ -1272,6 +1293,7 @@ def build_parser() -> argparse.ArgumentParser:
 # ──────────────────────────────────────────────────────────────────────
 # Main
 # ──────────────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     parser = build_parser()
@@ -1295,8 +1317,7 @@ def main() -> None:
     else:
         if not args.cv_force or not args.cv_derivs:
             parser.error(
-                "--cv-force and --cv-derivs are required when not "
-                "using --config"
+                "--cv-force and --cv-derivs are required when not using --config"
             )
         cfg = build_config_from_args(args)
 
@@ -1318,8 +1339,8 @@ def main() -> None:
     # ── Read position file (optional, for extxyz) ──
     pos_times = pos_data = pos_energies = None
     if cfg.pos_file:
-        pos_times, pos_symbols, pos_data, pos_energies = (
-            read_xyz_trajectory(cfg.pos_file, extract_energy=True)
+        pos_times, pos_symbols, pos_data, pos_energies = read_xyz_trajectory(
+            cfg.pos_file, extract_energy=True
         )
         if pos_symbols != symbols:
             raise ValueError(
@@ -1334,7 +1355,8 @@ def main() -> None:
 
     # ── Read PLUMED forces ──
     force_times, forces_all, cv_names = parse_cv_forces(
-        cfg.cv_force_file, ncvs_expected=cfg.ncvs,
+        cfg.cv_force_file,
+        ncvs_expected=cfg.ncvs,
     )
     for k, cv in enumerate(cfg.cvs):
         if cv.name.startswith("cv") and k < len(cv_names):
@@ -1342,7 +1364,8 @@ def main() -> None:
 
     # ── Read PLUMED derivatives ──
     deriv_times, derivs_per_cv = parse_cv_derivs(
-        cfg.cv_derivs_file, cfg.cvs,
+        cfg.cv_derivs_file,
+        cfg.cvs,
     )
 
     # ── Read cell file (optional) ──
@@ -1360,13 +1383,20 @@ def main() -> None:
 
     # ── Align all data by time ──
     aligned = align_by_time(
-        frc_times, f_total,
-        force_times, deriv_times, forces_all, derivs_per_cv,
+        frc_times,
+        f_total,
+        force_times,
+        deriv_times,
+        forces_all,
+        derivs_per_cv,
         tol=cfg.time_tol,
-        pos_times=pos_times, pos_data=pos_data,
+        pos_times=pos_times,
+        pos_data=pos_data,
         pos_energies=pos_energies,
-        cell_times=cell_times, cell_data=cell_data,
-        stress_times=stress_times, stress_data=stress_data,
+        cell_times=cell_times,
+        cell_data=cell_data,
+        stress_times=stress_times,
+        stress_data=stress_data,
     )
 
     # ── Frame selection ──
@@ -1388,7 +1418,11 @@ def main() -> None:
 
     # ── Compute bias and correct ──
     f_bias = compute_total_bias(
-        cfg.cvs, fcv_al, dsdr_al, natoms, nframes,
+        cfg.cvs,
+        fcv_al,
+        dsdr_al,
+        natoms,
+        nframes,
     )
     f_unbiased = remove_bias(f_tot_al, f_bias)
 
@@ -1399,15 +1433,18 @@ def main() -> None:
     logger.info(f"  F_unbiased : {f_unbiased.shape}")
     for k, cv in enumerate(cfg.cvs):
         logger.info(
-            f"  d({cv.name})/dR : {dsdr_al[k].shape}  "
-            f"(atoms: {cv.atom_indices})"
+            f"  d({cv.name})/dR : {dsdr_al[k].shape}  (atoms: {cv.atom_indices})"
         )
 
     # ── Diagnostics ──
     if cfg.validate:
         logger.info("")
         run_diagnostics(
-            cfg.cvs, dsdr_al, f_bias, f_unbiased, f_tot_al,
+            cfg.cvs,
+            dsdr_al,
+            f_bias,
+            f_unbiased,
+            f_tot_al,
         )
 
     # ── Write outputs ──
@@ -1435,8 +1472,7 @@ def main() -> None:
         # Convert energy: Hartree -> eV
         energies_ev = aligned["energies"] * HARTREE_TO_EV
         logger.info(
-            f"  Energy converted: Hartree -> eV "
-            f"(1 Ha = {HARTREE_TO_EV:.6f} eV)"
+            f"  Energy converted: Hartree -> eV (1 Ha = {HARTREE_TO_EV:.6f} eV)"
         )
         logger.info(
             f"  Energy range (eV): "
@@ -1457,8 +1493,7 @@ def main() -> None:
             stress_ev_a3 = aligned["stress"] * conv
             stress_voigt = stress_3x3_to_voigt(stress_ev_a3)
             logger.info(
-                f"  Stress converted: {cfg.stress_unit} -> eV/A^3 "
-                f"(factor = {conv:.6f})"
+                f"  Stress converted: {cfg.stress_unit} -> eV/A^3 (factor = {conv:.6f})"
             )
 
         write_extxyz(
@@ -1476,9 +1511,7 @@ def main() -> None:
     logger.info("")
     logger.info(
         f"Done. {nframes} frames corrected across "
-        f"{cfg.ncvs} CV(s): "
-        + ", ".join(cv.name for cv in cfg.cvs)
-        + "."
+        f"{cfg.ncvs} CV(s): " + ", ".join(cv.name for cv in cfg.cvs) + "."
     )
 
 

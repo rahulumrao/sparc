@@ -134,8 +134,7 @@ def compute_bias_forces(
 
     if len(ds_dR_list) != n_cvs:
         raise ValueError(
-            f"f_cv has {n_cvs} columns but "
-            f"ds_dR_list has {len(ds_dR_list)} entries"
+            f"f_cv has {n_cvs} columns but ds_dR_list has {len(ds_dR_list)} entries"
         )
     if len(atom_indices_list) != n_cvs:
         raise ValueError(
@@ -164,9 +163,7 @@ def compute_bias_forces(
             # Product:  f_k(t) * [ds_k/dx_i, ds_k/dy_i, ds_k/dz_i]
             # Result:   (nframes, 3) — bias force on atom i from CV k
             #
-            f_bias[:, global_idx, :] += (
-                f_k[:, None] * ds_dR_k[:, local_idx, :]
-            )
+            f_bias[:, global_idx, :] += f_k[:, None] * ds_dR_k[:, local_idx, :]
 
     return f_bias
 
@@ -195,8 +192,7 @@ def remove_bias(
     """
     if f_total.shape != f_bias.shape:
         raise ValueError(
-            f"Shape mismatch: f_total {f_total.shape} "
-            f"vs f_bias {f_bias.shape}"
+            f"Shape mismatch: f_total {f_total.shape} vs f_bias {f_bias.shape}"
         )
     return f_total - f_bias
 
@@ -232,9 +228,7 @@ def correction_summary(
     per_atom_max = np.max(np.abs(f_bias), axis=(0, 2))
     top_idx = np.argsort(per_atom_max)[-5:][::-1]
     top_atoms = [
-        (int(a), float(per_atom_max[a]))
-        for a in top_idx
-        if per_atom_max[a] > 0
+        (int(a), float(per_atom_max[a])) for a in top_idx if per_atom_max[a] > 0
     ]
 
     return {
@@ -242,8 +236,6 @@ def correction_summary(
         "bias_norm_max": float(np.max(bias_mag)),
         "total_norm_mean": float(np.mean(total_mag)),
         "total_norm_max": float(np.max(total_mag)),
-        "bias_to_total_ratio": float(
-            np.mean(bias_mag / (total_mag + 1e-30))
-        ),
+        "bias_to_total_ratio": float(np.mean(bias_mag / (total_mag + 1e-30))),
         "top_atoms": top_atoms,
     }

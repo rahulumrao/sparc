@@ -3,21 +3,19 @@ Tests for DeepPotential model loading and ML/MD (sparc/src/deepmd.py, sparc/src/
 
 Updated for v0.2: filesystem-first model detection, .pth support.
 """
+
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 
-import pytest
 import numpy as np
-
+import pytest
 from ase.io import read
+from sparc.src.ase_md import LangevinNVT, NoseNVT
 from sparc.src.deepmd import setup_DeepPotential
-from sparc.src.ase_md import NoseNVT, LangevinNVT
 
 
 def test_mlmd_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-
     root_dir = Path(__file__).resolve().parents[1]
 
     data_dir = root_dir / "tests" / "data" / "mlp"
@@ -55,7 +53,7 @@ def test_mlmd_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     energy = atoms.get_potential_energy()
     forces = atoms.get_forces()
 
-    print(f"\nDeepPotential regression check:")
+    print("\nDeepPotential regression check:")
     print(f"   Energy (eV): {energy:.6f}")
     print(f"   Forces shape: {forces.shape}")
 

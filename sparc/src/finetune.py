@@ -13,37 +13,41 @@ Supports:
 Both produce frozen models compatible with the SPARC active learning workflow.
 """
 
-import os
 import json
-import subprocess
 import logging
+import os
+import subprocess
 from pathlib import Path
 from typing import List, Optional
+
+from sparc.src.deepmd import get_version, update_json
 
 ################################################################
 # Local imports
 from sparc.src.utils.logger import SparcLog
-from sparc.src.deepmd import get_version, update_json
 
 ################################################################
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 ################################################################
 # DeePMD Fine-tuning (DPA-1, DPA-2, DPA-3, etc.)
 ################################################################
 
+
 def deepmd_finetune(
     datadir: str,
     atom_types: List[str],
     training_dir: str,
     num_models: int,
-    input_file: str = 'input.json',
-    pretrained_model: str = 'DPA3.pt',
+    input_file: str = "input.json",
+    pretrained_model: str = "DPA3.pt",
     model_branch: Optional[str] = None,
     learning_rate: Optional[float] = None,
-    **kwargs
+    **kwargs,
 ) -> str:
     """
     Fine-tune a DeePMD universal model on system-specific DFT data.
@@ -88,10 +92,10 @@ def deepmd_finetune(
     version, backend = get_version()
     if version < 3:
         raise RuntimeError("DeePMD fine-tuning requires DeePMD-kit v3 or later")
-    if backend != 'pytorch':
+    if backend != "pytorch":
         raise RuntimeError("DeePMD fine-tuning requires PyTorch backend")
 
-    model_ext = '.pth'
+    model_ext = ".pth"
     frozen_model_name = None
 
     SparcLog("=" * 80)
@@ -117,57 +121,63 @@ def deepmd_finetune(
             if not os.path.exists(input_path):
                 raise FileNotFoundError(f"Input file not found: {input_path}")
 
-            with open(input_path, 'r') as f:
+            with open(input_path, "r") as f:
                 config_data = json.load(f)
 
             update_json(config_data, datadir, atom_types)
 
             # Override learning rate if specified
-            if learning_rate is not None and 'learning_rate' in config_data:
-                config_data['learning_rate']['start_lr'] = learning_rate
+            if learning_rate is not None and "learning_rate" in config_data:
+                config_data["learning_rate"]["start_lr"] = learning_rate
 
             # Write updated config
             config_output_path = os.path.join(dir_name, input_file)
-            with open(config_output_path, 'w') as f:
+            with open(config_output_path, "w") as f:
                 json.dump(config_data, f, indent=4)
 
             # Build fine-tune command
             # DeePMD-kit v3: dp --pt train input.json --finetune model.pt
             finetune_cmd = [
-                'dp', '--pt', 'train',
+                "dp",
+                "--pt",
+                "train",
                 input_file,
-                '--finetune', pretrained_path
+                "--finetune",
+                pretrained_path,
             ]
             if model_branch:
-                finetune_cmd.extend(['--model-branch', model_branch])
+                finetune_cmd.extend(["--model-branch", model_branch])
 
             SparcLog(f"  Command: {' '.join(finetune_cmd)}")
             # Stream output live so user can monitor training progress
             process = subprocess.Popen(
-                finetune_cmd, cwd=dir_name,
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+                finetune_cmd,
+                cwd=dir_name,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
             )
             output_lines = []
             for line in process.stdout:
                 output_lines.append(line)
-                print(line, end='', flush=True)
+                print(line, end="", flush=True)
             process.wait()
             if process.returncode != 0:
                 raise subprocess.CalledProcessError(
-                    process.returncode, finetune_cmd, output=''.join(output_lines)
+                    process.returncode, finetune_cmd, output="".join(output_lines)
                 )
             logger.info(f"DeePMD fine-tuning completed for model {i}")
 
             # Freeze the fine-tuned model
             frozen_model_name = f"frozen_model_{i}{model_ext}"
-            freeze_cmd = ['dp', '--pt', 'freeze', '-o', frozen_model_name]
+            freeze_cmd = ["dp", "--pt", "freeze", "-o", frozen_model_name]
 
             SparcLog(f"  Freezing: {' '.join(freeze_cmd)}")
             subprocess.run(freeze_cmd, check=True, cwd=dir_name)
             logger.info(f"Model {i} frozen: {frozen_model_name}")
 
         except subprocess.CalledProcessError as e:
-            error_output = (e.output or '') + str(e)
+            error_output = (e.output or "") + str(e)
             SparcLog("=" * 80, level="ERROR")
             SparcLog(f"ERROR: Fine-tuning failed for model {i}", level="ERROR")
             SparcLog(f"  Details: {str(e)}", level="ERROR")
@@ -177,23 +187,43 @@ def deepmd_finetune(
                     SparcLog(f"  > {line}", level="ERROR")
 
             # Check for common errors and provide actionable guidance
-            if 'No module named' in error_output:
+            if "No module named" in error_output:
                 missing = error_output.split("No module named")[-1].strip().strip("'\"")
                 SparcLog("", level="ERROR")
                 SparcLog(f"  MISSING DEPENDENCY: {missing}", level="ERROR")
-                SparcLog(f"  Make sure you have activated the correct conda environment", level="ERROR")
-                SparcLog(f"  with DeePMD-kit and PyTorch installed.", level="ERROR")
-            elif 'unexpected keyword argument' in error_output or 'got an unexpected' in error_output:
+                SparcLog(
+                    "  Make sure you have activated the correct conda environment",
+                    level="ERROR",
+                )
+                SparcLog("  with DeePMD-kit and PyTorch installed.", level="ERROR")
+            elif (
+                "unexpected keyword argument" in error_output
+                or "got an unexpected" in error_output
+            ):
                 SparcLog("", level="ERROR")
-                SparcLog("  This is likely a VERSION MISMATCH between the pre-trained model", level="ERROR")
-                SparcLog(f"  and your installed DeePMD-kit (v{version}).", level="ERROR")
+                SparcLog(
+                    "  This is likely a VERSION MISMATCH between the pre-trained model",
+                    level="ERROR",
+                )
+                SparcLog(
+                    f"  and your installed DeePMD-kit (v{version}).", level="ERROR"
+                )
                 SparcLog("", level="ERROR")
                 SparcLog(f"  Pre-trained model: {pretrained_model}", level="ERROR")
                 SparcLog("", level="ERROR")
                 SparcLog("  Solutions:", level="ERROR")
-                SparcLog("    1. Upgrade DeePMD-kit:  pip install --upgrade deepmd-kit[torch]", level="ERROR")
-                SparcLog("    2. Use a model compatible with your DeePMD-kit version", level="ERROR")
-                SparcLog("       e.g., DPA-2 models work with DeePMD-kit v3.0.x", level="ERROR")
+                SparcLog(
+                    "    1. Upgrade DeePMD-kit:  pip install --upgrade deepmd-kit[torch]",
+                    level="ERROR",
+                )
+                SparcLog(
+                    "    2. Use a model compatible with your DeePMD-kit version",
+                    level="ERROR",
+                )
+                SparcLog(
+                    "       e.g., DPA-2 models work with DeePMD-kit v3.0.x",
+                    level="ERROR",
+                )
             SparcLog("=" * 80, level="ERROR")
             raise
 
@@ -208,18 +238,19 @@ def deepmd_finetune(
 # MACE Fine-tuning
 ################################################################
 
+
 def mace_finetune(
     datadir: str,
     atom_types: List[str],
     training_dir: str,
     num_models: int,
-    pretrained_model: str = 'medium',
+    pretrained_model: str = "medium",
     num_epochs: int = 100,
     learning_rate: float = 0.001,
     batch_size: int = 4,
-    device: str = 'cpu',
-    stress_key: str = 'stress',
-    **kwargs
+    device: str = "cpu",
+    stress_key: str = "stress",
+    **kwargs,
 ) -> str:
     """
     Fine-tune MACE foundation model on system-specific DFT data.
@@ -256,7 +287,7 @@ def mace_finetune(
     os.makedirs(training_dir, exist_ok=True)
 
     # Resolve pretrained_model: built-in names pass through, file paths get resolved
-    builtin_names = {'small', 'medium', 'large'}
+    builtin_names = {"small", "medium", "large"}
     if pretrained_model not in builtin_names:
         resolved_model = os.path.abspath(pretrained_model)
         if not os.path.exists(resolved_model):
@@ -267,8 +298,8 @@ def mace_finetune(
         pretrained_model = resolved_model
 
     # Convert DeepMD npy data to extxyz for MACE
-    train_xyz = _convert_deepmd_to_extxyz(datadir, 'training_data')
-    valid_xyz = _convert_deepmd_to_extxyz(datadir, 'validation_data')
+    train_xyz = _convert_deepmd_to_extxyz(datadir, "training_data")
+    valid_xyz = _convert_deepmd_to_extxyz(datadir, "validation_data")
 
     frozen_model_name = None
 
@@ -296,36 +327,43 @@ def mace_finetune(
         try:
             # Build MACE fine-tuning command
             mace_cmd = [
-                'mace_run_train',
-                '--name', model_name,
-                '--foundation_model', pretrained_model,
-                '--train_file', str(train_xyz),
-                '--valid_file', str(valid_xyz),
-                f'--lr={learning_rate}',
-                f'--batch_size={batch_size}',
-                f'--max_num_epochs={num_epochs}',
-                f'--device={device}',
-                f'--seed={40 + i}',
-                '--energy_key=energy',
-                '--forces_key=forces',
-                f'--stress_key={stress_key}',
-                '--E0s=average',
+                "mace_run_train",
+                "--name",
+                model_name,
+                "--foundation_model",
+                pretrained_model,
+                "--train_file",
+                str(train_xyz),
+                "--valid_file",
+                str(valid_xyz),
+                f"--lr={learning_rate}",
+                f"--batch_size={batch_size}",
+                f"--max_num_epochs={num_epochs}",
+                f"--device={device}",
+                f"--seed={40 + i}",
+                "--energy_key=energy",
+                "--forces_key=forces",
+                f"--stress_key={stress_key}",
+                "--E0s=average",
             ]
 
             SparcLog(f"  Command: {' '.join(mace_cmd)}")
             # Stream output live so user can monitor training progress
             process = subprocess.Popen(
-                mace_cmd, cwd=dir_name,
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+                mace_cmd,
+                cwd=dir_name,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
             )
             output_lines = []
             for line in process.stdout:
                 output_lines.append(line)
-                print(line, end='', flush=True)
+                print(line, end="", flush=True)
             process.wait()
             if process.returncode != 0:
                 raise subprocess.CalledProcessError(
-                    process.returncode, mace_cmd, output=''.join(output_lines)
+                    process.returncode, mace_cmd, output="".join(output_lines)
                 )
             logger.info(f"MACE fine-tuning completed for model {i}")
 
@@ -357,6 +395,7 @@ def mace_finetune(
 # Data Conversion Utilities
 ################################################################
 
+
 def _convert_deepmd_to_extxyz(datadir: str, subset: str) -> Path:
     """
     Convert DeepMD npy data to extended XYZ format for MACE.
@@ -386,16 +425,16 @@ def _convert_deepmd_to_extxyz(datadir: str, subset: str) -> Path:
     SparcLog(f"  Converting {data_path} → {output_xyz}")
 
     # Load DeepMD npy data
-    ds = dpdata.LabeledSystem(data_path, fmt='deepmd/npy')
+    ds = dpdata.LabeledSystem(data_path, fmt="deepmd/npy")
 
     # Convert to ASE atoms and write extxyz
     # dpdata attaches a SinglePointCalculator with energy/forces automatically
     frames = []
     for i in range(ds.get_nframes()):
-        atoms = ds[i].to('ase/structure')[0]
+        atoms = ds[i].to("ase/structure")[0]
         frames.append(atoms)
 
-    ase_write(str(output_xyz), frames, format='extxyz')
+    ase_write(str(output_xyz), frames, format="extxyz")
     SparcLog(f"  Converted {len(frames)} frames to {output_xyz}")
 
     return output_xyz
@@ -405,13 +444,14 @@ def _convert_deepmd_to_extxyz(datadir: str, subset: str) -> Path:
 # Dispatcher
 ################################################################
 
+
 def finetune_training(
     finetune_config,
     datadir: str,
     atom_types: List[str],
     training_dir: str,
     num_models: int,
-    input_file: str = 'input.json',
+    input_file: str = "input.json",
 ) -> str:
     """
     Dispatch fine-tuning to the appropriate backend (DeePMD or MACE).
@@ -446,7 +486,7 @@ def finetune_training(
     # Use finetune-specific input file if provided, otherwise fall back to mlip_setup.input_file
     ft_input_file = finetune_config.input_file or input_file
 
-    if model_type == 'deepmd':
+    if model_type == "deepmd":
         return deepmd_finetune(
             datadir=datadir,
             atom_types=atom_types,
@@ -458,7 +498,7 @@ def finetune_training(
             learning_rate=finetune_config.learning_rate,
         )
 
-    elif model_type == 'mace':
+    elif model_type == "mace":
         return mace_finetune(
             datadir=datadir,
             atom_types=atom_types,
@@ -473,14 +513,14 @@ def finetune_training(
 
     else:
         raise ValueError(
-            f"Unknown fine-tune model type: '{model_type}'. "
-            f"Supported: 'deepmd', 'mace'"
+            f"Unknown fine-tune model type: '{model_type}'. Supported: 'deepmd', 'mace'"
         )
 
 
 ################################################################
 # MACE ASE Calculator Setup
 ################################################################
+
 
 def setup_MACE_calculator(atoms, model_path: str):
     """
@@ -505,11 +545,10 @@ def setup_MACE_calculator(atoms, model_path: str):
 
     try:
         from mace.calculators import MACECalculator
-        calc = MACECalculator(model_paths=model_path, device='cpu')
+
+        calc = MACECalculator(model_paths=model_path, device="cpu")
     except ImportError:
-        raise ImportError(
-            "MACE not installed. Install with: pip install mace-torch"
-        )
+        raise ImportError("MACE not installed. Install with: pip install mace-torch")
 
     system = Atoms(atoms, calculator=calc)
 
@@ -519,7 +558,7 @@ def setup_MACE_calculator(atoms, model_path: str):
 
     if energy is not None and forces is not None:
         SparcLog("-" * 80)
-        SparcLog(f"MACE model loaded and tested:")
+        SparcLog("MACE model loaded and tested:")
         SparcLog(f"  Model: {model_path}")
         SparcLog(f"  Energy: {energy:.6f} eV")
         SparcLog("-" * 80)

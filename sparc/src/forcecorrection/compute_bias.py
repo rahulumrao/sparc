@@ -14,6 +14,7 @@ Physical forces are recovered as:
 """
 
 from __future__ import annotations
+
 import numpy as np
 
 
@@ -59,9 +60,9 @@ def compute_bias_forces(
     f_bias = np.zeros((nframes, natoms_total, 3))
 
     for k in range(n_cvs):
-        ds_dR_k = ds_dR_list[k]          # (nframes, natoms_in_cv_k, 3)
+        ds_dR_k = ds_dR_list[k]  # (nframes, natoms_in_cv_k, 3)
         indices_k = atom_indices_list[k]  # 0-based global indices
-        f_k = f_cv[:, k]                  # (nframes,)
+        f_k = f_cv[:, k]  # (nframes,)
 
         if len(indices_k) != ds_dR_k.shape[1]:
             raise ValueError(
@@ -117,22 +118,20 @@ def correction_summary(
         top_atoms : list of (0-based atom index, max |bias| component)
     """
     nframes = f_total.shape[0]
-    bias_mag  = np.linalg.norm(f_bias.reshape(nframes, -1),  axis=1)
+    bias_mag = np.linalg.norm(f_bias.reshape(nframes, -1), axis=1)
     total_mag = np.linalg.norm(f_total.reshape(nframes, -1), axis=1)
 
     per_atom_max = np.max(np.abs(f_bias), axis=(0, 2))
-    top_idx  = np.argsort(per_atom_max)[-5:][::-1]
+    top_idx = np.argsort(per_atom_max)[-5:][::-1]
     top_atoms = [
-        (int(a), float(per_atom_max[a]))
-        for a in top_idx
-        if per_atom_max[a] > 0
+        (int(a), float(per_atom_max[a])) for a in top_idx if per_atom_max[a] > 0
     ]
 
     return {
-        "bias_norm_mean":      float(np.mean(bias_mag)),
-        "bias_norm_max":       float(np.max(bias_mag)),
-        "total_norm_mean":     float(np.mean(total_mag)),
-        "total_norm_max":      float(np.max(total_mag)),
+        "bias_norm_mean": float(np.mean(bias_mag)),
+        "bias_norm_max": float(np.max(bias_mag)),
+        "total_norm_mean": float(np.mean(total_mag)),
+        "total_norm_max": float(np.max(total_mag)),
         "bias_to_total_ratio": float(np.mean(bias_mag / (total_mag + 1e-30))),
-        "top_atoms":           top_atoms,
+        "top_atoms": top_atoms,
     }

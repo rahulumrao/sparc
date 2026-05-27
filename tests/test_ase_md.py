@@ -7,11 +7,10 @@ Covers:
 - NoseNVT / LangevinNVT dynamics initialization
 - initialize_dynamics helper
 """
+
 from __future__ import annotations
 
 import os
-import pickle
-from pathlib import Path
 
 import numpy as np
 import pytest
@@ -19,13 +18,12 @@ from ase import units
 from ase.build import molecule
 from ase.calculators.emt import EMT
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
-
-from sparc.src.ase_md import NoseNVT, LangevinNVT
-
+from sparc.src.ase_md import LangevinNVT, NoseNVT
 
 # ============================================================
 # NoseNVT / LangevinNVT basic dynamics
 # ============================================================
+
 
 class TestDynamicsInit:
     """Test that MD dynamics objects can be created and run."""
@@ -54,13 +52,14 @@ class TestDynamicsInit:
 # Checkpoint save/load
 # ============================================================
 
+
 class TestCheckpoint:
     """Test checkpoint save and load utilities."""
 
     def test_save_load_checkpoint(self, tmp_path):
-        from sparc.src.utils.utils import save_checkpoint, load_checkpoint
         from ase.build import molecule
         from ase.md.langevin import Langevin
+        from sparc.src.utils.utils import load_checkpoint, save_checkpoint
 
         atoms = molecule("H2O")
         atoms.set_cell([8, 8, 8])
@@ -83,9 +82,9 @@ class TestCheckpoint:
         assert updated_atoms is not None
 
     def test_checkpoint_preserves_positions(self, tmp_path):
-        from sparc.src.utils.utils import save_checkpoint, load_checkpoint
         from ase.build import molecule
         from ase.md.langevin import Langevin
+        from sparc.src.utils.utils import load_checkpoint, save_checkpoint
 
         atoms = molecule("H2O")
         atoms.set_cell([8, 8, 8])
@@ -106,4 +105,6 @@ class TestCheckpoint:
 
         # Restore from checkpoint
         updated_atoms, step = load_checkpoint(atoms, checkpoint_file)
-        assert np.allclose(updated_atoms.get_positions(), original_positions, atol=1e-10)
+        assert np.allclose(
+            updated_atoms.get_positions(), original_positions, atol=1e-10
+        )

@@ -10,34 +10,29 @@ Covers:
 - Distance metrics parsing
 - QE and Gaussian engine recognition
 """
+
 from __future__ import annotations
 
 import os
-from pathlib import Path
-import pytest
 
+import pytest
 from sparc.src.utils.read_input import (
-    SparcConfig,
-    FineTuneConfig,
-    MLIPSetupConfig,
     AIMDSetupConfig,
-    ThermostatConfig,
-    PlumedConfig,
-    MLIPPlumedConfig,
-    UmbrellaSamplingConfig,
-    ModelDeviationConfig,
-    DistanceMetric,
-    DFTCalculatorConfig,
-    GeneralConfig,
-    OutputConfig,
     ConfigurationError,
+    DFTCalculatorConfig,
+    DistanceMetric,
+    FineTuneConfig,
+    GeneralConfig,
+    MLIPSetupConfig,
+    ModelDeviationConfig,
+    SparcConfig,
     ValidationError,
 )
-
 
 # ============================================================
 # Fixtures
 # ============================================================
+
 
 @pytest.fixture
 def minimal_yaml(tmp_path):
@@ -120,6 +115,7 @@ output:
 # FineTuneConfig (top-level)
 # ============================================================
 
+
 class TestFineTuneConfig:
     """Test top-level finetune configuration."""
 
@@ -177,6 +173,7 @@ class TestFineTuneConfig:
 # MLIPSetupConfig — restart flag
 # ============================================================
 
+
 class TestMLIPRestart:
     """Test ML-MD restart flag in config."""
 
@@ -193,6 +190,7 @@ class TestMLIPRestart:
 # ============================================================
 # Temperature ramping
 # ============================================================
+
 
 class TestTemperatureRamping:
     """Test temp_start / temp_end fields."""
@@ -214,6 +212,7 @@ class TestTemperatureRamping:
 # DFT Engine recognition (QE, Gaussian)
 # ============================================================
 
+
 class TestDFTEngines:
     """Test that new DFT engines are accepted in config."""
 
@@ -233,6 +232,7 @@ class TestDFTEngines:
 # ============================================================
 # Validation errors
 # ============================================================
+
 
 class TestValidation:
     """Test that invalid configs raise appropriate errors."""
@@ -273,7 +273,9 @@ class TestValidation:
         with pytest.raises(ValidationError):
             SparcConfig(
                 general=GeneralConfig(structure_file=str(struct)),
-                dft_calculator=DFTCalculatorConfig(engine="ORCA", template_file=str(template)),
+                dft_calculator=DFTCalculatorConfig(
+                    engine="ORCA", template_file=str(template)
+                ),
                 iteration=0,
             )
 
@@ -289,6 +291,7 @@ class TestValidation:
 # ============================================================
 # Full YAML round-trip
 # ============================================================
+
 
 class TestYAMLRoundTrip:
     """Test config load → dict → save → reload."""
