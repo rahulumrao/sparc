@@ -10,3 +10,5 @@ docs/tests
 .vscode
 .claude
 examples
+Sparc.log*
+sparc.log*
