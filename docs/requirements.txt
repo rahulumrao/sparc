@@ -1,0 +1,6 @@
+sphinx>=7
+sphinx-rtd-theme>=2
+sphinx-autodoc-typehints>=2
+nbsphinx>=0.9
+ipython>=8
+git+https://github.com/rahulumrao/sparc.git@main#egg=sparc
