@@ -153,7 +153,7 @@ def _render_html(dataset_json: str) -> str:
       try {{
         await Chemiscope.DefaultVisualizer.load({{
           element: document.getElementById('chemview'),
-          dataset:  DATASET,
+          ...DATASET,
         }});
       }} catch (err) {{
         document.getElementById('chemview').innerHTML =
