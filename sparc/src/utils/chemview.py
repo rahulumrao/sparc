@@ -152,7 +152,8 @@ def ChemView(
         if kind == "frame":
             vals, unit = list(range(len(frames))), ""
         elif kind == "energy":
-            vals, unit = [at.get_potential_energy() for at in frames], "eV"
+            vals = [float(np.asarray(at.get_potential_energy()).flat[0]) for at in frames]
+            unit = "eV"
         elif kind == "distance":
             if len(idx) != 2:
                 raise ValueError("distance requires i,j")
@@ -224,10 +225,14 @@ def ChemView(
         settings["map"] = map_settings
         mode = "default"   # plot + structure
 
+    import inspect
+    _show_params = inspect.signature(chemiscope.show).parameters
+    _frames_key  = "frames"    if "frames"    in _show_params else "structures"
+    _meta_key    = "meta"      if "meta"      in _show_params else "metadata"
     return chemiscope.show(
-        structures=frames,
+        **{_frames_key: frames},
         properties=props,
-        metadata=dict(name=meta_name),
+        **{_meta_key: dict(name=meta_name)},
         environments=chemiscope.all_atomic_environments(frames),
         settings=settings,
         mode=mode,

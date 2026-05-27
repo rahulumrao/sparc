@@ -22,7 +22,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.nose_hoover_chain import NoseHooverChainNVT
 from ase.md.langevin import Langevin
 from ase.md.nptberendsen import NPTBerendsen
-# MDLogger removed — log_md_setup in utils handles logging with proper float conversion
+from ase.md import MDLogger
 
 ################################################################
 # Local imports
@@ -408,31 +408,35 @@ def ExecuteAbInitioDynamics(
     """
     if steps <= 0:
         return
-    
+
+    steps_completed = dyn.nsteps
+    if steps_completed >= steps:
+        SparcLog(f"AIMD already completed ({steps_completed}/{steps} steps). Skipping.")
+        return
+
+    remaining_steps = steps - steps_completed
+
     SparcLog("")
     SparcLog("-"*80)
+    if steps_completed > 0:
+        SparcLog(f"Resuming AIMD from step {steps_completed}, running {remaining_steps} more steps")
     # Print table header
     SparcLog(f"{'Step':<8} {'Epot (eV)':<12} {'Ekin (eV)':<12} {'Temp (K)':<10} {'P (GPa)':<10} {'V (Ang.^3)':<10}")
     SparcLog("-" * 80)
 
-    # sys.exit(0)
     dyn.attach(lambda: save_checkpoint(dyn, system), interval=pace)
     dyn.attach(lambda: log_md_setup(dyn, system, dir_name), interval=pace)
     dyn.attach(lambda: save_xyz(system, trajfile, 'a', dir_name), interval=pace)
-    
+
     # Extract base ensemble from name (e.g., 'NVT-Langevin' -> 'NVT')
     ensemble = name.split('-')[0] if '-' in name else name
-    # print(f"Temp Ramp: {temp_start, temp_end, ensemble}")
-    # sys.exit(1)
-    # Run with temperature ramping if specified
+
     if temp_end is not None and temp_start is not None:
-        # Step-by-step for temperature ramping
-        for i_md in range(steps):
-            TemperatureRamp(dyn, system, i_md, steps, temp_start, temp_end, ensemble)
+        for i_md in range(remaining_steps):
+            TemperatureRamp(dyn, system, steps_completed + i_md, steps, temp_start, temp_end, ensemble)
             dyn.run(1)
     else:
-        # Batch run - much faster without ramping
-        dyn.run(steps)
+        dyn.run(remaining_steps)
 
 #---------------------------------------
 # Machine Learning Potential MD
@@ -499,31 +503,50 @@ def ExecuteMlpDynamics(
 
     remaining_steps = steps - steps_completed
 
-    SparcLog("=" * 80 + "\n")
-    SparcLog(f"MACHINE LEARNING POTENTIAL MD SIMULATION FOR [{name}]".center(80) + "\n")
+    SparcLog("=" * 80)
+    SparcLog(f"MACHINE LEARNING POTENTIAL MD SIMULATION FOR [{name}]".center(80))
     SparcLog(f"Output Logfile: {log_filename}")
     if steps_completed > 0:
         SparcLog(f"Resuming from step {steps_completed}, running {remaining_steps} more steps")
-    SparcLog("=" * 80 + "\n")
-    SparcLog("")
+    SparcLog("=" * 80)
     # Print table header
     SparcLog(f"{'Step':<8} {'Epot (eV)':<12} {'Ekin (eV)':<12} {'Temp (K)':<10} {'P (GPa)':<10} {'V (Ang^3)':<10}")
     SparcLog("-" * 80)
-    # dyn.attach(lambda: log_md_setup(dyn, system, dir_name), interval=pace)
-    # Console output every 100 steps (or pace if smaller)
+    # Console output every 10*pace steps
     console_pace = 10 * pace
     dyn.attach(lambda: log_md_setup(dyn, system, dir_name), interval=console_pace)
-    dyn.attach(lambda: save_xyz(system, trajfile, 'a', dir_name), interval=pace)
     dyn.attach(lambda: save_checkpoint(dyn, system, checkpoint_file), interval=pace)
 
-    # Store reference energy for comparison
-    epot_ref = None
+    # Per-iteration log file (e.g. Iter4_dpmd_0.log) — mirrors GitHub MDLogger behaviour
+    logger = MDLogger(
+        dyn=dyn,
+        atoms=system,
+        logfile=f"{dir_name}/{log_filename}",
+        header=True,
+        stress=False,
+        peratom=False,
+        mode="a",
+    )
+    dyn.attach(logger, interval=pace)
 
     # Extract base ensemble from name (e.g., 'NVT-Langevin' -> 'NVT')
     ensemble = name.split('-')[0] if '-' in name else name
 
+    # Capture reference energy from step 0 before any MD runs
+    _epot0 = system.get_potential_energy()
+    if isinstance(_epot0, (list, np.ndarray)):
+        _epot0 = float(_epot0.item() if hasattr(_epot0, 'item') else _epot0[0])
+    else:
+        _epot0 = float(_epot0)
+    epot_ref = _epot0
+    SparcLog("***********************************************************")
+    SparcLog(f"Reference Potential Energy (Step 0): {epot_ref:.6f} eV")
+    if epot_threshold is not None:
+        SparcLog(f"Threshold limit: +/- {float(epot_threshold):.2f} eV", level="INFO")
+    SparcLog("***********************************************************")
+
     def _check_mlmd_safety(system, distance_metrics, epot_ref, epot_threshold, dir_name):
-        """Check safety conditions during MLMD. Returns (should_stop, epot_ref)."""
+        """Check safety conditions during MLMD. Returns (sim_failed, epot_ref)."""
         if distance_metrics and check_physical_limits(system, distance_metrics):
             SparcLog("Physical limits exceeded. Stopping MLMD simulation!!!", level="WARNING")
             return True, epot_ref
@@ -536,14 +559,6 @@ def ExecuteMlpDynamics(
         if np.isnan(epot):
             SparcLog("Potential Energy is NaN! Stopping MLMD simulation!", level="ERROR")
             return True, epot_ref
-
-        if epot_ref is None:
-            epot_ref = epot
-            SparcLog("***********************************************************")
-            SparcLog(f"Reference Potential Energy (Step 0): {epot_ref:.6f} eV")
-            if epot_threshold is not None:
-                SparcLog(f"Threshold limit: +/- {float(epot_threshold):.2f} eV", level="INFO")
-            SparcLog("***********************************************************")
 
         if epot_threshold is not None:
             Llim = epot_ref - epot_threshold
@@ -562,25 +577,26 @@ def ExecuteMlpDynamics(
 
         return False, epot_ref
 
+    # save_xyz is called AFTER the safety check so that unphysical frames
+    # (energy out of bounds / physical limits exceeded) are never written to
+    # dpmd.traj and therefore never appear as QbC candidates.
     if temp_end is not None and temp_start is not None:
-        # Step-by-step for temperature ramping (resume from steps_completed)
         for i_mlmd in range(steps_completed, steps):
             TemperatureRamp(dyn, system, i_mlmd, steps, temp_start, temp_end, ensemble)
             dyn.run(1)
-            should_stop, epot_ref = _check_mlmd_safety(system, distance_metrics, epot_ref, epot_threshold, dir_name)
-            if should_stop:
+            sim_failed, epot_ref = _check_mlmd_safety(system, distance_metrics, epot_ref, epot_threshold, dir_name)
+            if sim_failed:
                 break
+            if dyn.nsteps % pace == 0:
+                save_xyz(system, trajfile, 'a', dir_name)
     else:
-        # No ramping - run in chunks with safety checks
-        chunk_size = min(100, remaining_steps)
-        steps_done = 0
-        while steps_done < remaining_steps:
-            run_steps = min(chunk_size, remaining_steps - steps_done)
-            dyn.run(run_steps)
-            steps_done += run_steps
-            should_stop, epot_ref = _check_mlmd_safety(system, distance_metrics, epot_ref, epot_threshold, dir_name)
-            if should_stop:
+        for _ in range(remaining_steps):
+            dyn.run(1)
+            sim_failed, epot_ref = _check_mlmd_safety(system, distance_metrics, epot_ref, epot_threshold, dir_name)
+            if sim_failed:
                 break
+            if dyn.nsteps % pace == 0:
+                save_xyz(system, trajfile, 'a', dir_name)
 
     # Final checkpoint
     save_checkpoint(dyn, system, checkpoint_file)
@@ -594,41 +610,38 @@ def CalculateDFTEnergy(
     idx: int,
     header: bool,
     system: Atoms,
-    timestep: float,
     log_filename: str,
     dir_name: str,
     trajfile: str,
-    pace: int = 1
 ):
     """
     Calculate the DFT energy and forces for a candidate structure.
-    
-    This function is used during active learning to evaluate candidate
-    structures selected by Query-by-Committee.
-    
+
     Parameters
     ----------
     idx : int
-        An identifier index for the candidate
+        Candidate index (used in log output)
     header : bool
-        If True, include header in the log file
+        If True, write column header to log file
     system : ase.Atoms
-        The ASE Atoms object representing the candidate structure
-    timestep : float
-        The simulation timestep in femtoseconds
+        Candidate structure with DFT calculator attached
     log_filename : str
-        The filename for the energy log
+        Filename for the per-candidate energy log
     dir_name : str
-        The directory where log and trajectory files will be saved
+        Directory where log and trajectory files are written
     trajfile : str
-        The filename for the trajectory file
-    pace : int, optional
-        The logging interval (default: 1)
+        Filename for the ASE trajectory file
     """
     epot = system.get_potential_energy()
     epot = epot if not isinstance(epot, (list, np.ndarray)) else epot[0]
 
     SparcLog(f"Candidate: {idx:5d} | Epot: {epot:10.6f} [eV]")
+
+    log_path = f"{dir_name}/{log_filename}"
+    with open(log_path, 'a') as f:
+        if header:
+            f.write(f"{'Candidate':>12} {'Epot[eV]':>14}\n")
+        f.write(f"{idx:>12} {epot:>14.6f}\n")
 
     save_xyz(system, trajfile, 'a', dir_name)
 

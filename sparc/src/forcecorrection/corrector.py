@@ -106,7 +106,7 @@ def _parse_cv_derivs(
                 continue
             cols = s.split()
             t   = float(cols[0])
-            param = int(cols[1])
+            param = int(float(cols[1]))
             vals  = [float(c) for c in cols[2:]]  # one value per CV
 
             if len(vals) != ncvs:
@@ -213,21 +213,21 @@ def correct_aimd_forces(
     dft_dir: Optional[Path] = None,
     cv_force_file: str = "cv_force",
     cv_derivs_file: str = "cv_derivs",
+    output_path: Optional[Path] = None,
 ) -> None:
     """
     Remove PLUMED bias forces from an ASE AIMD trajectory.
 
     Reads biased forces from `traj_path`, loads the PLUMED DUMPFORCES
     and DUMPDERIVATIVES files, computes the bias force for each frame
-    via the chain rule, subtracts it, and overwrites `traj_path` with
-    the corrected (physical) forces.
+    via the chain rule, subtracts it, and writes the corrected trajectory.
 
     Supported trajectory formats: ASE binary (.traj) and extxyz (.xyz).
 
     Parameters
     ----------
     traj_path : Path
-        Trajectory file to correct (overwritten in-place).
+        Trajectory file to read biased forces from.
     cv_atoms : list of lists of 1-based atom indices
         One entry per CV, in the same order as ARG= in plumed.dat.
         e.g. [[1, 4], [1, 2]] for two distance CVs.
@@ -238,9 +238,12 @@ def correct_aimd_forces(
         Filename of the PLUMED DUMPFORCES output inside dft_dir.
     cv_derivs_file : str
         Filename of the PLUMED DUMPDERIVATIVES output inside dft_dir.
+    output_path : Path, optional
+        Write corrected trajectory here. If None, overwrites traj_path in-place.
     """
     traj_path   = Path(traj_path)
     dft_dir     = Path(dft_dir) if dft_dir is not None else traj_path.parent or Path(".")
+    out_path    = Path(output_path) if output_path is not None else traj_path
     force_path  = dft_dir / cv_force_file
     derivs_path = dft_dir / cv_derivs_file
 
@@ -248,6 +251,7 @@ def correct_aimd_forces(
     SparcLog("=" * 60)
     SparcLog("PLUMED Bias Force Correction")
     SparcLog(f"  Trajectory   : {traj_path}")
+    SparcLog(f"  Output       : {out_path}")
     SparcLog(f"  CV forces    : {force_path}")
     SparcLog(f"  CV derivs    : {derivs_path}")
     SparcLog(f"  CVs ({len(cv_atoms)}): {cv_atoms}")
@@ -321,16 +325,17 @@ def correct_aimd_forces(
     corrected = []
     for atoms, f_corr in zip(frames, f_physical):
         energy = atoms.get_potential_energy()
+        atoms.set_momenta(None)
         atoms.calc = SinglePointCalculator(atoms, energy=energy, forces=f_corr)
         corrected.append(atoms)
 
     if fmt == ".traj":
-        with Trajectory(str(traj_path), 'w') as out_traj:
+        with Trajectory(str(out_path), 'w') as out_traj:
             for atoms in corrected:
                 out_traj.write(atoms)
     else:
-        write(str(traj_path), corrected)
+        write(str(out_path), corrected)
 
-    SparcLog(f"  Corrected trajectory written -> {traj_path}")
+    SparcLog(f"  Corrected trajectory written -> {out_path}")
     SparcLog("=" * 60)
     SparcLog("")

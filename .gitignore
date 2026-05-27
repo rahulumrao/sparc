@@ -1,0 +1,12 @@
+# Igonre files
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+scripts/
+docs/tests
+.vscode
+.claude
+examples

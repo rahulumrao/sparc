@@ -147,7 +147,9 @@ def QueryByCommittee(
     max_lim: float,
     min_lim: float,
     dpmd_data_path: str,
-    iteration: int = 0
+    iteration: int = 0,
+    rmsd_threshold: float = 0.05,
+    exclude_hydrogen: bool = True
 ):
     """
     Find maximum deviation in atomic forces among multiple models using Query-by-Committee.
@@ -155,6 +157,7 @@ def QueryByCommittee(
     This function evaluates force predictions from an ensemble of models trained on
     the same dataset with different random initializations. Structures with force
     deviations outside [min_lim, max_lim] are selected as candidates for DFT labeling.
+    RMSD filtering removes near-duplicate candidates to ensure training set diversity.
 
     Parameters
     ----------
@@ -172,6 +175,12 @@ def QueryByCommittee(
         Path to the directory where DeePMD npy data will be saved
     iteration : int, optional
         Current iteration number (default: 0)
+    rmsd_threshold : float, optional
+        RMSD threshold in Å for duplicate filtering; candidates with RMSD < threshold
+        relative to the initial frame or any already-accepted candidate are discarded
+        (default: 0.05)
+    exclude_hydrogen : bool, optional
+        Exclude hydrogen atoms when computing RMSD (default: True)
 
     Returns
     -------
@@ -262,7 +271,9 @@ def QueryByCommittee(
         str(outfile),
         min_lim,
         max_lim,
-        output_dir=f"{str(dpmd_data_path)}/dft_candidates"
+        output_dir=f"{str(dpmd_data_path)}/dft_candidates",
+        rmsd_threshold=rmsd_threshold,
+        exclude_hydrogen=exclude_hydrogen
     )
 
     with open('learning_state.log', 'a') as f:

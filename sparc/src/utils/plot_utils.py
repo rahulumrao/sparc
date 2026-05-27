@@ -21,9 +21,11 @@ def compute_rmse(true, pred):
 def compute_mae(true, pred):
     return np.mean(np.abs(true - pred))
 
-def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
+def ParityPlot(data_dir, model_path, per_atom=False, type="all", force_mode="components",
+                heatmap=False, cmap="coolwarm", save_fig=None):
     """
     Generate parity plots for energy and/or force components with RMSE + MAE annotations.
+    Points are colored by absolute error using the specified colormap.
 
     Parameters:
     -----------
@@ -33,14 +35,22 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
         Path to frozen model.
     per_atom : bool
         Whether to plot energy per atom instead of total.
-    plot_type : str
+    type : str
         'all' (default), 'energy', or 'forces'
+    force_mode : str
+        'components' (default) — separate fx/fy/fz plots.
+        'flatten' — all force components in one plot.
+    heatmap : bool
+        If True, color points by absolute error using cmap (default: False).
+    cmap : str
+        Matplotlib colormap used when heatmap=True (default: 'coolwarm').
     save_fig : str or None
         Path to save the output figure.
-        
+
     Example:
-        >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="energy", save_fig='lcurve.png')
-        >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="forces")
+        >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="energy", cmap="viridis")
+        >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="forces", force_mode="flatten")
+        >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="forces", force_mode="components")
     """
 
     if not os.path.exists(data_dir):
@@ -62,43 +72,81 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
         e_true /= natoms
         e_pred /= natoms
         e_unit = "eV/Atom"
+        e_unit_ann = "meV/Atom"
     else:
         e_unit = "eV"
+        e_unit_ann = "meV"
 
     f_true = np.vstack(system["forces"])
     f_pred = np.vstack(prediction["forces"])
 
     # Setup plot layout
+    forces_flatten = (type in ("all", "forces")) and force_mode in ("flatten", "flat")
+    forces_components = (type in ("all", "forces")) and force_mode in ("components", "comp")
+
     if type == "energy":
-        fig, ax_energy = plt.subplots(1, 1, figsize=(6, 5), dpi=250)
+        fig, ax_energy = plt.subplots(1, 1, figsize=(6, 5), dpi=300)
     elif type == "forces":
-        fig, axes = plt.subplots(1, 3, figsize=(15, 4), dpi=300)
+        if force_mode in ["flatten", "flat"]:
+            fig, ax_force = plt.subplots(1, 1, figsize=(6, 5), dpi=300)
+        else:
+            fig, axes = plt.subplots(1, 3, figsize=(15, 4), dpi=300)
     else:  # 'all'
-        fig, axes = plt.subplots(2, 2, figsize=(10, 8), dpi=250)
-        ax_energy = axes[0, 0]
+        if force_mode in ["flatten", "flat"]:
+            fig, (ax_energy, ax_force) = plt.subplots(1, 2, figsize=(12, 5), dpi=300)
+        else:
+            fig, axes = plt.subplots(2, 2, figsize=(10, 8), dpi=300)
+            ax_energy = axes[0, 0]
 
     # === Energy Parity Plot ===
     if type in ("all", "energy"):
-        ax_energy.scatter(e_true, e_pred, c='blue', alpha=0.7, s=40, edgecolors='k')
+        if heatmap:
+            abs_err_e = np.abs(e_pred - e_true)
+            ax_energy.scatter(e_true, e_pred, c=abs_err_e, cmap=cmap, alpha=0.85, s=40, edgecolors='none')
+        else:
+            ax_energy.scatter(e_true, e_pred, c='blue', alpha=0.7, s=40, edgecolors='k')
         ax_energy.plot([e_true.min(), e_true.max()], [e_true.min(), e_true.max()], 'r--', lw=1.2)
         rmse_e = compute_rmse(e_true, e_pred)
         mae_e = compute_mae(e_true, e_pred)
         ax_energy.text(0.05, 0.90,
-                       f"RMSE = {rmse_e:.4f} {e_unit}\nMAE = {mae_e:.4f} {e_unit}",
-                       transform=ax_energy.transAxes,
-                       fontsize=12, verticalalignment='top', color='blue')
-        ax_energy.set_xlabel(f"Observed (DFT) [{e_unit}]", fontsize=14)
-        ax_energy.set_ylabel(f"Predicted (MLP) [{e_unit}]", fontsize=14)
+                        f"RMSE = {rmse_e*1000:.2f} {e_unit_ann}\nMAE = {mae_e*1000:.2f} {e_unit_ann}",
+                        transform=ax_energy.transAxes,
+                        fontsize=12, verticalalignment='top', color='blue')
+        ax_energy.set_xlabel(f"Observed (DFT) [{e_unit}]", fontsize=18)
+        ax_energy.set_ylabel(f"Predicted (MLP) [{e_unit}]", fontsize=18)
         ax_energy.set_title("(A) Energy", fontsize=16)
         ax_energy.xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
         ax_energy.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
         ax_energy.xaxis.set_major_locator(MaxNLocator(nbins=6))
         ax_energy.yaxis.set_major_locator(MaxNLocator(nbins=6))
-        ax_energy.tick_params(labelsize=12)
+        ax_energy.tick_params(labelsize=14)
         ax_energy.grid(ls='--', alpha=0.7)
 
-    # === Force Parity Plots ===
-    if type in ("all", "forces"):
+    # === Force Parity — flatten mode ===
+    if forces_flatten:
+        f_t_all = f_true.ravel()
+        f_p_all = f_pred.ravel()
+        rmse_f = compute_rmse(f_t_all, f_p_all)
+        mae_f = compute_mae(f_t_all, f_p_all)
+        if heatmap:
+            abs_err_f = np.abs(f_p_all - f_t_all)
+            ax_force.scatter(f_t_all, f_p_all, c=abs_err_f, cmap=cmap, alpha=0.6, s=15, edgecolors='none')
+        else:
+            ax_force.scatter(f_t_all, f_p_all, c='blue', alpha=0.6, s=15, edgecolors='k')
+        ax_force.plot([f_t_all.min(), f_t_all.max()], [f_t_all.min(), f_t_all.max()], 'r--', lw=1.2)
+        ax_force.text(0.05, 0.90,
+                    f"RMSE = {rmse_f*1000:.2f} meV/Å\nMAE = {mae_f*1000:.2f} meV/Å",
+                    transform=ax_force.transAxes,
+                    fontsize=12, verticalalignment='top', color='blue')
+        ax_force.set_xlabel(r"Observed (DFT) [eV/$\rm{\AA}$]", fontsize=18)
+        ax_force.set_ylabel(r"Predicted (MLP) [eV/$\rm{\AA}$]", fontsize=18)
+        title_label = "(B) Forces" if type == "all" else "(A) Forces"
+        ax_force.set_title(title_label, fontsize=16)
+        ax_force.tick_params(labelsize=14)
+        ax_force.grid(ls='--', alpha=0.7)
+
+    # === Force Parity — components mode ===
+    if forces_components:
         components = ['fx', 'fy', 'fz']
         for i, comp in enumerate(components):
             if type == "forces":
@@ -111,17 +159,20 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
             f_p = f_pred[:, i]
             rmse_f = compute_rmse(f_t, f_p)
             mae_f = compute_mae(f_t, f_p)
-
-            ax.scatter(f_t, f_p, c='blue', alpha=0.6, s=30, edgecolors='k')
+            if heatmap:
+                abs_err_f = np.abs(f_p - f_t)
+                ax.scatter(f_t, f_p, c=abs_err_f, cmap=cmap, alpha=0.8, s=30, edgecolors='none')
+            else:
+                ax.scatter(f_t, f_p, c='blue', alpha=0.6, s=30, edgecolors='k')
             ax.plot([f_t.min(), f_t.max()], [f_t.min(), f_t.max()], 'r--', lw=1.2)
             ax.text(0.05, 0.90,
-                    f"RMSE = {rmse_f:.4f} eV/Å\nMAE = {mae_f:.4f} eV/Å",
+                    f"RMSE = {rmse_f*1000:.2f} meV/Å\nMAE = {mae_f*1000:.2f} meV/Å",
                     transform=ax.transAxes,
                     fontsize=12, verticalalignment='top', color='blue')
-            ax.set_xlabel(r"Observed (DFT) [eV/$\rm{\AA}$]", fontsize=14)
-            ax.set_ylabel(r"Predicted (MLP) [eV/$\rm{\AA}$]", fontsize=14)
+            ax.set_xlabel(r"Observed (DFT) [eV/$\rm{\AA}$]", fontsize=16)
+            ax.set_ylabel(r"Predicted (MLP) [eV/$\rm{\AA}$]", fontsize=16)
             ax.set_title(f"({chr(66+i)}) {comp}", fontsize=16)
-            ax.tick_params(labelsize=12)
+            ax.tick_params(labelsize=14)
             ax.grid(ls='--', alpha=0.7)
 
     plt.tight_layout()
@@ -333,7 +384,7 @@ def PlotPotentialEnergy(root_dir=".", iteration_window="all", target_iteration=N
         traj = read(traj_path, index=":")
         
         # Extract potential energies
-        energies = [item.get_potential_energy() for item in traj]
+        energies = [float(np.asarray(item.get_potential_energy()).flat[0]) for item in traj]
         
         # Store in dictionary
         if iter_num not in energy_dict:
@@ -466,7 +517,7 @@ def PlotDistribution(
                 symbol_pair = None
 
         if is_energy:
-            values = [atoms.get_potential_energy() for atoms in traj]
+            values = [float(np.asarray(atoms.get_potential_energy()).flat[0]) for atoms in traj]
         elif is_distance:
             values = [atoms.get_distance(i, j) for atoms in traj]
 
@@ -626,7 +677,7 @@ def PlotPES(
         for atoms in traj:
             try:
                 d = atoms.get_distance(i, j)
-                e = atoms.get_potential_energy()
+                e = float(np.asarray(atoms.get_potential_energy()).flat[0])
                 x_vals.append(d)
                 y_vals.append(e)
             except Exception as ex:
@@ -894,7 +945,7 @@ def get_1dSurface(traj, bond):
 
     # Extract bond distances and potential energy
     bond_lengths = np.array([atoms.get_distance(*bond) for atoms in traj])
-    energies = np.array([atoms.get_potential_energy() for atoms in traj])
+    energies = np.array([float(np.asarray(atoms.get_potential_energy()).flat[0]) for atoms in traj])
 
     # Sort bond lengths for proper interpolation
     sorted_indices = np.argsort(bond_lengths)

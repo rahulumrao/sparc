@@ -225,8 +225,12 @@ def save_xyz(atoms, trajfile, write_mode, dir_name):
     # Operate on a copy so the original atoms object is never mutated.
     # center()/wrap() on the copy cannot invalidate the original's cache.
     write_atoms = atoms.copy()
+    # pretty_translation=True wraps whole connected molecules as one unit
+    # before centering, preventing split-molecule PBC artifacts where bonded
+    # atoms land on opposite sides of the cell in raw XYZ/traj coordinates.
+    # Must come before center() so CoM is computed on a whole molecule.
+    write_atoms.wrap(pretty_translation=True)
     write_atoms.center()
-    write_atoms.wrap()
     write_atoms.calc = SinglePointCalculator(write_atoms, energy=energy, forces=forces)
 
     traj_file = f"{dir_name}/{trajfile}"
@@ -240,6 +244,9 @@ def save_xyz(atoms, trajfile, write_mode, dir_name):
     )
     trr.write(write_atoms)
 
+    # Strip momenta only for the xyz text file — binary traj retains them
+    # so temperature is recoverable from dpmd.traj / AseMD.traj.
+    write_atoms.set_momenta(None)
     write(xyz_file, write_atoms, append=True)
 
 
@@ -546,7 +553,7 @@ def check_physical_limits(atoms, distance_metrics):
         atom1, atom2 = check.pair
         min_distance = check.min_distance
         max_distance = check.max_distance
-        distance = atoms.get_distance(atom1, atom2)
+        distance = atoms.get_distance(atom1, atom2, mic=True)
         
         if distance < min_distance or distance > max_distance:
             # Get chemical symbols for the atoms

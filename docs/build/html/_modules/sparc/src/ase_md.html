@@ -41,25 +41,27 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -99,29 +101,71 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/workflow_overview.html">Workflow Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-1-dft-aimd-00-dft">Stage 1 — DFT / AIMD (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/active_learning.html">Active Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#vasp">VASP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#cp2k">CP2K</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#orca">ORCA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#xtb">xTB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#quantum-espresso-qe">Quantum ESPRESSO (QE)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#gaussian">Gaussian</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/fine_tuning.html">Fine-Tuning vs. Training From Scratch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#training-from-scratch-default">Training from scratch (default)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#fine-tuning-a-deepmd-universal-model">Fine-tuning a DeePMD universal model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#when-to-use-fine-tuning">When to use fine-tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html">Enhanced Sampling with PLUMED</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#any-plumed-collective-variable-or-bias-can-be-used">Any PLUMED collective variable or bias can be used</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#example-sprint-coordinates">Example: SPRINT coordinates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#umbrella-sampling">Umbrella sampling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../calculator.html">DFT Calculator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#template-file-reference">Template File Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#cp2k-parameters-cp2k-section-in-input-yaml">CP2K parameters (<code class="docutils literal notranslate"><span class="pre">cp2k:</span></code> section in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#classes">Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#functions">Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.input_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.input_config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.dft_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.dft_config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.print_screen"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.print_screen</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.vasp"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.cp2k"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.orca"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.xtb"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id0"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.espresso"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.espresso()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.gaussian"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.gaussian()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id1"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id2"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id3"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.orca"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.vasp"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.xtb"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.dft_calculator"><code class="docutils literal notranslate"><span class="pre">dft_calculator()</span></code></a></li>
@@ -132,6 +176,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../deepmd.html">DeepMD Setup</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#module-contents">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
@@ -141,6 +186,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.update_json"><code class="docutils literal notranslate"><span class="pre">update_json()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#graph-neural-network-potentials-gnn">Graph Neural Network Potentials (GNN)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#references">References</a></li>
 </ul>
 </li>
@@ -148,7 +194,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#deepmd-fine-tuning">DeePMD Fine-Tuning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#mace-fine-tuning">MACE Fine-Tuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#integration-with-active-learning">Integration with Active Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#module-sparc.src.finetune">Module Contents</a><ul>
@@ -163,6 +208,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../md.html">Molecular Dynamics</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../md.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../md.html#module-sparc.src.ase_md">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.CalculateDFTEnergy"><code class="docutils literal notranslate"><span class="pre">CalculateDFTEnergy()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.ExecuteAbInitioDynamics"><code class="docutils literal notranslate"><span class="pre">ExecuteAbInitioDynamics()</span></code></a></li>
@@ -176,12 +222,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.lammps_md"><code class="docutils literal notranslate"><span class="pre">lammps_md()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../md.html#functions">Functions:</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../md.html#id0"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../md.html#id1"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../md.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../md.html#references">References</a></li>
 </ul>
 </li>
@@ -197,7 +237,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plumed_wrapper.html">Plumed</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#sprint-coordinates">SPRINT Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#enabling-plumed-in-input-yaml">Enabling PLUMED in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
@@ -257,49 +301,11 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/index.html#core-modules">Core Modules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/index.html#utilities">Utilities</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/workflow_overview.html">Workflow Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-1-dft-aimd-00-dft">Stage 1 — DFT / AIMD (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#vasp">VASP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#cp2k">CP2K</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#orca">ORCA</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#xtb">xTB</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#quantum-espresso-qe">Quantum ESPRESSO (QE)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#gaussian">Gaussian</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/fine_tuning.html">Fine-Tuning vs. Training From Scratch</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#training-from-scratch-default">Training from scratch (default)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#fine-tuning-universal-models">Fine-tuning universal models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#when-to-use-fine-tuning">When to use fine-tuning</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html">Enhanced Sampling with PLUMED</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#recommended-strategy-sprint-pbmetad">Recommended strategy: SPRINT + PBMetaD</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#umbrella-sampling">Umbrella sampling</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
@@ -374,6 +380,7 @@
     <span class="n">load_checkpoint</span><span class="p">,</span>
     <span class="n">check_physical_limits</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.forcecorrection.corrector</span><span class="w"> </span><span class="kn">import</span> <span class="n">correct_aimd_forces</span>
 
 <span class="c1">################################################################</span>
 <span class="c1"># Helper Functions</span>
@@ -651,7 +658,7 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up NPT dynamics using ASE&#39;s NPTBerendsen integrator.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    system : ase.Atoms</span>
@@ -667,29 +674,25 @@
 <span class="sd">    tau_p : float</span>
 <span class="sd">        Barostat time constant in femtoseconds</span>
 <span class="sd">    compressibility : float, optional</span>
-<span class="sd">        Compressibility in 1/Pa. If None, uses default for Cu (~7.1e-12 1/Pa)</span>
+<span class="sd">        Isothermal compressibility in 1/bar. If None, uses the default</span>
+<span class="sd">        for Cu (~7.1e-7 bar⁻¹)</span>
 <span class="sd">    restart : bool, optional</span>
 <span class="sd">        If True, restart from checkpoint (default: False)</span>
 <span class="sd">    **kwargs : dict</span>
 <span class="sd">        Extra ASE MD options</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dynamics</span>
 <span class="sd">        The initialized NPTBerendsen dynamics object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Pressure in eV/A^3 (ASE internal units)</span>
-    <span class="n">pressure_eVA3</span> <span class="o">=</span> <span class="n">pressure</span> <span class="o">*</span> <span class="mf">1.0e5</span> <span class="o">/</span> <span class="mf">1.602176634e11</span>
-    <span class="c1"># print(f&quot;Pressure from ASEMD {pressure}&quot;)</span>
-    <span class="c1"># Compressibility handling (convert from 1/Pa to atomic units)</span>
     <span class="k">if</span> <span class="n">compressibility</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">compressibility</span> <span class="o">=</span> <span class="mf">7.1e-12</span>  <span class="c1"># Cu default</span>
-    <span class="n">compressibility_au</span> <span class="o">=</span> <span class="n">compressibility</span> <span class="o">*</span> <span class="mf">1.602176634e11</span>  <span class="c1"># 1/Pa --&gt; 1/(A^3/eV)</span>
-    
+        <span class="n">compressibility</span> <span class="o">=</span> <span class="mf">7.1e-7</span>  <span class="c1"># Cu default in 1/bar (= 7.1e-12 Pa⁻¹)</span>
+
     <span class="k">return</span> <span class="n">initialize_dynamics</span><span class="p">(</span>
         <span class="n">system</span><span class="p">,</span> <span class="n">NPTBerendsen</span><span class="p">,</span> <span class="n">timestep</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
-        <span class="n">taut</span><span class="o">=</span><span class="n">tau_t</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">pressure_au</span><span class="o">=</span><span class="n">pressure_eVA3</span><span class="p">,</span> <span class="n">taup</span><span class="o">=</span><span class="n">tau_p</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
-        <span class="n">compressibility_au</span><span class="o">=</span><span class="n">compressibility_au</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="n">taut</span><span class="o">=</span><span class="n">tau_t</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">pressure_au</span><span class="o">=</span><span class="n">pressure</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">bar</span><span class="p">,</span> <span class="n">taup</span><span class="o">=</span><span class="n">tau_p</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+        <span class="n">compressibility_au</span><span class="o">=</span><span class="n">compressibility</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">bar</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span></div>
 
 
@@ -771,31 +774,35 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">steps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
-    
+
+    <span class="n">steps_completed</span> <span class="o">=</span> <span class="n">dyn</span><span class="o">.</span><span class="n">nsteps</span>
+    <span class="k">if</span> <span class="n">steps_completed</span> <span class="o">&gt;=</span> <span class="n">steps</span><span class="p">:</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AIMD already completed (</span><span class="si">{</span><span class="n">steps_completed</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">steps</span><span class="si">}</span><span class="s2"> steps). Skipping.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">remaining_steps</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">-</span> <span class="n">steps_completed</span>
+
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">steps_completed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resuming AIMD from step </span><span class="si">{</span><span class="n">steps_completed</span><span class="si">}</span><span class="s2">, running </span><span class="si">{</span><span class="n">remaining_steps</span><span class="si">}</span><span class="s2"> more steps&quot;</span><span class="p">)</span>
     <span class="c1"># Print table header</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Step&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Epot (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Ekin (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Temp (K)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;P (GPa)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;V (Ang.^3)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
 
-    <span class="c1"># sys.exit(0)</span>
     <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_checkpoint</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
     <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">log_md_setup</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
     <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
-    
+
     <span class="c1"># Extract base ensemble from name (e.g., &#39;NVT-Langevin&#39; -&gt; &#39;NVT&#39;)</span>
     <span class="n">ensemble</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">else</span> <span class="n">name</span>
-    <span class="c1"># print(f&quot;Temp Ramp: {temp_start, temp_end, ensemble}&quot;)</span>
-    <span class="c1"># sys.exit(1)</span>
-    <span class="c1"># Run with temperature ramping if specified</span>
+
     <span class="k">if</span> <span class="n">temp_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">temp_start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Step-by-step for temperature ramping</span>
-        <span class="k">for</span> <span class="n">i_md</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
-            <span class="n">TemperatureRamp</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">i_md</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">temp_start</span><span class="p">,</span> <span class="n">temp_end</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i_md</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">remaining_steps</span><span class="p">):</span>
+            <span class="n">TemperatureRamp</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">steps_completed</span> <span class="o">+</span> <span class="n">i_md</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">temp_start</span><span class="p">,</span> <span class="n">temp_end</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">)</span>
             <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Batch run - much faster without ramping</span>
-        <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span></div>
+        <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">remaining_steps</span><span class="p">)</span></div>
 
 
 <span class="c1">#---------------------------------------</span>

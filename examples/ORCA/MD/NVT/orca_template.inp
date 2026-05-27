@@ -1,5 +1,0 @@
-! PBE 3-21G Engrad
-%scf Convergence tight
- maxiter 300 end
- %pal nprocs 4 end
-*xyz 0 1

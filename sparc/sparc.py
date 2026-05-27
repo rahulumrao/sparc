@@ -76,6 +76,22 @@ if "--analysis" in sys.argv:
     sys.exit(0)
 
 #===================================================================================================#
+# Force correction mode handler
+#===================================================================================================#
+if "--forcecorrect" in sys.argv:
+    from sparc.src.forcecorrection.cli import main as correct_forces
+    from sparc.src.utils.logger import setup_logger, close_logger
+    setup_logger(enable=True)
+    iidx = sys.argv.index("--forcecorrect")
+    correct_args = sys.argv[iidx + 1:]
+    sys.argv = [sys.argv[0]] + correct_args
+    try:
+        correct_forces()
+    finally:
+        close_logger()
+    sys.exit(0)
+
+#===================================================================================================#
 # Helper Functions
 #===================================================================================================#
 
@@ -269,9 +285,24 @@ def _main_workflow():
     #---------------------------------------------------------------------------
     # Load configuration
     #---------------------------------------------------------------------------
-    parser = argparse.ArgumentParser(description='Run SPARC workflow')
+    parser = argparse.ArgumentParser(
+        description='SPARC — Smart Potential with Atomistic Rare Events and Continuous Learning',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+modes:
+  sparc -i input.yaml            Run main workflow (AIMD / MLIP training / ML-MD / AL)
+  sparc --analysis [args]        Analyse model deviation and training data
+  sparc --forcecorrect [args]    Remove PLUMED bias forces from AIMD trajectory
+
+run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options.
+        """
+    )
     parser.add_argument("-i", "--input_file", type=str, default="input.yaml",
-                        help="Input YAML configuration file")
+                        help="Input YAML configuration file (default: input.yaml)")
+    parser.add_argument("--analysis", action="store_true",
+                        help="Run analysis mode (use 'sparc --analysis -h' for options)")
+    parser.add_argument("--forcecorrect", action="store_true",
+                        help="Run force correction mode (use 'sparc --forcecorrect -h' for options)")
     args = parser.parse_args()
 
     try:
@@ -560,8 +591,8 @@ def _main_workflow():
                 # Initialize ensemble
                 dyn_dp = initialize_thermostat(config.mlip_setup, dp_atoms)
 
-                # Setup calculator with optional PLUMED
-                if plumed_config.enabled:
+                # Setup calculator with optional PLUMED (iter 0 pre-AL run)
+                if plumed_config.enabled and plumed_config.start_iteration == 0:
                     remove_backup_files(file_ext="bck.*")
                     dp_atoms.calc = setup_plumed_calc(
                         dp_calc,
@@ -597,7 +628,9 @@ def _main_workflow():
                 min_lim=config.model_dev.f_min_dev,
                 max_lim=config.model_dev.f_max_dev,
                 dpmd_data_path=iter_structure['dpmd_dir'],
-                iteration=0
+                iteration=0,
+                rmsd_threshold=config.model_dev.rmsd_threshold,
+                exclude_hydrogen=config.model_dev.exclude_hydrogen
             )
             save_progress({
                 'state': str(iter_structure['dft_dir']),
@@ -606,9 +639,9 @@ def _main_workflow():
                 'idx': 1
             })
 
-            if not candidate_found_is:
+            if candidate_idx < config.min_candidates:
                 SparcLog("="*80)
-                SparcLog("No candidates found for labelling")
+                SparcLog(f"Candidates found ({candidate_idx}) below threshold ({config.min_candidates}). Stopping AL.")
                 SparcLog("End of Active Learning Loop")
                 SparcLog("="*80)
                 return
@@ -758,7 +791,6 @@ def _main_workflow():
                     idx=idx,
                     header=(idx == 1),
                     system=NewCandidate,
-                    timestep=config.aimd_setup.timestep_fs * ase.units.fs,
                     log_filename=f"Iter_{iter}_{config.output.log_file}",
                     trajfile=config.output.aimdtraj_file,
                     dir_name=iter_structure['dft_dir']
@@ -872,7 +904,7 @@ def _main_workflow():
 
                 dyn_dp = initialize_thermostat(config.mlip_setup, dp_atoms)
 
-                if plumed_config.enabled:
+                if plumed_config.enabled and iter >= plumed_config.start_iteration:
                     remove_backup_files(file_ext="bck.*")
                     dp_atoms.calc = setup_plumed_calc(
                         dp_calc,
@@ -907,12 +939,14 @@ def _main_workflow():
             min_lim=config.model_dev.f_min_dev,
             max_lim=config.model_dev.f_max_dev,
             dpmd_data_path=iter_structure['dpmd_dir'],
-            iteration=iter
+            iteration=iter,
+            rmsd_threshold=config.model_dev.rmsd_threshold,
+            exclude_hydrogen=config.model_dev.exclude_hydrogen
         )
 
-        if not candidate_found_is:
+        if candidate_idx < config.min_candidates:
             SparcLog("="*80)
-            SparcLog("No candidates found for labelling")
+            SparcLog(f"Candidates found ({candidate_idx}) below threshold ({config.min_candidates}). Stopping AL.")
             SparcLog("End of Active Learning Loop")
             SparcLog("="*80)
             break

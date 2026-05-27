@@ -105,14 +105,14 @@ def labelling(
         data = pd.read_csv(outfile, sep=r'\s+', comment='#', names=names)
     except Exception as e:
         SparcLog(f"Error reading model deviation file: {e}")
-        return False, [], {}
-    
+        return False, "", 0
+
     # Filter structures within deviation range
     candidates = data[(data['max_devi_f'] >= min_lim) & (data['max_devi_f'] <= max_lim)]
-    
+
     if candidates.empty:
         SparcLog(f"No candidates found for labelling within range [{min_lim:.2f}, {max_lim:.2f}] eV/Å")
-        return False, [], {}
+        return False, "", 0
     
     # SparcLog("=" * 90)
     # SparcLog(f"Found {len(candidates)} candidates within range [{min_lim:.2f}, {max_lim:.2f}] eV/Å")
@@ -128,7 +128,7 @@ def labelling(
         dptraj = read(trajfile, index=':')
     except Exception as e:
         SparcLog(f"Error reading trajectory file: {e}")
-        return False, [], {}
+        return False, "", 0
     
     # Initialize tracking
     candidates_file = os.path.join(output_dir, 'candidates.extxyz')

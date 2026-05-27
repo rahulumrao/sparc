@@ -107,10 +107,10 @@ One value per frame.
      - Distance between atoms *i* and *j*
    * - ``"angle:i,j,k"``
      - deg
-     - Angle at atom *j* in the *i–j–k* triplet
+     - Angle at atom *j* in the *i-j-k* triplet
    * - ``"dihedral:i,j,k,l"``
      - deg
-     - Dihedral angle for the *i–j–k–l* quadruplet
+     - Dihedral angle for the *i-j-k-l* quadruplet
    * - ``"volume"``
      - Å³
      - Cell volume from ``atoms.get_volume()``
@@ -181,7 +181,7 @@ Constraints
 
 - All frames must contain the same number of atoms.
 - ``energy`` and force-based specs require a calculator or pre-stored arrays
-  on the ``Atoms`` objects. Missing values are filled with ``NaN``.
+   on the ``Atoms`` objects. Missing values are filled with ``NaN``.
 - Duplicate property names are not allowed. Use ``names`` to disambiguate.
 
 

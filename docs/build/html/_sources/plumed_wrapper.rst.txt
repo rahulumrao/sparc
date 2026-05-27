@@ -69,8 +69,26 @@ Umbrella Sampling
 
 SPARC supports umbrella sampling across multiple windows via the
 ``umbrella_sampling`` block inside ``mlip_setup.plumed``. Each window runs
-an independent ML-MD trajectory with its own structure and PLUMED restraint
-file.
+an independent ML-MD trajectory with its own pre-equilibrated structure and
+PLUMED restraint file. Windows execute sequentially; output for window ``N``
+is written to ``iter_000000/02.dpmd/window_NNN/``.
+
+Recommended directory layout — keep all window structures and PLUMED files
+in a ``configs/`` subdirectory alongside ``input.yaml``:
+
+.. code-block:: text
+
+   Project Root/
+   ├── structure.xyz
+   ├── input.yaml
+   ├── umbrella_sampling.yaml
+   └── configs/
+       ├── config_14.xyz          (structure near CV = 1.4 Å)
+       ├── config_17.xyz
+       ├── ...
+       ├── plumed_window_000.dat  (restraint at 1.4 Å)
+       ├── plumed_window_001.dat  (restraint at 1.7 Å)
+       └── ...
 
 **Step 1 — Enable umbrella sampling in** ``input.yaml``
 
@@ -81,54 +99,80 @@ file.
      ensemble: "NVT"
      temperature: 300.0
      timestep_fs: 1.0
-     md_steps: 5000
+     md_steps: 50000                   # steps per window
+     log_frequency: 50
      thermostat:
        type: "Nose"
-       tdamp: 2.0
+       tdamp: 25.0
      plumed:
        enabled: true
        kT: 0.02585
        umbrella_sampling:
          enabled: true
-         config_file: "umbrella_sampling.yaml"   # window definitions
+         config_file: "umbrella_sampling.yaml"
 
 **Step 2 — Define windows in** ``umbrella_sampling.yaml``
 
-Each entry in ``umbrella_windows`` specifies a starting structure and a
-PLUMED input file that applies the restraint for that window:
+Each entry specifies a starting structure and PLUMED file for that window:
 
 .. code-block:: yaml
 
    umbrella_windows:
-     - structure: "window_0/input.xyz"
-       plumed_file: "window_0/plumed_us.dat"
-     - structure: "window_1/input.xyz"
-       plumed_file: "window_1/plumed_us.dat"
-     - structure: "window_2/input.xyz"
-       plumed_file: "window_2/plumed_us.dat"
+     - structure: "configs/config_14.xyz"
+       plumed_file: "configs/plumed_window_000.dat"   # CV centre: 1.4 Å
+     - structure: "configs/config_17.xyz"
+       plumed_file: "configs/plumed_window_001.dat"   # CV centre: 1.7 Å
+     - structure: "configs/config_20.xyz"
+       plumed_file: "configs/plumed_window_002.dat"   # CV centre: 2.0 Å
 
 **Step 3 — Write a PLUMED restraint file for each window**
 
-A typical harmonic restraint on a distance CV:
+Use ``UNITS LENGTH=A TIME=fs ENERGY=eV`` to match SPARC's unit convention.
+Label the restraint so its bias energy is accessible in ``PRINT``:
 
 .. code-block:: text
 
-   # plumed_us.dat — window centred at d = 2.5 Å
-   UNITS LENGTH=A ENERGY=eV TIME=fs
+   # plumed_window_001.dat — window centred at 1.7 Å
+   UNITS LENGTH=A TIME=fs ENERGY=eV
 
-   d: DISTANCE ATOMS=1,2
+   d1: DISTANCE ATOMS=1,8
 
-   RESTRAINT ARG=d AT=2.5 KAPPA=100.0
+   rest: RESTRAINT ARG=d1 AT=1.7 KAPPA=50.0
 
-   PRINT ARG=d FILE=colvar.dat STRIDE=10
+   PRINT ARG=d1,rest.bias FILE=COLVAR STRIDE=50
 
-Each window gets a different ``AT`` value stepping along the CV. The output
-``colvar.dat`` files from all windows can then be combined with WHAM or
-`pymbar` to recover the free energy profile.
+   FLUSH STRIDE=250
+
+Each window gets a different ``AT`` value. Typical ``KAPPA`` range:
+10–100 eV/Å² depending on required overlap between adjacent windows.
+
+**Output**
+
+For each window SPARC writes to ``iter_000000/02.dpmd/window_NNN/``:
+
+.. code-block:: text
+
+   window_000/
+   ├── input.xyz       (copy of starting structure)
+   ├── COLVAR          (CV value and bias energy vs time)
+   └── PLUMED.log
+
+COLVAR columns: time [fs], CV [Å], bias [eV]:
+
+.. code-block:: text
+
+   #! FIELDS time d1 rest.bias
+    0.000000  1.455013  0.075661
+    50.000000  1.454005  0.072914
+
+Collect ``COLVAR`` files from all windows and pass to WHAM or ``pymbar`` to
+recover the potential of mean force (PMF).
 
 .. note::
-   Each window runs sequentially. Output for window ``N`` is written to
-   ``02.dpmd/window_NNN/``.
+   Umbrella sampling can be combined with active learning by setting
+   ``active_learning: true``. SPARC runs QbC model-deviation analysis on each
+   window's trajectory and collects uncertain structures for DFT labelling,
+   improving model accuracy along the CV path.
 
 
 Module Contents

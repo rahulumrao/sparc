@@ -7,7 +7,7 @@ name = "sparc"
 version = "0.2.0"
 description = "A package for DeepMD training and on-the-fly learning with VASP"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
   { name = "Rahul Verma", email = "rverma7@ncsu.edu" }
@@ -27,15 +27,57 @@ dependencies = [
   "pandas",
   "scipy",
   "dpdata",
-  "cython"
+  "cython",
+  "PyYAML",
+  "pytest>=7",
+  "pytest-cov>=4",
 ]
 
 [project.optional-dependencies]
-docs = ["sphinx", "sphinx-rtd-theme", "sphinx-autodoc-typehints"]
+docs = [
+  "sphinx",
+  "sphinx-rtd-theme",
+  "sphinx-autodoc-typehints",
+  "nbsphinx",
+  "pandoc",
+]
 
 [project.scripts]
 sparc = "sparc.sparc:main"
-sparc-correct = "sparc.src.forcecorrection.cli:main"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+src = ["sparc"]
+exclude = [
+  ".git",
+  ".venv",
+  "build",
+  "dist",
+  "docs",
+  "sparc/src/utils/workflow.py",
+  "sparc/src/utils/plot_utils.py",
+  "sparc/src/utils/chemview.py",
+]
+
+[tool.ruff.lint]
+extend-select = [
+  "I",
+  "E",
+  "F",
+  "W",
+]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F401"]
+"scripts/**" = ["T201"]
+"examples/**" = ["T201"]
 
 [tool.setuptools]
 include-package-data = true

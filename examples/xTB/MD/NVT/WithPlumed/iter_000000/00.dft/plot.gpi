@@ -1,4 +1,0 @@
-stats 'fes_d1.dat' us 2 nooutput
-fmin = STATS_min
-
-plot 'fes_d1.dat' us 1:($2-fmin) w l lw 2 title 'FES'

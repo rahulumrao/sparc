@@ -47,22 +47,24 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -151,7 +153,10 @@
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">DFT Calculator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#cp2k-parameters-cp2k-section-in-input-yaml">CP2K parameters (<code class="docutils literal notranslate"><span class="pre">cp2k:</span></code> section in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
@@ -255,6 +260,10 @@
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -347,7 +356,7 @@
 It is divided into sections for different tasks — each task
 (<em>ab initio MD</em>, <em>MLIP training</em>, <em>ML-MD</em>, <em>Active Learning</em>) can be
 enabled or disabled independently.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>sparc.py<span class="w"> </span>-i<span class="w"> </span>input.yaml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sparc<span class="w"> </span>-i<span class="w"> </span>input.yaml
 </pre></div>
 </div>
 <section id="general-settings">
@@ -442,14 +451,23 @@ Set <code class="docutils literal notranslate"><span class="pre">steps:</span> <
 <span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">           </span><span class="c1"># Restart PLUMED from checkpoint            [Optional]</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Bias force correction</strong> (<code class="docutils literal notranslate"><span class="pre">aimd_setup.plumed.force_correction</span></code>) is available for
+PLUMED-biased AIMD trajectories. When PLUMED applies a bias (e.g. metadynamics or
+umbrella sampling), the recorded forces include the bias contribution. Force correction
+subtracts the PLUMED bias forces from each frame before the trajectory is used for
+MLIP training, ensuring models are trained on physical (unbiased) forces only.
+Full documentation will be added in a future release.</p>
+</div>
 <p><strong>NPT ensemble</strong> requires additional parameters:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">aimd_setup</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NPT&quot;</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">tau_t</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100.0</span><span class="w">               </span><span class="c1"># Thermostat time constant (fs)             [Required for NPT]</span>
 <span class="w">  </span><span class="nt">tau_p</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000.0</span><span class="w">              </span><span class="c1"># Barostat time constant (fs)               [Required for NPT]</span>
-<span class="w">  </span><span class="nt">pressure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span><span class="w">              </span><span class="c1"># Target pressure in GPa                    [Required for NPT]</span>
-<span class="w">  </span><span class="nt">compressibility</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">      </span><span class="c1"># Isothermal compressibility (optional)     [Optional]</span>
+<span class="w">  </span><span class="nt">pressure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.01325</span><span class="w">          </span><span class="c1"># Target pressure in bar (1 atm = 1.01325 bar) [Required for NPT]</span>
+<span class="w">  </span><span class="nt">compressibility</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">      </span><span class="c1"># Isothermal compressibility in 1/bar (null = Cu default ~7.1e-7) [Optional]</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -469,6 +487,7 @@ Nose-Hoover thermostat resists rapid temperature changes — use Langevin for ra
 <span class="w">  </span><span class="nt">skip_min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">                 </span><span class="c1"># Skip first N frames from trajectory      [Optional]</span>
 <span class="w">  </span><span class="nt">skip_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">              </span><span class="c1"># Skip frames beyond this index            [Optional]</span>
 <span class="w">  </span><span class="nt">train_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.8</span><span class="w">            </span><span class="c1"># Training fraction (0.0, 1.0); rest = validation [Optional, Default: 0.8]</span>
+<span class="w">  </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span><span class="w">                    </span><span class="c1"># Random seed for train/validation split   [Optional, Default: 42]</span>
 <span class="w">  </span><span class="nt">num_models</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w">               </span><span class="c1"># Number of committee models (min 2)       [Required]</span>
 
 <span class="w">  </span><span class="c1"># ── ML-MD ──</span>
@@ -507,12 +526,13 @@ Nose-Hoover thermostat resists rapid temperature changes — use Langevin for ra
 <section id="fine-tuning-universal-models">
 <h3>Fine-Tuning (Universal Models)<a class="headerlink" href="#fine-tuning-universal-models" title="Link to this heading"></a></h3>
 <p>Optional section to fine-tune a pre-trained universal DeePMD model (DPA-3)
-instead of training from scratch.</p>
+instead of training from scratch.
+See <a class="reference internal" href="finetune.html"><span class="doc">Fine-Tuning Universal Models</span></a> for full details.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">finetune</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                       </span><span class="c1"># Enable fine-tuning               [Optional, Default: false]</span>
 <span class="w">  </span><span class="nt">model_type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;deepmd&quot;</span><span class="w">                 </span><span class="c1"># Model backend                    [Required if enabled]</span>
 <span class="w">  </span><span class="nt">pretrained_model</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DPA3.pt&quot;</span><span class="w">          </span><span class="c1"># Path to pre-trained model        [Required if enabled]</span>
-<span class="w">  </span><span class="nt">model_branch</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Omat24&quot;</span><span class="w">               </span><span class="c1"># Model branch for multi-task models [Optional]</span>
+<span class="w">  </span><span class="nt">model_branch</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Omat24&quot;</span><span class="w">               </span><span class="c1"># Branch for multi-task models     [Optional]</span>
 <span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                     </span><span class="c1"># Fine-tune JSON (uses mlip_setup.input_file if null) [Optional]</span>
 <span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span><span class="w">                 </span><span class="c1"># Starting learning rate           [Optional]</span>
 <span class="w">  </span><span class="nt">device</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cpu&quot;</span><span class="w">                        </span><span class="c1"># &quot;cpu&quot; or &quot;cuda&quot;                  [Optional]</span>
@@ -528,15 +548,34 @@ label them with DFT, and retrain the models.</p>
 <span class="nt">learning_restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">       </span><span class="c1"># Resume AL from last saved checkpoint     [Optional]</span>
 <span class="nt">latest_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">            </span><span class="c1"># Model path to use on restart             [Required if learning_restart]</span>
 <span class="nt">iteration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w">                 </span><span class="c1"># Maximum AL iterations                    [Optional, Default: 10]</span>
+<span class="nt">min_candidates</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">             </span><span class="c1"># Stop if candidates found &lt; this value    [Optional, Default: 1]</span>
 
 <span class="nt">model_dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">f_min_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w">              </span><span class="c1"># Lower force deviation threshold (eV/Å)  [Required]</span>
 <span class="w">  </span><span class="nt">f_max_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.8</span><span class="w">              </span><span class="c1"># Upper force deviation threshold (eV/Å)  [Required]</span>
+<span class="w">  </span><span class="nt">rmsd_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w">        </span><span class="c1"># RMSD duplicate filter (Å)               [Optional, Default: 0.05]</span>
+<span class="w">  </span><span class="nt">exclude_hydrogen</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">      </span><span class="c1"># Exclude H atoms from RMSD calculation   [Optional, Default: true]</span>
 </pre></div>
 </div>
 <p>Structures with force deviation in <code class="docutils literal notranslate"><span class="pre">[f_min_dev,</span> <span class="pre">f_max_dev]</span></code> are selected as
 candidates. Structures below <code class="docutils literal notranslate"><span class="pre">f_min_dev</span></code> are well-described; above <code class="docutils literal notranslate"><span class="pre">f_max_dev</span></code>
 are too uncertain and discarded.</p>
+<p>The AL loop stops when <code class="docutils literal notranslate"><span class="pre">iteration</span></code> is reached <strong>or</strong> when the number of candidates
+found in an iteration falls below <code class="docutils literal notranslate"><span class="pre">min_candidates</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">min_candidates:</span> <span class="pre">1</span></code>, and stops only when zero candidates are found. Set a
+higher value to stop earlier when the model is converging and only a handful of
+uncertain structures remain.</p>
+<p><strong>RMSD duplicate filtering</strong> removes near-identical candidates before DFT labelling.
+Each candidate is compared (via the Kabsch algorithm) against the initial frame and all
+already-accepted candidates in the same iteration. Structures with RMSD below
+<code class="docutils literal notranslate"><span class="pre">rmsd_threshold</span></code> are discarded as duplicates. A log of every accept/skip decision is
+written to <code class="docutils literal notranslate"><span class="pre">dft_candidates/rmsd_filtering.dat</span></code>.
+See <a class="reference internal" href="analysis.html#rmsd-analysis"><span class="std std-ref">RMSD Analysis</span></a> for how to compute RMSD on a trajectory.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Set <code class="docutils literal notranslate"><span class="pre">rmsd_threshold:</span> <span class="pre">0.0</span></code> to disable RMSD filtering and accept all candidates
+within the force-deviation range. Use <code class="docutils literal notranslate"><span class="pre">exclude_hydrogen:</span> <span class="pre">false</span></code> to include H atoms
+in the RMSD calculation.</p>
+</div>
 </section>
 <section id="distance-metrics">
 <h3>Distance Metrics<a class="headerlink" href="#distance-metrics" title="Link to this heading"></a></h3>
@@ -579,10 +618,15 @@ The MD will stop and the frame will be discarded if any constraint is violated.<
 ├── INCAR                (DFT template)
 ├── input.json           (DeepMD training input)
 ├── input.yaml           (SPARC input)
-├── Training_Data/       (processed training data)
+├── Training_Data/
+│   ├── training_data/   (DeepMD npy sets for training)
+│   └── validation_data/ (DeepMD npy sets for validation)
 ├── iter_000000/
 │   ├── 00.dft/          (DFT / AIMD run)
-│   ├── 01.train/        (model training output)
+│   ├── 01.train/        (model training or fine-tuning)
+│   │   ├── training_1/
+│   │   ├── training_2/
+│   │   └── ...
 │   └── 02.dpmd/         (ML-MD run + model deviation)
 ├── iter_000001/
 │   ├── 00.dft/

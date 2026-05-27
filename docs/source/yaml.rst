@@ -10,7 +10,7 @@ enabled or disabled independently.
 
 .. code-block:: bash
 
-    python sparc.py -i input.yaml
+    sparc -i input.yaml
 
 
 General Settings
@@ -103,6 +103,15 @@ Set ``steps: 0`` (default) to skip AIMD entirely.
         kT: 0.02585              # kT in eV (300 K ≈ 0.02585)               [Optional]
         restart: false           # Restart PLUMED from checkpoint            [Optional]
 
+.. note::
+
+    **Bias force correction** (``aimd_setup.plumed.force_correction``) is available for
+    PLUMED-biased AIMD trajectories. When PLUMED applies a bias (e.g. metadynamics or
+    umbrella sampling), the recorded forces include the bias contribution. Force correction
+    subtracts the PLUMED bias forces from each frame before the trajectory is used for
+    MLIP training, ensuring models are trained on physical (unbiased) forces only.
+    Full documentation will be added in a future release.
+
 **NPT ensemble** requires additional parameters:
 
 .. code-block:: yaml
@@ -138,6 +147,7 @@ Controls MLIP model training and ML-MD simulation.
       skip_min: 0                 # Skip first N frames from trajectory      [Optional]
       skip_max: null              # Skip frames beyond this index            [Optional]
       train_ratio: 0.8            # Training fraction (0.0, 1.0); rest = validation [Optional, Default: 0.8]
+      seed: 42                    # Random seed for train/validation split   [Optional, Default: 42]
       num_models: 4               # Number of committee models (min 2)       [Required]
 
       # ── ML-MD ──
@@ -154,7 +164,7 @@ Controls MLIP model training and ML-MD simulation.
 
       # ── Restart exploration ──
       restart_exploration: false  # Start next iteration from a saved frame  [Optional]
-      restart_frame: "candidates" # Frame source: "candidates" or file path  [Optional]
+      restart_frame: "candidates" # Frame source: "last", "random", "candidates" [Optional]
 
       thermostat:
         type: "Nose"
@@ -166,10 +176,57 @@ Controls MLIP model training and ML-MD simulation.
         plumed_file: "plumed.dat"
         kT: 0.02585
         restart: false
+        start_iteration: 0        # Apply PLUMED from this AL iteration      [Optional, Default: 0]
 
         umbrella_sampling:
           enabled: false          # Enable umbrella sampling windows         [Optional]
           config_file: "umbrella_sampling.yaml"  # Window definitions file   [Required if enabled]
+
+.. note::
+
+    **Delayed PLUMED activation** (``mlip_setup.plumed.start_iteration``) lets the first
+    AL iterations run as plain ML-MD to build a reliable base model, then switches on
+    PLUMED-biased sampling (e.g. umbrella sampling or metadynamics) from the specified
+    iteration onward. For example, ``start_iteration: 1`` skips PLUMED in iteration 0
+    and enables it from iteration 1. Default ``0`` applies PLUMED from the start.
+
+
+Restart Exploration
+~~~~~~~~~~~~~~~~~~~
+
+By default each AL iteration starts ML-MD from the original input structure.
+``restart_exploration`` changes this so each iteration seeds its MD from a
+frame saved in the **previous** iteration, helping the model explore new regions
+of phase space rather than re-sampling the same starting geometry.
+
+.. code-block:: yaml
+
+    mlip_setup:
+      restart_exploration: false   # Seed ML-MD from a previous-iteration frame [Optional, Default: false]
+      restart_frame: "candidates"  # Frame selection strategy                   [Optional, Default: "candidates"]
+
+Three strategies are available for ``restart_frame``:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Strategy
+     - Behaviour
+   * - ``"candidates"``
+     - Each run starts from a different randomly chosen DFT-labelled candidate
+       from the previous iteration. Safest — candidates are already validated by DFT.
+   * - ``"last"``
+     - All runs start from the last frame of the previous ML-MD trajectory.
+       Good when a single long run is used (``multiple_run: 1``).
+   * - ``"random"``
+     - Each run starts from a different random frame in the previous ML-MD trajectory.
+       Broadest phase-space coverage but frames are not DFT-validated.
+
+.. note::
+
+    ``restart_exploration`` has no effect in iteration 0 (no previous trajectory exists).
+    It activates from iteration 1 onward.
 
 
 Fine-Tuning (Universal Models)
@@ -177,6 +234,7 @@ Fine-Tuning (Universal Models)
 
 Optional section to fine-tune a pre-trained universal DeePMD model (DPA-3)
 instead of training from scratch.
+See :doc:`finetune` for full details.
 
 .. code-block:: yaml
 
@@ -184,7 +242,7 @@ instead of training from scratch.
       enabled: false                       # Enable fine-tuning               [Optional, Default: false]
       model_type: "deepmd"                 # Model backend                    [Required if enabled]
       pretrained_model: "DPA3.pt"          # Path to pre-trained model        [Required if enabled]
-      model_branch: "Omat24"               # Model branch for multi-task models [Optional]
+      model_branch: "Omat24"               # Branch for multi-task models     [Optional]
       input_file: null                     # Fine-tune JSON (uses mlip_setup.input_file if null) [Optional]
       learning_rate: 0.001                 # Starting learning rate           [Optional]
       device: "cpu"                        # "cpu" or "cuda"                  [Optional]
@@ -203,14 +261,35 @@ label them with DFT, and retrain the models.
     learning_restart: false       # Resume AL from last saved checkpoint     [Optional]
     latest_model: null            # Model path to use on restart             [Required if learning_restart]
     iteration: 10                 # Maximum AL iterations                    [Optional, Default: 10]
+    min_candidates: 1             # Stop if candidates found < this value    [Optional, Default: 1]
 
     model_dev:
       f_min_dev: 0.1              # Lower force deviation threshold (eV/Å)  [Required]
       f_max_dev: 0.8              # Upper force deviation threshold (eV/Å)  [Required]
+      rmsd_threshold: 0.05        # RMSD duplicate filter (Å)               [Optional, Default: 0.05]
+      exclude_hydrogen: true      # Exclude H atoms from RMSD calculation   [Optional, Default: true]
 
 Structures with force deviation in ``[f_min_dev, f_max_dev]`` are selected as
 candidates. Structures below ``f_min_dev`` are well-described; above ``f_max_dev``
 are too uncertain and discarded.
+
+The AL loop stops when ``iteration`` is reached **or** when the number of candidates
+found in an iteration falls below ``min_candidates``. The default is ``min_candidates: 1``, and stops only when zero candidates are found. Set a
+higher value to stop earlier when the model is converging and only a handful of
+uncertain structures remain.
+
+**RMSD duplicate filtering** removes near-identical candidates before DFT labelling.
+Each candidate is compared (via the Kabsch algorithm) against the initial frame and all
+already-accepted candidates in the same iteration. Structures with RMSD below
+``rmsd_threshold`` are discarded as duplicates. A log of every accept/skip decision is
+written to ``dft_candidates/rmsd_filtering.dat``.
+See :ref:`rmsd_analysis` for how to compute RMSD on a trajectory.
+
+.. note::
+
+    Set ``rmsd_threshold: 0.0`` to disable RMSD filtering and accept all candidates
+    within the force-deviation range. Use ``exclude_hydrogen: false`` to include H atoms
+    in the RMSD calculation.
 
 
 Distance Metrics
@@ -266,10 +345,15 @@ Directory Structure
     ├── INCAR                (DFT template)
     ├── input.json           (DeepMD training input)
     ├── input.yaml           (SPARC input)
-    ├── Training_Data/       (processed training data)
+    ├── Training_Data/
+    │   ├── training_data/   (DeepMD npy sets for training)
+    │   └── validation_data/ (DeepMD npy sets for validation)
     ├── iter_000000/
     │   ├── 00.dft/          (DFT / AIMD run)
-    │   ├── 01.train/        (model training output)
+    │   ├── 01.train/        (model training or fine-tuning)
+    │   │   ├── training_1/
+    │   │   ├── training_2/
+    │   │   └── ...
     │   └── 02.dpmd/         (ML-MD run + model deviation)
     ├── iter_000001/
     │   ├── 00.dft/
@@ -280,3 +364,4 @@ Directory Structure
 For a complete worked example see :ref:`quickstart`.
 
 .. _asemd: https://wiki.fysik.dtu.dk/ase/tutorials/md/md.html
+.. _kabsch: https://en.wikipedia.org/wiki/Kabsch_algorithm

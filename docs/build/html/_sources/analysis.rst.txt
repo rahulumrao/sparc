@@ -67,3 +67,42 @@ Function:
    :maxdepth: 1
 
    notebooks/analysisAmmoniaBorate.ipynb
+
+
+.. _rmsd_analysis:
+
+RMSD Analysis
+~~~~~~~~~~~~~
+
+Root Mean Square Deviation (RMSD) measures structural similarity between two
+configurations after optimal alignment (Kabsch algorithm). SPARC exposes this
+via ``sparc.src.utils.rmsd``.
+
+**Per-frame RMSD against the first frame**
+
+Useful for tracking how far the trajectory has moved from the starting
+structure, or for quickly checking whether RMSD-based filtering would
+accept or reject each frame at a given threshold:
+
+.. code-block:: python
+
+   from ase.io import read
+   from sparc.src.utils.rmsd import kabsch_rmsd
+
+   frames  = read("AseTraj.xyz", index=":")
+   ref     = frames[0].get_positions()
+   symbols = frames[0].get_chemical_symbols()
+   threshold = 0.25   # Å — same value as model_dev.rmsd_threshold in input.yaml
+
+   print(f"{'Frame':>6}  {'RMSD (Å)':>10}  {'Status'}")
+   print("-" * 35)
+
+   for i, frame in enumerate(frames):
+       r = kabsch_rmsd(frame.get_positions(), ref, noH=True, symbols=symbols)
+       status = "ACCEPT" if r >= threshold else "SKIP"
+       print(f"{i:>6}  {r:>10.4f}  {status}")
+
+``noH=True`` excludes hydrogen atoms from the RMSD calculation, matching the
+default behaviour of SPARC's candidate filtering (``model_dev.exclude_hydrogen``).
+
+.. autofunction:: sparc.src.utils.rmsd.kabsch_rmsd

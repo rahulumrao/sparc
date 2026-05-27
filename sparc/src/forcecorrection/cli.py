@@ -1,14 +1,14 @@
 """
-CLI entry point for standalone PLUMED bias force correction.
+CLI entry point for PLUMED bias force correction.
 
 Run from the directory containing the PLUMED output files (cv_force, cv_derivs).
 
 Usage
 -----
-sparc-correct --traj AseMD.traj --cv-atoms 1,8
-sparc-correct --traj AseTraj.xyz --cv-atoms 1,8 --cv-atoms 1,2
-sparc-correct --traj AseMD.traj --cv-atoms 1,8 --cv-force-file cv_force --cv-derivs-file cv_derivs
-sparc-correct --help
+sparc --forcecorrect --traj AseMD.traj --cv-atoms 1,8
+sparc --forcecorrect --traj AseTraj.xyz --cv-atoms 1,8 --cv-atoms 1,2 --output corrected.xyz
+sparc --forcecorrect --traj AseMD.traj --cv-atoms 1,8 --cv-force-file cv_force --cv-derivs-file cv_derivs
+sparc --forcecorrect --help
 """
 
 from __future__ import annotations
@@ -29,27 +29,28 @@ def _parse_cv_atoms(value: str) -> list[int]:
         )
     if any(i < 1 for i in indices):
         raise argparse.ArgumentTypeError(
-            f"Atom indices must be 1-based (got {indices})"
+            f"Atom indices must be 1-based, matching PLUMED's ATOMS= convention "
+            f"(e.g. ATOMS=1,8 in plumed.dat → --cv-atoms 1,8). Got: {indices}"
         )
     return indices
 
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="sparc-correct",
+        prog="sparc --forcecorrect",
         description=(
             "Remove PLUMED bias forces from an ASE AIMD trajectory.\n\n"
             "Run from the directory containing the PLUMED output files\n"
             "(cv_force and cv_derivs). Supports ASE binary (.traj) and\n"
-            "extxyz (.xyz) trajectory formats. The file is corrected in-place."
+            "extxyz (.xyz) trajectory formats."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Examples:\n"
-            "  sparc-correct --traj AseMD.traj --cv-atoms 1,8\n"
-            "  sparc-correct --traj AseTraj.xyz --cv-atoms 1,8 --cv-atoms 1,2\n"
-            "  sparc-correct --traj AseMD.traj --cv-atoms 1,4,7 \\\n"
-            "                --cv-force-file cv_force --cv-derivs-file cv_derivs\n"
+            "  sparc --forcecorrect --traj AseMD.traj --cv-atoms 1,8\n"
+            "  sparc --forcecorrect --traj AseTraj.xyz --cv-atoms 1,8 --output corrected.xyz\n"
+            "  sparc --forcecorrect --traj AseMD.traj --cv-atoms 1,4,7 \\\n"
+            "                  --cv-force-file cv_force --cv-derivs-file cv_derivs\n"
         ),
     )
     p.add_argument(
@@ -81,6 +82,15 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="FILE",
         help="PLUMED DUMPDERIVATIVES output filename (default: cv_derivs).",
     )
+    p.add_argument(
+        "--output", "-o",
+        default=None,
+        metavar="FILE",
+        help=(
+            "Write corrected trajectory here instead of overwriting --traj. "
+            "Format inferred from extension (.traj or .xyz)."
+        ),
+    )
     return p
 
 
@@ -92,11 +102,14 @@ def main(argv: list[str] | None = None) -> None:
     if not traj_path.exists():
         parser.error(f"Trajectory file not found: {traj_path}")
 
+    output_path = Path(args.output) if args.output else None
+
     correct_aimd_forces(
         traj_path=traj_path,
         cv_atoms=args.cv_atoms,
         cv_force_file=args.cv_force_file,
         cv_derivs_file=args.cv_derivs_file,
+        output_path=output_path,
         # dft_dir defaults to traj_path.parent (set inside correct_aimd_forces)
     )
 

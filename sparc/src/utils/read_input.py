@@ -219,11 +219,14 @@ class MLIPPlumedConfig:
     plumed_file: str = "plumed.dat"
     restart: bool = False
     kT: float = 0.02585
+    start_iteration: int = 0
     umbrella_sampling: UmbrellaSamplingConfig = field(default_factory=UmbrellaSamplingConfig)
-    
+
     def __post_init__(self):
         if self.enabled and not Path(self.plumed_file).exists():
             SparcLog(f"Warning: PLUMED file not found: {self.plumed_file}")
+        if self.start_iteration < 0:
+            raise ValidationError("plumed.start_iteration must be >= 0")
 
 
 
@@ -232,12 +235,16 @@ class ModelDeviationConfig:
     """Model deviation thresholds for active learning."""
     f_min_dev: float = 0.1
     f_max_dev: float = 0.8
-    
+    rmsd_threshold: float = 0.05
+    exclude_hydrogen: bool = True
+
     def __post_init__(self):
         if self.f_min_dev < 0 or self.f_max_dev < 0:
             raise ValidationError("Deviation thresholds must be non-negative")
         if self.f_min_dev >= self.f_max_dev:
             raise ValidationError("f_min_dev must be less than f_max_dev")
+        if self.rmsd_threshold < 0:
+            raise ValidationError("rmsd_threshold must be non-negative")
 
 
 
@@ -295,8 +302,8 @@ class MLIPSetupConfig:
     epot_threshold: Optional[float] = 2.5   # eV
     seed: int = 42
     restart: bool = False                       # Resume ML-MD from checkpoint
-    restart_exploration: bool = False,
-    restart_frame: str = "candidates",
+    restart_exploration: bool = False
+    restart_frame: str = "candidates"
     plumed: MLIPPlumedConfig = field(default_factory=MLIPPlumedConfig)
     
     # NPT-specific parameters
@@ -354,6 +361,7 @@ class SparcConfig:
     learning_restart: bool = False
     latest_model: str = None
     iteration: int = 10
+    min_candidates: int = 1
     model_dev: ModelDeviationConfig = field(default_factory=ModelDeviationConfig)
     
     finetune: FineTuneConfig = field(default_factory=FineTuneConfig)
@@ -365,6 +373,8 @@ class SparcConfig:
         """Validate configuration after initialization."""
         if self.iteration < 1:
             raise ValidationError("Number of iterations must be at least 1")
+        if self.min_candidates < 1:
+            raise ValidationError("min_candidates must be at least 1")
     
     @classmethod
     def from_yaml(cls, yaml_file: str) -> 'SparcConfig':
@@ -453,6 +463,7 @@ class SparcConfig:
                 learning_restart=data.get('learning_restart', False),
                 latest_model=data.get('latest_model', None),
                 iteration=data.get('iteration', 10),
+                min_candidates=data.get('min_candidates', 1),
                 model_dev=model_dev,
                 finetune=finetune,
                 distance_metrics=distance_metrics,

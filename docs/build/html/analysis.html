@@ -49,22 +49,24 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -153,7 +155,10 @@
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">DFT Calculator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#cp2k-parameters-cp2k-section-in-input-yaml">CP2K parameters (<code class="docutils literal notranslate"><span class="pre">cp2k:</span></code> section in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
@@ -255,6 +260,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -413,6 +422,41 @@ extracts max force deviation, and plots the results.</p>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
 </div>
+</section>
+<section id="rmsd-analysis">
+<span id="id1"></span><h3>RMSD Analysis<a class="headerlink" href="#rmsd-analysis" title="Link to this heading"></a></h3>
+<p>Root Mean Square Deviation (RMSD) measures structural similarity between two
+configurations after optimal alignment (Kabsch algorithm). SPARC exposes this
+via <code class="docutils literal notranslate"><span class="pre">sparc.src.utils.rmsd</span></code>.</p>
+<p><strong>Per-frame RMSD against the first frame</strong></p>
+<p>Useful for tracking how far the trajectory has moved from the starting
+structure, or for quickly checking whether RMSD-based filtering would
+accept or reject each frame at a given threshold:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.rmsd</span><span class="w"> </span><span class="kn">import</span> <span class="n">kabsch_rmsd</span>
+
+<span class="n">frames</span>  <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;AseTraj.xyz&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<span class="n">ref</span>     <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_positions</span><span class="p">()</span>
+<span class="n">symbols</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span>
+<span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.25</span>   <span class="c1"># Å — same value as model_dev.rmsd_threshold in input.yaml</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Frame&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;RMSD (Å)&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;Status&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">kabsch_rmsd</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">get_positions</span><span class="p">(),</span> <span class="n">ref</span><span class="p">,</span> <span class="n">noH</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">symbols</span><span class="o">=</span><span class="n">symbols</span><span class="p">)</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;ACCEPT&quot;</span> <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="n">threshold</span> <span class="k">else</span> <span class="s2">&quot;SKIP&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">&gt;10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">noH=True</span></code> excludes hydrogen atoms from the RMSD calculation, matching the
+default behaviour of SPARC’s candidate filtering (<code class="docutils literal notranslate"><span class="pre">model_dev.exclude_hydrogen</span></code>).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="sparc.src.utils.rmsd.kabsch_rmsd">
+<span class="sig-prename descclassname"><span class="pre">sparc.src.utils.rmsd.</span></span><span class="sig-name descname"><span class="pre">kabsch_rmsd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noH</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/utils/rmsd.html#kabsch_rmsd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.utils.rmsd.kabsch_rmsd" title="Link to this definition"></a></dt>
+<dd><p>Returns the RMSD after aligining both P and Q vector.</p>
+</dd></dl>
+
 </section>
 </section>
 </section>

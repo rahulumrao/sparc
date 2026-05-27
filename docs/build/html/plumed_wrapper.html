@@ -49,22 +49,24 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -153,7 +155,10 @@
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">DFT Calculator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#cp2k-parameters-cp2k-section-in-input-yaml">CP2K parameters (<code class="docutils literal notranslate"><span class="pre">cp2k:</span></code> section in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
@@ -255,6 +260,10 @@
 <li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -401,57 +410,93 @@ independently. Set <code class="docutils literal notranslate"><span class="pre">
 <h2>Umbrella Sampling<a class="headerlink" href="#umbrella-sampling" title="Link to this heading"></a></h2>
 <p>SPARC supports umbrella sampling across multiple windows via the
 <code class="docutils literal notranslate"><span class="pre">umbrella_sampling</span></code> block inside <code class="docutils literal notranslate"><span class="pre">mlip_setup.plumed</span></code>. Each window runs
-an independent ML-MD trajectory with its own structure and PLUMED restraint
-file.</p>
+an independent ML-MD trajectory with its own pre-equilibrated structure and
+PLUMED restraint file. Windows execute sequentially; output for window <code class="docutils literal notranslate"><span class="pre">N</span></code>
+is written to <code class="docutils literal notranslate"><span class="pre">iter_000000/02.dpmd/window_NNN/</span></code>.</p>
+<p>Recommended directory layout — keep all window structures and PLUMED files
+in a <code class="docutils literal notranslate"><span class="pre">configs/</span></code> subdirectory alongside <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Project Root/
+├── structure.xyz
+├── input.yaml
+├── umbrella_sampling.yaml
+└── configs/
+    ├── config_14.xyz          (structure near CV = 1.4 Å)
+    ├── config_17.xyz
+    ├── ...
+    ├── plumed_window_000.dat  (restraint at 1.4 Å)
+    ├── plumed_window_001.dat  (restraint at 1.7 Å)
+    └── ...
+</pre></div>
+</div>
 <p><strong>Step 1 — Enable umbrella sampling in</strong> <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mlip_setup</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">MdSimulation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
-<span class="w">  </span><span class="nt">md_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span>
+<span class="w">  </span><span class="nt">md_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50000</span><span class="w">                   </span><span class="c1"># steps per window</span>
+<span class="w">  </span><span class="nt">log_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span>
-<span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
+<span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span>
 <span class="w">  </span><span class="nt">plumed</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">    </span><span class="nt">kT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.02585</span>
 <span class="w">    </span><span class="nt">umbrella_sampling</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">      </span><span class="nt">config_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;umbrella_sampling.yaml&quot;</span><span class="w">   </span><span class="c1"># window definitions</span>
+<span class="w">      </span><span class="nt">config_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;umbrella_sampling.yaml&quot;</span>
 </pre></div>
 </div>
 <p><strong>Step 2 — Define windows in</strong> <code class="docutils literal notranslate"><span class="pre">umbrella_sampling.yaml</span></code></p>
-<p>Each entry in <code class="docutils literal notranslate"><span class="pre">umbrella_windows</span></code> specifies a starting structure and a
-PLUMED input file that applies the restraint for that window:</p>
+<p>Each entry specifies a starting structure and PLUMED file for that window:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">umbrella_windows</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;window_0/input.xyz&quot;</span>
-<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;window_0/plumed_us.dat&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;window_1/input.xyz&quot;</span>
-<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;window_1/plumed_us.dat&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;window_2/input.xyz&quot;</span>
-<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;window_2/plumed_us.dat&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;configs/config_14.xyz&quot;</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;configs/plumed_window_000.dat&quot;</span><span class="w">   </span><span class="c1"># CV centre: 1.4 Å</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;configs/config_17.xyz&quot;</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;configs/plumed_window_001.dat&quot;</span><span class="w">   </span><span class="c1"># CV centre: 1.7 Å</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;configs/config_20.xyz&quot;</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;configs/plumed_window_002.dat&quot;</span><span class="w">   </span><span class="c1"># CV centre: 2.0 Å</span>
 </pre></div>
 </div>
 <p><strong>Step 3 — Write a PLUMED restraint file for each window</strong></p>
-<p>A typical harmonic restraint on a distance CV:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># plumed_us.dat — window centred at d = 2.5 Å
-UNITS LENGTH=A ENERGY=eV TIME=fs
+<p>Use <code class="docutils literal notranslate"><span class="pre">UNITS</span> <span class="pre">LENGTH=A</span> <span class="pre">TIME=fs</span> <span class="pre">ENERGY=eV</span></code> to match SPARC’s unit convention.
+Label the restraint so its bias energy is accessible in <code class="docutils literal notranslate"><span class="pre">PRINT</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># plumed_window_001.dat — window centred at 1.7 Å
+UNITS LENGTH=A TIME=fs ENERGY=eV
 
-d: DISTANCE ATOMS=1,2
+d1: DISTANCE ATOMS=1,8
 
-RESTRAINT ARG=d AT=2.5 KAPPA=100.0
+rest: RESTRAINT ARG=d1 AT=1.7 KAPPA=50.0
 
-PRINT ARG=d FILE=colvar.dat STRIDE=10
+PRINT ARG=d1,rest.bias FILE=COLVAR STRIDE=50
+
+FLUSH STRIDE=250
 </pre></div>
 </div>
-<p>Each window gets a different <code class="docutils literal notranslate"><span class="pre">AT</span></code> value stepping along the CV. The output
-<code class="docutils literal notranslate"><span class="pre">colvar.dat</span></code> files from all windows can then be combined with WHAM or
-<span class="math notranslate nohighlight">\(pymbar\)</span> to recover the free energy profile.</p>
+<p>Each window gets a different <code class="docutils literal notranslate"><span class="pre">AT</span></code> value. Typical <code class="docutils literal notranslate"><span class="pre">KAPPA</span></code> range:
+10–100 eV/Å² depending on required overlap between adjacent windows.</p>
+<p><strong>Output</strong></p>
+<p>For each window SPARC writes to <code class="docutils literal notranslate"><span class="pre">iter_000000/02.dpmd/window_NNN/</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>window_000/
+├── input.xyz       (copy of starting structure)
+├── COLVAR          (CV value and bias energy vs time)
+└── PLUMED.log
+</pre></div>
+</div>
+<p>COLVAR columns: time [fs], CV [Å], bias [eV]:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#! FIELDS time d1 rest.bias
+ 0.000000  1.455013  0.075661
+ 50.000000  1.454005  0.072914
+</pre></div>
+</div>
+<p>Collect <code class="docutils literal notranslate"><span class="pre">COLVAR</span></code> files from all windows and pass to WHAM or <code class="docutils literal notranslate"><span class="pre">pymbar</span></code> to
+recover the potential of mean force (PMF).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Each window runs sequentially. Output for window <code class="docutils literal notranslate"><span class="pre">N</span></code> is written to
-<code class="docutils literal notranslate"><span class="pre">02.dpmd/window_NNN/</span></code>.</p>
+<p>Umbrella sampling can be combined with active learning by setting
+<code class="docutils literal notranslate"><span class="pre">active_learning:</span> <span class="pre">true</span></code>. SPARC runs QbC model-deviation analysis on each
+window’s trajectory and collects uncertain structures for DFT labelling,
+improving model accuracy along the CV path.</p>
 </div>
 </section>
 <section id="module-sparc.src.plumed_wrapper">

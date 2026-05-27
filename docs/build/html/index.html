@@ -48,22 +48,24 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -259,6 +261,10 @@
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -346,36 +352,40 @@
            <div itemprop="articleBody">
              
   <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
-  <img src="_static/sparc_logo.png" alt="SPARC Logo" style="height: 150px; object-fit: contain;">
-  <span style="font-size: 1.5em; font-weight: bold;">Welcome to SPARC's documentation!</span>
+   <img src="_static/sparc_logo.png" alt="SPARC Logo" style="height: 150px; object-fit: contain;">
+   <span style="font-size: 1.5em; font-weight: bold;">Welcome to SPARC's documentation!</span>
 </div><p><strong>SPARC</strong> (<strong>S</strong>mart <strong>P</strong>otential with <strong>A</strong>tomistic <strong>R</strong>are Events and <strong>C</strong>ontinuous Learning)
-is a Python package that implements an automated active learning workflow for developing machine learning
+is a Python package that automates the active learning workflow for developing machine learning
 interatomic potentials (MLIPs). It is built on top of <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a> and ties together DFT labelling,
 MLIP training, and ML-driven molecular dynamics into a single iterative loop.</p>
 <section id="scientific-overview">
 <h1>Scientific Overview<a class="headerlink" href="#scientific-overview" title="Link to this heading"></a></h1>
-<p>SPARC employs an active learning loop to iteratively refine machine learning potentials using
-first-principles calculations. Each iteration runs three stages: DFT/AIMD labelling (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>),
-MLIP training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>), and ML-MD with Query-by-Committee candidate selection (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>).
-The loop continues until the model converges for the sampled region of phase space.
+<p>Training a stable and reactive MLIP requires a training dataset that covers the configuration space
+relevant to the target conditions. <code class="docutils literal notranslate"><span class="pre">SPARC</span></code> package automates the generation of training dataset through
+an active learning loop that run in stages per iteration: ab initio MD or first-principles calculations to generate reference data (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>), MLIP training on the accumulated dataset (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>), and ML-driven MD
+together with advanced sampling techniques to generate a diverse dataset of candidate structures (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>).
+Structures where the inter-model force deviation exceeds a threshold, are selected as candidates for labelling and passed back. The loop stops when no new uncertain structures are found, meaning the potential
+energy surface is well represented for the thermodynamic conditions of interest.
 See <a class="reference internal" href="user_guide/workflow_overview.html"><span class="doc">Workflow Overview</span></a> for a full description.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a></li>
 </ul>
 </li>
@@ -496,7 +506,7 @@ See <a class="reference internal" href="user_guide/workflow_overview.html"><span
 <section id="key-features">
 <h1>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h1>
 <ul class="simple">
-<li><p><strong>Six DFT engines</strong> — VASP, CP2K, ORCA, xTB, Quantum ESPRESSO, and Gaussian via <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a> calculators</p></li>
+<li><p><strong>DFT engines</strong> — VASP, CP2K, ORCA, xTB, Quantum ESPRESSO, and Gaussian via <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a> calculators</p></li>
 <li><p><strong>DeepMD-kit v2 and v3</strong> — supports TensorFlow and PyTorch backends; automatically detected at runtime</p></li>
 <li><p><strong>GNN potentials</strong> — MACE and NequIP training via <a class="reference external" href="https://github.com/deepmodeling/deepmd-gnn">deepmd-gnn</a> using the same workflow</p></li>
 <li><p><strong>Fine-tuning</strong> — initialise from pre-trained DPA-3 universal models instead of training from scratch</p></li>

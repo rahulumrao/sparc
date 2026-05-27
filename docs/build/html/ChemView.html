@@ -49,22 +49,24 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -153,7 +155,10 @@
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">DFT Calculator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculator.html#template-file-reference">Template File Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calculator.html#cp2k-parameters-cp2k-section-in-input-yaml">CP2K parameters (<code class="docutils literal notranslate"><span class="pre">cp2k:</span></code> section in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
@@ -255,6 +260,10 @@
 <li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -428,11 +437,11 @@ info panel.</p>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;angle:i,j,k&quot;</span></code></p></td>
 <td><p>deg</p></td>
-<td><p>Angle at atom <em>j</em> in the <em>i–j–k</em> triplet</p></td>
+<td><p>Angle at atom <em>j</em> in the <em>i-j-k</em> triplet</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;dihedral:i,j,k,l&quot;</span></code></p></td>
 <td><p>deg</p></td>
-<td><p>Dihedral angle for the <em>i–j–k–l</em> quadruplet</p></td>
+<td><p>Dihedral angle for the <em>i-j-k-l</em> quadruplet</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;volume&quot;</span></code></p></td>
 <td><p>Å³</p></td>
@@ -514,8 +523,11 @@ type appears more than once, use <code class="docutils literal notranslate"><spa
 <h2>Constraints<a class="headerlink" href="#constraints" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>All frames must contain the same number of atoms.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">energy</span></code> and force-based specs require a calculator or pre-stored arrays
-on the <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects. Missing values are filled with <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">energy</span></code> and force-based specs require a calculator or pre-stored arrays</dt><dd><p>on the <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects. Missing values are filled with <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p>
+</dd>
+</dl>
+</li>
 <li><p>Duplicate property names are not allowed. Use <code class="docutils literal notranslate"><span class="pre">names</span></code> to disambiguate.</p></li>
 </ul>
 </section>
