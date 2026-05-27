@@ -553,7 +553,7 @@ def load_config(input_file: str = "input.yaml") -> SparcConfig:
         # Header
         # SparcLog("=" * 80)
         SparcLog("SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning")
-        SparcLog("Version: 0.2.0")
+        SparcLog("Version: 0.2")
         print("")
         SparcLog("=" * 80)
         SparcLog(f"Working directory: {os.getcwd()}")
