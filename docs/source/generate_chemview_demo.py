@@ -4,7 +4,18 @@ Generate a self-contained ChemView demo HTML for the Sphinx docs.
 Usage (requires ASE):
     python docs/source/generate_chemview_demo.py [path/to/file.traj]
 
-Output: docs/source/_static/chemview_demo.html
+Outputs:
+    docs/source/_static/chemview_demo.html   — standalone viewer (no CDN)
+    docs/source/_static/chemview_demo.json   — raw chemiscope dataset
+
+The bundled chemiscope JS/CSS must be present in _static/:
+    chemiscope.min.js, chemiscope-sphinx.js, chemiscope-sphinx.css
+
+Copy them from an installed chemiscope package:
+    CHEM=$(python -c "import chemiscope, os; print(os.path.dirname(chemiscope.__file__))")
+    cp $CHEM/sphinx/static/chemiscope.min.js    docs/source/_static/
+    cp $CHEM/sphinx/static/chemiscope-sphinx.js  docs/source/_static/
+    cp $CHEM/sphinx/static/chemiscope-sphinx.css docs/source/_static/
 """
 import json
 import sys
@@ -13,10 +24,9 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_TRAJ = PROJECT_ROOT / "examples/CP2K/workflow/TrajCombined.traj"
-OUTPUT_HTML = Path(__file__).resolve().parent / "_static/chemview_demo.html"
-
-CHEMISCOPE_CSS = "https://chemiscope.org/chemiscope.min.css"
-CHEMISCOPE_JS  = "https://chemiscope.org/chemiscope.min.js"
+STATIC_DIR   = Path(__file__).resolve().parent / "_static"
+OUTPUT_HTML  = STATIC_DIR / "chemview_demo.html"
+OUTPUT_JSON  = STATIC_DIR / "chemview_demo.json"
 
 
 def _build_dataset(frames):
@@ -67,13 +77,13 @@ def _build_dataset(frames):
         "BN_distance": {
             "target": "structure",
             "values": bn_distances,
-            "units":  "Å",
-            "description": "B–N bond distance",
+            "units":  "Angstrom",
+            "description": "B-N bond distance",
         },
         "force_norm": {
             "target": "atom",
             "values": force_norms,
-            "units":  "eV/Å",
+            "units":  "eV/Angstrom",
             "description": "Force magnitude per atom",
         },
         "atom_index": {
@@ -101,7 +111,7 @@ def _build_dataset(frames):
     }
 
     return {
-        "meta":         {"name": "ChemView Demo — Ammonia Borane"},
+        "meta":         {"name": "ChemView Demo - Ammonia Borane"},
         "structures":   structures,
         "properties":   properties,
         "environments": environments,
@@ -110,60 +120,79 @@ def _build_dataset(frames):
 
 
 def _render_html(dataset_json: str) -> str:
+    # Correct chemiscope API (from chemiscope-sphinx.js):
+    #   config = { map: id, info: id, meta: id, structure: id }   (DOM element IDs)
+    #   Chemiscope.DefaultVisualizer.load(config, dataset, warnings)
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ChemView Demo</title>
-  <link rel="stylesheet" href="{CHEMISCOPE_CSS}">
+  <link rel="stylesheet" href="chemiscope-sphinx.css">
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-    body {{ background: #f5f7fa; font-family: system-ui, sans-serif; height: 100vh; }}
-    #chemview {{ width: 100%; height: 100vh; }}
+    html, body {{ height: 100%; background: #f5f7fa; font-family: system-ui, sans-serif; }}
+    #root {{ height: 100vh; display: flex; flex-direction: column; }}
     #banner {{
-      position: absolute; top: 0; left: 0; right: 0; z-index: 10;
-      background: rgba(44,62,80,.85); color: #ecf0f1;
+      flex-shrink: 0;
+      background: rgba(44,62,80,.9); color: #ecf0f1;
       padding: 6px 14px; font-size: 13px;
       display: flex; align-items: center; gap: 12px;
     }}
-    #banner a {{ color: #3498db; }}
-    #loading {{
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 1.1em; color: #555;
+    #banner strong {{ color: #fff; }}
+    #viewer-root {{ flex: 1; overflow: hidden; }}
+    #viewer-root .chemiscope-sphinx {{ height: 100%; }}
+    #viewer-root .visualizer-container {{ height: 100%; }}
+    #err {{
+      padding: 2em; color: #c0392b; background: #fdf3f2;
+      border-left: 4px solid #c0392b; margin: 1em;
     }}
   </style>
 </head>
 <body>
+<div id="root">
   <div id="banner">
     <strong>ChemView Demo</strong>
-    Ammonia borane (NH₃BH₃) · 264 frames · B–N distance vs frame, coloured by ΔE
-    &nbsp;|&nbsp;
-    <a href="https://chemiscope.org" target="_blank">chemiscope.org</a>
+    Ammonia borane (NH₃BH₃) &middot; 264 frames &middot; B&ndash;N distance vs frame, coloured by &Delta;E
   </div>
-  <div id="loading">Loading viewer…</div>
-  <div id="chemview"></div>
+  <div id="viewer-root">
+    <div class="chemiscope-sphinx">
+      <div class="visualizer-container">
+        <div class="visualizer-column-right">
+          <div id="cv-meta"></div>
+          <div id="cv-map"></div>
+        </div>
+        <div class="visualizer-column">
+          <div id="cv-structure" class="visualizer-item"></div>
+          <div id="cv-info"      class="visualizer-info"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <script>const DATASET = {dataset_json};</script>
-  <script src="{CHEMISCOPE_JS}"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {{
-      document.getElementById('loading').remove();
-      try {{
-        await Chemiscope.DefaultVisualizer.load({{
-          element: document.getElementById('chemview'),
-          ...DATASET,
-        }});
-      }} catch (err) {{
-        document.getElementById('chemview').innerHTML =
-          '<p style="padding:2em;color:#c0392b;">' +
-          'Could not load the chemiscope widget.<br>' +
-          'Make sure you are connected to the internet (loads JS from chemiscope.org).<br>' +
-          '<code>' + err + '</code></p>';
-      }}
-    }});
-  </script>
+<script>const DATASET = {dataset_json};</script>
+<script src="chemiscope.min.js"></script>
+<script>
+(async () => {{
+  const config = {{
+    map:       'cv-map',
+    info:      'cv-info',
+    meta:      'cv-meta',
+    structure: 'cv-structure',
+  }};
+  try {{
+    const warnings = new Chemiscope.Warnings();
+    await Chemiscope.DefaultVisualizer.load(config, DATASET, warnings);
+  }} catch (err) {{
+    const div = document.createElement('div');
+    div.id = 'err';
+    div.innerHTML = '<strong>ChemView failed to load:</strong><br><code>' + err + '</code>';
+    document.getElementById('viewer-root').replaceWith(div);
+  }}
+}})();
+</script>
 </body>
 </html>"""
 
@@ -183,12 +212,15 @@ def main():
     print(f"  {len(frames)} frames, {len(frames[0])} atoms/frame")
 
     dataset = _build_dataset(frames)
-    dataset_json = json.dumps(dataset, allow_nan=False)
+    dataset_json = json.dumps(dataset)
 
-    OUTPUT_HTML.parent.mkdir(parents=True, exist_ok=True)
+    STATIC_DIR.mkdir(parents=True, exist_ok=True)
+
+    OUTPUT_JSON.write_text(dataset_json, encoding="utf-8")
+    print(f"Wrote {OUTPUT_JSON}  ({OUTPUT_JSON.stat().st_size // 1024} KB)")
+
     OUTPUT_HTML.write_text(_render_html(dataset_json), encoding="utf-8")
-    size_kb = OUTPUT_HTML.stat().st_size // 1024
-    print(f"Wrote {OUTPUT_HTML}  ({size_kb} KB)")
+    print(f"Wrote {OUTPUT_HTML}  ({OUTPUT_HTML.stat().st_size // 1024} KB)")
 
 
 if __name__ == "__main__":
