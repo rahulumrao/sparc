@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sparc.src.deepmd &mdash; SPARC 0.1.0 documentation</title>
+  <title>sparc.src.deepmd &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f7b18df9" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/documentation_options.js?v=10f1778b"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -41,25 +41,27 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -70,6 +72,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#dft-calculator">DFT Calculator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#mlip-setup">MLIP Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#active-learning">Active Learning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#distance-metrics">Distance Metrics</a></li>
@@ -99,29 +104,71 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/workflow_overview.html">Workflow Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-1-dft-aimd-00-dft">Stage 1 — DFT / AIMD (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/active_learning.html">Active Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#vasp">VASP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#cp2k">CP2K</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#orca">ORCA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#xtb">xTB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#quantum-espresso-qe">Quantum ESPRESSO (QE)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#gaussian">Gaussian</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/fine_tuning.html">Fine-Tuning vs. Training From Scratch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#training-from-scratch-default">Training from scratch (default)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#fine-tuning-a-deepmd-universal-model">Fine-tuning a DeePMD universal model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#when-to-use-fine-tuning">When to use fine-tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html">Enhanced Sampling with PLUMED</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#any-plumed-collective-variable-or-bias-can-be-used">Any PLUMED collective variable or bias can be used</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#example-sprint-coordinates">Example: SPRINT coordinates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#umbrella-sampling">Umbrella sampling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../calculator.html">DFT Calculator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#configuration-input-yaml">Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#template-file-reference">Template File Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#cp2k-parameters-cp2k-section-in-input-yaml">CP2K parameters (<code class="docutils literal notranslate"><span class="pre">cp2k:</span></code> section in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../calculator.html#module-sparc.src.calculator">Module Contents</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#classes">Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#functions">Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.CalculatorError"><code class="docutils literal notranslate"><span class="pre">CalculatorError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.input_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.input_config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.dft_config"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.dft_config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.print_screen"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.print_screen</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.vasp"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.cp2k"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.orca"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.xtb"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id0"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.cp2k()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.espresso"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.espresso()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.gaussian"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.gaussian()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id1"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id2"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#id3"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.orca"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.orca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.vasp"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.vasp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.xtb"><code class="docutils literal notranslate"><span class="pre">SetupDFTCalculator.xtb()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../calculator.html#sparc.src.calculator.dft_calculator"><code class="docutils literal notranslate"><span class="pre">dft_calculator()</span></code></a></li>
@@ -132,6 +179,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../deepmd.html">DeepMD Setup</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#module-contents">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
@@ -141,6 +189,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.update_json"><code class="docutils literal notranslate"><span class="pre">update_json()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#graph-neural-network-potentials-gnn">Graph Neural Network Potentials (GNN)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#references">References</a></li>
 </ul>
 </li>
@@ -148,7 +197,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#deepmd-fine-tuning">DeePMD Fine-Tuning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#mace-fine-tuning">MACE Fine-Tuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#integration-with-active-learning">Integration with Active Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../finetune.html#module-sparc.src.finetune">Module Contents</a><ul>
@@ -163,6 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../md.html">Molecular Dynamics</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../md.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../md.html#features">Features:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../md.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../md.html#module-sparc.src.ase_md">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.CalculateDFTEnergy"><code class="docutils literal notranslate"><span class="pre">CalculateDFTEnergy()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.ExecuteAbInitioDynamics"><code class="docutils literal notranslate"><span class="pre">ExecuteAbInitioDynamics()</span></code></a></li>
@@ -176,12 +225,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../md.html#sparc.src.ase_md.lammps_md"><code class="docutils literal notranslate"><span class="pre">lammps_md()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../md.html#functions">Functions:</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../md.html#id0"><code class="docutils literal notranslate"><span class="pre">NoseNVT()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../md.html#id1"><code class="docutils literal notranslate"><span class="pre">LangevinNVT()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../md.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../md.html#references">References</a></li>
 </ul>
 </li>
@@ -197,7 +240,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plumed_wrapper.html">Plumed</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#overview">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#sprint-coordinates">SPRINT Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#enabling-plumed-in-input-yaml">Enabling PLUMED in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
@@ -208,9 +255,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#function">Function:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -257,49 +307,11 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/index.html#core-modules">Core Modules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/index.html#utilities">Utilities</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/workflow_overview.html">Workflow Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-1-dft-aimd-00-dft">Stage 1 — DFT / AIMD (<code class="docutils literal notranslate"><span class="pre">00.dft</span></code>)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#vasp">VASP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#cp2k">CP2K</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#orca">ORCA</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#xtb">xTB</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#quantum-espresso-qe">Quantum ESPRESSO (QE)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/dft_engines.html#gaussian">Gaussian</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/fine_tuning.html">Fine-Tuning vs. Training From Scratch</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#training-from-scratch-default">Training from scratch (default)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#fine-tuning-universal-models">Fine-tuning universal models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/fine_tuning.html#when-to-use-fine-tuning">When to use fine-tuning</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html">Enhanced Sampling with PLUMED</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#recommended-strategy-sprint-pbmetad">Recommended strategy: SPRINT + PBMetaD</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/plumed_enhanced_sampling.html#umbrella-sampling">Umbrella sampling</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
@@ -353,13 +365,13 @@
 <span class="sd">Supports DeePMD-kit v2 and v3 with automatic backend detection.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="c1">################################################################</span>
 <span class="c1"># Third party imports</span>
@@ -371,7 +383,9 @@
 
 <span class="c1">################################################################</span>
 <span class="c1"># Configure logging</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+<span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1">################################################################</span>
@@ -380,6 +394,7 @@
 
 <span class="c1"># Module-level cache for version detection</span>
 <span class="n">_cached_version</span> <span class="o">=</span> <span class="kc">None</span>
+
 
 <div class="viewcode-block" id="get_version">
 <a class="viewcode-back" href="../../../deepmd.html#sparc.src.deepmd.get_version">[docs]</a>
@@ -403,25 +418,22 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Get version</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">],</span>
-            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span>
+            <span class="p">[</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">],</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span>
         <span class="p">)</span>
         <span class="n">version_str</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        
+
         <span class="c1"># Parse version number</span>
-        <span class="k">if</span> <span class="s1">&#39;v3&#39;</span> <span class="ow">in</span> <span class="n">version_str</span> <span class="ow">or</span> <span class="n">version_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;3&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;v3&quot;</span> <span class="ow">in</span> <span class="n">version_str</span> <span class="ow">or</span> <span class="n">version_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">):</span>
             <span class="n">major_version</span> <span class="o">=</span> <span class="mi">3</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">major_version</span> <span class="o">=</span> <span class="mi">2</span>
-        
+
         <span class="c1"># For v3, detect backend by testing which one works</span>
         <span class="k">if</span> <span class="n">major_version</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">backend</span> <span class="o">=</span> <span class="n">get_backend</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">backend</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
-        
+            <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;tensorflow&quot;</span>
+
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected DeePMD-kit v</span><span class="si">{</span><span class="n">major_version</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> backend&quot;</span><span class="p">)</span>
         <span class="n">_cached_version</span> <span class="o">=</span> <span class="p">(</span><span class="n">major_version</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_cached_version</span>
@@ -429,7 +441,7 @@
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Could not detect DeePMD version: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Assuming DeePMD-kit v2 with TensorFlow backend&quot;</span><span class="p">)</span>
-        <span class="n">_cached_version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span>
+        <span class="n">_cached_version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_cached_version</span></div>
 
 
@@ -439,11 +451,11 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">get_backend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Detect which backend is functional in DeePMD-kit v3.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Both deepmd.pt and deepmd.tf modules may exist in the environment,</span>
 <span class="sd">    but only one will actually work. We test which one can be imported.</span>
 <span class="sd">    Defaults to TensorFlow if detection fails.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    str</span>
@@ -451,23 +463,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Try PyTorch backend first</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">deepmd.pt.model.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span> <span class="k">as</span> <span class="n">get_pt_model</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;PyTorch backend is functional&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;pytorch&#39;</span>
+        <span class="k">return</span> <span class="s2">&quot;pytorch&quot;</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">pass</span>
-    
+
     <span class="c1"># Try TensorFlow backend</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">deepmd.tf.model.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span> <span class="k">as</span> <span class="n">get_tf_model</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;TensorFlow backend is functional&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;tensorflow&#39;</span>
+        <span class="k">return</span> <span class="s2">&quot;tensorflow&quot;</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">pass</span>
-    
+
     <span class="c1"># Default to TensorFlow for v3</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Warning: Could not detect functional backend, defaulting to TensorFlow&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s1">&#39;tensorflow&#39;</span></div>
+    <span class="k">return</span> <span class="s2">&quot;tensorflow&quot;</span></div>
 
 
 
@@ -516,7 +526,7 @@
             <span class="n">dp_model</span> <span class="o">=</span> <span class="n">pb_path</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Fall back to backend-based guess for clearer error message</span>
-            <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;.pth&quot;</span> <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;pytorch&#39;</span> <span class="k">else</span> <span class="s2">&quot;.pb&quot;</span>
+            <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;.pth&quot;</span> <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pytorch&quot;</span> <span class="k">else</span> <span class="s2">&quot;.pb&quot;</span>
             <span class="n">dp_model</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;frozen_model_1</span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># model name is provided - check if it&#39;s a full path</span>
@@ -524,12 +534,13 @@
             <span class="n">dp_model</span> <span class="o">=</span> <span class="n">model_name</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dp_model</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">model_name</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">dp_model</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DeepPotential model not found: </span><span class="si">{</span><span class="n">dp_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Validate model format matches installed backend</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_backend_mismatch</span>
+
     <span class="n">check_backend_mismatch</span><span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -544,18 +555,18 @@
         <span class="c1"># Test calculator</span>
         <span class="n">potential_energy</span> <span class="o">=</span> <span class="n">dp_system</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span>
         <span class="n">forces</span> <span class="o">=</span> <span class="n">dp_system</span><span class="o">.</span><span class="n">get_forces</span><span class="p">()</span>
-        
+
         <span class="k">if</span> <span class="n">potential_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">forces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DeepPotential model successfully loaded and tested:&quot;</span><span class="p">)</span>
+            <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;DeepPotential model successfully loaded and tested:&quot;</span><span class="p">)</span>
             <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Model: </span><span class="si">{</span><span class="n">dp_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Backend: </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to compute energy and forces&quot;</span><span class="p">)</span>
-        
+
         <span class="k">return</span> <span class="n">dp_system</span><span class="p">,</span> <span class="n">dp_calc</span>
-    
+
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Error: Failed to setup DeepPotential model&quot;</span><span class="p">)</span>
@@ -564,16 +575,20 @@
         <span class="k">raise</span></div>
 
 
+
 <span class="c1">################################################################</span>
 <span class="c1"># Model Evaluation</span>
 <span class="c1">################################################################</span>
 
+
 <div class="viewcode-block" id="evaluate_model_accuracy">
 <a class="viewcode-back" href="../../../deepmd.html#sparc.src.deepmd.evaluate_model_accuracy">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_model_accuracy</span><span class="p">(</span><span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">test_data_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_model_accuracy</span><span class="p">(</span>
+    <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">test_data_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluate the accuracy of a trained DeepMD model against reference data.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model_path : str</span>
@@ -588,29 +603,25 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Model file not found: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span>
-    
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">test_data_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Test data not found: </span><span class="si">{</span><span class="n">test_data_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span>
-    
+
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># For v3, test command doesn&#39;t need backend flag</span>
-        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="n">test_data_path</span><span class="p">]</span>
-        
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="n">test_data_path</span><span class="p">]</span>
+
         <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="n">cmd</span><span class="p">,</span>
-            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span>
-            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">text</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">cmd</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
-        
+
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;DeepMD Model Evaluation Results&quot;</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-        
+
     <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Error in model evaluation:&quot;</span><span class="p">)</span>
@@ -623,12 +634,13 @@
 <span class="c1"># JSON Configuration Update</span>
 <span class="c1">################################################################</span>
 
+
 <div class="viewcode-block" id="update_json">
 <a class="viewcode-back" href="../../../deepmd.html#sparc.src.deepmd.update_json">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">update_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">datadir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">atom_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update the DeepMD input JSON configuration with random seeds and proper paths.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data : dict</span>
@@ -637,7 +649,7 @@
 <span class="sd">        Path to the directory containing training data</span>
 <span class="sd">    atom_types : list</span>
 <span class="sd">        List of atomic species in the system</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
@@ -645,24 +657,24 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Generate random seed</span>
     <span class="n">random_number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="mi">999999</span><span class="p">)</span>
-    
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_recursively</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;seed&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;seed&quot;</span><span class="p">:</span>
                     <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">random_number</span>
-                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;type_map&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;type_map&quot;</span><span class="p">:</span>
                     <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom_types</span>
-                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;training_data&#39;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="n">value</span><span class="p">[</span><span class="s1">&#39;systems&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="s1">&#39;training_data&#39;</span><span class="p">)]</span>
-                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;validation_data&#39;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="n">value</span><span class="p">[</span><span class="s1">&#39;systems&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="s1">&#39;validation_data&#39;</span><span class="p">)]</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;training_data&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">value</span><span class="p">[</span><span class="s2">&quot;systems&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="s2">&quot;training_data&quot;</span><span class="p">)]</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;validation_data&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">value</span><span class="p">[</span><span class="s2">&quot;systems&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="s2">&quot;validation_data&quot;</span><span class="p">)]</span>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
                     <span class="n">_update_recursively</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="n">_update_recursively</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    
+
     <span class="n">_update_recursively</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
@@ -672,6 +684,7 @@
 <span class="c1"># DeepMD Training</span>
 <span class="c1">################################################################</span>
 
+
 <div class="viewcode-block" id="deepmd_training">
 <a class="viewcode-back" href="../../../deepmd.html#sparc.src.deepmd.deepmd_training">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">deepmd_training</span><span class="p">(</span>
@@ -680,15 +693,15 @@
     <span class="n">atom_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">training_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">num_models</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;input.json&#39;</span><span class="p">,</span>
-    <span class="n">compress_models</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;input.json&quot;</span><span class="p">,</span>
+    <span class="n">compress_models</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Train DeepMD models for molecular potential energy surface representation.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Supports both DeePMD-kit v2 (TensorFlow) and v3 (PyTorch/TensorFlow).</span>
 <span class="sd">    Backend is automatically detected from the environment.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    active_learning : bool</span>
@@ -705,12 +718,12 @@
 <span class="sd">        Path to DeepMD input JSON file (default: &#39;input.json&#39;)</span>
 <span class="sd">    compress_models : bool, optional</span>
 <span class="sd">        Whether to compress trained models (default: True)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    str</span>
 <span class="sd">        Name of the frozen model file</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
@@ -720,110 +733,117 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Clear logger handlers</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-    
+
     <span class="c1"># Add file handler</span>
-    <span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="s1">&#39;deepmd_training.log&#39;</span><span class="p">)</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="s2">&quot;deepmd_training.log&quot;</span><span class="p">)</span>
     <span class="n">fh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-    
+
     <span class="c1"># Add console handler</span>
     <span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
     <span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-    
+
     <span class="c1"># Add formatters</span>
-    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
     <span class="n">fh</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
     <span class="n">ch</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
-    
+
     <span class="c1"># Save current directory</span>
     <span class="n">original_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original directory: </span><span class="si">{</span><span class="n">original_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+
     <span class="c1"># Create training directory</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">training_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
+
     <span class="c1"># Validate num_models</span>
     <span class="k">if</span> <span class="n">num_models</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The number of models must be at least 2&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">num_models</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; WARNING: More than 4 models may not provide additional advantage!&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;WARNING&#39;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span>
+            <span class="s2">&quot; WARNING: More than 4 models may not provide additional advantage!&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-    
+
     <span class="c1"># Detect DeePMD version and backend</span>
     <span class="n">version</span><span class="p">,</span> <span class="n">backend</span> <span class="o">=</span> <span class="n">get_version</span><span class="p">()</span>
-    
+
     <span class="c1"># Determine model file extension</span>
-    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;pytorch&#39;</span><span class="p">:</span>
-        <span class="n">model_ext</span> <span class="o">=</span> <span class="s1">&#39;.pth&#39;</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pytorch&quot;</span><span class="p">:</span>
+        <span class="n">model_ext</span> <span class="o">=</span> <span class="s2">&quot;.pth&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">model_ext</span> <span class="o">=</span> <span class="s1">&#39;.pb&#39;</span>
-    
+        <span class="n">model_ext</span> <span class="o">=</span> <span class="s2">&quot;.pb&quot;</span>
+
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; DeePMD-kit v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> Training&quot;</span><span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Backend: </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-    
+
     <span class="c1"># Loop through models</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_models</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">folder_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;training_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">training_dir</span><span class="p">,</span> <span class="n">folder_name</span><span class="p">)</span>
-        
+
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Training Model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">num_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Directory: </span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-        
+
         <span class="c1"># Create training folder</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Training directory: </span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training directory: </span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Load and update JSON configuration</span>
             <span class="n">input_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">original_dir</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">input_path</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input file not found: </span><span class="si">{</span><span class="n">input_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">config_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
             <span class="n">update_json</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="n">datadir</span><span class="p">,</span> <span class="n">atom_types</span><span class="p">)</span>
 
             <span class="c1"># Write updated config into training directory</span>
             <span class="n">config_output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_output_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
             <span class="c1"># Check for checkpoint</span>
-            <span class="n">has_checkpoint</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s1">&#39;checkpoint&#39;</span><span class="p">))</span> <span class="ow">or</span>
-                            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s1">&#39;model.ckpt&#39;</span><span class="p">))</span> <span class="ow">or</span>
-                            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s1">&#39;model.ckpt.pt&#39;</span><span class="p">)))</span>
-            
+            <span class="n">has_checkpoint</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s2">&quot;checkpoint&quot;</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s2">&quot;model.ckpt&quot;</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s2">&quot;model.ckpt.pt&quot;</span><span class="p">))</span>
+            <span class="p">)</span>
+
             <span class="k">if</span> <span class="n">has_checkpoint</span><span class="p">:</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; Checkpoint found - Resuming training&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-            
+
             <span class="c1"># Build training command</span>
             <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="c1"># v3 requires backend flag</span>
-                <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;pytorch&#39;</span><span class="p">:</span>
-                    <span class="n">train_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--pt&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pytorch&quot;</span><span class="p">:</span>
+                    <span class="n">train_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="s2">&quot;--pt&quot;</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">train_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--tf&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">]</span>
+                    <span class="n">train_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="s2">&quot;--tf&quot;</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># v2 doesn&#39;t use backend flags</span>
-                <span class="n">train_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">]</span>
-            
+                <span class="n">train_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">]</span>
+
             <span class="c1"># Add restart flag if checkpoint exists</span>
             <span class="k">if</span> <span class="n">has_checkpoint</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
-                    <span class="n">train_cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--restart&#39;</span><span class="p">,</span> <span class="s1">&#39;model.ckpt.pt&#39;</span><span class="p">])</span>
+                    <span class="n">train_cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--restart&quot;</span><span class="p">,</span> <span class="s2">&quot;model.ckpt.pt&quot;</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">train_cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--restart&#39;</span><span class="p">,</span> <span class="s1">&#39;model.ckpt&#39;</span><span class="p">])</span>
-            
+                    <span class="n">train_cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--restart&quot;</span><span class="p">,</span> <span class="s2">&quot;model.ckpt&quot;</span><span class="p">])</span>
+
             <span class="c1"># Run training</span>
             <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Training Model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">num_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Directory&#39;</span><span class="si">:</span><span class="s2">&lt;30</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -835,12 +855,12 @@
             <span class="n">frozen_model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;frozen_model_</span><span class="si">{</span><span class="n">i</span><span class="si">}{</span><span class="n">model_ext</span><span class="si">}</span><span class="s2">&quot;</span>
 
             <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;pytorch&#39;</span><span class="p">:</span>
-                    <span class="n">freeze_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--pt&#39;</span><span class="p">,</span> <span class="s1">&#39;freeze&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pytorch&quot;</span><span class="p">:</span>
+                    <span class="n">freeze_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="s2">&quot;--pt&quot;</span><span class="p">,</span> <span class="s2">&quot;freeze&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">freeze_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--tf&#39;</span><span class="p">,</span> <span class="s1">&#39;freeze&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">]</span>
+                    <span class="n">freeze_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="s2">&quot;--tf&quot;</span><span class="p">,</span> <span class="s2">&quot;freeze&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">freeze_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;freeze&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">]</span>
+                <span class="n">freeze_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="s2">&quot;freeze&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">]</span>
 
             <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Freezing model: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">freeze_cmd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">freeze_cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">dir_name</span><span class="p">)</span>
@@ -851,19 +871,37 @@
                 <span class="n">compressed_model</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;frozen_model_compressed_</span><span class="si">{</span><span class="n">i</span><span class="si">}{</span><span class="n">model_ext</span><span class="si">}</span><span class="s2">&quot;</span>
 
                 <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;pytorch&#39;</span><span class="p">:</span>
-                        <span class="n">compress_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--pt&#39;</span><span class="p">,</span> <span class="s1">&#39;compress&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">,</span>
-                                    <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">compressed_model</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pytorch&quot;</span><span class="p">:</span>
+                        <span class="n">compress_cmd</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="s2">&quot;dp&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;--pt&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;compress&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
+                            <span class="n">frozen_model_name</span><span class="p">,</span>
+                            <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+                            <span class="n">compressed_model</span><span class="p">,</span>
+                        <span class="p">]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">compress_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;--tf&#39;</span><span class="p">,</span> <span class="s1">&#39;compress&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">,</span>
-                                    <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">compressed_model</span><span class="p">]</span>
+                        <span class="n">compress_cmd</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="s2">&quot;dp&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;--tf&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;compress&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
+                            <span class="n">frozen_model_name</span><span class="p">,</span>
+                            <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+                            <span class="n">compressed_model</span><span class="p">,</span>
+                        <span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">compress_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="s1">&#39;compress&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;-t&#39;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span>
-                                <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">,</span>
-                                <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">compressed_model</span><span class="p">]</span>
+                    <span class="n">compress_cmd</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="s2">&quot;dp&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;compress&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;-t&quot;</span><span class="p">,</span>
+                        <span class="n">input_file</span><span class="p">,</span>
+                        <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
+                        <span class="n">frozen_model_name</span><span class="p">,</span>
+                        <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+                        <span class="n">compressed_model</span><span class="p">,</span>
+                    <span class="p">]</span>
 
                 <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compressing model: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compress_cmd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">compress_cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">dir_name</span><span class="p">)</span>
@@ -872,12 +910,12 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during training: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">raise</span>
-        
+
         <span class="c1"># Evaluate model accuracy</span>
         <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">frozen_model_name</span><span class="p">)</span>
-        <span class="n">test_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="s1">&#39;validation_data&#39;</span><span class="p">)</span>
+        <span class="n">test_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="s2">&quot;validation_data&quot;</span><span class="p">)</span>
         <span class="n">evaluate_model_accuracy</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">frozen_model_name</span></div>
 
 

@@ -12,3 +12,5 @@ docs/tests
 examples
 Sparc.log*
 sparc.log*
+.pytest_cache
+.gitignore

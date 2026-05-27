@@ -22,6 +22,32 @@ For worked examples, see the companion notebook below.
    chemview.ipynb
 
 
+Interactive Demo
+================
+
+The widget below shows 264 frames of an ammonia borane (NH₃BH₃) trajectory.
+The scatter plot maps **B–N distance** (y-axis) vs **frame index** (x-axis),
+coloured by relative energy. Click any point to jump to that structure in the
+3-D viewer; click any atom to highlight its environment.
+
+.. note::
+
+   The viewer loads `chemiscope.js <https://chemiscope.org>`_ from the internet.
+   If it does not appear, check your connection or open the file directly:
+   ``docs/source/_static/chemview_demo.html``.
+
+   To regenerate the demo from a different trajectory::
+
+       python docs/source/generate_chemview_demo.py path/to/file.traj
+
+.. raw:: html
+
+   <iframe src="_static/chemview_demo.html"
+           width="100%" height="620"
+           style="border:none; border-radius:6px; display:block; margin:1.2em 0; box-shadow:0 2px 8px rgba(0,0,0,.15);">
+   </iframe>
+
+
 Requirements
 ============
 

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SPARC Installation Guide &mdash; SPARC 0.1.0 documentation</title>
+  <title>SPARC Installation Guide &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/documentation_options.js?v=10f1778b"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -56,14 +56,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -74,6 +75,9 @@
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#dft-calculator">DFT Calculator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#mlip-setup">MLIP Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
@@ -254,9 +258,12 @@
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -355,7 +362,7 @@ core dependencies.</p>
 <li><p>Python 3.10 (recommended)</p></li>
 <li><p><a class="reference external" href="https://docs.deepmodeling.com/projects/deepmd/en/stable/getting-started/install.html">DeepMD-kit v3+</a></p></li>
 <li><p><a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a> — Atomic Simulation Environment</p></li>
-<li><p>At least one DFT engine (VASP, CP2K, ORCA, QE, xTB, or Gaussian)</p></li>
+<li><p>At least one DFT engine (<a class="reference external" href="https://www.vasp.at/">VASP</a>, <a class="reference external" href="https://www.cp2k.org/">CP2K</a>, <a class="reference external" href="https://orcaforum.kofo.mpg.de/">ORCA</a>, <a class="reference external" href="https://www.quantum-espresso.org/">Quantum ESPRESSO</a>, <a class="reference external" href="https://xtb-docs.readthedocs.io/">xTB</a>, or <a class="reference external" href="https://gaussian.com/">Gaussian</a>)</p></li>
 <li><p><a class="reference external" href="https://www.plumed.org/download">PLUMED</a> — optional, for enhanced sampling</p></li>
 </ul>
 </section>
@@ -436,27 +443,27 @@ make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</s
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>VASP</p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.vasp.at/">VASP</a></p></td>
 <td><p>Periodic solids</p></td>
 <td><p>License required; set <code class="docutils literal notranslate"><span class="pre">VASP_PP_PATH</span></code> env variable</p></td>
 </tr>
-<tr class="row-odd"><td><p>CP2K</p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.cp2k.org/">CP2K</a></p></td>
 <td><p>Periodic solids / molecules</p></td>
 <td><p>Free; ASE CP2K interface included</p></td>
 </tr>
-<tr class="row-even"><td><p>ORCA</p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://orcaforum.kofo.mpg.de/">ORCA</a></p></td>
 <td><p>Molecules</p></td>
 <td><p>Free for academia; set <code class="docutils literal notranslate"><span class="pre">exe_command</span></code> in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Quantum ESPRESSO</p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.quantum-espresso.org/">Quantum ESPRESSO</a></p></td>
 <td><p>Periodic solids</p></td>
 <td><p>Free; set <code class="docutils literal notranslate"><span class="pre">exe_command</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>xTB</p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://xtb-docs.readthedocs.io/">xTB</a></p></td>
 <td><p>Semi-empirical (fast)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">xtb-python</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Gaussian</p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://gaussian.com/">Gaussian</a></p></td>
 <td><p>Molecules</p></td>
 <td><p>License required</p></td>
 </tr>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChemView &mdash; SPARC 0.1.0 documentation</title>
+  <title>ChemView &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/documentation_options.js?v=10f1778b"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -77,6 +77,9 @@
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#dft-calculator">DFT Calculator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#mlip-setup">MLIP Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
@@ -257,7 +260,6 @@
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -294,6 +296,7 @@
 <li class="toctree-l3"><a class="reference internal" href="chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-demo">Interactive Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#property-specs">Property Specs</a><ul>
@@ -364,6 +367,26 @@ scatter plot and 3-D structure viewer.</p>
 <p>For worked examples, see the companion notebook below.</p>
 <div class="toctree-wrapper compound">
 </div>
+<section id="interactive-demo">
+<h2>Interactive Demo<a class="headerlink" href="#interactive-demo" title="Link to this heading"></a></h2>
+<p>The widget below shows 264 frames of an ammonia borane (NH₃BH₃) trajectory.
+The scatter plot maps <strong>B–N distance</strong> (y-axis) vs <strong>frame index</strong> (x-axis),
+coloured by relative energy. Click any point to jump to that structure in the
+3-D viewer; click any atom to highlight its environment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The viewer loads <a class="reference external" href="https://chemiscope.org">chemiscope.js</a> from the internet.
+If it does not appear, check your connection or open the file directly:
+<code class="docutils literal notranslate"><span class="pre">docs/source/_static/chemview_demo.html</span></code>.</p>
+<p>To regenerate the demo from a different trajectory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">docs</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">generate_chemview_demo</span><span class="o">.</span><span class="n">py</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">traj</span>
+</pre></div>
+</div>
+</div>
+<iframe src="_static/chemview_demo.html"
+        width="100%" height="620"
+        style="border:none; border-radius:6px; display:block; margin:1.2em 0; box-shadow:0 2px 8px rgba(0,0,0,.15);">
+</iframe></section>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">chemiscope</span></code> and <code class="docutils literal notranslate"><span class="pre">numpy</span></code> must be installed alongside ASE:</p>

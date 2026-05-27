@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sparc.src.ase_md &mdash; SPARC 0.1.0 documentation</title>
+  <title>sparc.src.ase_md &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f7b18df9" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/documentation_options.js?v=10f1778b"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -72,6 +72,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#dft-calculator">DFT Calculator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#mlip-setup">MLIP Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#active-learning">Active Learning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#distance-metrics">Distance Metrics</a></li>
@@ -252,9 +255,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#function">Function:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -354,56 +360,52 @@
 <span class="sd">supporting various ensembles (NVE, NVT, NPT) with different thermostats.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="c1">################################################################</span>
 <span class="c1"># Third party imports</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ase.units</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ase</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">units</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.verlet</span><span class="w"> </span><span class="kn">import</span> <span class="n">VelocityVerlet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.velocitydistribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaxwellBoltzmannDistribution</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.nose_hoover_chain</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoseHooverChainNVT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md</span><span class="w"> </span><span class="kn">import</span> <span class="n">MDLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.langevin</span><span class="w"> </span><span class="kn">import</span> <span class="n">Langevin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.nose_hoover_chain</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoseHooverChainNVT</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.nptberendsen</span><span class="w"> </span><span class="kn">import</span> <span class="n">NPTBerendsen</span>
-<span class="c1"># MDLogger removed — log_md_setup in utils handles logging with proper float conversion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.velocitydistribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaxwellBoltzmannDistribution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.md.verlet</span><span class="w"> </span><span class="kn">import</span> <span class="n">VelocityVerlet</span>
 
 <span class="c1">################################################################</span>
 <span class="c1"># Local imports</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcLog</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">log_md_setup</span><span class="p">,</span>
-    <span class="n">save_xyz</span><span class="p">,</span>
-    <span class="n">save_checkpoint</span><span class="p">,</span>
+    <span class="n">check_physical_limits</span><span class="p">,</span>
     <span class="n">load_checkpoint</span><span class="p">,</span>
-    <span class="n">check_physical_limits</span>
+    <span class="n">log_md_setup</span><span class="p">,</span>
+    <span class="n">save_checkpoint</span><span class="p">,</span>
+    <span class="n">save_xyz</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.forcecorrection.corrector</span><span class="w"> </span><span class="kn">import</span> <span class="n">correct_aimd_forces</span>
 
 <span class="c1">################################################################</span>
 <span class="c1"># Helper Functions</span>
 <span class="c1">################################################################</span>
 
-<span class="c1">#---------------------------------------</span>
+
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># Dynamics Initialization</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="initialize_dynamics">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.initialize_dynamics">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">initialize_dynamics</span><span class="p">(</span>
-    <span class="n">atoms</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">,</span>
-    <span class="n">dyn_class</span><span class="p">,</span>
-    <span class="n">timestep</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
+    <span class="n">atoms</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">dyn_class</span><span class="p">,</span> <span class="n">timestep</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initialize MD dynamics, optionally restarting from a checkpoint.</span>
-<span class="sd">    </span>
+
 <span class="sd">    This is a unified initialization function that handles velocity initialization,</span>
 <span class="sd">    checkpoint loading, and dynamics object creation for all ensemble types.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    atoms : ase.Atoms</span>
@@ -416,7 +418,7 @@
 <span class="sd">        If True, restart from checkpoint (default: False)</span>
 <span class="sd">    **kwargs : dict</span>
 <span class="sd">        Additional parameters for specific ensemble types</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dyn</span>
@@ -430,32 +432,37 @@
         <span class="s2">&quot;pressure_au&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;taup&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;compressibility_au&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;checkpoint_file&quot;</span><span class="p">:</span> <span class="s1">&#39;md_checkpoint.pkl&#39;</span>
+        <span class="s2">&quot;checkpoint_file&quot;</span><span class="p">:</span> <span class="s2">&quot;md_checkpoint.pkl&quot;</span><span class="p">,</span>
     <span class="p">}</span>
-    
+
     <span class="n">cfg</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">checkpoint_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;checkpoint_file&#39;</span><span class="p">)</span>
-    
+    <span class="n">checkpoint_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;checkpoint_file&quot;</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">restart</span><span class="p">:</span>
         <span class="n">atoms</span><span class="p">,</span> <span class="n">mdstep</span> <span class="o">=</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Only initialize velocities if temperature is provided (not for NVE)</span>
         <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">MaxwellBoltzmannDistribution</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">temperature_K</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">],</span> <span class="n">force_temp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
+            <span class="n">MaxwellBoltzmannDistribution</span><span class="p">(</span>
+                <span class="n">atoms</span><span class="p">,</span> <span class="n">temperature_K</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">],</span> <span class="n">force_temp</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
     <span class="c1"># Filter out None values and temperature (handled separately)</span>
-    <span class="n">_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;temperature&#39;</span><span class="p">}</span>
-    
+    <span class="n">_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;temperature&quot;</span><span class="p">}</span>
+
     <span class="c1"># Create dynamics object</span>
     <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dyn</span> <span class="o">=</span> <span class="n">dyn_class</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span> <span class="n">temperature_K</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">)</span>
+        <span class="n">dyn</span> <span class="o">=</span> <span class="n">dyn_class</span><span class="p">(</span>
+            <span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span> <span class="n">temperature_K</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">_kwargs</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">dyn</span> <span class="o">=</span> <span class="n">dyn_class</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="n">restart</span><span class="p">:</span>
         <span class="n">dyn</span><span class="o">.</span><span class="n">nsteps</span> <span class="o">=</span> <span class="n">mdstep</span>
-    
+
     <span class="k">return</span> <span class="n">dyn</span></div>
+
 
 
 <span class="c1">################################################################</span>
@@ -470,16 +477,16 @@
     <span class="n">total_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">temp_start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">temp_end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">ensemble</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NVT&quot;</span>
+    <span class="n">ensemble</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NVT&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply linear temperature ramping to MD dynamics object.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Implements VASP-style temperature ramping:</span>
 <span class="sd">        T(t) = T_start + (T_end - T_start) * (t / t_total)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Temperature ramping is only applicable to NVT ensemble.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dyn : dynamics object</span>
@@ -500,29 +507,40 @@
     <span class="c1"># Early return if no ramping specified</span>
     <span class="k">if</span> <span class="n">temp_start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">temp_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
-    
-    <span class="c1"># Check ensemble compatibility  </span>
-    <span class="k">if</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;NVE&#39;</span><span class="p">:</span>
+
+    <span class="c1"># Check ensemble compatibility</span>
+    <span class="k">if</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;NVE&quot;</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Temperature ramping not applicable for NVE ensemble (energy conservation). &quot;</span>
             <span class="s2">&quot;Remove &#39;temp_end&#39; from YAML or change to ensemble: NVT&quot;</span>
         <span class="p">)</span>
-    
-    <span class="k">if</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;NPT&#39;</span><span class="p">:</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; Temperature ramping not recommended for NPT ensemble (pressure-temperature coupling).&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; Solution: Use NVT for ramping, then switch to NPT at final temperature&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; Alternative: Remove &#39;temp_end&#39; from YAML configuration&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;NPT&quot;</span><span class="p">:</span>
+        <span class="n">SparcLog</span><span class="p">(</span>
+            <span class="s2">&quot; Temperature ramping not recommended for NPT ensemble (pressure-temperature coupling).&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span>
+            <span class="s2">&quot; Solution: Use NVT for ramping, then switch to NPT at final temperature&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span>
+            <span class="s2">&quot; Alternative: Remove &#39;temp_end&#39; from YAML configuration&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span>
+        <span class="p">)</span>
         <span class="k">return</span>
-    
-    <span class="k">if</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;NVT&#39;</span><span class="p">:</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Temperature ramping only supported for NVT ensemble (current: </span><span class="si">{</span><span class="n">ensemble</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;NVT&quot;</span><span class="p">:</span>
+        <span class="n">SparcLog</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot; Temperature ramping only supported for NVT ensemble (current: </span><span class="si">{</span><span class="n">ensemble</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; Solution: Set ensemble: NVT in YAML configuration&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span>
         <span class="k">return</span>
-    
+
     <span class="c1"># Avoid division by zero</span>
     <span class="k">if</span> <span class="n">total_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
-    
+
     <span class="c1"># Calculate target temperature: T(t) = T_start + (T_end - T_start) * (t / t_total)</span>
     <span class="n">progress</span> <span class="o">=</span> <span class="n">current_step</span> <span class="o">/</span> <span class="n">total_steps</span>
     <span class="n">target_temp</span> <span class="o">=</span> <span class="n">temp_start</span> <span class="o">+</span> <span class="p">(</span><span class="n">temp_end</span> <span class="o">-</span> <span class="n">temp_start</span><span class="p">)</span> <span class="o">*</span> <span class="n">progress</span>
@@ -533,30 +551,33 @@
     <span class="c1"># Apply temperature scaling</span>
     <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">scale</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-10</span><span class="p">:</span>
         <span class="n">current_temp</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_temperature</span><span class="p">()</span>
-        
+
         <span class="k">if</span> <span class="n">current_temp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">velocity_scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">target_temp</span> <span class="o">/</span> <span class="n">current_temp</span><span class="p">)</span>
             <span class="n">velocities</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_velocities</span><span class="p">()</span>
             <span class="n">atoms</span><span class="o">.</span><span class="n">set_velocities</span><span class="p">(</span><span class="n">velocities</span> <span class="o">*</span> <span class="n">velocity_scale</span><span class="p">)</span>
-            
+
             <span class="c1"># Update thermostat if supported</span>
             <span class="c1"># For Langevin thermostat (has set_temperature method)</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="s1">&#39;set_temperature&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="s2">&quot;set_temperature&quot;</span><span class="p">):</span>
                 <span class="n">dyn</span><span class="o">.</span><span class="n">set_temperature</span><span class="p">(</span><span class="n">temperature_K</span><span class="o">=</span><span class="n">target_temp</span><span class="p">)</span>
             <span class="c1"># For Nose-Hoover thermostat (stores temperature in _kT)</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="s1">&#39;_kT&#39;</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="s2">&quot;_kT&quot;</span><span class="p">):</span>
                 <span class="n">dyn</span><span class="o">.</span><span class="n">_kT</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">kB</span> <span class="o">*</span> <span class="n">target_temp</span>
             <span class="c1"># For thermostats that store temp attribute directly</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="s1">&#39;temp&#39;</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="s2">&quot;temp&quot;</span><span class="p">):</span>
                 <span class="n">dyn</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">kB</span> <span class="o">*</span> <span class="n">target_temp</span></div>
+
+
 
 <span class="c1">################################################################</span>
 <span class="c1"># Thermostat Functions</span>
 <span class="c1">################################################################</span>
 
-<span class="c1">#---------------------------------------</span>
+
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># Nose-Hoover Chain Thermostat</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="NoseNVT">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.NoseNVT">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">NoseNVT</span><span class="p">(</span>
@@ -564,11 +585,11 @@
     <span class="n">timestep</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
     <span class="n">tdamp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-    <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up a Nose-Hoover chain NVT thermostat for MD simulation.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    atoms : ase.Atoms</span>
@@ -581,25 +602,26 @@
 <span class="sd">        The damping time for the thermostat in femtoseconds (default: 10 fs)</span>
 <span class="sd">    restart : bool, optional</span>
 <span class="sd">        If True, restart from checkpoint (default: False)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dynamics</span>
 <span class="sd">        The initialized NoseHooverChainNVT dynamics object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">initialize_dynamics</span><span class="p">(</span>
-        <span class="n">atoms</span><span class="p">,</span> <span class="n">NoseHooverChainNVT</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">,</span>
+        <span class="n">NoseHooverChainNVT</span><span class="p">,</span>
         <span class="n">timestep</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
         <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
         <span class="n">tdamp</span><span class="o">=</span><span class="n">tdamp</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
-        <span class="n">restart</span><span class="o">=</span><span class="n">restart</span>
+        <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># Langevin Thermostat</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="LangevinNVT">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.LangevinNVT">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">LangevinNVT</span><span class="p">(</span>
@@ -607,11 +629,11 @@
     <span class="n">timestep</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
     <span class="n">friction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
-    <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up a Langevin thermostat for NVT MD simulation.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    atoms : ase.Atoms</span>
@@ -624,25 +646,26 @@
 <span class="sd">        The friction coefficient in fs^-1 (default: 0.01)</span>
 <span class="sd">    restart : bool, optional</span>
 <span class="sd">        If True, restart from checkpoint (default: False)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dynamics</span>
 <span class="sd">        The initialized Langevin dynamics object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">initialize_dynamics</span><span class="p">(</span>
-        <span class="n">atoms</span><span class="p">,</span> <span class="n">Langevin</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">,</span>
+        <span class="n">Langevin</span><span class="p">,</span>
         <span class="n">timestep</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
         <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">,</span>
         <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
-        <span class="n">friction</span><span class="o">=</span><span class="n">friction</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span>
+        <span class="n">friction</span><span class="o">=</span><span class="n">friction</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># NPT Ensemble (Berendsen)</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="NPT">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.NPT">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">NPT</span><span class="p">(</span>
@@ -654,7 +677,7 @@
     <span class="n">tau_p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">compressibility</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">restart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up NPT dynamics using ASE&#39;s NPTBerendsen integrator.</span>
@@ -690,26 +713,29 @@
         <span class="n">compressibility</span> <span class="o">=</span> <span class="mf">7.1e-7</span>  <span class="c1"># Cu default in 1/bar (= 7.1e-12 Pa⁻¹)</span>
 
     <span class="k">return</span> <span class="n">initialize_dynamics</span><span class="p">(</span>
-        <span class="n">system</span><span class="p">,</span> <span class="n">NPTBerendsen</span><span class="p">,</span> <span class="n">timestep</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
-        <span class="n">taut</span><span class="o">=</span><span class="n">tau_t</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">pressure_au</span><span class="o">=</span><span class="n">pressure</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">bar</span><span class="p">,</span> <span class="n">taup</span><span class="o">=</span><span class="n">tau_p</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
-        <span class="n">compressibility_au</span><span class="o">=</span><span class="n">compressibility</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">bar</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="n">system</span><span class="p">,</span>
+        <span class="n">NPTBerendsen</span><span class="p">,</span>
+        <span class="n">timestep</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+        <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+        <span class="n">taut</span><span class="o">=</span><span class="n">tau_t</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+        <span class="n">pressure_au</span><span class="o">=</span><span class="n">pressure</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">bar</span><span class="p">,</span>
+        <span class="n">taup</span><span class="o">=</span><span class="n">tau_p</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+        <span class="n">compressibility_au</span><span class="o">=</span><span class="n">compressibility</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">bar</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># NVE Ensemble</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="NVE">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.NVE">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">NVE</span><span class="p">(</span>
-    <span class="n">system</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">,</span>
-    <span class="n">timestep</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">restart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">NVE</span><span class="p">(</span><span class="n">system</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">restart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up NVE dynamics using ASE&#39;s VelocityVerlet integrator.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    system : ase.Atoms</span>
@@ -718,15 +744,13 @@
 <span class="sd">        MD integration timestep in femtoseconds</span>
 <span class="sd">    restart : bool, optional</span>
 <span class="sd">        If True, restart from checkpoint (default: False)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dynamics</span>
 <span class="sd">        The initialized VelocityVerlet dynamics object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">initialize_dynamics</span><span class="p">(</span>
-        <span class="n">system</span><span class="p">,</span> <span class="n">VelocityVerlet</span><span class="p">,</span> <span class="n">timestep</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">restart</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">initialize_dynamics</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">VelocityVerlet</span><span class="p">,</span> <span class="n">timestep</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">restart</span><span class="p">)</span></div>
 
 
 
@@ -734,9 +758,10 @@
 <span class="c1"># MD Execution Functions</span>
 <span class="c1">################################################################</span>
 
-<span class="c1">#---------------------------------------</span>
+
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># Ab Initio MD</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="ExecuteAbInitioDynamics">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.ExecuteAbInitioDynamics">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ExecuteAbInitioDynamics</span><span class="p">(</span>
@@ -749,10 +774,11 @@
     <span class="n">dir_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">temp_start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">temp_end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="p">):</span>
+    <span class="n">temp_end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run an ab initio MD simulation with DFT calculator.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    system : ase.Atoms</span>
@@ -783,31 +809,44 @@
     <span class="n">remaining_steps</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">-</span> <span class="n">steps_completed</span>
 
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">steps_completed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resuming AIMD from step </span><span class="si">{</span><span class="n">steps_completed</span><span class="si">}</span><span class="s2">, running </span><span class="si">{</span><span class="n">remaining_steps</span><span class="si">}</span><span class="s2"> more steps&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Resuming AIMD from step </span><span class="si">{</span><span class="n">steps_completed</span><span class="si">}</span><span class="s2">, running </span><span class="si">{</span><span class="n">remaining_steps</span><span class="si">}</span><span class="s2"> more steps&quot;</span>
+        <span class="p">)</span>
     <span class="c1"># Print table header</span>
-    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Step&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Epot (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Ekin (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Temp (K)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;P (GPa)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;V (Ang.^3)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Step&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Epot (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Ekin (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Temp (K)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;P (GPa)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;V (Ang.^3)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
 
     <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_checkpoint</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
     <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">log_md_setup</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
-    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
 
     <span class="c1"># Extract base ensemble from name (e.g., &#39;NVT-Langevin&#39; -&gt; &#39;NVT&#39;)</span>
-    <span class="n">ensemble</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">else</span> <span class="n">name</span>
+    <span class="n">ensemble</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;-&quot;</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">else</span> <span class="n">name</span>
 
     <span class="k">if</span> <span class="n">temp_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">temp_start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i_md</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">remaining_steps</span><span class="p">):</span>
-            <span class="n">TemperatureRamp</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">steps_completed</span> <span class="o">+</span> <span class="n">i_md</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">temp_start</span><span class="p">,</span> <span class="n">temp_end</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">)</span>
+            <span class="n">TemperatureRamp</span><span class="p">(</span>
+                <span class="n">dyn</span><span class="p">,</span>
+                <span class="n">system</span><span class="p">,</span>
+                <span class="n">steps_completed</span> <span class="o">+</span> <span class="n">i_md</span><span class="p">,</span>
+                <span class="n">steps</span><span class="p">,</span>
+                <span class="n">temp_start</span><span class="p">,</span>
+                <span class="n">temp_end</span><span class="p">,</span>
+                <span class="n">ensemble</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">remaining_steps</span><span class="p">)</span></div>
 
 
-<span class="c1">#---------------------------------------</span>
+
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># Machine Learning Potential MD</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="ExecuteMlpDynamics">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.ExecuteMlpDynamics">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ExecuteMlpDynamics</span><span class="p">(</span>
@@ -823,7 +862,8 @@
     <span class="n">epot_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">temp_start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">temp_end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span> <span class="p">):</span>
+    <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run a machine learning potential MD simulation with safety checks.</span>
 
@@ -855,14 +895,14 @@
 <span class="sd">        If True, resume from checkpoint in dir_name (default: False)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Checkpoint file lives inside the simulation directory (e.g., 02.dpmd/)</span>
-    <span class="n">checkpoint_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dir_name</span><span class="p">),</span> <span class="s1">&#39;md_checkpoint.pkl&#39;</span><span class="p">)</span>
+    <span class="n">checkpoint_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dir_name</span><span class="p">),</span> <span class="s2">&quot;md_checkpoint.pkl&quot;</span><span class="p">)</span>
     <span class="n">steps_completed</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">if</span> <span class="n">restart</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">checkpoint_file</span><span class="p">):</span>
         <span class="n">system</span><span class="p">,</span> <span class="n">steps_completed</span> <span class="o">=</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">)</span>
         <span class="n">dyn</span><span class="o">.</span><span class="n">nsteps</span> <span class="o">=</span> <span class="n">steps_completed</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RESTARTING ML-MD FROM CHECKPOINT&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;RESTARTING ML-MD FROM CHECKPOINT&quot;</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Checkpoint : </span><span class="si">{</span><span class="n">checkpoint_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Completed  : </span><span class="si">{</span><span class="n">steps_completed</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">steps</span><span class="si">}</span><span class="s2"> steps&quot;</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -872,51 +912,72 @@
 
     <span class="n">remaining_steps</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">-</span> <span class="n">steps_completed</span>
 
-    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MACHINE LEARNING POTENTIAL MD SIMULATION FOR [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MACHINE LEARNING POTENTIAL MD SIMULATION FOR [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output Logfile: </span><span class="si">{</span><span class="n">log_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">steps_completed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resuming from step </span><span class="si">{</span><span class="n">steps_completed</span><span class="si">}</span><span class="s2">, running </span><span class="si">{</span><span class="n">remaining_steps</span><span class="si">}</span><span class="s2"> more steps&quot;</span><span class="p">)</span>
-    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">SparcLog</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Resuming from step </span><span class="si">{</span><span class="n">steps_completed</span><span class="si">}</span><span class="s2">, running </span><span class="si">{</span><span class="n">remaining_steps</span><span class="si">}</span><span class="s2"> more steps&quot;</span>
+        <span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
     <span class="c1"># Print table header</span>
-    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Step&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Epot (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Ekin (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Temp (K)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;P (GPa)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;V (Ang^3)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Step&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Epot (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Ekin (eV)&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Temp (K)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;P (GPa)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;V (Ang^3)&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-    <span class="c1"># dyn.attach(lambda: log_md_setup(dyn, system, dir_name), interval=pace)</span>
-    <span class="c1"># Console output every 100 steps (or pace if smaller)</span>
+    <span class="c1"># Console output every 10*pace steps</span>
     <span class="n">console_pace</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">pace</span>
     <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">log_md_setup</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">console_pace</span><span class="p">)</span>
-    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
     <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">save_checkpoint</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
 
-    <span class="c1"># Store reference energy for comparison</span>
-    <span class="n">epot_ref</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Per-iteration log file (e.g. Iter4_dpmd_0.log) — mirrors GitHub MDLogger behaviour</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">MDLogger</span><span class="p">(</span>
+        <span class="n">dyn</span><span class="o">=</span><span class="n">dyn</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="o">=</span><span class="n">system</span><span class="p">,</span>
+        <span class="n">logfile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">log_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">stress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">peratom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">dyn</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">pace</span><span class="p">)</span>
 
     <span class="c1"># Extract base ensemble from name (e.g., &#39;NVT-Langevin&#39; -&gt; &#39;NVT&#39;)</span>
-    <span class="n">ensemble</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">else</span> <span class="n">name</span>
+    <span class="n">ensemble</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;-&quot;</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">else</span> <span class="n">name</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_check_mlmd_safety</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">,</span> <span class="n">epot_ref</span><span class="p">,</span> <span class="n">epot_threshold</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check safety conditions during MLMD. Returns (should_stop, epot_ref).&quot;&quot;&quot;</span>
+    <span class="c1"># Capture reference energy from step 0 before any MD runs</span>
+    <span class="n">_epot0</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_epot0</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="n">_epot0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_epot0</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">_epot0</span><span class="p">,</span> <span class="s2">&quot;item&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">_epot0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_epot0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_epot0</span><span class="p">)</span>
+    <span class="n">epot_ref</span> <span class="o">=</span> <span class="n">_epot0</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;***********************************************************&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reference Potential Energy (Step 0): </span><span class="si">{</span><span class="n">epot_ref</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">epot_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Threshold limit: +/- </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">epot_threshold</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;***********************************************************&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_mlmd_safety</span><span class="p">(</span>
+        <span class="n">system</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">,</span> <span class="n">epot_ref</span><span class="p">,</span> <span class="n">epot_threshold</span><span class="p">,</span> <span class="n">dir_name</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check safety conditions during MLMD. Returns (sim_failed, epot_ref).&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">distance_metrics</span> <span class="ow">and</span> <span class="n">check_physical_limits</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">):</span>
-            <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Physical limits exceeded. Stopping MLMD simulation!!!&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span>
+            <span class="n">SparcLog</span><span class="p">(</span>
+                <span class="s2">&quot;Physical limits exceeded. Stopping MLMD simulation!!!&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">epot_ref</span>
 
         <span class="n">epot</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">epot</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="n">epot</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">epot</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">epot</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">epot</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">epot</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">epot</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">epot</span><span class="p">,</span> <span class="s2">&quot;item&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">epot</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">epot</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">epot</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">epot</span><span class="p">):</span>
-            <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Potential Energy is NaN! Stopping MLMD simulation!&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="n">SparcLog</span><span class="p">(</span>
+                <span class="s2">&quot;Potential Energy is NaN! Stopping MLMD simulation!&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">epot_ref</span>
-
-        <span class="k">if</span> <span class="n">epot_ref</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">epot_ref</span> <span class="o">=</span> <span class="n">epot</span>
-            <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;***********************************************************&quot;</span><span class="p">)</span>
-            <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reference Potential Energy (Step 0): </span><span class="si">{</span><span class="n">epot_ref</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">epot_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Threshold limit: +/- </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">epot_threshold</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
-            <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;***********************************************************&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">epot_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">Llim</span> <span class="o">=</span> <span class="n">epot_ref</span> <span class="o">-</span> <span class="n">epot_threshold</span>
@@ -925,88 +986,91 @@
                 <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="sa">f</span><span class="s1">&#39;Iteration </span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="si">:</span><span class="s2">-^80</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Potential Energy Exceeded Limit&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reference Energy: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">epot_ref</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
-                <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Threshold Energy: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">epot_threshold</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Threshold Energy: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">epot_threshold</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span>
+                <span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lower limit: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">Llim</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Upper limit: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">Ulim</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current Energy: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">epot</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Stopping MLMD Simulation!!!&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
-                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+                <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">epot_ref</span>
 
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">epot_ref</span>
 
+    <span class="c1"># save_xyz is called AFTER the safety check so that unphysical frames</span>
+    <span class="c1"># (energy out of bounds / physical limits exceeded) are never written to</span>
+    <span class="c1"># dpmd.traj and therefore never appear as QbC candidates.</span>
     <span class="k">if</span> <span class="n">temp_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">temp_start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Step-by-step for temperature ramping (resume from steps_completed)</span>
         <span class="k">for</span> <span class="n">i_mlmd</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps_completed</span><span class="p">,</span> <span class="n">steps</span><span class="p">):</span>
             <span class="n">TemperatureRamp</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">i_mlmd</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">temp_start</span><span class="p">,</span> <span class="n">temp_end</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">)</span>
             <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">should_stop</span><span class="p">,</span> <span class="n">epot_ref</span> <span class="o">=</span> <span class="n">_check_mlmd_safety</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">,</span> <span class="n">epot_ref</span><span class="p">,</span> <span class="n">epot_threshold</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">should_stop</span><span class="p">:</span>
+            <span class="n">sim_failed</span><span class="p">,</span> <span class="n">epot_ref</span> <span class="o">=</span> <span class="n">_check_mlmd_safety</span><span class="p">(</span>
+                <span class="n">system</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">,</span> <span class="n">epot_ref</span><span class="p">,</span> <span class="n">epot_threshold</span><span class="p">,</span> <span class="n">dir_name</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">sim_failed</span><span class="p">:</span>
                 <span class="k">break</span>
+            <span class="k">if</span> <span class="n">dyn</span><span class="o">.</span><span class="n">nsteps</span> <span class="o">%</span> <span class="n">pace</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># No ramping - run in chunks with safety checks</span>
-        <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">remaining_steps</span><span class="p">)</span>
-        <span class="n">steps_done</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">steps_done</span> <span class="o">&lt;</span> <span class="n">remaining_steps</span><span class="p">:</span>
-            <span class="n">run_steps</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">,</span> <span class="n">remaining_steps</span> <span class="o">-</span> <span class="n">steps_done</span><span class="p">)</span>
-            <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run_steps</span><span class="p">)</span>
-            <span class="n">steps_done</span> <span class="o">+=</span> <span class="n">run_steps</span>
-            <span class="n">should_stop</span><span class="p">,</span> <span class="n">epot_ref</span> <span class="o">=</span> <span class="n">_check_mlmd_safety</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">,</span> <span class="n">epot_ref</span><span class="p">,</span> <span class="n">epot_threshold</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">should_stop</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">remaining_steps</span><span class="p">):</span>
+            <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">sim_failed</span><span class="p">,</span> <span class="n">epot_ref</span> <span class="o">=</span> <span class="n">_check_mlmd_safety</span><span class="p">(</span>
+                <span class="n">system</span><span class="p">,</span> <span class="n">distance_metrics</span><span class="p">,</span> <span class="n">epot_ref</span><span class="p">,</span> <span class="n">epot_threshold</span><span class="p">,</span> <span class="n">dir_name</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">sim_failed</span><span class="p">:</span>
                 <span class="k">break</span>
+            <span class="k">if</span> <span class="n">dyn</span><span class="o">.</span><span class="n">nsteps</span> <span class="o">%</span> <span class="n">pace</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span>
 
     <span class="c1"># Final checkpoint</span>
     <span class="n">save_checkpoint</span><span class="p">(</span><span class="n">dyn</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">)</span></div>
 
 
 
-
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># DFT Energy Calculation</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="CalculateDFTEnergy">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.CalculateDFTEnergy">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">CalculateDFTEnergy</span><span class="p">(</span>
     <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">system</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">,</span>
-    <span class="n">timestep</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">log_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">dir_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">trajfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">pace</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the DFT energy and forces for a candidate structure.</span>
-<span class="sd">    </span>
-<span class="sd">    This function is used during active learning to evaluate candidate</span>
-<span class="sd">    structures selected by Query-by-Committee.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    idx : int</span>
-<span class="sd">        An identifier index for the candidate</span>
+<span class="sd">        Candidate index (used in log output)</span>
 <span class="sd">    header : bool</span>
-<span class="sd">        If True, include header in the log file</span>
+<span class="sd">        If True, write column header to log file</span>
 <span class="sd">    system : ase.Atoms</span>
-<span class="sd">        The ASE Atoms object representing the candidate structure</span>
-<span class="sd">    timestep : float</span>
-<span class="sd">        The simulation timestep in femtoseconds</span>
+<span class="sd">        Candidate structure with DFT calculator attached</span>
 <span class="sd">    log_filename : str</span>
-<span class="sd">        The filename for the energy log</span>
+<span class="sd">        Filename for the per-candidate energy log</span>
 <span class="sd">    dir_name : str</span>
-<span class="sd">        The directory where log and trajectory files will be saved</span>
+<span class="sd">        Directory where log and trajectory files are written</span>
 <span class="sd">    trajfile : str</span>
-<span class="sd">        The filename for the trajectory file</span>
-<span class="sd">    pace : int, optional</span>
-<span class="sd">        The logging interval (default: 1)</span>
+<span class="sd">        Filename for the ASE trajectory file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">epot</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span>
     <span class="n">epot</span> <span class="o">=</span> <span class="n">epot</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">epot</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="k">else</span> <span class="n">epot</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Candidate: </span><span class="si">{</span><span class="n">idx</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="s2"> | Epot: </span><span class="si">{</span><span class="n">epot</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> [eV]&quot;</span><span class="p">)</span>
 
-    <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span></div>
+    <span class="n">log_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">log_filename</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">header</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Candidate&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Epot[eV]&#39;</span><span class="si">:</span><span class="s2">&gt;14</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">idx</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">epot</span><span class="si">:</span><span class="s2">&gt;14.6f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">save_xyz</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">trajfile</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span></div>
 
 
 
@@ -1014,19 +1078,16 @@
 <span class="c1"># LAMMPS MD Execution</span>
 <span class="c1">################################################################</span>
 
-<span class="c1">#---------------------------------------</span>
+
+<span class="c1"># ---------------------------------------</span>
 <span class="c1"># LAMMPS Interface</span>
-<span class="c1">#---------------------------------------</span>
+<span class="c1"># ---------------------------------------</span>
 <div class="viewcode-block" id="lammps_md">
 <a class="viewcode-back" href="../../../md.html#sparc.src.ase_md.lammps_md">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">lammps_md</span><span class="p">(</span>
-    <span class="n">system</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">,</span>
-    <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span>
-<span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lammps_md</span><span class="p">(</span><span class="n">system</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run a LAMMPS MD simulation.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    system : ase.Atoms</span>
@@ -1039,9 +1100,9 @@
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;Starting LAMMPS MD Simulation&quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-    
-    <span class="n">run_command</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lmp&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;in.lammps&#39;</span><span class="p">]</span>
-    
+
+    <span class="n">run_command</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lmp&quot;</span><span class="p">,</span> <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;in.lammps&quot;</span><span class="p">]</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run_command</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>

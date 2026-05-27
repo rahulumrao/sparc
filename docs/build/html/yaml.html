@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Input File &mdash; SPARC 0.1.0 documentation</title>
+  <title>Input File &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/documentation_options.js?v=10f1778b"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -75,6 +75,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#dft-calculator">DFT Calculator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mlip-setup">MLIP Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#active-learning">Active Learning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#distance-metrics">Distance Metrics</a></li>
@@ -255,7 +258,6 @@
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -504,7 +506,7 @@ Nose-Hoover thermostat resists rapid temperature changes — use Langevin for ra
 
 <span class="w">  </span><span class="c1"># ── Restart exploration ──</span>
 <span class="w">  </span><span class="nt">restart_exploration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># Start next iteration from a saved frame  [Optional]</span>
-<span class="w">  </span><span class="nt">restart_frame</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;candidates&quot;</span><span class="w"> </span><span class="c1"># Frame source: &quot;candidates&quot; or file path  [Optional]</span>
+<span class="w">  </span><span class="nt">restart_frame</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;candidates&quot;</span><span class="w"> </span><span class="c1"># Frame source: &quot;last&quot;, &quot;random&quot;, &quot;candidates&quot; [Optional]</span>
 
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span>
@@ -516,13 +518,65 @@ Nose-Hoover thermostat resists rapid temperature changes — use Langevin for ra
 <span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed.dat&quot;</span>
 <span class="w">    </span><span class="nt">kT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.02585</span>
 <span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">start_iteration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">        </span><span class="c1"># Apply PLUMED from this AL iteration      [Optional, Default: 0]</span>
 
 <span class="w">    </span><span class="nt">umbrella_sampling</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">          </span><span class="c1"># Enable umbrella sampling windows         [Optional]</span>
 <span class="w">      </span><span class="nt">config_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;umbrella_sampling.yaml&quot;</span><span class="w">  </span><span class="c1"># Window definitions file   [Required if enabled]</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Delayed PLUMED activation</strong> (<code class="docutils literal notranslate"><span class="pre">mlip_setup.plumed.start_iteration</span></code>) lets the first
+AL iterations run as plain ML-MD to build a reliable base model, then switches on
+PLUMED-biased sampling (e.g. umbrella sampling or metadynamics) from the specified
+iteration onward. For example, <code class="docutils literal notranslate"><span class="pre">start_iteration:</span> <span class="pre">1</span></code> skips PLUMED in iteration 0
+and enables it from iteration 1. Default <code class="docutils literal notranslate"><span class="pre">0</span></code> applies PLUMED from the start.</p>
+</div>
 </section>
+</section>
+<section id="restart-exploration">
+<h2>Restart Exploration<a class="headerlink" href="#restart-exploration" title="Link to this heading"></a></h2>
+<p>By default each AL iteration starts ML-MD from the original input structure.
+<code class="docutils literal notranslate"><span class="pre">restart_exploration</span></code> changes this so each iteration seeds its MD from a
+frame saved in the <strong>previous</strong> iteration, helping the model explore new regions
+of phase space rather than re-sampling the same starting geometry.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mlip_setup</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">restart_exploration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">   </span><span class="c1"># Seed ML-MD from a previous-iteration frame [Optional, Default: false]</span>
+<span class="w">  </span><span class="nt">restart_frame</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;candidates&quot;</span><span class="w">  </span><span class="c1"># Frame selection strategy                   [Optional, Default: &quot;candidates&quot;]</span>
+</pre></div>
+</div>
+<p>Three strategies are available for <code class="docutils literal notranslate"><span class="pre">restart_frame</span></code>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Strategy</p></th>
+<th class="head"><p>Behaviour</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;candidates&quot;</span></code></p></td>
+<td><p>Each run starts from a different randomly chosen DFT-labelled candidate
+from the previous iteration. Safest — candidates are already validated by DFT.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;last&quot;</span></code></p></td>
+<td><p>All runs start from the last frame of the previous ML-MD trajectory.
+Good when a single long run is used (<code class="docutils literal notranslate"><span class="pre">multiple_run:</span> <span class="pre">1</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code></p></td>
+<td><p>Each run starts from a different random frame in the previous ML-MD trajectory.
+Broadest phase-space coverage but frames are not DFT-validated.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">restart_exploration</span></code> has no effect in iteration 0 (no previous trajectory exists).
+It activates from iteration 1 onward.</p>
+</div>
 <section id="fine-tuning-universal-models">
 <h3>Fine-Tuning (Universal Models)<a class="headerlink" href="#fine-tuning-universal-models" title="Link to this heading"></a></h3>
 <p>Optional section to fine-tune a pre-trained universal DeePMD model (DPA-3)

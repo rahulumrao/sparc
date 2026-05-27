@@ -164,7 +164,7 @@ Controls MLIP model training and ML-MD simulation.
 
       # ── Restart exploration ──
       restart_exploration: false  # Start next iteration from a saved frame  [Optional]
-      restart_frame: "candidates" # Frame source: "candidates" or file path  [Optional]
+      restart_frame: "candidates" # Frame source: "last", "random", "candidates" [Optional]
 
       thermostat:
         type: "Nose"
@@ -176,10 +176,57 @@ Controls MLIP model training and ML-MD simulation.
         plumed_file: "plumed.dat"
         kT: 0.02585
         restart: false
+        start_iteration: 0        # Apply PLUMED from this AL iteration      [Optional, Default: 0]
 
         umbrella_sampling:
           enabled: false          # Enable umbrella sampling windows         [Optional]
           config_file: "umbrella_sampling.yaml"  # Window definitions file   [Required if enabled]
+
+.. note::
+
+    **Delayed PLUMED activation** (``mlip_setup.plumed.start_iteration``) lets the first
+    AL iterations run as plain ML-MD to build a reliable base model, then switches on
+    PLUMED-biased sampling (e.g. umbrella sampling or metadynamics) from the specified
+    iteration onward. For example, ``start_iteration: 1`` skips PLUMED in iteration 0
+    and enables it from iteration 1. Default ``0`` applies PLUMED from the start.
+
+
+Restart Exploration
+~~~~~~~~~~~~~~~~~~~
+
+By default each AL iteration starts ML-MD from the original input structure.
+``restart_exploration`` changes this so each iteration seeds its MD from a
+frame saved in the **previous** iteration, helping the model explore new regions
+of phase space rather than re-sampling the same starting geometry.
+
+.. code-block:: yaml
+
+    mlip_setup:
+      restart_exploration: false   # Seed ML-MD from a previous-iteration frame [Optional, Default: false]
+      restart_frame: "candidates"  # Frame selection strategy                   [Optional, Default: "candidates"]
+
+Three strategies are available for ``restart_frame``:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Strategy
+     - Behaviour
+   * - ``"candidates"``
+     - Each run starts from a different randomly chosen DFT-labelled candidate
+       from the previous iteration. Safest — candidates are already validated by DFT.
+   * - ``"last"``
+     - All runs start from the last frame of the previous ML-MD trajectory.
+       Good when a single long run is used (``multiple_run: 1``).
+   * - ``"random"``
+     - Each run starts from a different random frame in the previous ML-MD trajectory.
+       Broadest phase-space coverage but frames are not DFT-validated.
+
+.. note::
+
+    ``restart_exploration`` has no effect in iteration 0 (no previous trajectory exists).
+    It activates from iteration 1 onward.
 
 
 Fine-Tuning (Universal Models)

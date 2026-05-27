@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sparc.src.calculator &mdash; SPARC 0.1.0 documentation</title>
+  <title>sparc.src.calculator &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f7b18df9" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/documentation_options.js?v=10f1778b"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -44,22 +44,24 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">SPARC Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#core-software-dependencies">Core Software Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#python-package-dependencies">Python Package Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#step-by-step-installation">Step-by-Step Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#dft-engine-requirements">DFT Engine Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#environment-setup">Environment Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../install.html#verification">Verification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quick Start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#set-environment-variables">Set Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#example-input-file">Example Input File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#running-a-simulation">Running a Simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#sample-output-sparc-log">Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#core-components">Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#md-simulation">1. MD Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#deepmd-training">2. DeepMD Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#mlip-training">2. MLIP Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../quickstart.html#active-learning">3. Active Learning</a></li>
 </ul>
 </li>
@@ -70,6 +72,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#dft-calculator">DFT Calculator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#ab-initio-md-aimd">AB Initio MD (AIMD)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#mlip-setup">MLIP Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#active-learning">Active Learning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#distance-metrics">Distance Metrics</a></li>
@@ -250,9 +255,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#function">Function:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#rmsd-analysis">RMSD Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.rmsd.kabsch_rmsd"><code class="docutils literal notranslate"><span class="pre">kabsch_rmsd()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -353,32 +361,32 @@
 <span class="sd">``dft_calculator`` section of ``input.yaml``.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
 <span class="c1">################################################################</span>
 <span class="c1"># Third party imports</span>
 <span class="c1"># Lazy imports: each backend is imported only when its calculator is requested.</span>
 <span class="c1"># This prevents ImportError when a user has only one DFT code installed.</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ase.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rydberg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.GaussianParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian_template</span>
 
 <span class="c1">################################################################</span>
 <span class="c1"># Local imports</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcLog</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.read_incar</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_incar</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.OrcaParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_orca_template</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.xTBParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">xtb_template</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.QEParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">qe_template</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.GaussianParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian_template</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.read_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcConfig</span><span class="p">,</span> <span class="n">ConfigurationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.read_incar</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_incar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.read_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationError</span><span class="p">,</span> <span class="n">SparcConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.xTBParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">xtb_template</span>
 
 <span class="c1">################################################################</span>
 <span class="c1"># Custom Exceptions</span>
 <span class="c1">################################################################</span>
+
 
 <div class="viewcode-block" id="CalculatorError">
 <a class="viewcode-back" href="../../../calculator.html#sparc.src.calculator.CalculatorError">[docs]</a>
@@ -392,8 +400,8 @@
 <span class="sd">    - Calculator initialization failures</span>
 <span class="sd">    - Unsupported calculator engines</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
 
+    <span class="k">pass</span></div>
 
 
 
@@ -401,16 +409,17 @@
 <span class="c1"># Calculator Setup Class</span>
 <span class="c1">################################################################</span>
 
+
 <div class="viewcode-block" id="SetupDFTCalculator">
 <a class="viewcode-back" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SetupDFTCalculator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to set up DFT calculators for VASP, CP2K, ORCA, and xTB using ASE.</span>
-<span class="sd">    </span>
+
 <span class="sd">    This class provides a unified interface for configuring different DFT engines</span>
 <span class="sd">    based on template files and configuration dictionaries. It handles parsing</span>
 <span class="sd">    of engine-specific input files and creates appropriate ASE calculator objects.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input_config : dict or SparcConfig</span>
@@ -418,7 +427,7 @@
 <span class="sd">        Must include a &#39;dft_calculator&#39; key with engine-specific parameters.</span>
 <span class="sd">    print_screen : bool, optional</span>
 <span class="sd">        Whether to print calculator configuration details to log. Default is False.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input_config : dict</span>
@@ -427,25 +436,25 @@
 <span class="sd">        DFT calculator specific configuration</span>
 <span class="sd">    print_screen : bool</span>
 <span class="sd">        Flag for verbose output</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ConfigurationError</span>
 <span class="sd">        If input_config is invalid or missing required keys</span>
 <span class="sd">    CalculatorError</span>
 <span class="sd">        If calculator setup fails</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; config = {&#39;dft_calculator&#39;: {&#39;engine&#39;: &#39;VASP&#39;, &#39;template_file&#39;: &#39;INCAR&#39;, ...}}</span>
 <span class="sd">    &gt;&gt;&gt; calc_setup = SetupDFTCalculator(config, print_screen=True)</span>
 <span class="sd">    &gt;&gt;&gt; calculator = calc_setup.vasp()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_config</span><span class="p">,</span> <span class="n">print_screen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the DFT calculator setup.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        input_config : dict or SparcConfig</span>
@@ -458,16 +467,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">input_config</span> <span class="o">=</span> <span class="n">input_config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_config_object</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">if</span> <span class="s1">&#39;dft_calculator&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">input_config</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;dft_calculator&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">input_config</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s2">&quot;Missing &#39;dft_calculator&#39; key in input_config&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_config</span> <span class="o">=</span> <span class="n">input_config</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_config_object</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s2">&quot;input_config must be dict or SparcConfig&quot;</span><span class="p">)</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">print_screen</span> <span class="o">=</span> <span class="n">print_screen</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">]</span>
-    
+        <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_config</span><span class="p">[</span><span class="s2">&quot;dft_calculator&quot;</span><span class="p">]</span>
+
 <div class="viewcode-block" id="SetupDFTCalculator.vasp">
 <a class="viewcode-back" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.vasp">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">vasp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -475,30 +484,31 @@
 <span class="sd">        Set up the VASP calculator from INCAR template.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.vasp</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vasp</span>
-        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;engine&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-        
+
+        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">engine</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;VASP&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong engine: </span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2">. Expected VASP&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Get required parameters</span>
-        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exe_command&#39;</span><span class="p">)</span>
-        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;template_file&#39;</span><span class="p">)</span>  <span class="c1"># INCAR file</span>
-        
+        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exe_command&quot;</span><span class="p">)</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;template_file&quot;</span><span class="p">)</span>  <span class="c1"># INCAR file</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">exe_command</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="s2">&quot;exe_command required for VASP&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="s2">&quot;template_file (INCAR) required for VASP&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Parse INCAR file</span>
         <span class="n">incar_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">incar_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VASP INCAR file not found: </span><span class="si">{</span><span class="n">incar_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">incar_params</span> <span class="o">=</span> <span class="n">parse_incar</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">incar_path</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse INCAR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Print INCAR parameters if requested</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_screen</span><span class="p">:</span>
             <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
@@ -509,14 +519,14 @@
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">incar_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">max_key_length</span><span class="si">}}</span><span class="s2"> : </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
-        
+
         <span class="c1"># Default parameters (can be overridden by **incar_params)</span>
-        <span class="n">prec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;prec&#39;</span><span class="p">,</span> <span class="s1">&#39;Normal&#39;</span><span class="p">)</span>
-        <span class="n">kgamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kgamma&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">xc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xc&#39;</span><span class="p">,</span> <span class="s1">&#39;PBE&#39;</span><span class="p">)</span>
-        <span class="n">pp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pp&#39;</span><span class="p">,</span> <span class="s1">&#39;PBE&#39;</span><span class="p">)</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;directory&#39;</span><span class="p">,</span> <span class="s1">&#39;vasp&#39;</span><span class="p">)</span>
-        
+        <span class="n">prec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;prec&quot;</span><span class="p">,</span> <span class="s2">&quot;Normal&quot;</span><span class="p">)</span>
+        <span class="n">kgamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kgamma&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">xc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xc&quot;</span><span class="p">,</span> <span class="s2">&quot;PBE&quot;</span><span class="p">)</span>
+        <span class="n">pp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pp&quot;</span><span class="p">,</span> <span class="s2">&quot;PBE&quot;</span><span class="p">)</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;directory&quot;</span><span class="p">,</span> <span class="s2">&quot;vasp&quot;</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">calc</span> <span class="o">=</span> <span class="n">Vasp</span><span class="p">(</span>
                 <span class="n">prec</span><span class="o">=</span><span class="n">prec</span><span class="p">,</span>
@@ -526,16 +536,16 @@
                 <span class="n">pp</span><span class="o">=</span><span class="n">pp</span><span class="p">,</span>
                 <span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
                 <span class="n">command</span><span class="o">=</span><span class="n">exe_command</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">incar_params</span>
+                <span class="o">**</span><span class="n">incar_params</span><span class="p">,</span>
             <span class="p">)</span>
-            
+
             <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;VASP Calculator Setup Successfully!&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">calc</span>
-            
+
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to create VASP calculator: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-    
+
 <div class="viewcode-block" id="SetupDFTCalculator.cp2k">
 <a class="viewcode-back" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.cp2k">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cp2k</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -543,26 +553,27 @@
 <span class="sd">        Set up the CP2K calculator from template file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.cp2k</span><span class="w"> </span><span class="kn">import</span> <span class="n">CP2K</span>
-        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;engine&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-        
+
+        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">engine</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;CP2K&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong engine: </span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2">. Expected CP2K&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Get template file</span>
-        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;template_file&#39;</span><span class="p">,</span> <span class="s1">&#39;cp2k_template.inp&#39;</span><span class="p">)</span>
-        
+        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;template_file&quot;</span><span class="p">,</span> <span class="s2">&quot;cp2k_template.inp&quot;</span><span class="p">)</span>
+
         <span class="c1"># Read template</span>
-        <span class="n">inpp</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">inpp</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;!&#39;</span><span class="p">):</span>
-                        <span class="n">inpp</span> <span class="o">+=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;!&quot;</span><span class="p">):</span>
+                        <span class="n">inpp</span> <span class="o">+=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CP2K template file not found: </span><span class="si">{</span><span class="n">template_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading CP2K template: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Default parameters</span>
         <span class="c1"># cutoff=None: read CUTOFF from &amp;MGRID in the template instead of injecting it.</span>
         <span class="c1"># basis_set=&#39;6-31G*&#39;: global fallback applied to all elements. To use different</span>
@@ -573,30 +584,26 @@
         <span class="c1"># basis_set_file / potential_file: filenames passed to BASIS_SET_FILE_NAME and</span>
         <span class="c1">#   POTENTIAL_FILE_NAME in &amp;DFT; override in the cp2k: yaml section as needed.</span>
         <span class="n">default_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;xc&#39;</span><span class="p">:</span> <span class="s1">&#39;PBE&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;cutoff&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;max_scf&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
-            <span class="s1">&#39;basis_set&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;basis_set_file&#39;</span><span class="p">:</span> <span class="s1">&#39;BASIS_MOLOPT&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;potential_file&#39;</span><span class="p">:</span> <span class="s1">&#39;GTH_POTENTIALS&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;pseudo_potential&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;cp2k&#39;</span><span class="p">,</span> <span class="s1">&#39;job&#39;</span><span class="p">)</span>
+            <span class="s2">&quot;xc&quot;</span><span class="p">:</span> <span class="s2">&quot;PBE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cutoff&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;max_scf&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+            <span class="s2">&quot;basis_set&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;basis_set_file&quot;</span><span class="p">:</span> <span class="s2">&quot;BASIS_MOLOPT&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;potential_file&quot;</span><span class="p">:</span> <span class="s2">&quot;GTH_POTENTIALS&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pseudo_potential&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;cp2k&quot;</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="p">),</span>
         <span class="p">}</span>
-        
+
         <span class="c1"># Update with user config</span>
-        <span class="n">cp2k_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cp2k&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">cp2k_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cp2k&quot;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">default_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cp2k_config</span><span class="p">)</span>
-        
+
         <span class="c1"># Get exe command</span>
-        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exe_command&#39;</span><span class="p">,</span> <span class="s1">&#39;cp2k.popt&#39;</span><span class="p">)</span>
-        
+        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exe_command&quot;</span><span class="p">,</span> <span class="s2">&quot;cp2k.popt&quot;</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">calc</span> <span class="o">=</span> <span class="n">CP2K</span><span class="p">(</span>
-                <span class="n">command</span><span class="o">=</span><span class="n">exe_command</span><span class="p">,</span>
-                <span class="n">inp</span><span class="o">=</span><span class="n">inpp</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">default_params</span>
-            <span class="p">)</span>
-            
+            <span class="n">calc</span> <span class="o">=</span> <span class="n">CP2K</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="n">exe_command</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="n">inpp</span><span class="p">,</span> <span class="o">**</span><span class="n">default_params</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_screen</span><span class="p">:</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; CP2K PARAMETERS &quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
@@ -612,64 +619,66 @@
                     <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
-            
+
             <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;CP2K calculator setup successfully&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">calc</span>
-            
+
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to create CP2K calculator: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-    
+
 <div class="viewcode-block" id="SetupDFTCalculator.orca">
 <a class="viewcode-back" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.orca">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">orca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up the ORCA calculator from template file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.orca</span><span class="w"> </span><span class="kn">import</span> <span class="n">ORCA</span><span class="p">,</span> <span class="n">OrcaProfile</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
-        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;engine&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-        
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.orca</span><span class="w"> </span><span class="kn">import</span> <span class="n">ORCA</span><span class="p">,</span> <span class="n">OrcaProfile</span>
+
+        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">engine</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;ORCA&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong engine: </span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2">. Expected ORCA&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Get configuration</span>
-        <span class="n">orca_cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;orca&#39;</span><span class="p">,</span> <span class="p">{})</span>
-        
+        <span class="n">orca_cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orca&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
         <span class="c1"># Get template file</span>
-        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;template_file&#39;</span><span class="p">,</span> <span class="s1">&#39;orca_template.inp&#39;</span><span class="p">)</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;template_file&quot;</span><span class="p">,</span> <span class="s2">&quot;orca_template.inp&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="s2">&quot;template_file required for ORCA&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Parse template</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">tfl</span> <span class="o">=</span> <span class="n">parse_orca_template</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse ORCA template: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Extract parameters from template or config</span>
-        <span class="n">orcasimpleinput</span> <span class="o">=</span> <span class="n">orca_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;orcasimpleinput&#39;</span><span class="p">,</span> <span class="n">tfl</span><span class="p">[</span><span class="s1">&#39;orcasimpleinput&#39;</span><span class="p">])</span>
-        <span class="n">orcablocks</span> <span class="o">=</span> <span class="n">orca_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;orcablocks&#39;</span><span class="p">,</span> <span class="n">tfl</span><span class="p">[</span><span class="s1">&#39;orcablocks&#39;</span><span class="p">])</span>
-        <span class="n">charge</span> <span class="o">=</span> <span class="n">orca_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;charge&#39;</span><span class="p">,</span> <span class="n">tfl</span><span class="p">[</span><span class="s1">&#39;charge&#39;</span><span class="p">])</span>
-        <span class="n">multiplicity</span> <span class="o">=</span> <span class="n">orca_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;multi&#39;</span><span class="p">,</span> <span class="n">tfl</span><span class="p">[</span><span class="s1">&#39;multi&#39;</span><span class="p">])</span>
-        
+        <span class="n">orcasimpleinput</span> <span class="o">=</span> <span class="n">orca_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orcasimpleinput&quot;</span><span class="p">,</span> <span class="n">tfl</span><span class="p">[</span><span class="s2">&quot;orcasimpleinput&quot;</span><span class="p">])</span>
+        <span class="n">orcablocks</span> <span class="o">=</span> <span class="n">orca_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orcablocks&quot;</span><span class="p">,</span> <span class="n">tfl</span><span class="p">[</span><span class="s2">&quot;orcablocks&quot;</span><span class="p">])</span>
+        <span class="n">charge</span> <span class="o">=</span> <span class="n">orca_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="n">tfl</span><span class="p">[</span><span class="s2">&quot;charge&quot;</span><span class="p">])</span>
+        <span class="n">multiplicity</span> <span class="o">=</span> <span class="n">orca_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;multi&quot;</span><span class="p">,</span> <span class="n">tfl</span><span class="p">[</span><span class="s2">&quot;multi&quot;</span><span class="p">])</span>
+
         <span class="c1"># Resolve executable</span>
-        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exe_command&#39;</span><span class="p">)</span>
+        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exe_command&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">exe_command</span><span class="p">:</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="n">exe_command</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">found</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;orca&#39;</span><span class="p">)</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;orca&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span>
                     <span class="s2">&quot;ORCA executable not found. Install ORCA or set exe_command&quot;</span>
                 <span class="p">)</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="n">found</span>
-        
+
         <span class="c1"># Setup profile and directory</span>
         <span class="n">profile</span> <span class="o">=</span> <span class="n">OrcaProfile</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">cmd</span><span class="p">))</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="s1">&#39;orca_run&#39;</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="s2">&quot;orca_run&quot;</span>
         <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">calc</span> <span class="o">=</span> <span class="n">ORCA</span><span class="p">(</span>
                 <span class="n">label</span><span class="o">=</span><span class="s2">&quot;orca&quot;</span><span class="p">,</span>
@@ -678,9 +687,9 @@
                 <span class="n">charge</span><span class="o">=</span><span class="n">charge</span><span class="p">,</span>
                 <span class="n">mult</span><span class="o">=</span><span class="n">multiplicity</span><span class="p">,</span>
                 <span class="n">orcasimpleinput</span><span class="o">=</span><span class="n">orcasimpleinput</span><span class="p">,</span>
-                <span class="n">orcablocks</span><span class="o">=</span><span class="n">orcablocks</span>
+                <span class="n">orcablocks</span><span class="o">=</span><span class="n">orcablocks</span><span class="p">,</span>
             <span class="p">)</span>
-            
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_screen</span><span class="p">:</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; ORCA CALCULATOR &quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
@@ -692,52 +701,52 @@
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">orcablocks</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
                     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
-            
+
             <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;ORCA calculator setup successfully&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">calc</span>
-            
+
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to create ORCA calculator: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-    
+
 <div class="viewcode-block" id="SetupDFTCalculator.xtb">
 <a class="viewcode-back" href="../../../calculator.html#sparc.src.calculator.SetupDFTCalculator.xtb">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">xtb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up the xTB (extended tight-binding) calculator from template.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">xtb.ase.calculator</span><span class="w"> </span><span class="kn">import</span> <span class="n">XTB</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
-        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;engine&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-        
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">xtb.ase.calculator</span><span class="w"> </span><span class="kn">import</span> <span class="n">XTB</span>
+
+        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">engine</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;XTB&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong engine: </span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2">. Expected xTB&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Get template file</span>
         <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;template_file&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span>
-                <span class="s2">&quot;xTB template_file required in dft_calculator config&quot;</span>
-            <span class="p">)</span>
-        
+            <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="s2">&quot;xTB template_file required in dft_calculator config&quot;</span><span class="p">)</span>
+
         <span class="c1"># Parse template</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">cfg</span> <span class="o">=</span> <span class="n">xtb_template</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse xTB template: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Resolve executable</span>
-        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exe_command&#39;</span><span class="p">)</span>
+        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exe_command&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">exe_command</span><span class="p">:</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="n">exe_command</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">found</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;xtb&#39;</span><span class="p">)</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;xtb&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span>
                     <span class="s2">&quot;xTB executable not found. Install xTB or set exe_command&quot;</span>
                 <span class="p">)</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="n">found</span>
-        
+
         <span class="c1"># Extract parameters</span>
         <span class="n">method</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;GFN2-xTB&quot;</span><span class="p">)</span>
         <span class="n">charge</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -750,36 +759,36 @@
         <span class="n">solvmet</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solvent_method&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">workdir</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;directory&quot;</span><span class="p">,</span> <span class="s2">&quot;xtb_run&quot;</span><span class="p">)</span>
         <span class="n">label</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;xtb&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Validate method</span>
-        <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;GFN1-xTB&#39;</span><span class="p">,</span> <span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">}:</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;GFN1-xTB&quot;</span><span class="p">,</span> <span class="s2">&quot;GFN2-xTB&quot;</span><span class="p">}:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Unsupported xTB method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">. Use GFN1-xTB or GFN2-xTB&quot;</span>
             <span class="p">)</span>
-        
+
         <span class="c1"># Build calculator kwargs</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;charge&#39;</span><span class="p">:</span> <span class="n">charge</span><span class="p">,</span>
-            <span class="s1">&#39;uhf&#39;</span><span class="p">:</span> <span class="n">uhf</span><span class="p">,</span>
-            <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span>
-            <span class="s1">&#39;electronic_temperature&#39;</span><span class="p">:</span> <span class="n">etemp</span><span class="p">,</span>
-            <span class="s1">&#39;max_iterations&#39;</span><span class="p">:</span> <span class="n">maxiter</span><span class="p">,</span>
-            <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">,</span>
-            <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+            <span class="s2">&quot;charge&quot;</span><span class="p">:</span> <span class="n">charge</span><span class="p">,</span>
+            <span class="s2">&quot;uhf&quot;</span><span class="p">:</span> <span class="n">uhf</span><span class="p">,</span>
+            <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span>
+            <span class="s2">&quot;electronic_temperature&quot;</span><span class="p">:</span> <span class="n">etemp</span><span class="p">,</span>
+            <span class="s2">&quot;max_iterations&quot;</span><span class="p">:</span> <span class="n">maxiter</span><span class="p">,</span>
+            <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">,</span>
+            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
         <span class="p">}</span>
-        
+
         <span class="c1"># Add solvent if specified</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solvent</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">solvent</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;solvent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">solvent</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solvmet</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">solvmet</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;solvation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">solvmet</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        
+
         <span class="c1"># Create working directory</span>
         <span class="n">Path</span><span class="p">(</span><span class="n">workdir</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">calc</span> <span class="o">=</span> <span class="n">XTB</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">workdir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_screen</span><span class="p">:</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot; xTB CALCULATOR &quot;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
@@ -793,13 +802,12 @@
                 <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="s1">&#39;Solvent&#39;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">solvent</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;None&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="s1">&#39;xTB workdir, Label&#39;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">workdir</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
-            
+
             <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;xTB calculator setup successfully&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">calc</span>
-            
+
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to create xTB calculator: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
 
 
 <div class="viewcode-block" id="SetupDFTCalculator.espresso">
@@ -813,15 +821,16 @@
 <span class="sd">        and K_POINTS cards. Coordinates are provided by ASE, so</span>
 <span class="sd">        ATOMIC_POSITIONS and CELL_PARAMETERS in the template are ignored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.espresso</span><span class="w"> </span><span class="kn">import</span> <span class="n">Espresso</span><span class="p">,</span> <span class="n">EspressoProfile</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 
-        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;engine&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.espresso</span><span class="w"> </span><span class="kn">import</span> <span class="n">Espresso</span><span class="p">,</span> <span class="n">EspressoProfile</span>
+
+        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">engine</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;QE&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong engine: </span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2">. Expected QE&quot;</span><span class="p">)</span>
 
         <span class="c1"># Get template file</span>
-        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;template_file&#39;</span><span class="p">)</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;template_file&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="s2">&quot;template_file required for Quantum ESPRESSO&quot;</span><span class="p">)</span>
 
@@ -831,11 +840,11 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse QE template: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">input_data</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;input_data&#39;</span><span class="p">]</span>
-        <span class="n">pseudopotentials</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;pseudopotentials&#39;</span><span class="p">]</span>
-        <span class="n">pseudo_dir</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;pseudo_dir&#39;</span><span class="p">]</span>
-        <span class="n">kpts</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;kpts&#39;</span><span class="p">]</span>
-        <span class="n">koffset</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;koffset&#39;</span><span class="p">]</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;input_data&quot;</span><span class="p">]</span>
+        <span class="n">pseudopotentials</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;pseudopotentials&quot;</span><span class="p">]</span>
+        <span class="n">pseudo_dir</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;pseudo_dir&quot;</span><span class="p">]</span>
+        <span class="n">kpts</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;kpts&quot;</span><span class="p">]</span>
+        <span class="n">koffset</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;koffset&quot;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pseudopotentials</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span>
@@ -844,16 +853,16 @@
             <span class="p">)</span>
 
         <span class="c1"># Force single-point calculation for ASE-driven MD</span>
-        <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;calculation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;scf&#39;</span>
-        <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;tprnfor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;tstress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;calculation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;scf&quot;</span>
+        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;tprnfor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;tstress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># Resolve executable</span>
-        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exe_command&#39;</span><span class="p">)</span>
+        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exe_command&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">exe_command</span><span class="p">:</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="n">exe_command</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">found</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;pw.x&#39;</span><span class="p">)</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;pw.x&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span>
                     <span class="s2">&quot;pw.x executable not found. &quot;</span>
@@ -862,27 +871,27 @@
             <span class="n">cmd</span> <span class="o">=</span> <span class="n">found</span>
 
         <span class="c1"># Build profile</span>
-        <span class="n">profile_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">}</span>
+        <span class="n">profile_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">pseudo_dir</span><span class="p">:</span>
-            <span class="n">profile_kwargs</span><span class="p">[</span><span class="s1">&#39;pseudo_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pseudo_dir</span>
+            <span class="n">profile_kwargs</span><span class="p">[</span><span class="s2">&quot;pseudo_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pseudo_dir</span>
 
         <span class="n">profile</span> <span class="o">=</span> <span class="n">EspressoProfile</span><span class="p">(</span><span class="o">**</span><span class="n">profile_kwargs</span><span class="p">)</span>
 
         <span class="c1"># Working directory</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;directory&#39;</span><span class="p">,</span> <span class="s1">&#39;espresso&#39;</span><span class="p">)</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;directory&quot;</span><span class="p">,</span> <span class="s2">&quot;espresso&quot;</span><span class="p">)</span>
         <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Build calculator kwargs</span>
         <span class="n">calc_kwargs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;profile&#39;</span><span class="p">:</span> <span class="n">profile</span><span class="p">,</span>
-            <span class="s1">&#39;pseudopotentials&#39;</span><span class="p">:</span> <span class="n">pseudopotentials</span><span class="p">,</span>
-            <span class="s1">&#39;input_data&#39;</span><span class="p">:</span> <span class="n">input_data</span><span class="p">,</span>
-            <span class="s1">&#39;directory&#39;</span><span class="p">:</span> <span class="n">directory</span><span class="p">,</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="p">,</span>
+            <span class="s2">&quot;pseudopotentials&quot;</span><span class="p">:</span> <span class="n">pseudopotentials</span><span class="p">,</span>
+            <span class="s2">&quot;input_data&quot;</span><span class="p">:</span> <span class="n">input_data</span><span class="p">,</span>
+            <span class="s2">&quot;directory&quot;</span><span class="p">:</span> <span class="n">directory</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="n">kpts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">calc_kwargs</span><span class="p">[</span><span class="s1">&#39;kpts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kpts</span>
+            <span class="n">calc_kwargs</span><span class="p">[</span><span class="s2">&quot;kpts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kpts</span>
         <span class="k">if</span> <span class="n">koffset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">calc_kwargs</span><span class="p">[</span><span class="s1">&#39;koffset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">koffset</span>
+            <span class="n">calc_kwargs</span><span class="p">[</span><span class="s2">&quot;koffset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">koffset</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">calc</span> <span class="o">=</span> <span class="n">Espresso</span><span class="p">(</span><span class="o">**</span><span class="n">calc_kwargs</span><span class="p">)</span>
@@ -925,11 +934,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">ase.calculators.gaussian</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gaussian</span>
 
-        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;engine&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">engine</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;GAUSSIAN&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong engine: </span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2">. Expected Gaussian&quot;</span><span class="p">)</span>
 
-        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;template_file&#39;</span><span class="p">)</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;template_file&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="s2">&quot;template_file required for Gaussian&quot;</span><span class="p">)</span>
 
@@ -939,27 +948,27 @@
             <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse Gaussian template: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Working directory</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;directory&#39;</span><span class="p">,</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;directory&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
         <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># force=None ensures ASE requests forces (single-point, no opt)</span>
-        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;force&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># label and command are FileIOCalculator constructor args,</span>
         <span class="c1"># NOT Gaussian route/link0 parameters — keep them separate</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
-        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exe_command&#39;</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
+        <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exe_command&quot;</span><span class="p">)</span>
 
         <span class="c1">#</span>
         <span class="k">if</span> <span class="n">exe_command</span><span class="p">:</span>
             <span class="n">g16_bin</span> <span class="o">=</span> <span class="n">exe_command</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">g16_bin</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;g16&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;g09&#39;</span><span class="p">)</span>
+            <span class="n">g16_bin</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;g16&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;g09&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">g16_bin</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span>
                     <span class="s2">&quot;Gaussian executable not found. Install Gaussian or set exe_command&quot;</span>
                 <span class="p">)</span>
-        <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">g16_bin</span><span class="si">}</span><span class="s1"> PREFIX.com &gt; PREFIX.log&#39;</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">g16_bin</span><span class="si">}</span><span class="s2"> PREFIX.com &gt; PREFIX.log&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">calc</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">cmd</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
@@ -990,16 +999,17 @@
 <span class="c1"># Helper Function</span>
 <span class="c1">################################################################</span>
 
+
 <div class="viewcode-block" id="dft_calculator">
 <a class="viewcode-back" href="../../../calculator.html#sparc.src.calculator.dft_calculator">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">dft_calculator</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">print_screen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function to set up a DFT calculator based on configuration.</span>
-<span class="sd">    </span>
+
 <span class="sd">    This is the main entry point for creating DFT calculators. It automatically</span>
 <span class="sd">    determines the calculator engine from the configuration and creates the</span>
 <span class="sd">    appropriate ASE calculator object.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    config : dict or SparcConfig</span>
@@ -1007,17 +1017,17 @@
 <span class="sd">        settings. Must include &#39;dft_calculator&#39; section with &#39;engine&#39; key.</span>
 <span class="sd">    print_screen : bool, optional</span>
 <span class="sd">        Whether to print calculator configuration details to log. Default is False.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ASE Calculator</span>
 <span class="sd">        The configured ASE calculator instance (Vasp, CP2K, ORCA, or XTB)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    CalculatorError</span>
 <span class="sd">        If engine is unsupported or calculator setup fails</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; config = load_config(&#39;input.yaml&#39;)</span>
@@ -1026,31 +1036,31 @@
 <span class="sd">    &gt;&gt;&gt; energy = atoms.get_potential_energy()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">calculator_setup</span> <span class="o">=</span> <span class="n">SetupDFTCalculator</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">print_screen</span><span class="p">)</span>
-    
+
     <span class="c1"># Determine engine name</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">SparcConfig</span><span class="p">):</span>
         <span class="n">dft_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">dft_calculator</span>
         <span class="n">engine</span> <span class="o">=</span> <span class="n">dft_config</span><span class="o">.</span><span class="n">engine</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">dft_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">]</span>
-        <span class="n">engine</span> <span class="o">=</span> <span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;engine&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-    
+        <span class="n">dft_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;dft_calculator&quot;</span><span class="p">]</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dft_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
     <span class="n">engine_lower</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    
+
     <span class="n">SparcLog</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting up </span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2"> calculator...&quot;</span><span class="p">)</span>
-    
-    <span class="k">if</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s1">&#39;vasp&#39;</span><span class="p">:</span>
+
+    <span class="k">if</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s2">&quot;vasp&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">calculator_setup</span><span class="o">.</span><span class="n">vasp</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s1">&#39;cp2k&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s2">&quot;cp2k&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">calculator_setup</span><span class="o">.</span><span class="n">cp2k</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s1">&#39;orca&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s2">&quot;orca&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">calculator_setup</span><span class="o">.</span><span class="n">orca</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s1">&#39;xtb&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s2">&quot;xtb&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">calculator_setup</span><span class="o">.</span><span class="n">xtb</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s1">&#39;qe&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s2">&quot;qe&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">calculator_setup</span><span class="o">.</span><span class="n">espresso</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">engine_lower</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">calculator_setup</span><span class="o">.</span><span class="n">gaussian</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">CalculatorError</span><span class="p">(</span>
@@ -1066,23 +1076,26 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set up DFT calculator.&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;--input_file&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;YAML configuration file&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--print&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print calculator details&quot;</span><span class="p">)</span>
-    
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;--input_file&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;YAML configuration file&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--print&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print calculator details&quot;</span>
+    <span class="p">)</span>
+
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-    
+
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        
+
         <span class="n">calc</span> <span class="o">=</span> <span class="n">dft_calculator</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">print_screen</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">print</span><span class="p">)</span>
-        
-        <span class="n">engine</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;engine&#39;</span><span class="p">)</span> <span class="ow">or</span> \
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;dft_calculator&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;dft_calculator&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;name&quot;</span>
+        <span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Calculator </span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2"> is set up successfully&quot;</span><span class="p">)</span>
-        
+
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span>

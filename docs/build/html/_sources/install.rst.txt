@@ -13,7 +13,7 @@ Core Software Dependencies
 * Python 3.10 (recommended)
 * `DeepMD-kit v3+ <dpmd_install_>`_
 * `ASE <ase_>`_ — Atomic Simulation Environment
-* At least one DFT engine (VASP, CP2K, ORCA, QE, xTB, or Gaussian)
+* At least one DFT engine (`VASP <vasp_>`_, `CP2K <cp2k_>`_, `ORCA <orca_>`_, `Quantum ESPRESSO <qe_>`_, `xTB <xtb_>`_, or `Gaussian <gaussian_>`_)
 * `PLUMED <plumed_>`_ — optional, for enhanced sampling
 
 Python Package Dependencies
@@ -97,22 +97,22 @@ SPARC supports the following DFT engines. Only install what you need:
    * - Engine
      - Use case
      - Notes
-   * - VASP
+   * - `VASP <vasp_>`_
      - Periodic solids
      - License required; set ``VASP_PP_PATH`` env variable
-   * - CP2K
+   * - `CP2K <cp2k_>`_
      - Periodic solids / molecules
      - Free; ASE CP2K interface included
-   * - ORCA
+   * - `ORCA <orca_>`_
      - Molecules
      - Free for academia; set ``exe_command`` in ``input.yaml``
-   * - Quantum ESPRESSO
+   * - `Quantum ESPRESSO <qe_>`_
      - Periodic solids
      - Free; set ``exe_command``
-   * - xTB
+   * - `xTB <xtb_>`_
      - Semi-empirical (fast)
      - ``conda install -c conda-forge xtb-python``
-   * - Gaussian
+   * - `Gaussian <gaussian_>`_
      - Molecules
      - License required
 
@@ -176,3 +176,9 @@ Expected output:
 .. _plumed: https://www.plumed.org/download
 .. _ase: https://wiki.fysik.dtu.dk/ase/
 .. _tf: https://www.tensorflow.org/install/pip
+.. _vasp: https://www.vasp.at/
+.. _cp2k: https://www.cp2k.org/
+.. _orca: https://orcaforum.kofo.mpg.de/
+.. _qe: https://www.quantum-espresso.org/
+.. _xtb: https://xtb-docs.readthedocs.io/
+.. _gaussian: https://gaussian.com/
