@@ -5,10 +5,11 @@ Supports matplotlib backend with shared utilities.
 
 Usage:
     from plotting import matplot
+    from plotting import chemview
     from plotting.main import get_iteration_dirs, load_trajectory
 """
 
-from . import matplot
+from . import chemview, matplot
 from .main import (
     ReadColvar,
     ViewTraj,
@@ -20,9 +21,11 @@ from .main import (
     get_iteration_dirs,
     load_trajectory,
 )
+from .matplot import PlotForceError
 
 __all__ = [
     "matplot",
+    "chemview",
     "get_iteration_dirs",
     "load_trajectory",
     "extract_iteration_number",
@@ -32,6 +35,7 @@ __all__ = [
     "get_2dSurface",
     "get_1dSurface",
     "ViewTraj",
+    "PlotForceError",
 ]
 
 __version__ = "0.2"

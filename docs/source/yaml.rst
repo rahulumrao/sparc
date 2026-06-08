@@ -259,7 +259,7 @@ label them with DFT, and retrain the models.
 
     active_learning: false        # Enable active learning loop              [Required]
     learning_restart: false       # Resume AL from last saved checkpoint     [Optional]
-    latest_model: null            # Model path to use on restart             [Required if learning_restart]
+    latest_model: null            # Deprecated — no longer used              [Ignored]
     iteration: 10                 # Maximum AL iterations                    [Optional, Default: 10]
     min_candidates: 1             # Stop if candidates found < this value    [Optional, Default: 1]
 
@@ -277,6 +277,28 @@ The AL loop stops when ``iteration`` is reached **or** when the number of candid
 found in an iteration falls below ``min_candidates``. The default is ``min_candidates: 1``, and stops only when zero candidates are found. Set a
 higher value to stop earlier when the model is converging and only a handful of
 uncertain structures remain.
+
+Restarting a Crashed Run
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+SPARC writes a ``progress.json`` file after every DFT candidate in Step 1 of each
+AL iteration. If the workflow crashes (during training, ML-MD, or mid-DFT), set
+``learning_restart: true`` to resume automatically:
+
+.. code-block:: yaml
+
+    learning_restart: true
+
+SPARC reads ``progress.json`` to determine which AL iteration was in progress and
+how many candidates had already been labelled. It then:
+
+1. Re-runs the last DFT candidate (minor redundancy — identical result, harmless).
+2. Retrains models from the combined trajectory.
+3. Runs ML-MD with the freshly retrained models for that iteration.
+
+The model used for ML-MD is **always auto-detected** from the current iteration's
+training directory (``iter_N/01.train``) after retraining. ``latest_model`` in the
+config is no longer consulted for model loading and can be omitted.
 
 **RMSD duplicate filtering** removes near-identical candidates before DFT labelling.
 Each candidate is compared (via the Kabsch algorithm) against the initial frame and all

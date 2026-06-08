@@ -10,10 +10,10 @@ import os
 import dpdata
 import numpy as np
 import pandas as pd
+import plotly.colors as pc
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Import shared utilities
 from .main import (
     compute_mae,
     compute_rmse,
@@ -22,12 +22,28 @@ from .main import (
     load_trajectory,
 )
 
+
+def _white_bg_colorscale(cmap):
+    """Return colorscale with white at position 0 so empty bins appear white."""
+    cs = pc.get_colorscale(cmap)
+    return [[0.0, "white"], [1e-9, cs[0][1]]] + cs[1:]
+
+
 ########################################################################################################
 # Parity plots for energy and forces
 ########################################################################################################
 
 
-def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
+def ParityPlot(
+    data_dir,
+    model_path,
+    per_atom=False,
+    type="all",
+    force_mode="components",
+    heatmap=False,
+    cmap="coolwarm",
+    save_fig=None,
+):
     """
     Generate interactive parity plots for energy and/or force components.
 
@@ -41,12 +57,20 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
         Whether to plot energy per atom
     type : str
         'all' (default), 'energy', or 'forces'
+    force_mode : str
+        'components' (default) — separate fx/fy/fz panels.
+        'flatten' — all force components in one panel.
+    heatmap : bool
+        Color points by absolute error using cmap (default False)
+    cmap : str
+        Colormap for heatmap mode (default 'coolwarm')
     save_fig : str or None
         Path to save HTML file
 
     Example
     -------
-    >>> ParityPlot("data_dir", "model.pb", save_fig='parity.html')
+    >>> ParityPlot("data_dir", "model.pth", type="all", force_mode="flatten", heatmap=True, cmap="plasma")
+    >>> ParityPlot("data_dir", "model.pth", type="forces", force_mode="components")
     """
     if not os.path.exists(data_dir):
         print(f"[ANALYSIS][ERROR] Test data not found: {data_dir}")
@@ -58,7 +82,6 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
     system = dpdata.LabeledSystem(data_dir, fmt="deepmd/npy")
     prediction = system.predict(dp=model_path)
 
-    # Extract data
     e_true = np.array(system["energies"])
     e_pred = np.array(prediction["energies"])
     natoms = system.get_natoms()
@@ -67,19 +90,198 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
         e_true /= natoms
         e_pred /= natoms
         e_unit = "eV/Atom"
+        e_unit_ann = "meV/Atom"
     else:
         e_unit = "eV"
+        e_unit_ann = "meV"
 
     f_true = np.vstack(system["forces"])
     f_pred = np.vstack(prediction["forces"])
 
-    # Create plots
+    flatten = force_mode in ("flatten", "flat")
+
+    # --- Determine subplot layout ---
     if type == "energy":
-        fig = _plot_energy_parity(e_true, e_pred, e_unit)
+        fig = go.Figure()
+        _add_parity_panel(
+            fig,
+            e_true,
+            e_pred,
+            heatmap,
+            cmap,
+            xlabel=f"Observed (DFT) [{e_unit}]",
+            ylabel=f"Predicted (MLP) [{e_unit}]",
+            title="(A) Energy",
+            rmse_label=e_unit_ann,
+            marker_size=8,
+            opacity=0.7,
+        )
+        fig.update_layout(
+            width=600,
+            height=500,
+            template="plotly_white",
+            font=dict(size=14),
+            hovermode="closest",
+        )
+
     elif type == "forces":
-        fig = _plot_forces_parity(f_true, f_pred)
+        if flatten:
+            fig = go.Figure()
+            f_t_all, f_p_all = f_true.ravel(), f_pred.ravel()
+            _add_parity_panel(
+                fig,
+                f_t_all,
+                f_p_all,
+                heatmap,
+                cmap,
+                xlabel="Observed (DFT) [eV/Å]",
+                ylabel="Predicted (MLP) [eV/Å]",
+                title="(A) Forces",
+                rmse_label="meV/Å",
+                marker_size=5,
+                opacity=0.6,
+            )
+            fig.update_layout(
+                width=600,
+                height=500,
+                template="plotly_white",
+                font=dict(size=14),
+                hovermode="closest",
+            )
+        else:
+            fig = make_subplots(
+                rows=1,
+                cols=3,
+                subplot_titles=["(A) fx", "(B) fy", "(C) fz"],
+                horizontal_spacing=0.08,
+            )
+            for i, comp in enumerate(["fx", "fy", "fz"]):
+                _add_parity_panel(
+                    fig,
+                    f_true[:, i],
+                    f_pred[:, i],
+                    heatmap,
+                    cmap,
+                    xlabel="Observed (DFT) [eV/Å]",
+                    ylabel="Predicted (MLP) [eV/Å]",
+                    title=None,
+                    rmse_label="meV/Å",
+                    marker_size=5,
+                    opacity=0.6,
+                    row=1,
+                    col=i + 1,
+                    xref=f"x{i + 1 if i else ''}",
+                    yref=f"y{i + 1 if i else ''}",
+                )
+            fig.update_layout(
+                width=1300,
+                height=450,
+                template="plotly_white",
+                font=dict(size=13),
+                hovermode="closest",
+            )
+
     else:  # 'all'
-        fig = _plot_all_parity(e_true, e_pred, e_unit, f_true, f_pred)
+        if flatten:
+            fig = make_subplots(
+                rows=1,
+                cols=2,
+                subplot_titles=["(A) Energy", "(B) Forces"],
+                horizontal_spacing=0.12,
+            )
+            _add_parity_panel(
+                fig,
+                e_true,
+                e_pred,
+                heatmap,
+                cmap,
+                xlabel=f"Observed (DFT) [{e_unit}]",
+                ylabel=f"Predicted (MLP) [{e_unit}]",
+                title=None,
+                rmse_label=e_unit_ann,
+                marker_size=8,
+                opacity=0.7,
+                row=1,
+                col=1,
+                xref="x",
+                yref="y",
+            )
+            f_t_all, f_p_all = f_true.ravel(), f_pred.ravel()
+            _add_parity_panel(
+                fig,
+                f_t_all,
+                f_p_all,
+                heatmap,
+                cmap,
+                xlabel="Observed (DFT) [eV/Å]",
+                ylabel="Predicted (MLP) [eV/Å]",
+                title=None,
+                rmse_label="meV/Å",
+                marker_size=5,
+                opacity=0.6,
+                row=1,
+                col=2,
+                xref="x2",
+                yref="y2",
+            )
+            fig.update_layout(
+                width=1100,
+                height=500,
+                template="plotly_white",
+                font=dict(size=14),
+                hovermode="closest",
+            )
+        else:
+            fig = make_subplots(
+                rows=2,
+                cols=2,
+                subplot_titles=["(A) Energy", "(B) fx", "(C) fy", "(D) fz"],
+                vertical_spacing=0.12,
+                horizontal_spacing=0.10,
+            )
+            _add_parity_panel(
+                fig,
+                e_true,
+                e_pred,
+                heatmap,
+                cmap,
+                xlabel=f"Observed [{e_unit}]",
+                ylabel=f"Predicted [{e_unit}]",
+                title=None,
+                rmse_label=e_unit_ann,
+                marker_size=8,
+                opacity=0.7,
+                row=1,
+                col=1,
+                xref="x",
+                yref="y",
+            )
+            positions = [(1, 2, "x2", "y2"), (2, 1, "x3", "y3"), (2, 2, "x4", "y4")]
+            for i, (r, c, xr, yr) in enumerate(positions):
+                _add_parity_panel(
+                    fig,
+                    f_true[:, i],
+                    f_pred[:, i],
+                    heatmap,
+                    cmap,
+                    xlabel="Observed [eV/Å]",
+                    ylabel="Predicted [eV/Å]",
+                    title=None,
+                    rmse_label="meV/Å",
+                    marker_size=5,
+                    opacity=0.6,
+                    row=r,
+                    col=c,
+                    xref=xr,
+                    yref=yr,
+                )
+            fig.update_layout(
+                width=1000,
+                height=800,
+                template="plotly_white",
+                font=dict(size=13),
+                hovermode="closest",
+            )
 
     if save_fig:
         fig.write_html(save_fig)
@@ -88,251 +290,113 @@ def ParityPlot(data_dir, model_path, per_atom=False, type="all", save_fig=None):
         fig.show()
 
 
-def _plot_energy_parity(e_true, e_pred, e_unit):
-    """Create energy parity plot."""
-    rmse = compute_rmse(e_true, e_pred)
-    mae = compute_mae(e_true, e_pred)
+def _add_parity_panel(
+    fig,
+    true_vals,
+    pred_vals,
+    heatmap,
+    cmap,
+    xlabel,
+    ylabel,
+    title,
+    rmse_label,
+    marker_size=6,
+    opacity=0.7,
+    row=None,
+    col=None,
+    xref="paper",
+    yref="paper",
+):
+    """Add a single parity scatter + ideal line + RMSE annotation to fig."""
+    rmse = compute_rmse(true_vals, pred_vals)
+    mae = compute_mae(true_vals, pred_vals)
+    ann_text = (
+        f"RMSE = {rmse * 1000:.2f} {rmse_label}<br>MAE = {mae * 1000:.2f} {rmse_label}"
+    )
 
-    fig = go.Figure()
+    subplot_kw = dict(row=row, col=col) if row is not None else {}
 
-    # Scatter plot
+    # Scatter
+    if heatmap:
+        abs_err = np.abs(pred_vals - true_vals)
+        marker = dict(
+            size=marker_size,
+            color=abs_err,
+            colorscale=cmap,
+            opacity=opacity,
+            showscale=True,
+            colorbar=dict(title=f"|err| ({rmse_label})"),
+            line=dict(width=0),
+        )
+    else:
+        marker = dict(
+            size=marker_size,
+            color="blue",
+            opacity=opacity,
+            line=dict(color="black", width=0.5),
+        )
+
     fig.add_trace(
         go.Scatter(
-            x=e_true,
-            y=e_pred,
+            x=true_vals,
+            y=pred_vals,
             mode="markers",
-            marker=dict(
-                size=8, color="blue", opacity=0.7, line=dict(color="black", width=1)
-            ),
-            name="Data",
-            hovertemplate="DFT: %{x:.3f}<br>MLP: %{y:.3f}<extra></extra>",
-        )
+            marker=marker,
+            showlegend=False,
+            hovertemplate="DFT: %{x:.4f}<br>MLP: %{y:.4f}<extra></extra>",
+        ),
+        **subplot_kw,
     )
 
     # Ideal line
+    vmin, vmax = true_vals.min(), true_vals.max()
     fig.add_trace(
         go.Scatter(
-            x=[e_true.min(), e_true.max()],
-            y=[e_true.min(), e_true.max()],
+            x=[vmin, vmax],
+            y=[vmin, vmax],
             mode="lines",
             line=dict(color="red", dash="dash", width=2),
-            name="Ideal",
+            showlegend=False,
             hoverinfo="skip",
-        )
+        ),
+        **subplot_kw,
     )
 
-    # Annotation
-    fig.add_annotation(
-        text=f"RMSE = {rmse:.4f} {e_unit}<br>MAE = {mae:.4f} {e_unit}",
-        xref="paper",
-        yref="paper",
-        x=0.05,
-        y=0.95,
-        showarrow=False,
-        font=dict(size=14, color="blue"),
-        align="left",
-        bgcolor="rgba(255,255,255,0.8)",
-        bordercolor="blue",
-        borderwidth=1,
-    )
-
-    fig.update_layout(
-        title="Energy Parity Plot",
-        xaxis_title=f"Observed (DFT) [{e_unit}]",
-        yaxis_title=f"Predicted (MLP) [{e_unit}]",
-        width=600,
-        height=500,
-        template="plotly_white",
-        font=dict(size=14),
-        hovermode="closest",
-    )
-
-    return fig
-
-
-def _plot_forces_parity(f_true, f_pred):
-    """Create forces parity plot."""
-    fig = make_subplots(rows=1, cols=3, subplot_titles=["fx", "fy", "fz"])
-
-    components = ["fx", "fy", "fz"]
-    for i, comp in enumerate(components):
-        f_t = f_true[:, i]
-        f_p = f_pred[:, i]
-        rmse_f = compute_rmse(f_t, f_p)
-        mae_f = compute_mae(f_t, f_p)
-
-        fig.add_trace(
-            go.Scatter(
-                x=f_t,
-                y=f_p,
-                mode="markers",
-                marker=dict(
-                    size=6,
-                    color="blue",
-                    opacity=0.6,
-                    line=dict(color="black", width=0.5),
-                ),
-                showlegend=False,
-                hovertemplate=f"{comp} DFT: %{{x:.3f}}<br>{comp} MLP: %{{y:.3f}}<extra></extra>",
-            ),
-            row=1,
-            col=i + 1,
-        )
-
-        # Ideal line
-        fig.add_trace(
-            go.Scatter(
-                x=[f_t.min(), f_t.max()],
-                y=[f_t.min(), f_t.max()],
-                mode="lines",
-                line=dict(color="red", dash="dash", width=2),
-                showlegend=False,
-                hoverinfo="skip",
-            ),
-            row=1,
-            col=i + 1,
-        )
-
-        # Annotation
+    # Annotation — use paper coords for standalone, data coords for subplots
+    if row is None:
         fig.add_annotation(
-            text=f"RMSE={rmse_f:.4f}<br>MAE={mae_f:.4f}",
-            xref=f"x{i + 1}",
-            yref=f"y{i + 1}",
-            x=f_t.min() + 0.05 * (f_t.max() - f_t.min()),
-            y=f_t.max() - 0.1 * (f_t.max() - f_t.min()),
+            text=ann_text,
+            xref="paper",
+            yref="paper",
+            x=0.05,
+            y=0.95,
             showarrow=False,
-            font=dict(size=12, color="blue"),
-            bgcolor="rgba(255,255,255,0.8)",
+            font=dict(size=13, color="blue"),
+            align="left",
+            bgcolor="rgba(255,255,255,0.85)",
+            bordercolor="blue",
+            borderwidth=1,
+        )
+    else:
+        fig.add_annotation(
+            text=ann_text,
+            xref=xref,
+            yref=yref,
+            x=vmin + 0.05 * (vmax - vmin),
+            y=vmax - 0.08 * (vmax - vmin),
+            showarrow=False,
+            font=dict(size=11, color="blue"),
+            align="left",
+            bgcolor="rgba(255,255,255,0.85)",
             bordercolor="blue",
             borderwidth=1,
         )
 
-        fig.update_xaxes(title_text="Observed (DFT) [eV/Å]", row=1, col=i + 1)
-        fig.update_yaxes(title_text="Predicted (MLP) [eV/Å]", row=1, col=i + 1)
-
-    fig.update_layout(
-        width=1400, height=400, template="plotly_white", hovermode="closest"
-    )
-    return fig
-
-
-def _plot_all_parity(e_true, e_pred, e_unit, f_true, f_pred):
-    """Create combined energy + forces parity plot."""
-    fig = make_subplots(
-        rows=2,
-        cols=2,
-        subplot_titles=["(A) Energy", "(B) fx", "(C) fy", "(D) fz"],
-        vertical_spacing=0.12,
-        horizontal_spacing=0.10,
-    )
-
-    # Energy plot
-    rmse_e = compute_rmse(e_true, e_pred)
-    mae_e = compute_mae(e_true, e_pred)
-
-    fig.add_trace(
-        go.Scatter(
-            x=e_true,
-            y=e_pred,
-            mode="markers",
-            marker=dict(
-                size=8, color="blue", opacity=0.7, line=dict(color="black", width=1)
-            ),
-            showlegend=False,
-            hovertemplate="DFT: %{x:.3f}<br>MLP: %{y:.3f}<extra></extra>",
-        ),
-        row=1,
-        col=1,
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=[e_true.min(), e_true.max()],
-            y=[e_true.min(), e_true.max()],
-            mode="lines",
-            line=dict(color="red", dash="dash", width=2),
-            showlegend=False,
-            hoverinfo="skip",
-        ),
-        row=1,
-        col=1,
-    )
-
-    fig.add_annotation(
-        text=f"RMSE={rmse_e:.4f}<br>MAE={mae_e:.4f}",
-        xref="x",
-        yref="y",
-        x=e_true.min() + 0.05 * (e_true.max() - e_true.min()),
-        y=e_true.max() - 0.1 * (e_true.max() - e_true.min()),
-        showarrow=False,
-        font=dict(size=12, color="blue"),
-        bgcolor="rgba(255,255,255,0.8)",
-        bordercolor="blue",
-        borderwidth=1,
-    )
-
-    fig.update_xaxes(title_text=f"Observed [{e_unit}]", row=1, col=1)
-    fig.update_yaxes(title_text=f"Predicted [{e_unit}]", row=1, col=1)
-
-    # Force plots
-    components = ["fx", "fy", "fz"]
-    positions = [(1, 2), (2, 1), (2, 2)]
-
-    for i, (comp, pos) in enumerate(zip(components, positions)):
-        f_t = f_true[:, i]
-        f_p = f_pred[:, i]
-        rmse_f = compute_rmse(f_t, f_p)
-        mae_f = compute_mae(f_t, f_p)
-
-        fig.add_trace(
-            go.Scatter(
-                x=f_t,
-                y=f_p,
-                mode="markers",
-                marker=dict(
-                    size=6,
-                    color="blue",
-                    opacity=0.6,
-                    line=dict(color="black", width=0.5),
-                ),
-                showlegend=False,
-                hovertemplate=f"{comp}: %{{x:.3f}} → %{{y:.3f}}<extra></extra>",
-            ),
-            row=pos[0],
-            col=pos[1],
-        )
-
-        fig.add_trace(
-            go.Scatter(
-                x=[f_t.min(), f_t.max()],
-                y=[f_t.min(), f_t.max()],
-                mode="lines",
-                line=dict(color="red", dash="dash", width=2),
-                showlegend=False,
-                hoverinfo="skip",
-            ),
-            row=pos[0],
-            col=pos[1],
-        )
-
-        fig.add_annotation(
-            text=f"RMSE={rmse_f:.4f}<br>MAE={mae_f:.4f}",
-            xref=f"x{i + 2}",
-            yref=f"y{i + 2}",
-            x=f_t.min() + 0.05 * (f_t.max() - f_t.min()),
-            y=f_t.max() - 0.1 * (f_t.max() - f_t.min()),
-            showarrow=False,
-            font=dict(size=12, color="blue"),
-            bgcolor="rgba(255,255,255,0.8)",
-        )
-
-        fig.update_xaxes(title_text="Observed [eV/Å]", row=pos[0], col=pos[1])
-        fig.update_yaxes(title_text="Predicted [eV/Å]", row=pos[0], col=pos[1])
-
-    fig.update_layout(
-        width=1000, height=800, template="plotly_white", hovermode="closest"
-    )
-    return fig
+    if row is not None:
+        fig.update_xaxes(title_text=xlabel, row=row, col=col)
+        fig.update_yaxes(title_text=ylabel, row=row, col=col)
+    else:
+        fig.update_layout(xaxis_title=xlabel, yaxis_title=ylabel, title=title or "")
 
 
 ########################################################################################################
@@ -557,6 +621,179 @@ def PlotForceDeviation(
 
 
 ########################################################################################################
+# Violin plot of force deviation error distribution across AL iterations
+########################################################################################################
+
+
+def PlotForceError(
+    root_dir=".",
+    iteration_window="all",
+    target_iteration=None,
+    dmin=None,
+    dmax=0.5,
+    connect_means=True,
+    connect_medians=False,
+    log_scale=False,
+    palette="viridis",
+    violin_alpha=0.85,
+    save_fig=None,
+):
+    """
+    Interactive violin plot of max force deviation distribution across AL iterations.
+
+    Parameters
+    ----------
+    root_dir : str
+        Root directory containing iter_* folders.
+    iteration_window : tuple or str
+        (start, end) or "all".
+    target_iteration : int
+        Specific iteration to analyze.
+    dmin : float
+        Threshold shown as dashed horizontal line (default: 0.05).
+    dmax : float
+        Upper y-axis limit for linear scale (default: 0.5).
+    connect_means : bool
+        Draw mean trajectory line across violins (default: True).
+    connect_medians : bool
+        Draw median trajectory line across violins (default: False).
+    log_scale : bool
+        Use log10 y-axis (default: False).
+    palette : str
+        Plotly colorscale name for violin colors (default: 'viridis').
+    violin_alpha : float
+        Opacity of violin bodies (default: 0.85).
+    save_fig : str or None
+        Path to save HTML file.
+
+    Example
+    -------
+    >>> PlotForceError(iteration_window="all", palette="hot", log_scale=True)
+    >>> PlotForceError(iteration_window=(0, 5), connect_means=True, dmin=0.05)
+    """
+    import glob
+
+    data_dict = {}
+    selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
+
+    for iter_dir in selected_dirs:
+        iter_num = extract_iteration_number(iter_dir)
+        dpmd_dir = os.path.join(iter_dir, "02.dpmd")
+        if not os.path.isdir(dpmd_dir):
+            continue
+
+        model_files = sorted(glob.glob(os.path.join(dpmd_dir, "model_dev_*.out")))
+        for model_file in model_files:
+            model_name = os.path.basename(model_file)
+            steps = []
+            max_devi_f = []
+            with open(model_file, "r") as f:
+                lines = f.readlines()
+            for line in lines[2:]:
+                cols = line.split()
+                if len(cols) >= 5:
+                    try:
+                        steps.append(int(cols[0]))
+                        max_devi_f.append(float(cols[4]))
+                    except ValueError:
+                        continue
+            if model_name not in data_dict:
+                data_dict[model_name] = []
+            data_dict[model_name].append((iter_num, steps, max_devi_f))
+
+    rows = []
+    for model, data in data_dict.items():
+        for iter_num, _steps, max_devi_f_list in sorted(data):
+            for v in max_devi_f_list:
+                if v > 0:
+                    rows.append({"iter_i": iter_num, "max_devi_f": float(v)})
+    df_violin = pd.DataFrame(rows)
+    n_iter = sorted(df_violin["iter_i"].unique())
+
+    colors = pc.sample_colorscale(
+        palette, [i / max(len(n_iter) - 1, 1) for i in range(len(n_iter))]
+    )
+
+    fig = go.Figure()
+
+    for idx, iter_num in enumerate(n_iter):
+        vals = df_violin[df_violin["iter_i"] == iter_num]["max_devi_f"].values
+        color = colors[idx]
+        fig.add_trace(
+            go.Violin(
+                x=[f"Iter {iter_num}"] * len(vals),
+                y=vals,
+                name=f"Iter {iter_num}",
+                fillcolor=color,
+                opacity=violin_alpha,
+                box_visible=True,
+                meanline_visible=False,
+                points=False,
+                line_color=color,
+            )
+        )
+
+    if connect_means:
+        means = [
+            df_violin[df_violin["iter_i"] == i]["max_devi_f"].mean() for i in n_iter
+        ]
+        fig.add_trace(
+            go.Scatter(
+                x=[f"Iter {i}" for i in n_iter],
+                y=means,
+                mode="lines+markers",
+                name="Mean",
+                line=dict(color="black", width=2.5),
+                marker=dict(size=10, color="white", line=dict(color="black", width=2)),
+            )
+        )
+
+    if connect_medians:
+        meds = [
+            df_violin[df_violin["iter_i"] == i]["max_devi_f"].median() for i in n_iter
+        ]
+        fig.add_trace(
+            go.Scatter(
+                x=[f"Iter {i}" for i in n_iter],
+                y=meds,
+                mode="lines+markers",
+                name="Median",
+                line=dict(color="gray", width=2, dash="dash"),
+                marker=dict(size=8, color="white", line=dict(color="gray", width=1.5)),
+            )
+        )
+
+    if dmin is not None:
+        fig.add_hline(
+            y=dmin,
+            line_dash="dash",
+            line_color="royalblue",
+            line_width=1.5,
+            annotation_text=f"dmin={dmin}",
+        )
+
+    yaxis_cfg = dict(type="log") if log_scale else dict(range=[0, dmax])
+
+    fig.update_layout(
+        title="Force Deviation Distribution",
+        xaxis_title="AL Iterations",
+        yaxis_title="Max. Force Deviation (eV/Å)",
+        yaxis=yaxis_cfg,
+        width=1000,
+        height=500,
+        template="plotly_white",
+        font=dict(size=16),
+        violinmode="overlay",
+    )
+
+    if save_fig:
+        fig.write_html(save_fig)
+        print(f"[ANALYSIS][INFO] Saved to: {save_fig}")
+    else:
+        fig.show()
+
+
+########################################################################################################
 # Plot Potential Energy
 ########################################################################################################
 
@@ -598,7 +835,9 @@ def PlotPotentialEnergy(
         if traj is None:
             continue
 
-        energies = [atoms.get_potential_energy() for atoms in traj]
+        energies = [
+            float(np.asarray(atoms.get_potential_energy()).flat[0]) for atoms in traj
+        ]
 
         if iter_num not in energy_dict:
             energy_dict[iter_num] = []
@@ -648,101 +887,158 @@ def PlotDistribution(
     iteration_window="all",
     target_iteration=None,
     traj_filename="AseMD.traj",
-    bins=50,
+    get="energy",
+    type="line",
+    bins=25,
     save_fig=None,
 ):
     """
-    Plot energy and force distributions as interactive histograms.
+    Plot potential energy or bond distance from ASE trajectories across iter_* folders.
 
     Parameters
     ----------
     root_dir : str
-        Root directory
+        Root directory containing iter_* folders
     iteration_window : tuple or str
         (start, end) or "all"
     target_iteration : int
-        Specific iteration
+        Specific iteration number
     traj_filename : str
         Trajectory filename
+    get : str
+        "energy" or "distance:i,j" (e.g. "distance:0,7")
+    type : str
+        "line" (default), "hist", or "kde"
     bins : int
-        Number of histogram bins
-    save_fig : str
+        Histogram bins for type="hist" (default 25)
+    save_fig : str or None
         Path to save HTML file
-    """
-    energy_data = []
-    force_data = []
 
-    # Use main.py utility
+    Example
+    -------
+    >>> PlotDistribution(get="energy", type="line")
+    >>> PlotDistribution(get="energy", type="hist", bins=20)
+    >>> PlotDistribution(get="distance:0,7", type="line")
+    """
+    is_energy = get.lower() == "energy"
+    is_distance = get.lower().startswith("distance:")
+    symbol_pair = None
+
+    if is_distance:
+        try:
+            i, j = map(int, get.split(":")[1].split(","))
+        except Exception:
+            raise ValueError("For distance use format: 'distance:i,j'")
+    elif not is_energy:
+        raise ValueError("get must be 'energy' or 'distance:i,j'")
+
+    property_dict = {}
     selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
 
     for iter_dir in selected_dirs:
         iter_num = extract_iteration_number(iter_dir)
-
-        # Use main.py loader
         traj = load_trajectory(iter_dir, subdir="00.dft", traj_filename=traj_filename)
 
         if traj is None:
             continue
 
-        for atoms in traj:
-            energy = atoms.get_potential_energy()
-            forces = atoms.get_forces()
-            max_force = np.max(np.linalg.norm(forces, axis=1))
+        if is_distance and symbol_pair is None and len(traj) > max(i, j):
+            try:
+                symbols = traj[0].get_chemical_symbols()
+                symbol_pair = (symbols[i], symbols[j])
+            except Exception:
+                pass
 
-            energy_data.append({"Iteration": f"Iter {iter_num}", "Energy": energy})
-            force_data.append({"Iteration": f"Iter {iter_num}", "Max Force": max_force})
+        if is_energy:
+            values = [
+                float(np.asarray(atoms.get_potential_energy()).flat[0])
+                for atoms in traj
+            ]
+        else:
+            values = [float(atoms.get_distance(i, j)) for atoms in traj]
 
-    df_energy = pd.DataFrame(energy_data)
-    df_force = pd.DataFrame(force_data)
+        property_dict[iter_num] = values
 
-    # Create subplots
-    fig = make_subplots(
-        rows=1, cols=2, subplot_titles=("Energy Distribution", "Max Force Distribution")
-    )
+    if not property_dict:
+        print("[PlotDistribution] No data found.")
+        return
 
-    # Energy histogram
-    for iteration in sorted(df_energy["Iteration"].unique()):
-        data = df_energy[df_energy["Iteration"] == iteration]["Energy"]
-        fig.add_trace(
-            go.Histogram(
-                x=data,
-                name=iteration,
-                opacity=0.7,
-                nbinsx=bins,
-                hovertemplate="Energy: %{x:.2f} eV<br>Count: %{y}<extra></extra>",
-            ),
-            row=1,
-            col=1,
-        )
+    # Labels
+    if is_energy:
+        data_label = "Potential Energy (eV)"
+        hover_x, hover_unit = "Energy", "eV"
+    else:
+        if symbol_pair:
+            sym_i, sym_j = symbol_pair
+            data_label = f"Distance {sym_i}{i}-{sym_j}{j} (Å)"
+        else:
+            data_label = f"Bond Distance atoms {i}-{j} (Å)"
+        hover_x, hover_unit = "Distance", "Å"
 
-    # Force histogram
-    for iteration in sorted(df_force["Iteration"].unique()):
-        data = df_force[df_force["Iteration"] == iteration]["Max Force"]
-        fig.add_trace(
-            go.Histogram(
-                x=data,
-                name=iteration,
-                opacity=0.7,
-                nbinsx=bins,
-                showlegend=False,
-                hovertemplate="Max Force: %{x:.2f} eV/Å<br>Count: %{y}<extra></extra>",
-            ),
-            row=1,
-            col=2,
-        )
+    all_vals = [v for vals in property_dict.values() for v in vals]
 
-    fig.update_xaxes(title_text="Energy (eV)", row=1, col=1)
-    fig.update_xaxes(title_text="Max Force (eV/Å)", row=1, col=2)
-    fig.update_yaxes(title_text="Frequency", row=1, col=1)
-    fig.update_yaxes(title_text="Frequency", row=1, col=2)
+    fig = go.Figure()
+
+    if type == "line":
+        for iter_num, values in sorted(property_dict.items()):
+            mode = "lines+markers" if len(values) > 1 else "markers"
+            fig.add_trace(
+                go.Scatter(
+                    x=list(range(len(values))),
+                    y=values,
+                    mode=mode,
+                    name=f"Iter {iter_num}",
+                    marker=dict(size=8),
+                    line=dict(width=2),
+                    hovertemplate=f"Candidate: %{{x}}<br>{hover_x}: %{{y:.4f}} {hover_unit}<extra></extra>",
+                )
+            )
+        xlabel, ylabel = "Candidates", data_label
+
+    elif type == "hist":
+        # Shared bin edges across all iterations so they're comparable
+        vmin, vmax = min(all_vals), max(all_vals)
+        bin_size = (vmax - vmin) / bins if vmax > vmin else 1.0
+        for iter_num, values in sorted(property_dict.items()):
+            fig.add_trace(
+                go.Histogram(
+                    x=values,
+                    name=f"Iter {iter_num}",
+                    opacity=0.7,
+                    xbins=dict(start=vmin, end=vmax, size=bin_size),
+                    marker=dict(line=dict(color="black", width=1)),
+                    hovertemplate=f"{hover_x}: %{{x:.3f}} {hover_unit}<br>Count: %{{y}}<extra></extra>",
+                )
+            )
+        xlabel, ylabel = data_label, "Count"
+
+    elif type == "kde":
+        # KDE via plotly density contour (1D: use violin instead)
+        for iter_num, values in sorted(property_dict.items()):
+            fig.add_trace(
+                go.Violin(
+                    x=values,
+                    name=f"Iter {iter_num}",
+                    box_visible=True,
+                    meanline_visible=True,
+                    opacity=0.7,
+                    hovertemplate=f"{hover_x}: %{{x:.4f}} {hover_unit}<extra></extra>",
+                )
+            )
+        xlabel, ylabel = data_label, "Density"
+
+    else:
+        raise ValueError("type must be 'line', 'hist', or 'kde'")
 
     fig.update_layout(
-        width=1400,
+        xaxis_title=xlabel,
+        yaxis_title=ylabel,
+        width=1000,
         height=600,
         template="plotly_white",
-        font=dict(size=14),
+        font=dict(size=16),
         barmode="overlay",
-        hovermode="closest",
+        hovermode="x unified" if type == "line" else "closest",
     )
 
     if save_fig:
@@ -762,135 +1058,241 @@ def PlotPES(
     iteration_window="all",
     target_iteration=None,
     traj_filename="AseMD.traj",
-    coord_type="distance",
-    atom_indices=None,
+    distance_pair=(0, 7),
+    type="kde",
+    bins=(50, 50),
     save_fig=None,
+    atom_indices=None,
+    coord_type="distance",
+    **kwargs,
 ):
     """
-    Plot 2D potential energy surface using KDE or contour.
+    Plot energy vs bond distance as interactive 2D density (kde/heatmap/hexbin).
 
     Parameters
     ----------
     root_dir : str
-        Root directory
+        Root directory containing iter_* folders
     iteration_window : tuple or str
         (start, end) or "all"
     target_iteration : int
-        Specific iteration
+        Specific iteration number
     traj_filename : str
         Trajectory filename
-    coord_type : str
-        "distance", "angle", or "dihedral"
-    atom_indices : list of tuples
-        [(i1,j1), (i2,j2)] for distances
-    save_fig : str
+    distance_pair : tuple
+        (i, j) atom indices for bond distance (x-axis)
+    type : str
+        "kde" (density contour) or "heatmap" (2D histogram)
+    bins : tuple
+        (nbins_x, nbins_y) for heatmap
+    save_fig : str or None
         Path to save HTML file
+    atom_indices : list of tuples, optional
+        Advanced: [(i1,j1), (i2,j2)] — use 2-coordinate contour mode instead
+    coord_type : str
+        Used only with atom_indices: "distance", "angle", or "dihedral"
+
+    Example
+    -------
+    >>> PlotPES(distance_pair=(0, 7), type="heatmap")
+    >>> PlotPES(distance_pair=(0, 7), type="kde", iteration_window=(0, 3))
     """
-    if atom_indices is None or len(atom_indices) != 2:
-        print("[ANALYSIS][ERROR] Provide exactly 2 coordinate specifications")
-        return
+    # --- Advanced 2-coordinate contour mode ---
+    if atom_indices is not None:
+        if len(atom_indices) != 2:
+            print("[ANALYSIS][ERROR] atom_indices must have exactly 2 entries")
+            return
+        return _PlotPES_2coord(
+            root_dir,
+            iteration_window,
+            target_iteration,
+            traj_filename,
+            coord_type,
+            atom_indices,
+            save_fig,
+        )
 
-    coord1_list = []
-    coord2_list = []
-    energy_list = []
+    # --- Primary mode: energy vs 1 bond distance ---
+    i, j = distance_pair
+    x_vals, y_vals = [], []
+    total_frames = 0
+    symbol_pair = None
 
-    # Use main.py utility
     selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
 
+    print("Parsing iterations:")
     for iter_dir in selected_dirs:
-        # Use main.py loader
+        iter_num = extract_iteration_number(iter_dir)
         traj = load_trajectory(iter_dir, subdir="00.dft", traj_filename=traj_filename)
 
         if traj is None:
+            print(f" Iter {iter_num:>2}: MISSING ({traj_filename})")
             continue
 
-        for atoms in traj:
-            energy = atoms.get_potential_energy()
+        num_frames = len(traj)
+        print(f" Iter {iter_num:>2}: {num_frames} frames")
+        total_frames += num_frames
 
+        if symbol_pair is None and num_frames > max(i, j):
+            try:
+                symbols = traj[0].get_chemical_symbols()
+                symbol_pair = (symbols[i], symbols[j])
+            except Exception:
+                pass
+
+        for atoms in traj:
+            try:
+                x_vals.append(float(atoms.get_distance(i, j)))
+                y_vals.append(float(np.asarray(atoms.get_potential_energy()).flat[0]))
+            except Exception as ex:
+                print(f" Error: {ex}")
+
+    print(f"\nTotal frames: {total_frames}")
+
+    x = np.array(x_vals)
+    y = np.array(y_vals)
+
+    if symbol_pair:
+        sym_i, sym_j = symbol_pair
+        xlabel = f"Distance {sym_i}{i}-{sym_j}{j} (Å)"
+    else:
+        xlabel = f"Bond Distance atoms {i}-{j} (Å)"
+
+    cmap = kwargs.pop("cmap", "Viridis")
+    fig = go.Figure()
+
+    if type == "kde":
+        fig.add_trace(
+            go.Histogram2dContour(
+                x=x,
+                y=y,
+                colorscale=_white_bg_colorscale(cmap),
+                reversescale=False,
+                showscale=True,
+                contours=dict(showlabels=False),
+                hovertemplate="Distance: %{x:.3f} Å<br>Energy: %{y:.3f} eV<extra></extra>",
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                x=x,
+                y=y,
+                mode="markers",
+                marker=dict(size=3, color="black", opacity=0.2),
+                showlegend=False,
+                hovertemplate="Distance: %{x:.3f} Å<br>Energy: %{y:.3f} eV<extra></extra>",
+            )
+        )
+    elif type == "heatmap":
+        nbx, nby = bins if isinstance(bins, (tuple, list)) else (bins, bins)
+        fig.add_trace(
+            go.Histogram2d(
+                x=x,
+                y=y,
+                nbinsx=nbx,
+                nbinsy=nby,
+                colorscale=_white_bg_colorscale(cmap),
+                zmin=1,
+                colorbar=dict(title="Counts"),
+                hovertemplate="Distance: %{x:.3f} Å<br>Energy: %{y:.3f} eV<br>Count: %{z}<extra></extra>",
+            )
+        )
+    else:
+        raise ValueError("type must be 'kde' or 'heatmap'")
+
+    fig.update_layout(
+        xaxis_title=xlabel,
+        yaxis_title="Potential Energy (eV)",
+        width=900,
+        height=700,
+        template="plotly_white",
+        plot_bgcolor="white",
+        font=dict(size=16),
+    )
+
+    if save_fig:
+        fig.write_html(save_fig)
+        print(f"[ANALYSIS][INFO] Saved to: {save_fig}")
+    else:
+        fig.show()
+
+
+def _PlotPES_2coord(
+    root_dir,
+    iteration_window,
+    target_iteration,
+    traj_filename,
+    coord_type,
+    atom_indices,
+    save_fig,
+):
+    """2-coordinate contour PES (energy vs 2 structural coords)."""
+    coord1_list, coord2_list, energy_list = [], [], []
+
+    selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
+
+    for iter_dir in selected_dirs:
+        traj = load_trajectory(iter_dir, subdir="00.dft", traj_filename=traj_filename)
+        if traj is None:
+            continue
+        for atoms in traj:
+            energy = float(np.asarray(atoms.get_potential_energy()).flat[0])
             if coord_type == "distance":
-                coord1 = atoms.get_distance(*atom_indices[0])
-                coord2 = atoms.get_distance(*atom_indices[1])
+                c1 = atoms.get_distance(*atom_indices[0])
+                c2 = atoms.get_distance(*atom_indices[1])
             elif coord_type == "angle":
-                coord1 = atoms.get_angle(*atom_indices[0])
-                coord2 = atoms.get_angle(*atom_indices[1])
+                c1 = atoms.get_angle(*atom_indices[0])
+                c2 = atoms.get_angle(*atom_indices[1])
             elif coord_type == "dihedral":
-                coord1 = atoms.get_dihedral(*atom_indices[0])
-                coord2 = atoms.get_dihedral(*atom_indices[1])
+                c1 = atoms.get_dihedral(*atom_indices[0])
+                c2 = atoms.get_dihedral(*atom_indices[1])
             else:
                 print(f"[ANALYSIS][ERROR] Unknown coord_type: {coord_type}")
                 return
-
-            coord1_list.append(coord1)
-            coord2_list.append(coord2)
+            coord1_list.append(c1)
+            coord2_list.append(c2)
             energy_list.append(energy)
 
     if not coord1_list:
         print("[ANALYSIS][ERROR] No data found")
         return
 
-    # Create grid
-    coord1_array = np.array(coord1_list)
-    coord2_array = np.array(coord2_list)
-    energy_array = np.array(energy_list)
-
-    coord1_grid = np.linspace(coord1_array.min(), coord1_array.max(), 100)
-    coord2_grid = np.linspace(coord2_array.min(), coord2_array.max(), 100)
-    coord1_mesh, coord2_mesh = np.meshgrid(coord1_grid, coord2_grid)
-
-    # Interpolate
     from scipy.interpolate import griddata
 
-    energy_mesh = griddata(
-        (coord1_array, coord2_array),
-        energy_array,
-        (coord1_mesh, coord2_mesh),
-        method="cubic",
-    )
+    c1 = np.array(coord1_list)
+    c2 = np.array(coord2_list)
+    e = np.array(energy_list)
+    g1 = np.linspace(c1.min(), c1.max(), 100)
+    g2 = np.linspace(c2.min(), c2.max(), 100)
+    m1, m2 = np.meshgrid(g1, g2)
+    em = griddata((c1, c2), e, (m1, m2), method="cubic")
 
-    # Create contour plot
+    unit = "Å" if coord_type == "distance" else "°"
+    xlabel = f"{coord_type.capitalize()} {atom_indices[0]} ({unit})"
+    ylabel = f"{coord_type.capitalize()} {atom_indices[1]} ({unit})"
+
     fig = go.Figure()
-
     fig.add_trace(
         go.Contour(
-            x=coord1_grid,
-            y=coord2_grid,
-            z=energy_mesh,
+            x=g1,
+            y=g2,
+            z=em,
             colorscale="Viridis",
             colorbar=dict(title="Energy (eV)"),
-            contours=dict(
-                start=energy_array.min(),
-                end=energy_array.max(),
-                size=(energy_array.max() - energy_array.min()) / 20,
-            ),
             hovertemplate="Coord1: %{x:.2f}<br>Coord2: %{y:.2f}<br>Energy: %{z:.2f} eV<extra></extra>",
         )
     )
-
-    # Add scatter points
     fig.add_trace(
         go.Scatter(
-            x=coord1_array,
-            y=coord2_array,
+            x=c1,
+            y=c2,
             mode="markers",
             marker=dict(
                 size=4, color="white", opacity=0.5, line=dict(color="black", width=0.5)
             ),
             name="Sampled points",
-            hovertemplate="Coord1: %{x:.2f}<br>Coord2: %{y:.2f}<extra></extra>",
         )
     )
-
-    # Labels
-    if coord_type == "distance":
-        xlabel = f"Distance {atom_indices[0]} (Å)"
-        ylabel = f"Distance {atom_indices[1]} (Å)"
-    elif coord_type == "angle":
-        xlabel = f"Angle {atom_indices[0]} (°)"
-        ylabel = f"Angle {atom_indices[1]} (°)"
-    else:
-        xlabel = f"Dihedral {atom_indices[0]} (°)"
-        ylabel = f"Dihedral {atom_indices[1]} (°)"
-
     fig.update_layout(
         title="Potential Energy Surface",
         xaxis_title=xlabel,
@@ -900,7 +1302,6 @@ def PlotPES(
         template="plotly_white",
         font=dict(size=14),
     )
-
     if save_fig:
         fig.write_html(save_fig)
         print(f"[ANALYSIS][INFO] Saved to: {save_fig}")

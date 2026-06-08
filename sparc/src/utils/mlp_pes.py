@@ -1,93 +1,73 @@
 #!/usr/bin/python
 # mlp_pes.py
 """
-Module for comparing DFT and ML-predicted potential energies along a bond distance in a trajectory.
-This script supports selection of DeepMD model directories and outputs a CSV file of bond distances
-along with corresponding DFT and ML energies.
+Module for comparing DFT and ML-predicted potential energies and forces along
+a bond distance in a trajectory.
+
+Outputs a compressed NPZ file with distances, DFT and ML energies, and forces
+keyed by iteration directory name.
 
 Example usage (from within SPARC CLI):
-  >>> sparc --analysis compare_energy --dft_file OUTCAR --bond 0 7 --out energy.csv
+  >>> sparc --analysis get_energies --dft_file OUTCAR --bond 0 7 --out energy_forces.npz
 """
 
 import os
-import time
 
+import numpy as np
 from ase import Atoms
+from ase.io import read
 
-# Third party import
-from ase.io import iread, read
+try:
+    from deepmd.tf.calculator import DP
+except ImportError:
+    from deepmd.calculator import DP
 
-# from deepmd.calculator import DP
-from deepmd.tf.calculator import DP
-from joblib import Parallel, delayed
-
-# Local import
 from sparc.src.utils.logger import SparcLog
 
 
 # --------------------------------------------------------------------------------------
-# Extract DFT Energy for one frame
+# Extract DFT energy, forces, and bond distance for one frame
 # --------------------------------------------------------------------------------------
-def dft_energy_single(frame, bond):
+def dft_energy_forces(frame, bond):
     """
-    Compute DFT bond distance and total potential energy for a given frame.
+    Compute DFT bond distance, total potential energy, and forces for a frame.
 
     Parameters:
     ------------
     frame : ase.Atoms
-        Frame from ASE trajectory.
-    bond : tuple of int
-        Pair of atom indices to compute bond distance.
+    bond : list of int
+        Pair of atom indices for bond distance.
 
     Returns:
     --------
-    float, float : bond distance (Å), total energy (eV)
+    float, float, np.ndarray : distance (Å), energy (eV), forces (N×3, eV/Å)
     """
     d = frame.get_distance(bond[0], bond[1])
-    e = frame.get_potential_energy()
-    return d, e
+    e = float(np.asarray(frame.get_potential_energy()).flat[0])
+    f = frame.get_forces()
+    return d, e, f
 
 
 # --------------------------------------------------------------------------------------
-# Setup ML Calculator
+# Extract ML energy and forces for one frame using a pre-built calculator
 # --------------------------------------------------------------------------------------
-def dpmd_calculator(atom, model):
+def ml_energy_forces(frame, calc):
     """
-    Attach DeepMD calculator to ASE Atoms object.
-
-    Parameters:
-    ------------
-    atom : ase.Atoms
-    model : str
-        Path to frozen_model.pb
-
-    Returns:
-    --------
-    ase.Atoms with calculator attached
-    """
-    return Atoms(atom, calculator=DP(model))
-
-
-# --------------------------------------------------------------------------------------
-# Extract ML Energy for one frame and one model
-# --------------------------------------------------------------------------------------
-def ml_energy_single(frame, model_path):
-    """
-    Compute ML-predicted potential energy for a frame using a DeepMD model.
+    Compute ML-predicted energy and forces for a frame.
 
     Parameters:
     ------------
     frame : ase.Atoms
-    model_path : str
-        Path to frozen_model.pb
+    calc : DeepMD DP calculator (pre-initialized)
 
     Returns:
     --------
-    float : predicted energy (eV)
+    float, np.ndarray : energy (eV), forces (N×3, eV/Å)
     """
-    atoms = dpmd_calculator(atom=frame, model=model_path)
-    e = atoms.get_potential_energy()
-    return e
+    atoms = Atoms(frame, calculator=calc)
+    e = float(np.asarray(atoms.get_potential_energy()).flat[0])
+    f = atoms.get_forces()
+    return e, f
 
 
 # --------------------------------------------------------------------------------------
@@ -111,7 +91,7 @@ def get_selected_iters(all_iter_dirs):
         SparcLog(f"[{i}] {name}", level="INFO")
 
     inp = input(
-        "\nEnter space-separated iteration numbers to compute (press Enter for all): "
+        "\nEnter space-separated iteration numbers (press Enter for all): "
     ).strip()
 
     if inp:
@@ -119,152 +99,151 @@ def get_selected_iters(all_iter_dirs):
             selected_indices = [int(i) for i in inp.split()]
             return [all_iter_dirs[i] for i in selected_indices]
         except Exception as e:
-            SparcLog(f"Invalid input. Error: {e}", level="ERROR")
+            SparcLog(f"Invalid input: {e}", level="ERROR")
             exit(1)
-    else:
-        return all_iter_dirs
+
+    return all_iter_dirs
 
 
-# ------------------------------------------------------------------------------
-# Main Function: Compare DFT and ML Energies
-# ------------------------------------------------------------------------------
-
-
-def get_energies(dft_file, ifmt, skip, model, bond, out, npar):
+# --------------------------------------------------------------------------------------
+# Main Function: Extract DFT and ML Energies + Forces → NPZ
+# --------------------------------------------------------------------------------------
+def get_energies(
+    dft_file,
+    ifmt="vasp-out",
+    skip=1,
+    model="training_1/frozen_model_1.pth",
+    bond=None,
+    out="energy_forces.npz",
+):
     """
-    Extract DFT and ML energies for each frame and write to CSV.
+    Extract DFT and ML energies and forces for each frame, save to NPZ.
 
     Parameters:
     ------------
     dft_file : str
-        Path to DFT output trajectory (e.g., OUTCAR or traj.xyz)
+        Path to DFT output trajectory (e.g., OUTCAR).
     ifmt : str
-        Format string readable by ASE (e.g., 'vasp-out')
+        ASE-compatible format string (default: 'vasp-out').
     skip : int
-        Skip every n-th frame
-    model: str
-        Full path to frozen model name
+        Report progress every n frames (default: 1).
+    model : str
+        Model path relative to each iter_*/01.train/ folder.
+        Use ``{i}`` as placeholder for the integer in the iter_* name
+        (default: 'training_1/frozen_model_1.pth').
+        Example: iter_000003 → iter_000003/01.train/training_3/model_3.pth
     bond : list of two ints
-        Atom indices for bond distance
+        Atom indices for bond distance (default: [0, 1]).
     out : str
-        Output filename (CSV)
+        Output NPZ filename (default: 'energy_forces.npz').
 
-    Example usage:
-    --------------
-    >>> get_energies("OUTCAR", "vasp-out", 1, [0, 7], "energy.csv")
+    NPZ keys
+    --------
+    dist        : (N,)     bond distances
+    E_dft       : (N,)     DFT energies
+    F_dft       : (N,M,3)  DFT forces
+    bond        : (2,)     bond atom indices
+    symbols     : (M,)     chemical symbols
+    iter_dirs   : (K,)     selected iteration directory names
+    E_<iter>    : (N,)     ML energy for each iteration
+    F_<iter>    : (N,M,3)  ML forces for each iteration
+
+    Example:
+    --------
+    >>> get_energies("OUTCAR", ifmt="vasp-out", bond=[0, 7], out="energy_forces.npz")
     """
-    # Step 1: Discover model paths
-    all_iter_dirs = sorted([d for d in os.listdir() if d.startswith("iter_")])
-    iter_dirs = get_selected_iters(all_iter_dirs)
-    model_paths = {
-        iter_dir: os.path.join(iter_dir, f"01.train/{model}") for iter_dir in iter_dirs
-    }
+    if bond is None:
+        bond = [0, 1]
 
-    # Step 2: Logging
-    traj = read(dft_file, index=f"::{skip}", format=ifmt)
-    SparcLog("*" * 80)
-    SparcLog(f"Total Number of Frames: {len(traj)}")
-    SparcLog(f"Parallel per-frame, npar={npar}")
-    SparcLog(f"Using Model: {model}")
-    SparcLog(f"Using bond indices: {bond[0]} and {bond[1]}")
-    SparcLog(f"Writing output to: {out}")
+    # Step 1: Read trajectory
+    traj = read(dft_file, index=":", format=ifmt)
     SparcLog("*" * 70)
-    time.sleep(1)
+    SparcLog(f"Total Frames  : {len(traj)}")
+    SparcLog(f"Bond indices  : {bond[0]} — {bond[1]}")
+    SparcLog(f"Model pattern : 01.train/{model}")
+    SparcLog(f"Output file   : {out}")
+    SparcLog("*" * 70)
 
-    # Step 3: Open file and write header
-    col_width = 15
-    with open(out, "w") as f:
-        header = f"{'Dist.':<{col_width}} {'E(DFT)':<{col_width}}" + "".join(
-            f"{f'E({idir})':<{col_width}}" for idir in iter_dirs
-        )
-        f.write(header + "\n")
-        f.flush()
+    # Step 2: Discover and select iteration directories
+    all_iter_dirs = sorted(
+        [d for d in os.listdir() if d.startswith("iter_") and os.path.isdir(d)]
+    )
+    if not all_iter_dirs:
+        SparcLog("No iter_* directories found.", level="ERROR")
+        return
+    iter_dirs = get_selected_iters(all_iter_dirs)
 
-        # Step 4: Stream through trajectory lazily
-        for i, frame in enumerate(iread(dft_file, format=ifmt)):
-            if i % skip != 0:
-                continue
+    # Step 3: Build one DP calculator per iteration (model loaded once, not per frame)
+    calcs = {}
+    for it in iter_dirs:
+        # extract integer from iter_* name (e.g. iter_3 → 3)
+        try:
+            it_num = int(it.rsplit("_", 1)[-1])
+        except ValueError:
+            it_num = iter_dirs.index(it)
+        mp = os.path.join(it, "01.train", model.format(i=it_num))
+        if not os.path.isfile(mp):
+            SparcLog(f"Missing model: {mp}", level="ERROR")
+            ans = input(f"  Skip '{it}' and continue? [y/N]: ").strip().lower()
+            if ans != "y":
+                SparcLog("Aborted.", level="ERROR")
+                return
+            continue
+        calcs[it] = DP(mp)
+        SparcLog(f"Loaded: {mp}", level="INFO")
 
+    # only process iters that have a loaded calculator
+    active_iters = list(calcs.keys())
+    if not active_iters:
+        SparcLog("No models loaded. Exiting.", level="ERROR")
+        return
+
+    # Step 4: Stream through trajectory
+    dists, E_dft, F_dft = [], [], []
+    E_ml = {it: [] for it in active_iters}
+    F_ml = {it: [] for it in active_iters}
+
+    for i, frame in enumerate(traj):
+        try:
+            d, e_dft, f_dft = dft_energy_forces(frame, bond)
+        except Exception as e:
+            SparcLog(f"Skipping frame {i} (DFT failed): {e}", level="WARNING")
+            continue
+
+        dists.append(d)
+        E_dft.append(e_dft)
+        F_dft.append(f_dft)
+
+        for it in active_iters:
             try:
-                d, e_dft = dft_energy_single(frame, bond)
+                e_ml, f_ml = ml_energy_forces(frame, calcs[it])
             except Exception as e:
-                SparcLog(f"Skipping frame {i}: {e}", level="WARNING")
-                continue
+                SparcLog(f"Frame {i}, {it} ML failed: {e}", level="WARNING")
+                e_ml = np.nan
+                f_ml = np.full((len(frame), 3), np.nan)
+            E_ml[it].append(e_ml)
+            F_ml[it].append(f_ml)
 
-            # Parallel prediction across models for this frame
-            ml_vals = Parallel(n_jobs=npar)(
-                delayed(ml_energy_single)(frame, model_paths[idir])
-                for idir in iter_dirs
-            )
+        if (i + 1) % max(skip, 1) == 0:
+            SparcLog(f"Processed {i + 1}/{len(traj)} frames...", level="INFO")
 
-            # Write + flush after each frame
-            line = f"{d:<{col_width}.6f}{e_dft:<{col_width}.6f}" + "".join(
-                f"{e:<{col_width}.6f}" for e in ml_vals
-            )
-            f.write(line + "\n")
-            f.flush()
+    # Step 5: Pack and save
+    out_dict = {
+        "dist": np.asarray(dists),
+        "E_dft": np.asarray(E_dft),
+        "F_dft": np.asarray(F_dft),
+        "bond": np.asarray(bond, dtype=int),
+        "symbols": np.asarray(traj[0].get_chemical_symbols()),
+        "iter_dirs": np.asarray(active_iters),
+    }
+    for it in active_iters:
+        out_dict[f"E_{it}"] = np.asarray(E_ml[it])
+        out_dict[f"F_{it}"] = np.asarray(F_ml[it])
 
-    SparcLog(f"Energy data saved to {out}")
+    np.savez_compressed(out, **out_dict)
+    SparcLog(f"Saved: {out}", level="INFO")
 
 
-# --------------------------------------------------------------------------------------
-# End of File
-# --------------------------------------------------------------------------------------
-# def get_energies(dft_file, ifmt, skip, bond, out):
-#     """
-#     Extract DFT and ML energies for each frame and write to CSV.
-
-#     Parameters:
-#     ------------
-#     dft_file : str
-#         Path to DFT output trajectory (e.g., OUTCAR or traj.xyz)
-#     ifmt : str
-#         Format string readable by ASE (e.g., 'vasp-out')
-#     skip : int
-#         Skip every n-th frame
-#     bond : list of two ints
-#         Atom indices for bond distance
-#     out : str
-#         Output filename (CSV)
-
-#     Example usage:
-#     --------------
-#     >>> get_energies("OUTCAR", "vasp-out", 1, [0, 7], "energy.csv")
-#     """
-#     traj = read(dft_file, index=f'::{skip}', format=ifmt)
-#     SparcLog('*' * 70, origin='ANALYSIS')
-#     SparcLog(f"Total Frames: {len(traj)}", origin='ANALYSIS')
-#     SparcLog(f"Calculating distance for bond between atom: {bond[0]}, and atom: {bond[1]}", origin='ANALYSIS')
-#     SparcLog('*' * 70, origin='ANALYSIS')
-#     time.sleep(2)
-
-#     all_iter_dirs = sorted([d for d in os.listdir() if d.startswith("iter_")])
-#     iter_dirs = get_selected_iters(all_iter_dirs)
-
-#     col_width = 15
-
-#     with open(out, "w") as f:
-#         header = f"{'Dist.':<{col_width}} {'E(DFT)':<{col_width}}" + "".join(
-#             f"{f'E({iter_dir})':<{col_width}}" for iter_dir in iter_dirs
-#         )
-#         f.write(header + "\n")
-
-#         for i, frame in enumerate(traj):
-#             d, e_dft = dft_energy_single(frame, bond)
-#             energies = []
-
-#             for iter_dir in iter_dirs:
-#                 model_path = os.path.join(iter_dir, "01.train/training_1/frozen_model_1.pb")
-#                 e_ml = ml_energy_single(frame, model_path)
-#                 energies.append(e_ml)
-
-#             line = f"{d:<{col_width}.6f}{e_dft:<{col_width}.6f}" + "".join(
-#                 f"{e:<{col_width}.6f}" for e in energies
-#             )
-#             f.write(line + "\n")
-#             f.flush()
-
-#     SparcLog(f"Energy data saved to {out}", origin='ANALYSIS')
 # --------------------------------------------------------------------------------------
 # End of File
 # --------------------------------------------------------------------------------------

@@ -88,7 +88,7 @@ def _build_dataset(frames):
         },
         "atom_index": {
             "target": "atom",
-            "values": [str(i) for f in frames for i in range(len(f))],
+            "values": [i for f in frames for i in range(len(f))],
             "units":  "",
             "description": "Atom index (0-based)",
         },
@@ -197,6 +197,96 @@ def _render_html(dataset_json: str) -> str:
 </html>"""
 
 
+def _render_example_html(title: str, dataset_json: str) -> str:
+    return f"""<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title>
+<link rel="stylesheet" href="chemiscope-sphinx.css">
+<style>
+*{{box-sizing:border-box;margin:0;padding:0}}html,body{{height:100%;background:#f5f7fa;font-family:system-ui,sans-serif}}
+#root{{height:100vh;display:flex;flex-direction:column}}
+#hdr{{flex-shrink:0;background:rgba(44,62,80,.9);color:#ecf0f1;padding:5px 12px;font-size:12px}}
+#hdr strong{{color:#fff}}#vr{{flex:1;overflow:hidden}}
+#vr .chemiscope-sphinx{{height:100%}}#vr .visualizer-container{{height:100%}}
+</style></head><body>
+<div id="root">
+<div id="hdr"><strong>{title}</strong> &nbsp;&middot;&nbsp; Ammonia borane NH&#x2083;BH&#x2083; &middot; 264 frames</div>
+<div id="vr"><div class="chemiscope-sphinx"><div class="visualizer-container">
+<div class="visualizer-column-right"><div id="cv-meta"></div><div id="cv-map"></div></div>
+<div class="visualizer-column"><div id="cv-structure" class="visualizer-item"></div><div id="cv-info" class="visualizer-info"></div>
+</div></div></div></div></div>
+<script>const DATASET={dataset_json};</script>
+<script src="chemiscope.min.js"></script>
+<script>(async()=>{{const cfg={{map:'cv-map',info:'cv-info',meta:'cv-meta',structure:'cv-structure'}};
+try{{await Chemiscope.DefaultVisualizer.load(cfg,DATASET,new Chemiscope.Warnings());}}
+catch(e){{document.getElementById('vr').innerHTML='<p style="padding:1em;color:red">'+e+'</p>';}}
+}})();</script></body></html>"""
+
+
+EXAMPLES = [
+    # (filename_stem, extra_structure_props, extra_atom_props, settings, title)
+    (
+        "chemview_ex1",
+        {},
+        {},
+        {"target":"structure","map":{"x":{"property":"frame"},"y":{"property":"energy"},"color":{"property":"energy"}},"structure":[{"unitCell":False}]},
+        "Example 1 — Energy vs Frame",
+    ),
+    (
+        "chemview_ex2",
+        {"d_BN": lambda frames: [float(at.get_distance(0,7)) for at in frames]},
+        {},
+        {"target":"structure","map":{"x":{"property":"frame"},"y":{"property":"d_BN"},"color":{"property":"energy"}},"structure":[{"unitCell":False}]},
+        "Example 2 — B–N Distance vs Frame",
+    ),
+    (
+        "chemview_ex3",
+        {},
+        {"force_norm": lambda frames: [float(v) for at in frames for v in __import__('numpy').linalg.norm(at.get_forces(), axis=1)]},
+        {"target":"structure","map":{"x":{"property":"frame"},"y":{"property":"energy"},"color":{"property":"energy"}},"structure":[{"unitCell":False}]},
+        "Example 3 — Atom-level Force Norms",
+    ),
+    (
+        "chemview_ex4",
+        {
+            "d_BN":      lambda frames: [float(at.get_distance(0,7)) for at in frames],
+            "d_BH":      lambda frames: [float(at.get_distance(0,1)) for at in frames],
+            "angle_HBN": lambda frames: [float(at.get_angle(1,0,7))  for at in frames],
+        },
+        {},
+        {"target":"structure","map":{"x":{"property":"d_BN"},"y":{"property":"angle_HBN"},"color":{"property":"energy"}},"structure":[{"unitCell":False}]},
+        "Example 4 — Multi-property (dᴮₙ, angle H–B–N)",
+    ),
+]
+
+
+def _build_example_dataset(frames, extra_struct, extra_atom, settings):
+    n = len(frames)
+    structures = []
+    for at in frames:
+        pos = at.positions
+        s = {"size":len(at),"names":at.get_chemical_symbols(),
+             "x":pos[:,0].tolist(),"y":pos[:,1].tolist(),"z":pos[:,2].tolist()}
+        if at.pbc.any(): s["cell"] = at.cell.flatten().tolist()
+        structures.append(s)
+
+    energies = [float(np.asarray(at.get_potential_energy()).flat[0]) for at in frames]
+    props = {
+        "frame":  {"target":"structure","values":list(range(n)),"units":"","description":"Frame index"},
+        "energy": {"target":"structure","values":energies,"units":"eV","description":"Potential energy"},
+    }
+    for key, fn in extra_struct.items():
+        vals = fn(frames)
+        props[key] = {"target":"structure","values":vals,"units":"","description":key}
+    for key, fn in extra_atom.items():
+        vals = fn(frames)
+        props[key] = {"target":"atom","values":vals,"units":"","description":key}
+    props["atom_index"] = {"target":"atom","values":[i for f in frames for i in range(len(f))],"units":"","description":"Atom index"}
+
+    envs = [{"structure":i,"center":j,"cutoff":3.5} for i in range(n) for j in range(len(frames[i]))]
+    return {"meta":{"name":"ChemView Demo"},"structures":structures,"properties":props,"environments":envs,"settings":settings}
+
+
 def main():
     traj_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_TRAJ
     if not traj_path.exists():
@@ -221,6 +311,14 @@ def main():
 
     OUTPUT_HTML.write_text(_render_html(dataset_json), encoding="utf-8")
     print(f"Wrote {OUTPUT_HTML}  ({OUTPUT_HTML.stat().st_size // 1024} KB)")
+
+    # generate per-example files for the notebook page
+    for stem, extra_struct, extra_atom, settings, title in EXAMPLES:
+        ds = _build_example_dataset(frames, extra_struct, extra_atom, settings)
+        dj = json.dumps(ds)
+        out = STATIC_DIR / f"{stem}.html"
+        out.write_text(_render_example_html(title, dj), encoding="utf-8")
+        print(f"Wrote {out.name}  ({out.stat().st_size // 1024} KB)")
 
 
 if __name__ == "__main__":

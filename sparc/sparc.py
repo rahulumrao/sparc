@@ -42,12 +42,12 @@ from sparc.src.ase_md import (
     ExecuteMlpDynamics,
     LangevinNVT,
     NoseNVT,
-    correct_aimd_forces,
 )
 from sparc.src.calculator import dft_calculator
 from sparc.src.data_processing import get_data
 from sparc.src.deepmd import deepmd_training, get_version, setup_DeepPotential
 from sparc.src.finetune import finetune_training
+from sparc.src.forcecorrection.corrector import correct_aimd_forces
 from sparc.src.plumed_wrapper import modify_forces, umbrella
 from sparc.src.utils.banner import banner
 from sparc.src.utils.logger import SparcLog, setup_logger
@@ -295,13 +295,11 @@ def get_ensemble_name(config_block: Union[AIMDSetupConfig, MLIPSetupConfig]) -> 
 
 def main():
     """Main function coordinating the entire SPARC workflow."""
+    from sparc.src.utils.logger import close_logger
 
-    setup_logger(enable=True)
     try:
         _main_workflow()
     finally:
-        from sparc.src.utils.logger import close_logger
-
         close_logger()
 
 
@@ -343,6 +341,8 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
     )
     args = parser.parse_args()
 
+    # Logger created only after -h/--help exits — no stray Sparc.log on help calls
+    setup_logger(enable=True)
     try:
         config = load_config(args.input_file)
         SparcLog("=" * 80)
@@ -969,14 +969,28 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
             )
         SparcLog("=" * 80)
 
-        #        # Setup ML Model to calculator
-        #        dp_path = iter_structure['train_dir']
-        #        #dp_model = None #"training_1/frozen_model_1.pb"
-        #        version, backend = get_version()  # Get DeePMD backend
-        #        if backend == 'pytorch':
-        #            dp_model = "training_1/frozen_model_1.pth"
-        #        else:
-        #            dp_model = "training_1/frozen_model_1.pb"
+        # Use models trained in this iteration (mirrors pre-AL model detection)
+        al_dp_path = iter_structure["train_dir"]
+        al_pth = os.path.join(str(al_dp_path), "training_1", "frozen_model_1.pth")
+        al_pb = os.path.join(str(al_dp_path), "training_1", "frozen_model_1.pb")
+        if os.path.exists(al_pth):
+            al_dp_model = "training_1/frozen_model_1.pth"
+        elif os.path.exists(al_pb):
+            al_dp_model = "training_1/frozen_model_1.pb"
+        else:
+            _, _backend = get_version()
+            al_dp_model = (
+                "training_1/frozen_model_1.pth"
+                if _backend == "pytorch"
+                else "training_1/frozen_model_1.pb"
+            )
+
+        # Invariant: al_dp_model must be a relative path. An absolute path would
+        # cause setup_DeepPotential (deepmd.py:173) to silently discard al_dp_path,
+        # loading a stale model from a previous iteration instead of the one just trained.
+        assert not Path(al_dp_model).is_absolute(), (
+            f"[BUG] AL iter {iter}: al_dp_model must be relative, got absolute: {al_dp_model}"
+        )
 
         # Check if PLUMED is enabled
         plumed_config = config.mlip_setup.plumed
@@ -986,13 +1000,11 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
             umbrella(
                 config=config,
                 us_dir=iter_structure,
-                dp_path=parent_dir,
-                dp_model=latest_models[0],
+                dp_path=al_dp_path,
+                dp_model=al_dp_model,
             )
         else:
             for i in range(n_sample):
-                # dp_system = load_structure(structure_file, index=i)
-                # Getting the initial structure from previous Iteraion_xxxxN-1 [Optional]
                 dp_system = get_initial_structure(
                     iter=iter,
                     sample_idx=i,
@@ -1001,11 +1013,8 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     parent_dir=parent_dir,
                 )
 
-                # Configure MLIP calculator
-                # print(f"Setup MLIP Calculator: {parent_dir, latest_models[0]}")
-                # sys.exit(1)
                 dp_atoms, dp_calc = setup_DeepPotential(
-                    atoms=dp_system, model_path=parent_dir, model_name=latest_models[0]
+                    atoms=dp_system, model_path=al_dp_path, model_name=al_dp_model
                 )
 
                 dyn_dp = initialize_thermostat(config.mlip_setup, dp_atoms)

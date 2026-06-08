@@ -52,8 +52,14 @@ def main():
     cmp_parser.add_argument(
         "--model",
         type=str,
-        default="training_2/frozen_model_2.pb",
-        help="Name of frozen model [default: 'frozen_model_2.pb']",
+        default="training_1/frozen_model_1.pth",
+        help=(
+            "Model path relative to each iter_*/01.train/ folder. "
+            "Use {i} as placeholder for the integer in the iter_* name. "
+            "Example: --model 'training_{i}/model_{i}.pth' with iter_000003 "
+            "→ iter_000003/01.train/training_3/model_3.pth "
+            "[default: 'training_1/frozen_model_1.pth']"
+        ),
     )
     cmp_parser.add_argument(
         "--bond",
@@ -63,16 +69,10 @@ def main():
         help="Bond indices to monitor [default: 0 1]",
     )
     cmp_parser.add_argument(
-        "--npar",
-        type=int,
-        default=4,
-        help="Number of processors for parellel execution [default: 4]",
-    )
-    cmp_parser.add_argument(
         "--out",
         type=str,
-        default="energies.csv",
-        help="File to store the DFT and ML energies in CSV format [default: 'energies.csv']",
+        default="energy_forces.npz",
+        help="Output NPZ file for DFT and ML energies/forces [default: 'energy_forces.npz']",
     )
 
     args = parser.parse_args()
@@ -85,7 +85,6 @@ def main():
             model=args.model,
             bond=args.bond,
             out=args.out,
-            npar=args.npar,
         )
     else:
         SparcLog(

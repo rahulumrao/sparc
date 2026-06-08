@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChemView &mdash; SPARC 0.2 documentation</title>
+  <title>ChemView — Interactive Trajectory Analysis &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
@@ -286,15 +286,20 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="ChemView.html">ChemView</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ChemView</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Load-a-trajectory">Load a trajectory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Energy-vs.-frame">Energy vs. frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Atom-level-forces">Atom-level forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Cell-parameters">Cell parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Single-structure">Single structure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Custom-property-names">Custom property names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Periodic-bulk-structure">Periodic bulk structure</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ChemView — Interactive Trajectory Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Glycine-atom-indices">Glycine atom indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Load-the-trajectory">Load the trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-1-—-Energy-landscape">Example 1 — Energy landscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">Example 2 — Carbonyl and hydroxyl bond dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-3-—-Conformational-landscape-(Ramachandran-style)">Example 3 — Conformational landscape (Ramachandran-style)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-4-—-Bond-length-correlations">Example 4 — Bond-length correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-5-—-Atom-level-forces-and-index-colouring">Example 5 — Atom-level forces and index colouring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-6-—-Single-structure-viewer">Example 6 — Single-structure viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Tips-and-reference">Tips and reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Supported-specs">Supported specs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Key-parameters">Key parameters</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ChemView.html#interactive-demo">Interactive Demo</a></li>
@@ -347,7 +352,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="ChemView.html">ChemView</a></li>
-      <li class="breadcrumb-item active">ChemView</li>
+      <li class="breadcrumb-item active">ChemView — Interactive Trajectory Analysis</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/chemview.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -357,28 +362,87 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ChemView">
-<h1>ChemView<a class="headerlink" href="#ChemView" title="Link to this heading"></a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">ChemView</span></code> is a wrapper around <a class="reference external" href="https://chemiscope.org/">Chemiscope</a> for visualising ASE trajectories in Jupyter notebooks. It computes geometric and atomic properties from <code class="docutils literal notranslate"><span class="pre">ase.Atoms</span></code> objects and renders them as a linked scatter plot and 3-D structure viewer.</p>
-<p>Clicking a point on the scatter plot loads the corresponding frame. The trajectory player at the bottom of the viewer animates through all frames.</p>
+  <section id="ChemView-—-Interactive-Trajectory-Analysis">
+<h1>ChemView — Interactive Trajectory Analysis<a class="headerlink" href="#ChemView-—-Interactive-Trajectory-Analysis" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">ChemView</span></code> is a wrapper around <a class="reference external" href="https://chemiscope.org/">Chemiscope</a> that turns ASE trajectories into linked scatter-plot + 3-D structure viewers inside Jupyter notebooks. You define which properties to compute via short string <em>specs</em>; ChemView handles the rest.</p>
+<p>This tutorial uses a <strong>glycine AIMD trajectory</strong> (3 624 frames, 10 atoms/frame) computed at the DFT level. The examples progress from basic energy monitoring to conformational analysis, bond correlations, and atom-level force inspection.</p>
+<hr class="docutils" />
+<section id="Glycine-atom-indices">
+<h2>Glycine atom indices<a class="headerlink" href="#Glycine-atom-indices" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Index</p></th>
+<th class="head"><p>Symbol</p></th>
+<th class="head"><p>Role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>N</p></td>
+<td><p>Amino nitrogen</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>C</p></td>
+<td><p>Cα (alpha carbon)</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>C</p></td>
+<td><p>Carboxyl carbon</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>O</p></td>
+<td><p>Carbonyl oxygen (C=O)</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>O</p></td>
+<td><p>Hydroxyl oxygen (C–OH)</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>H</p></td>
+<td><p>Hα₁</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>H</p></td>
+<td><p>Hα₂</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>H</p></td>
+<td><p>HN₁</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p>H</p></td>
+<td><p>HN₂</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p>H</p></td>
+<td><p>H(OH)</p></td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<blockquote>
+<div><p><strong>Static viewers:</strong> Interactive panels below use pre-generated data. In your own Jupyter session <code class="docutils literal notranslate"><span class="pre">ChemView(...)</span></code> returns a live widget linked to your kernel.</p>
+</div></blockquote>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.chemview</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChemView</span>
 </pre></div>
 </div>
 </div>
-<section id="Load-a-trajectory">
-<h2>Load a trajectory<a class="headerlink" href="#Load-a-trajectory" title="Link to this heading"></a></h2>
-<p>Any ASE-readable format works. Here we load a molecular dynamics trajectory stored as an ASE <code class="docutils literal notranslate"><span class="pre">.traj</span></code> file.</p>
+</section>
+<section id="Load-the-trajectory">
+<h2>Load the trajectory<a class="headerlink" href="#Load-the-trajectory" title="Link to this heading"></a></h2>
+<p>Any ASE-readable format works (<code class="docutils literal notranslate"><span class="pre">.traj</span></code>, <code class="docutils literal notranslate"><span class="pre">.xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">.extxyz</span></code>, VASP <code class="docutils literal notranslate"><span class="pre">OUTCAR</span></code>, …).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;../tests/iter_000000/00.dft/AseMD.traj&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total frames: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;_static/TrajCombined.traj&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frames: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span><span class="si">}</span><span class="s2">,  atoms/frame: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">,  &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;symbols: </span><span class="si">{</span><span class="n">traj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -387,179 +451,314 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Total frames: 54
+Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;, &#39;O&#39;, &#39;O&#39;, &#39;H&#39;, &#39;H&#39;, &#39;H&#39;, &#39;H&#39;, &#39;H&#39;]
 </pre></div></div>
 </div>
 </section>
-<section id="Energy-vs.-frame">
-<h2>Energy vs. frame<a class="headerlink" href="#Energy-vs.-frame" title="Link to this heading"></a></h2>
-<p>The simplest usage: plot potential energy as a function of frame index.</p>
+<hr class="docutils" />
+<section id="Example-1-—-Energy-landscape">
+<h2>Example 1 — Energy landscape<a class="headerlink" href="#Example-1-—-Energy-landscape" title="Link to this heading"></a></h2>
+<p>The simplest usage: plot <strong>potential energy vs frame index</strong> to monitor thermalisation, drift, or phase transitions over the simulation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">map_color</span></code> sets the scatter-plot colour property — here energy itself gives a continuous colour gradient from low (blue) to high (red).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+    <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Energy landscape&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "aeab4908bfe1411991a6a4defebbc98d", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex1widget", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-</section>
-<section id="Geometric-properties-with-colour-mapping">
-<h2>Geometric properties with colour mapping<a class="headerlink" href="#Geometric-properties-with-colour-mapping" title="Link to this heading"></a></h2>
-<p>Multiple geometric specs can be combined. Here we plot the O–H distance against the H–O–H angle and colour points by energy. Auto-generated property names follow the pattern <code class="docutils literal notranslate"><span class="pre">distance_i_j</span></code> and <code class="docutils literal notranslate"><span class="pre">angle_i_j_k</span></code>.</p>
+<iframe src="_static/gly_ex1.html"
+        width="100%" height="520"
+        style="border:none;border-radius:6px;display:block;margin:1em 0;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+</iframe></section>
+<hr class="docutils" />
+<section id="Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">
+<h2>Example 2 — Carbonyl and hydroxyl bond dynamics<a class="headerlink" href="#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics" title="Link to this heading"></a></h2>
+<p>Track the <strong>C=O</strong> (atoms 2→3) and <strong>C–OH</strong> (atoms 2→4) bond lengths simultaneously. Scatter-plot axes are frame vs C=O distance, coloured by energy. Clicking a point in the scatter plot highlights the corresponding frame in the 3-D viewer.</p>
+<p>When the same spec type appears more than once, use <code class="docutils literal notranslate"><span class="pre">names</span></code> to assign distinct, human-readable keys.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;distance:0,2&quot;</span><span class="p">,</span> <span class="s2">&quot;distance:0,1&quot;</span><span class="p">,</span> <span class="s2">&quot;angle:0,1,2&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;distance_0_2&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;angle_0_1_2&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+    <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;distance:2,3&quot;</span><span class="p">,</span> <span class="s2">&quot;distance:2,4&quot;</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;d_CO&quot;</span><span class="p">,</span> <span class="s2">&quot;d_COH&quot;</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;d_CO&quot;</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Carboxyl bond dynamics&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f21ee9288126460b993b5b075fbaefd8", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex2widget", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-</section>
-<section id="Atom-level-forces">
-<h2>Atom-level forces<a class="headerlink" href="#Atom-level-forces" title="Link to this heading"></a></h2>
-<p>Atom-level specs such as <code class="docutils literal notranslate"><span class="pre">force_norm</span></code> produce one value per atom per frame. Setting <code class="docutils literal notranslate"><span class="pre">color_atoms=&quot;atom_index&quot;</span></code> colours atoms by their index.</p>
+<iframe src="_static/gly_ex2.html"
+        width="100%" height="520"
+        style="border:none;border-radius:6px;display:block;margin:1em 0;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+</iframe></section>
+<hr class="docutils" />
+<section id="Example-3-—-Conformational-landscape-(Ramachandran-style)">
+<h2>Example 3 — Conformational landscape (Ramachandran-style)<a class="headerlink" href="#Example-3-—-Conformational-landscape-(Ramachandran-style)" title="Link to this heading"></a></h2>
+<p>Map the <strong>N–Cα–C angle</strong> (atoms 0,1,2) against the <strong>N–Cα–C–O dihedral</strong> (atoms 0,1,2,3) — a Ramachandran-style projection that reveals which conformations are sampled during the AIMD run.</p>
+<p>Each scatter-plot point is one MD frame. Clustering or gaps in this plot indicate preferred conformations or energy barriers.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;force_norm&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="n">color_atoms</span><span class="o">=</span><span class="s2">&quot;atom_index&quot;</span><span class="p">)</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+    <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;angle:0,1,2&quot;</span><span class="p">,</span> <span class="s2">&quot;dihedral:0,1,2,3&quot;</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;ang_NCaC&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;ang_NCaC&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Conformational landscape&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d9aded8c75c64f47a1a4793654162863", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex3widget", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-</section>
-<section id="Cell-parameters">
-<h2>Cell parameters<a class="headerlink" href="#Cell-parameters" title="Link to this heading"></a></h2>
-<p>For periodic systems, lattice vector lengths and cell volume can be tracked across frames.</p>
+<iframe src="_static/gly_ex3.html"
+        width="100%" height="520"
+        style="border:none;border-radius:6px;display:block;margin:1em 0;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+</iframe></section>
+<hr class="docutils" />
+<section id="Example-4-—-Bond-length-correlations">
+<h2>Example 4 — Bond-length correlations<a class="headerlink" href="#Example-4-—-Bond-length-correlations" title="Link to this heading"></a></h2>
+<p>Plot <strong>C–N</strong> vs <strong>C=O</strong> bond lengths to expose their dynamical correlation. Resonance effects in the carboxyl group couple these two bonds: elongation of one tends to shorten the other. Colour by <strong>C–OH</strong> bond length to add a third dimension.</p>
+<p>All four bond distances are computed in a single <code class="docutils literal notranslate"><span class="pre">ChemView</span></code> call; the axes and colour can be changed interactively in the viewer.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_a&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_b&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_c&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+    <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;distance:0,1&quot;</span><span class="p">,</span>   <span class="c1"># N–Cα</span>
+           <span class="s2">&quot;distance:1,2&quot;</span><span class="p">,</span>   <span class="c1"># Cα–C</span>
+           <span class="s2">&quot;distance:2,3&quot;</span><span class="p">,</span>   <span class="c1"># C=O</span>
+           <span class="s2">&quot;distance:2,4&quot;</span><span class="p">],</span>  <span class="c1"># C–OH</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;d_NCa&quot;</span><span class="p">,</span> <span class="s2">&quot;d_CaC&quot;</span><span class="p">,</span> <span class="s2">&quot;d_CO&quot;</span><span class="p">,</span> <span class="s2">&quot;d_COH&quot;</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;d_NCa&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;d_CO&quot;</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;d_COH&quot;</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Bond-length correlations&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d11fe37c10934f9795bedfde93ab25da", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex4widget", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-</section>
-<section id="Single-structure">
-<h2>Single structure<a class="headerlink" href="#Single-structure" title="Link to this heading"></a></h2>
-<p>A single <code class="docutils literal notranslate"><span class="pre">ase.Atoms</span></code> object can be passed directly. Set <code class="docutils literal notranslate"><span class="pre">plot=False</span></code> to show only the 3-D viewer without a scatter plot.</p>
+<iframe src="_static/gly_ex4.html"
+        width="100%" height="520"
+        style="border:none;border-radius:6px;display:block;margin:1em 0;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+</iframe></section>
+<hr class="docutils" />
+<section id="Example-5-—-Atom-level-forces-and-index-colouring">
+<h2>Example 5 — Atom-level forces and index colouring<a class="headerlink" href="#Example-5-—-Atom-level-forces-and-index-colouring" title="Link to this heading"></a></h2>
+<p>Atom-level specs (one value per atom per frame) expose per-site dynamics. Here <code class="docutils literal notranslate"><span class="pre">force_norm</span></code> stores the DFT force magnitude |<strong>F</strong>ᵢ| for every atom in every frame.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">color_atoms=&quot;atom_index&quot;</span></code> colours atoms by their index (rainbow scale) so you can visually track individual atoms across frames.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">show_index=True</span></code> displays the integer index next to each atom in the 3-D viewer — useful when building new specs.</p></li>
+</ul>
+<p>Click any atom in the structure panel to see its <code class="docutils literal notranslate"><span class="pre">force_norm</span></code>, <code class="docutils literal notranslate"><span class="pre">atom_index</span></code>, and any other per-atom properties in the info panel.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.build</span><span class="w"> </span><span class="kn">import</span> <span class="n">molecule</span>
-<span class="n">water</span> <span class="o">=</span> <span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;H2O&quot;</span><span class="p">)</span>
-<span class="n">ChemView</span><span class="p">(</span><span class="n">water</span><span class="p">,</span> <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;y_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;z_pos&quot;</span><span class="p">],</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+    <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;force_norm&quot;</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;force_norm&quot;</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">&quot;atom_index&quot;</span><span class="p">,</span>
+    <span class="n">show_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Atom forces&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "8cde4e40074c44abb9cc4b55f48000bb", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex5widget", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-</section>
-<section id="Custom-property-names">
-<h2>Custom property names<a class="headerlink" href="#Custom-property-names" title="Link to this heading"></a></h2>
-<p>When the same spec type appears more than once (e.g. two distances), use <code class="docutils literal notranslate"><span class="pre">names</span></code> to assign distinct keys. The <code class="docutils literal notranslate"><span class="pre">size</span></code> parameter scales scatter-plot points by a property value.</p>
+<iframe src="_static/gly_ex5.html"
+        width="100%" height="520"
+        style="border:none;border-radius:6px;display:block;margin:1em 0;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+</iframe></section>
+<hr class="docutils" />
+<section id="Example-6-—-Single-structure-viewer">
+<h2>Example 6 — Single-structure viewer<a class="headerlink" href="#Example-6-—-Single-structure-viewer" title="Link to this heading"></a></h2>
+<p>A single <code class="docutils literal notranslate"><span class="pre">ase.Atoms</span></code> object can be passed directly — useful for inspecting an optimised geometry or the lowest-energy frame of a trajectory.</p>
+<p>Set <code class="docutils literal notranslate"><span class="pre">plot=False</span></code> to suppress the scatter plot and show only the 3-D viewer. Atom-level position specs (<code class="docutils literal notranslate"><span class="pre">x_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">y_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">z_pos</span></code>) let you colour atoms by their Cartesian coordinates.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;distance:0,1&quot;</span><span class="p">,</span> <span class="s2">&quot;distance:0,2&quot;</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;d_OH1&quot;</span><span class="p">,</span> <span class="s2">&quot;d_OH2&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;d_OH1&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;d_OH2&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;d_OH2&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "adccdb9996eb4ddbb229d4a5f40996c0", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-</section>
-<section id="Periodic-bulk-structure">
-<h2>Periodic bulk structure<a class="headerlink" href="#Periodic-bulk-structure" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">ChemView</span></code> also works with bulk periodic systems. Here we build a 2×2×2 FCC copper supercell and view the atomic positions.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.lattice.cubic</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaceCenteredCubic</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="n">system</span> <span class="o">=</span> <span class="n">FaceCenteredCubic</span><span class="p">(</span><span class="n">directions</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;Cu&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ChemView</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;y_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;z_pos&quot;</span><span class="p">],</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># pick the minimum-energy frame</span>
+<span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">())</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">]</span>
+<span class="n">min_frame</span> <span class="o">=</span> <span class="n">traj</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">energies</span><span class="p">))]</span>
+
+<span class="n">ChemView</span><span class="p">(</span>
+    <span class="n">frames</span><span class="o">=</span><span class="p">[</span><span class="n">min_frame</span><span class="p">],</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;y_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;z_pos&quot;</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
+    <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">&quot;atom_index&quot;</span><span class="p">,</span>
+    <span class="n">show_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine — lowest-energy frame&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7448ecaa86a04eac96cacb1336244474", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex6widget", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</section>
+<hr class="docutils" />
+<section id="Tips-and-reference">
+<h2>Tips and reference<a class="headerlink" href="#Tips-and-reference" title="Link to this heading"></a></h2>
+<section id="Supported-specs">
+<h3>Supported specs<a class="headerlink" href="#Supported-specs" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Spec</p></th>
+<th class="head"><p>Target</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;frame&quot;</span></code></p></td>
+<td><p>structure</p></td>
+<td><p>—</p></td>
+<td><p>Frame index</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;energy&quot;</span></code></p></td>
+<td><p>structure</p></td>
+<td><p>eV</p></td>
+<td><p>From <code class="docutils literal notranslate"><span class="pre">atoms.get_potential_energy()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;distance:i,j&quot;</span></code></p></td>
+<td><p>structure</p></td>
+<td><p>Å</p></td>
+<td><p>Bond/non-bond distance</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;angle:i,j,k&quot;</span></code></p></td>
+<td><p>structure</p></td>
+<td><p>deg</p></td>
+<td><p>Valence angle at j</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;dihedral:i,j,k,l&quot;</span></code></p></td>
+<td><p>structure</p></td>
+<td><p>deg</p></td>
+<td><p>Torsion angle</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;volume&quot;</span></code></p></td>
+<td><p>structure</p></td>
+<td><p>Å³</p></td>
+<td><p>Periodic cell volume</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;cell_a&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;cell_b&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;cell_c&quot;</span></code></p></td>
+<td><p>structure</p></td>
+<td><p>Å</p></td>
+<td><p>Lattice lengths</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;cell_alpha&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;cell_beta&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;cell_gamma&quot;</span></code></p></td>
+<td><p>structure</p></td>
+<td><p>deg</p></td>
+<td><p>Lattice angles</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;x_pos&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;y_pos&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;z_pos&quot;</span></code></p></td>
+<td><p>atom</p></td>
+<td><p>Å</p></td>
+<td><p>Cartesian positions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;force_norm&quot;</span></code></p></td>
+<td><p>atom</p></td>
+<td><p>eV/Å</p></td>
+<td><p>Force magnitude</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;force_x&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;force_y&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;force_z&quot;</span></code></p></td>
+<td><p>atom</p></td>
+<td><p>eV/Å</p></td>
+<td><p>Force components</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;symbol&quot;</span></code></p></td>
+<td><p>atom</p></td>
+<td><p>—</p></td>
+<td><p>Element symbol</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;atomic_number&quot;</span></code></p></td>
+<td><p>atom</p></td>
+<td><p>—</p></td>
+<td><p>Atomic number Z</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">atom_index</span></code> is always added automatically — no need to list it in <code class="docutils literal notranslate"><span class="pre">specs</span></code>.</p>
+</section>
+<section id="Key-parameters">
+<h3>Key parameters<a class="headerlink" href="#Key-parameters" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+    <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>           <span class="c1"># list of ase.Atoms</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># property specs to compute</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># optional: rename keys (same length as specs)</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>             <span class="c1"># scatter-plot x axis</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>            <span class="c1"># scatter-plot y axis</span>
+    <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># optional: 3-D scatter z axis</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># scatter-plot colour property</span>
+    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">&quot;element&quot;</span><span class="p">,</span> <span class="c1"># 3-D viewer colouring: &quot;element&quot; | &quot;atom_index&quot; | None</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>          <span class="c1"># show element labels on atoms</span>
+    <span class="n">show_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>      <span class="c1"># show integer index on atoms</span>
+    <span class="n">env_cutoff</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>        <span class="c1"># environment sphere radius (Å)</span>
+    <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>             <span class="c1"># show scatter-plot panel</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;ChemView&quot;</span><span class="p">,</span>  <span class="c1"># dataset label</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
+</section>
 </section>
 </section>
 
