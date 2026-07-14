@@ -1,8 +1,11 @@
 import sys
 
-import sparc.src.utils.plotting as _plotting
+try:
+    import sparc.src.utils.plotting as _plotting
 
-sys.modules.setdefault("sparc.plotting", _plotting)
+    sys.modules.setdefault("sparc.plotting", _plotting)
+except ImportError:
+    pass
 
 try:
     import sparc.src.utils.plotting.chemview as _chemview

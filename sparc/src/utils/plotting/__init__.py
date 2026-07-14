@@ -9,7 +9,19 @@ Usage:
     from plotting.main import get_iteration_dirs, load_trajectory
 """
 
-from . import chemview, matplot
+try:
+    from . import chemview
+except ImportError:
+    chemview = None  # type: ignore[assignment]
+
+try:
+    from . import matplot
+    from .matplot import PlotForceError, PlotWorkflowTiming
+except ImportError:
+    matplot = None  # type: ignore[assignment]
+    PlotForceError = None  # type: ignore[assignment]
+    PlotWorkflowTiming = None  # type: ignore[assignment]
+
 from .main import (
     ReadColvar,
     ViewTraj,
@@ -21,7 +33,6 @@ from .main import (
     get_iteration_dirs,
     load_trajectory,
 )
-from .matplot import PlotForceError
 
 __all__ = [
     "matplot",
@@ -36,6 +47,7 @@ __all__ = [
     "get_1dSurface",
     "ViewTraj",
     "PlotForceError",
+    "PlotWorkflowTiming",
 ]
 
 __version__ = "0.2"

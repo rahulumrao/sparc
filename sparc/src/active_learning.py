@@ -161,6 +161,9 @@ def QueryByCommittee(
     iteration: int = 0,
     rmsd_threshold: float = 0.05,
     exclude_hydrogen: bool = True,
+    deal_config=None,
+    structure_file: str = "",
+    deepmd_input_json: str = "",
 ):
     """
     Find maximum deviation in atomic forces among multiple models using Query-by-Committee.
@@ -202,12 +205,19 @@ def QueryByCommittee(
         - n_candidates: int, number of candidate frames
         - model_names: list, model file paths used
     """
+    _filter_mode = (
+        f"DEAL (SGP variance, threshold={deal_config.threshold})"
+        if (deal_config is not None and deal_config.enabled)
+        else "RMSD (Kabsch geometric)"
+    )
+
     SparcLog("")
     SparcLog("QUERY-BY-COMMITTEE: MODEL DEVIATION ANALYSIS")
     SparcLog("-" * 80)
     SparcLog(f"{'Iteration':<30} {iteration}")
     SparcLog(f"{'Number of models':<30} {num_models}")
     SparcLog(f"{'Deviation range':<30} [{min_lim:.2f}, {max_lim:.2f}] eV/Å")
+    SparcLog(f"{'Diversity filter':<30} {_filter_mode}")
     SparcLog("-" * 80)
 
     SparcLog("=" * 80)
@@ -297,6 +307,9 @@ def QueryByCommittee(
         output_dir=f"{str(dpmd_data_path)}/dft_candidates",
         rmsd_threshold=rmsd_threshold,
         exclude_hydrogen=exclude_hydrogen,
+        deal_config=deal_config,
+        structure_file=structure_file,
+        deepmd_input_json=deepmd_input_json,
     )
 
     with open("learning_state.log", "a") as f:

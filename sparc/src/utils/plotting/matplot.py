@@ -8,20 +8,36 @@ Shared utilities are imported from main.py.
 import glob
 import os
 
-import dpdata
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import seaborn as sns
-from matplotlib.ticker import FormatStrFormatter, MaxNLocator
 
-# Import shared utilities from main.py
 from .main import (
     compute_mae,
     compute_rmse,
     extract_iteration_number,
     get_iteration_dirs,
 )
+
+try:
+    import dpdata
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import seaborn as sns
+    from matplotlib.ticker import FormatStrFormatter, MaxNLocator
+
+    _MATPLOT_AVAILABLE = True
+except ImportError as _matplot_import_err:
+    _MATPLOT_AVAILABLE = False
+    _matplot_import_err_msg = str(_matplot_import_err)
+
+
+def _require_matplot_deps():
+    if not _MATPLOT_AVAILABLE:
+        raise ImportError(
+            "Matplotlib plotting requires: matplotlib, seaborn, pandas, dpdata.\n"
+            f"Install with: pip install matplotlib seaborn pandas dpdata\n"
+            f"(original error: {_matplot_import_err_msg})"
+        )
+
 
 ########################################################################################################
 # Parity plots for energy and forces
@@ -67,6 +83,7 @@ def ParityPlot(
     >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="forces", force_mode="flatten")
     >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="forces", force_mode="components")
     """
+    _require_matplot_deps()
     if not os.path.exists(data_dir):
         print(f"[ANALYSIS][ERROR] Test data not found: {data_dir}")
         return
@@ -263,6 +280,7 @@ def PlotLcurve(lcurve_file, save_fig=None):
     Example:
     >>> PlotLcurve(lcurve_file="iter_000000/01.train/training_1/lcurve.out")
     """
+    _require_matplot_deps()
     if not os.path.isfile(lcurve_file):
         print(f"[ANALYSIS][ERROR] File not found: {lcurve_file}")
         return
@@ -325,6 +343,7 @@ def PlotForceDeviation(
     >>> PlotForceDeviation("/path/to/root", target_iteration=3)
     >>> PlotForceDeviation("/path/to/root", iteration_window="all")
     """
+    _require_matplot_deps()
     data_dict = {}
     selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
 
@@ -390,8 +409,9 @@ def PlotForceDeviation(
     plt.ylabel(r"Max. Force Deviation ($\rm{eV/\AA}$)", fontsize=22)
     plt.xticks(fontsize=20)
     plt.yticks(fontsize=20)
-    plt.legend(fontsize=16, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.legend(fontsize=16, loc="upper center", bbox_to_anchor=(0.5, 1.12), ncol=ncol)
     plt.grid(ls="-.")
+    plt.tight_layout(rect=[0, 0, 1, 0.92])
     plt.show()
 
 
@@ -437,6 +457,7 @@ def PlotForceError(
     >>> PlotForceError(iteration_window="all", palette="hot", log_scale=True)
     >>> PlotForceError(iteration_window=(0, 5), connect_means=True, dmin=0.05)
     """
+    _require_matplot_deps()
     data_dict = {}
     selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
 
@@ -619,6 +640,7 @@ def PlotPotentialEnergy(
     >>> PlotPotentialEnergy("/path/to/root", target_iteration=3, traj_filename="AseMD.traj")
     >>> PlotPotentialEnergy("/path/to/root", iteration_window="all", traj_filename="AseMD.traj")
     """
+    _require_matplot_deps()
     if traj_filename is None:
         traj_filename = input("Enter the trajectory filename (e.g., AseMD.traj): ")
 
@@ -674,8 +696,9 @@ def PlotPotentialEnergy(
     plt.xlim(0, None)
     plt.xticks(fontsize=17)
     plt.yticks(fontsize=17)
-    plt.legend(fontsize=12, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.legend(fontsize=12, loc="upper center", bbox_to_anchor=(0.5, 1.12), ncol=ncol)
     plt.grid(ls="-.")
+    plt.tight_layout(rect=[0, 0, 1, 0.92])
     plt.show()
 
 
@@ -698,6 +721,7 @@ def PlotDistribution(
 
     [Full docstring preserved from original]
     """
+    _require_matplot_deps()
     property_dict = {}
     is_energy = get.lower() == "energy"
     is_distance = get.lower().startswith("distance:")
@@ -811,9 +835,9 @@ def PlotDistribution(
         plt.xlim(0, None)
     plt.xticks(fontsize=22)
     plt.yticks(fontsize=22)
-    plt.legend(fontsize=16, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.legend(fontsize=16, loc="upper center", bbox_to_anchor=(0.5, 1.12), ncol=ncol)
     plt.grid(ls="-.")
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0, 1, 0.92])
     plt.show()
 
 
@@ -837,6 +861,7 @@ def PlotPES(
 
     [Full docstring preserved from original]
     """
+    _require_matplot_deps()
     i, j = distance_pair
     x_vals, y_vals = [], []
     total_frames = 0
@@ -949,6 +974,7 @@ def PlotTemp(
 
     [Full docstring preserved from original]
     """
+    _require_matplot_deps()
     if traj_filename is None:
         traj_filename = (
             input("Enter the trajectory filename (default: dpmd.traj): ") or "dpmd.traj"
@@ -1008,9 +1034,68 @@ def PlotTemp(
     plt.xlim(0, None)
     plt.xticks(fontsize=17)
     plt.yticks(fontsize=17)
-    plt.legend(fontsize=12, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=ncol)
+    plt.legend(fontsize=12, loc="upper center", bbox_to_anchor=(0.5, 1.12), ncol=ncol)
     plt.grid(ls="-.")
+    plt.tight_layout(rect=[0, 0, 1, 0.92])
     plt.show()
+
+
+########################################################################################################
+# Plot AL workflow step timings
+########################################################################################################
+
+
+def PlotWorkflowTiming(
+    timing_file="timings.csv",
+    plot_type="grouped",
+    unit="h",
+    save_fig=None,
+    Ycmin=None,
+    Ycmax=None,
+):
+    """
+    Plot per-step wall-clock times from ``timings.csv``.
+
+    Parameters
+    ----------
+    timing_file : str
+        Path to ``timings.csv``.
+    plot_type : str
+        ``grouped`` (default) or ``line``.
+    unit : str
+        ``h`` (default) or ``m`` for the y-axis scale.
+    save_fig : str or None
+        If provided, save the figure to this path.
+    Ycmin : (float, float), optional
+        Explicit (lo, hi) for the bottom panel of broken axis, e.g. (0, 4).
+    Ycmax : (float, float), optional
+        Explicit (lo, hi) for the top panel of broken axis, e.g. (6, 16).
+    """
+    _require_matplot_deps()
+    from sparc.src.utils.plotting.timing_plot import PlotStepTimingLine, PlotStepTimings
+    from sparc.src.utils.timing import load_workflow_timing
+
+    try:
+        df = load_workflow_timing(timing_file)
+    except FileNotFoundError:
+        print(f"[ANALYSIS][ERROR] Timing file not found: {timing_file}")
+        return
+
+    if df.empty:
+        print(f"[ANALYSIS][ERROR] No timing records in: {timing_file}")
+        return
+
+    if plot_type == "line":
+        PlotStepTimingLine(df, unit=unit, save_fig=save_fig, show=save_fig is None)
+    else:
+        PlotStepTimings(
+            df,
+            unit=unit,
+            save_fig=save_fig,
+            show=save_fig is None,
+            Ycmin=Ycmin,
+            Ycmax=Ycmax,
+        )
 
 
 ########################################################################################################

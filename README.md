@@ -19,248 +19,287 @@ For More Information, Please Visit [SPARC Documentation](https://docs-sparc.read
 Try SPARC [Tutorial](https://github.com/rahulumrao/sparc/blob/main/examples/SPARC_Tutorial.ipynb)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rahulumrao/sparc/blob/main/examples/SPARC_Tutorial.ipynb)
 
-
 ## Overview
 
-SPARC is a Python package built around the `ASE` wrapper that implements an automated workflow for developing machine learning interatomic potentials (MLIPs) for reactive chemical systems. It automates the process of identifying new structures in the configurational space through active learning, eliminating the need for long _ab initio_ MD simulations upfront.
+SPARC is a Python toolkit for active-learning (AL) workflow to build a reactive machine learning interatomic potentials (MLIPs). It automates the process of identifying informative configurations in the configurational space without having to run a long initial _ab-initio_ MD trajectories. SPARC is designed to work seamlessly within the Python framework to efficiently improve ML model.
 
 ## Key Features
 
-- Automated active learning workflow (Query-by-Committee)
-- _Ab initio_ molecular dynamics (AIMD) with **VASP**, **CP2K**, **ORCA**, **QE**, **xTB**, and **Gaussian**
-- NVE, NVT (Nose-Hoover / Langevin), and NPT (Berendsen) ensembles
-- ML potential training with [DeepMD-kit v3](https://github.com/deepmodeling/deepmd-kit) (PyTorch backend)
-- Fine-tuning of universal ML potentials (**DPA-2**, **DPA-3**)
-- ML/MD simulations and iterative model refinement
-- Force deviation monitoring and Query-by-Committee candidate selection
-- Reactive trajectory generation with [PLUMED](https://www.plumed.org/) integration (Metadynamics, Umbrella Sampling, etc.)
+- Automated active learning with QbC candidate discovery
+- DFT backends via ASE: [VASP](https://www.vasp.at/), [CP2K](https://www.cp2k.org/), [ORCA](https://www.faccts.de/orca/), [Quantum Espresso](https://www.quantum-espresso.org/),[Gaussian](https://gaussian.com/), [xTB](https://github.com/grimme-lab/xtb)
+- _Ab initio_ molecular dynamics (AIMD) with enhanced sampling
+- Machine learning potential training with [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit), and [DeepMD-GNN](https://github.com/deepmodeling/deepmd-gnn)
+- NVE/ NVT/ NPT simulations and iterative model refinement
+- Reactive trajectory generation with [PLUMED](https://www.plumed.org/) integration
 
 ## Requirements
 
 ### Core Dependencies
-- Python 3.10
-- [DeepMD-kit v3+](https://github.com/deepmodeling/deepmd-kit) (PyTorch backend)
+- Python 3.10 recommended
+- [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit) (version: 2.2.10)
 - [ASE](https://wiki.fysik.dtu.dk/ase/) (Atomic Simulation Environment)
-- [dpdata](https://github.com/deepmodeling/dpdata)
+- [PLUMED](https://www.plumed.org/) (PES Exploration)
+- `ase`, `numpy`, `pandas`, `scipy`, `dpdata`, `cython`
 
-### DFT Engines (one or more required)
-- [VASP](https://www.vasp.at/) — periodic systems
-- [CP2K](https://www.cp2k.org/) — periodic systems
-- [ORCA](https://www.faccts.de/orca/) — molecular systems
-- [Quantum ESPRESSO](https://www.quantum-espresso.org/) — periodic systems
-- [xTB](https://github.com/grimme-lab/xtb) — semi-empirical
-- [Gaussian](https://gaussian.com/) — molecular systems
+### DFT Engine
 
+Install and configure at least one:
 
-### Python Package Dependencies
-- numpy, pandas, dpdata, scipy
+- [VASP](https://www.vasp.at/)
+- [CP2K](https://www.cp2k.org/)
+- [ORCA](https://www.faccts.de/orca/)
+- [Quantum ESPRESSO](https://www.quantum-espresso.org/)
+- [xTB](https://github.com/grimme-lab/xtb)
+- [Gaussian](https://gaussian.com/)
 
 ## Installation
 
-#### 1. Create and activate a conda environment
+### A) Legacy Installation (original compatibility flow)
+
+1. Create and activate a conda environment:
 
 ```bash
 conda create -n sparc python=3.10
 conda activate sparc
 ```
 
-#### 2. Install DeepMD-kit v3 (PyTorch backend)
+2. Install DeepMD-kit:
 
 ```bash
-pip install deepmd-kit[torch]
+# pip option
+pip install deepmd-kit[gpu,cu12]==2.2.10
+
+# conda option
+conda install deepmd-kit=2.2.10=*gpu libdeepmd=2.2.10=*gpu lammps horovod -c https://conda.deepmodeling.com -c defaults
 ```
 
-For GPU support:
-```bash
-pip install deepmd-kit[torch,cu12]
-```
-
-#### 3. Clone and install SPARC
+3. Clone and install SPARC:
 
 ```bash
-git clone https://github.com/rahulumrao/sparc.git
+git clone --depth 1 https://github.com/rahulumrao/sparc.git
 cd sparc
 pip install .
 ```
 
-#### 4. Install PLUMED (optional)
+4. Install PLUMED:
 
-For standard CVs:
 ```bash
+# standard installation
 conda install -c conda-forge py-plumed
 ```
+   > [!NOTE]
+   >  Some Collective Variables (CVs), such as Generic CVs (e.g., SPRINT), are part of the `additional module` and are not included in a standard PLUMED installation. To enable them, we need to manually install PLUMED within Python environment. If you **don’t need additional modules**, you can skip the manual installation and install PLUMED directly from `conda-forge` as shown in the previous step.
 
-For advanced CVs (e.g., SPRINT), build from source with all modules enabled:
 ```bash
 ./configure --enable-mpi=no --enable-modules=all PYTHON_BIN=$(which python) --prefix=$CONDA_PREFIX
 make -j$(nproc) && make install
 ```
-> Refer to the official [PLUMED installation page](https://www.plumed.org/doc-v2.9/user-doc/html/_installation.html) for more details.
 
-#### 5. Install [DeePMD-GNN](https://github.com/deepmodeling/deepmd-gnn) plugin for [MACE](https://github.com/ACEsuit/mace) and [NeQUIP](https://github.com/mir-group/nequip) support (Optional)
+5. Optional Install [DeePMD-GNN](https://github.com/deepmodeling/deepmd-gnn) plugin for [MACE](https://github.com/ACEsuit/mace) and [NeQUIP](https://github.com/mir-group/nequip) support:
 
 ```bash
 conda install deepmd-gnn -c conda-forge
-
 export CMAKE_PREFIX_PATH="$(python -c 'import torch; print(torch.utils.cmake_prefix_path)'):$CONDA_PREFIX"
 
+# Optional
 conda install -c nvidia cuda-toolkit=12.1 cuda-nvcc=12.1 cuda-nvtx=12.1 cuda-nvrtc=12.1 cuda-cudart-dev=12.1 cuda-cupti=12.1 -y
-
+# Optional
 conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia -y
 ```
-
 > Refer to the official [DeePMD-GNN](https://docs.deepmodeling.com/projects/deepmd/en/stable/third-party/out-of-deepmd-kit.html) installation page.
 
-#### 6. Install xTB (optional)
-
-See [xtb-python installation docs](https://xtb-python.readthedocs.io/en/latest/installation.html#installation).
+### B) Recommended Installation
 
 ```bash
-conda config --add channels conda-forge
-conda install xtb-python
+conda create -n sparc -c conda-forge -y \
+  python=3.10 deepmd-kit=3.1.1 deepmd-gnn=0.1.1 py-plumed plumed \
+  xtb-python cmake cxx-compiler eigen openblas \
+  nlohmann_json ninja liblapacke pybind11 scikit-build-core
+
+conda activate sparc
+git clone --depth 1 https://github.com/rahulumrao/sparc.git
+cd sparc
+pip install .
+```
+Verification:
+
+```bash
+python -c "import deepmd, plumed; print('deepmd', deepmd.__version__)"
+python -c "import plumed; plumed.Plumed(); print('PLUMED OK')"
+sparc --help
 ```
 
 ## Environment Setup
 
 ```bash
-export VASP_PP_PATH=/path/to/vasp/potcar_files    # VASP POTCAR path (VASP only)
+export VASP_PP_PATH=/path/to/vasp/potcar_files    # POTCAR files path
 ```
 
-If PLUMED was installed from source:
+If PLUMED is installed manually (skip for `conda-forge`), we need to set PLUMED environment before running the code:
+
 ```bash
 export PLUMED_KERNEL="$CONDA_PREFIX/lib/libplumedKernel.so"
 export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
 ```
-
 ## Quick Start
 
-Prepare an `input.yaml` (see `examples/` for full templates):
+1. **Set environment variables** (see [Environment Setup](#environment-setup) above).
 
-```yaml
-general:
-  structure_file: "POSCAR"
+2. **Prepare input files** — you need `input.yaml`, `input.json`, and DFT engine specific files (e.g., `INCAR`, `POSCAR` for VASP).
 
-dft_calculator:
-  engine: "VASP"
-  template_file: "INCAR"
+   > [!NOTE]
+   > A minimal example is shown below. For the complete input schema — including PLUMED, distance metrics, DEAL, and output options — see `examples/` and `scripts/input.yaml`, or the documentation page.
 
-aimd_setup:
-  ensemble: "NVT"
-  temperature: 300
-  timestep_fs: 1.0
-  steps: 500
-  thermostat:
-    type: "Nose"
-    tdamp: 2.0
+3. **Run SPARC:**
 
-mlip_setup:
-  training: true
-  data_dir: "Training_Data"
-  input_file: "input.json"
-  num_models: 4
-  MdSimulation: true
-  ensemble: "NVT"
-  temperature: 300
-  timestep_fs: 1.0
-  md_steps: 2000
-  train_ratio: 0.8            # 80% training / 20% validation
-
-finetune:                     # optional: fine-tune a universal model
-  enabled: false
-  model_type: "deepmd"        # "deepmd" or "mace"
-  pretrained_model: "DPA3.pt"
-  model_branch: "Omat24"
-
-active_learning: true
-iteration: 10
-model_dev:
-  f_min_dev: 0.05
-  f_max_dev: 0.30
-```
-
-Run SPARC:
 ```bash
 sparc -i input.yaml
 ```
 
+Monitor logs and outputs in `iter_xxxxxx/` directories.
+
+### Example Input File
+
+```yaml
+# ============================================================
+# SPARC INPUT Example [VASP]
+# ============================================================
+# VASP requires POTCAR files for each element. Ensure VASP is licensed.
+# Full template: examples/ and scripts/input.yaml
+
+general:
+  structure_file: ["POSCAR"]
+
+dft_calculator:
+  engine: "VASP"               # DFT engine
+  template_file: "INCAR"       # VASP input template
+  exe_command: "mpirun -np 4 vasp_std"
+
+aimd_setup:
+  ensemble: "NVT"
+  temperature: 300             # Target temperature [K]
+  thermostat:
+    type: "Langevin"           # "Langevin" or "Nose"
+    friction: 0.10
+  timestep_fs: 1.0
+  steps: 100
+
+mlip_setup:
+  training: true
+  data_dir: "Training_Data/00.data"
+  input_file: "input.json"
+  num_models: 2                # Committee size for QbC
+  MdSimulation: true
+  ensemble: "NVT"
+  temperature: 300
+  md_steps: 2000
+
+active_learning: true
+iteration: 10
+model_dev:
+  f_min_dev: 0.05              # Force deviation lower bound [eV/Å]
+  f_max_dev: 0.50              # Force deviation upper bound [eV/Å]
+```
+
 ## Directory Structure
 
-```
+```text
 Project Root/
-├── POSCAR / input.xyz        (structure file)
-├── INCAR                     (DFT template)
-├── input.json                (DeepMD training input)
-├── input.yaml                (SPARC input)
+├── POSCAR
+├── INCAR
+├── input.json
+├── input.yaml
 ├── Training_Data/
-│   ├── training_data/
-│   └── validation_data/
 ├── iter_000000/
-│   ├── 00.dft/               (DFT / AIMD labelling)
-│   ├── 01.train/             (MLIP training or fine-tuning)
-│   │   ├── training_1/
-│   │   └── training_2/
-│   └── 02.dpmd/              (ML-MD + model deviation)
-├── iter_000001/
-│   └── ...
+│   ├── 00.dft/
+│   ├── 01.train/
+│   └── 02.dpmd/
+└── iter_000001/
+    └── ...
 ```
-
 ## Core Components
 
-### 1. MD Simulation
-- NVE, NVT (Nose-Hoover / Langevin), and NPT (Berendsen) ensembles
-- _Ab initio_ and ML molecular dynamics via the same ASE interface
-- Checkpoint/restart capabilities
-- PLUMED integration for accelerated sampling (Metadynamics, Umbrella Sampling)
+### MD Simulation
 
-### 2. MLIP Training
-- Automated model training with DeepMD-kit v3 (PyTorch)
-- Ensemble model generation for Query-by-Committee
-- **Fine-tuning** of universal potentials (DPA-3, MACE-MP) from a pre-trained checkpoint
+- AIMD and ML-MD via ASE
+- NVE, NVT, NPT ensembles
+- Restart/checkpoint support
+- PLUMED for enhanced sampling exploration
 
-### 3. Active Learning
-- Query-by-Committee for candidate selection based on force deviation
-- RMSD-based duplicate filtering
-- Automated structure labelling and retraining loop
-- `fparam` support for universal models (DPA-3)
+### MLIP Training
+
+- DeepMD and MACE model training
+- Fine-tuning for universal models
+
+### Active Learning
+
+- QbC model deviation analysis
+- Candidate labelling and iterative refinement
+- RMSD filtering for candidate scrutiny
+- Optional GP-based diversity filtering (when available)
 
 ## Current Status
 
-- Fixed model update in active learning iterations restart with added keys:
-  - `learning_restart: True`
-  - `latest_model: 'path/to/frozen_model.pb'`
-- Structured log formatting for better readability
-- Implemented Umbrella Sampling for reaction study on-the-fly
-- Utility tools for analysing model accuracy, active learning status, and structural properties
+- Additional ASE DFT backends: ORCA, Quantum ESPRESSO, Gaussian, and xTB.
+- DeePMD-kit v3 / PyTorch `.pth` support, with filesystem-first model detection and backend mismatch checks
+- Optional fine-tuning of DPA universal models via top-level `finetune:` config
+- NPT ensemble support, linear temperature ramping (`temp_end`), and improved ML/MD checkpoint resume
+- Consolidated QbC candidates into a single `candidates.extxyz` trajectory
+- Kabsch RMSD duplicate filtering for candidate selection
+- PLUMED MDLogger compatibility fix for on-the-fly biased runs
 
 ## Planned Updates
-
-- Support for ORCA, Psi4 and xTB calculators
+- Code refinement in progress
+- Support for LAMMPS and other MLIP models
 - Documentation under development
 
-## Known Issues
+<!-- > [!IMPORTANT]  
+> There are some version dependencies, currently the latest version of `deepmd-kit` is not supported. Check [documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation of older version.
 
-> [!IMPORTANT]
-> Some hardware configurations show issues with `conda` channels when CUDA is not detected:
-> ```
+## Limitations
+
+- Currently only supports DeepMD-kit 2.2.10 (newer versions not yet supported)
+- Limited to VASP for DFT calculations
+- Documentation is still being developed -->
+
+## Known Issue
+> [!IMPORTANT]  
+> - We have noticed Deepmd-kit `pip install tensorflow[and-cuda]` installation sometimes does not detect GPU.  
+> - To verify if TensorFlow detects your GPU, run the following command:  
+>   ```bash
+>   python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+>   ```
+> Check [TensorFlow pip installation](https://www.tensorflow.org/install/pip) page to fix this. \
+> 
+> Some hardware have also shown issues with `conda` channels
+> ```bash
 > LibMambaUnsatisfiableError: Encountered problems while solving:
 >  - nothing provides __cuda needed by libdeepmd-2.2.10-0_cuda10.2_gpu
+>  - nothing provides __cuda needed by tensorflow-2.9.0-cuda102py310h7cc18f4_0
+> - Could not solve for environment specs
+> - The following packages are incompatible
+> - ├─ deepmd-kit 2.2.10 *gpu is not installable because it requires
+> - │  └─ tensorflow 2.9.* cuda*, which requires
+> - │     └─ __cuda, which is missing on the system;
+> - └─ libdeepmd 2.2.10 *gpu is not installable because it requires
+> -  └─ __cuda, which is missing on the system.
 > ```
-> Check [DeePMD documentation](https://deepmd-kit.readthedocs.io/en/latest/install/easy-install.html) for installation guidance.
 
-## Build Document Locally
+## Documentation
 
 ```bash
-pip install sphinx sphinx-autodoc-typehints sphinx_rtd_theme nbsphinx
-
-cd docs/
+pip install sphinx sphinx-autodoc-typehints sphinx_rtd_theme
+cd docs
 make html
 ```
 
-This creates an `html` file in the `build/` folder. Open `build/html/index.html` in any browser.
+This will create an `html` file in a **build** folder; open `docs/build/html/index.html` in any browser.
 
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
+
+<!-- ## Support -->
 
 ## Contributing
 
@@ -268,23 +307,24 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ### Code Style and Linting
 
-We use [`ruff`](https://docs.astral.sh/ruff/) and [`pre-commit`](https://pre-commit.com/) for code styling and linting. Configurations are defined in [`pyproject.toml`](pyproject.toml) and [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
+We use [`ruff`](https://docs.astral.sh/ruff/) and [`pre-commit`](https://pre-commit.com/) for code styling and linting to keep the codebase consistent. Configurations are defined inside the [`pyproject.toml`](pyproject.toml) and [`pre-commit-config.yaml`](.pre-commit-config.yaml) file.
 
 ```bash
 pip install ruff pre-commit
-```
-
-Run all hooks:
-
-```bash
 pre-commit run --all-files
 ```
+
+---
+> [!WARNING]
+> This package is under active development. Features and APIs may change. \
+> Also, this code is designed to work in a Linux environment. It may not be fully compatible with macOS systems.
 
 ## Citation
 
 If you use this software or the dataset in your research, please cite:
 
 ```bibtex
+
 @article{joss,
   author  = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
   title   = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
@@ -299,27 +339,22 @@ If you use this software or the dataset in your research, please cite:
 }
 
 @software{sparc,
-  author  = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
-  doi     = {https://doi.org/10.5281/zenodo.19389278},
+  author = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
+  doi    = {https://doi.org/10.5281/zenodo.19389278},
   license = {MIT},
-  month   = {Apr},
-  title   = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
-  url     = {https://github.com/rahulumrao/sparc},
-  year    = {2026}
+  month  = {Apr},
+  title  = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
+  url    = {https://github.com/rahulumrao/sparc},
+  year   = {2026}
 }
 
-@dataset{sparc_dataset,
-  author  = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
-  doi     = {https://doi.org/10.5281/zenodo.18261342},
+@dataset{sparc,
+  author = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
+  doi    = {https://doi.org/10.5281/zenodo.18261342},
   license = {MIT},
-  month   = {jan},
-  title   = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
-  url     = {https://zenodo.org/records/18261342},
-  year    = {2026}
+  month  = {jan},
+  title  = {{SPARC}: An Automated Workflow Toolkit for Accelerated Active Learning of Reactive Machine Learning Interatomic Potentials},
+  url    = {https://zenodo.org/records/18261342},
+  year   = {2026}
 }
 ```
-
----
-> [!WARNING]
-> This package is under active development. Features and APIs may change. \
-> Also, this code is designed to work in a Linux environment. It may not be fully compatible with macOS systems.

@@ -623,6 +623,7 @@ def get_initial_structure(
     config,  # SparcConfig
     structure_file: Union[str, Path, List[str]],
     parent_dir: Path,
+    struct_idx: int = None,
 ):
     """
     Get initial structure for ML-MD run with optional restart exploration.
@@ -744,7 +745,8 @@ def get_initial_structure(
 
     # Default: Use original structure
     if isinstance(structure_file, list):
-        idx = sample_idx % len(structure_file)
+        # struct_idx (cross-product index) takes priority over sample_idx % n
+        idx = struct_idx if struct_idx is not None else sample_idx % len(structure_file)
         return read(structure_file[idx])
     return read(structure_file)
 

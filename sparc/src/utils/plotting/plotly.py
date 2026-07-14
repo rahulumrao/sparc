@@ -7,12 +7,7 @@ All plotting functions leverage shared utilities from main.py.
 
 import os
 
-import dpdata
 import numpy as np
-import pandas as pd
-import plotly.colors as pc
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from .main import (
     compute_mae,
@@ -21,6 +16,27 @@ from .main import (
     get_iteration_dirs,
     load_trajectory,
 )
+
+try:
+    import dpdata
+    import pandas as pd
+    import plotly.colors as pc
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+
+    _PLOTLY_AVAILABLE = True
+except ImportError as _plotly_import_err:
+    _PLOTLY_AVAILABLE = False
+    _plotly_import_err_msg = str(_plotly_import_err)
+
+
+def _require_plotly_deps():
+    if not _PLOTLY_AVAILABLE:
+        raise ImportError(
+            "Plotly plotting requires: plotly, pandas, dpdata.\n"
+            f"Install with: pip install plotly pandas dpdata\n"
+            f"(original error: {_plotly_import_err_msg})"
+        )
 
 
 def _white_bg_colorscale(cmap):
@@ -72,6 +88,7 @@ def ParityPlot(
     >>> ParityPlot("data_dir", "model.pth", type="all", force_mode="flatten", heatmap=True, cmap="plasma")
     >>> ParityPlot("data_dir", "model.pth", type="forces", force_mode="components")
     """
+    _require_plotly_deps()
     if not os.path.exists(data_dir):
         print(f"[ANALYSIS][ERROR] Test data not found: {data_dir}")
         return
@@ -283,6 +300,9 @@ def ParityPlot(
                 hovermode="closest",
             )
 
+    fig.update_xaxes(automargin=True)
+    fig.update_yaxes(automargin=True)
+
     if save_fig:
         fig.write_html(save_fig)
         print(f"[ANALYSIS][INFO] Saved to: {save_fig}")
@@ -415,6 +435,7 @@ def PlotLcurve(lcurve_file, save_fig=None):
     save_fig : str or None
         Path to save HTML file
     """
+    _require_plotly_deps()
     if not os.path.isfile(lcurve_file):
         print(f"[ANALYSIS][ERROR] File not found: {lcurve_file}")
         return
@@ -472,9 +493,15 @@ def PlotLcurve(lcurve_file, save_fig=None):
         tickfont=dict(size=16),  # Larger x-axis tick labels
     )
 
+    fig.update_xaxes(
+        title_font=dict(size=20),
+        tickfont=dict(size=16),
+        automargin=True,
+    )
     fig.update_yaxes(
-        title_font=dict(size=20),  # Larger y-axis label
-        tickfont=dict(size=16),  # Larger y-axis tick labels
+        title_font=dict(size=20),
+        tickfont=dict(size=16),
+        automargin=True,
     )
 
     if save_fig:
@@ -513,6 +540,7 @@ def PlotForceDeviation(
     save_fig : str
         Path to save HTML file
     """
+    _require_plotly_deps()
     data_dict = {}
 
     # Use main.py utility
@@ -612,6 +640,8 @@ def PlotForceDeviation(
         font=dict(size=18),
         hovermode="closest",
     )
+    fig.update_xaxes(automargin=True)
+    fig.update_yaxes(automargin=True)
 
     if save_fig:
         fig.write_html(save_fig)
@@ -671,6 +701,7 @@ def PlotForceError(
     >>> PlotForceError(iteration_window="all", palette="hot", log_scale=True)
     >>> PlotForceError(iteration_window=(0, 5), connect_means=True, dmin=0.05)
     """
+    _require_plotly_deps()
     import glob
 
     data_dict = {}
@@ -785,6 +816,8 @@ def PlotForceError(
         font=dict(size=16),
         violinmode="overlay",
     )
+    fig.update_xaxes(automargin=True)
+    fig.update_yaxes(automargin=True)
 
     if save_fig:
         fig.write_html(save_fig)
@@ -821,6 +854,7 @@ def PlotPotentialEnergy(
     save_fig : str
         Path to save HTML file
     """
+    _require_plotly_deps()
     energy_dict = {}
 
     # Use main.py utility
@@ -869,6 +903,8 @@ def PlotPotentialEnergy(
         font=dict(size=18),
         hovermode="x unified",
     )
+    fig.update_xaxes(automargin=True)
+    fig.update_yaxes(automargin=True)
 
     if save_fig:
         fig.write_html(save_fig)
@@ -920,6 +956,7 @@ def PlotDistribution(
     >>> PlotDistribution(get="energy", type="hist", bins=20)
     >>> PlotDistribution(get="distance:0,7", type="line")
     """
+    _require_plotly_deps()
     is_energy = get.lower() == "energy"
     is_distance = get.lower().startswith("distance:")
     symbol_pair = None
@@ -1040,6 +1077,8 @@ def PlotDistribution(
         barmode="overlay",
         hovermode="x unified" if type == "line" else "closest",
     )
+    fig.update_xaxes(automargin=True)
+    fig.update_yaxes(automargin=True)
 
     if save_fig:
         fig.write_html(save_fig)
@@ -1097,6 +1136,7 @@ def PlotPES(
     >>> PlotPES(distance_pair=(0, 7), type="heatmap")
     >>> PlotPES(distance_pair=(0, 7), type="kde", iteration_window=(0, 3))
     """
+    _require_plotly_deps()
     # --- Advanced 2-coordinate contour mode ---
     if atom_indices is not None:
         if len(atom_indices) != 2:
@@ -1209,6 +1249,8 @@ def PlotPES(
         plot_bgcolor="white",
         font=dict(size=16),
     )
+    fig.update_xaxes(automargin=True)
+    fig.update_yaxes(automargin=True)
 
     if save_fig:
         fig.write_html(save_fig)
@@ -1302,6 +1344,9 @@ def _PlotPES_2coord(
         template="plotly_white",
         font=dict(size=14),
     )
+    fig.update_xaxes(automargin=True)
+    fig.update_yaxes(automargin=True)
+
     if save_fig:
         fig.write_html(save_fig)
         print(f"[ANALYSIS][INFO] Saved to: {save_fig}")
@@ -1337,6 +1382,7 @@ def PlotTemp(
     save_fig : str
         Path to save HTML file
     """
+    _require_plotly_deps()
     temp_dict = {}
 
     # Use main.py utility
@@ -1385,6 +1431,8 @@ def PlotTemp(
         font=dict(size=18),
         hovermode="x unified",
     )
+    fig.update_xaxes(automargin=True)
+    fig.update_yaxes(automargin=True)
 
     if save_fig:
         fig.write_html(save_fig)

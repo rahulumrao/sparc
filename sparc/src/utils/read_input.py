@@ -258,6 +258,40 @@ class ModelDeviationConfig:
 
 
 @dataclass
+class DEALConfig:
+    """DEAL sparse GP diversity filter — replaces RMSD when enabled.
+
+    Parameters
+    ----------
+    enabled : bool
+        True → DEAL SGP filter. False → existing Kabsch RMSD filter (default).
+    threshold : float
+        SGP local predictive variance threshold. Frames above threshold are
+        selected (novel chemical environment). Not comparable to f_min_dev —
+        different units and descriptor space. Start at 0.01, tune from output.
+    cutoff : float or None
+        FLARE descriptor cutoff in Å. None = auto-read from mlip_setup.input_file
+        (DeepMD rcut). Override only if auto-detection fails.
+    nmax : int
+        Radial basis functions for ACE B2 descriptor. Advanced — rarely change.
+    lmax : int
+        Angular channels for ACE B2 descriptor. Advanced — rarely change.
+    """
+
+    enabled: bool = False
+    threshold: float = 0.01
+    cutoff: Optional[float] = None
+    nmax: int = 8
+    lmax: int = 4
+
+    def __post_init__(self):
+        if self.threshold <= 0:
+            raise ValidationError("deal.threshold must be positive")
+        if self.cutoff is not None and self.cutoff <= 0:
+            raise ValidationError("deal.cutoff must be positive")
+
+
+@dataclass
 class DistanceMetric:
     """Distance constraint for validation."""
 
@@ -387,6 +421,7 @@ class SparcConfig:
     model_dev: ModelDeviationConfig = field(default_factory=ModelDeviationConfig)
 
     finetune: FineTuneConfig = field(default_factory=FineTuneConfig)
+    deal: DEALConfig = field(default_factory=DEALConfig)
     distance_metrics: List[DistanceMetric] = field(default_factory=list)
     output: OutputConfig = field(default_factory=OutputConfig)
     cp2k: Dict[str, Any] = field(default_factory=dict)
@@ -460,6 +495,10 @@ class SparcConfig:
             finetune_data = data.get("finetune", {})
             finetune = FineTuneConfig(**finetune_data)
 
+            # Parse DEAL config
+            deal_data = data.get("deal", {})
+            deal = DEALConfig(**deal_data)
+
             # Parse model_dev directly
             model_dev_data = data.get("model_dev", {})
             model_dev = ModelDeviationConfig(**model_dev_data)
@@ -483,6 +522,7 @@ class SparcConfig:
                 min_candidates=data.get("min_candidates", 1),
                 model_dev=model_dev,
                 finetune=finetune,
+                deal=deal,
                 distance_metrics=distance_metrics,
                 output=output,
                 cp2k=data.get("cp2k", {}),

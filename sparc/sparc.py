@@ -62,6 +62,7 @@ from sparc.src.utils.read_input import (
     SparcConfig,
     load_config,
 )
+from sparc.src.utils.timing import WorkflowTimer
 from sparc.src.utils.utils import (
     combine_trajectories,
     create_iteration_dirs,
@@ -240,13 +241,9 @@ def load_structure(
             )
         if index >= len(structure_file):
             raise IndexError(
-                f"Requested structure_file[{index}], but only"
+                f"Requested structure_file[{index}], but only "
                 f"{len(structure_file)} structure file(s) were provided.\n"
-                "This usually means:\n"
-                "   - mlip_setup.multiple_run is larger than the number of structure files"
-                "Fix by either:\n"
-                "   - providing more structure files, or\n"
-                "   - setting multiple_run to 1."
+                "struct_idx should be i // multiple_run — check get_num_samples() logic."
             )
         atoms = read(structure_file[index])
     else:
@@ -270,13 +267,18 @@ def load_structure(
 
 
 def get_num_samples(config: SparcConfig) -> int:
-    """Determine number of independent MD runs to perform."""
-    sf = config.general.structure_file
-    multiple_run = config.mlip_setup.multiple_run
+    """Total ML-MD runs = n_structures × multiple_run (cross-product).
 
-    if multiple_run is not None and multiple_run > 1:
-        return multiple_run
-    return len(sf) if isinstance(sf, list) else 1
+    Scenarios:
+        1 file,  multiple_run=1 → 1 run
+        1 file,  multiple_run=M → M independent shoots from the same file
+        N files, multiple_run=1 → N runs (one per file)
+        N files, multiple_run=M → N x M runs (M shoots per file)
+    """
+    sf = config.general.structure_file
+    n_structures = len(sf) if isinstance(sf, list) else 1
+    multiple_run = config.mlip_setup.multiple_run or 1
+    return n_structures * multiple_run
 
 
 def get_ensemble_name(config_block: Union[AIMDSetupConfig, MLIPSetupConfig]) -> str:
@@ -305,8 +307,6 @@ def main():
 
 def _main_workflow():
     """Inner workflow function - separated so main() can guarantee logger cleanup."""
-    banner()
-
     # ---------------------------------------------------------------------------
     # Load configuration
     # ---------------------------------------------------------------------------
@@ -343,6 +343,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
 
     # Logger created only after -h/--help exits — no stray Sparc.log on help calls
     setup_logger(enable=True)
+    banner()
     try:
         config = load_config(args.input_file)
         SparcLog("=" * 80)
@@ -359,6 +360,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
     # System initialization
     # ---------------------------------------------------------------------------
     parent_dir = Path(os.getcwd())
+    timer = WorkflowTimer(parent_dir)
     structure_file = config.general.structure_file
     non_periodic = config.dft_calculator.engine.upper() in ("GAUSSIAN", "ORCA", "XTB")
     if non_periodic and config.aimd_setup.ensemble == "NPT":
@@ -487,6 +489,9 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         SparcLog(f"{'Output Logfile':<30} {config.output.log_file}")
         SparcLog("")
 
+        _dft_step = timer.start_step(
+            0, "dft", "00.dft", count=DftMDSteps if dftmd_is else None
+        )
         # Initialize ensemble
         dyn_dft = initialize_thermostat(
             config.aimd_setup, system, restart=config.aimd_setup.restart
@@ -521,6 +526,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 cv_force_file=fc.cv_force_file,
                 cv_derivs_file=fc.cv_derivs_file,
             )
+        timer.end_step(_dft_step)
 
     # ===========================================================================
     # SECTION 2: ML Potential Model Training
@@ -535,6 +541,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         SparcLog("=" * 80)
         SparcLog("")
 
+        _train_step = timer.start_step(0, "train", "01.train")
         get_data(
             ase_traj=iter_structure["dft_dir"] / config.output.aimdtraj_file,
             dir_name=datadir,
@@ -563,6 +570,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 datadir=datadir,
                 atom_types=atom_types,
             )
+        timer.end_step(_train_step)
 
     # ===========================================================================
     # SECTION 3: ML Potential Molecular Dynamics (ML/MD)
@@ -640,6 +648,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         plumed_config = config.mlip_setup.plumed
         umbrella_enabled = plumed_config.umbrella_sampling.enabled
 
+        _mlmd_step = timer.start_step(0, "mlmd", "02.dpmd")
         if umbrella_enabled:
             SparcLog("=" * 80)
             SparcLog(
@@ -654,9 +663,20 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
             )
 
         else:
-            # Run standard MLMD (possibly multiple runs)
+            # Run standard MLMD — cross-product of structures × multiple_run
+            _multiple_run = config.mlip_setup.multiple_run or 1
             for i in range(n_sample):
-                dp_system = load_structure(structure_file, index=i)
+                struct_idx = i // _multiple_run  # which structure file
+                run_idx = i % _multiple_run  # which shoot for that structure
+                struct_name = (
+                    structure_file[struct_idx]
+                    if isinstance(structure_file, list)
+                    else structure_file
+                )
+                SparcLog(
+                    f"ML-MD Run {i + 1}/{n_sample} | Pre-AL | Structure: {struct_name} (s{struct_idx}) | Shoot {run_idx + 1}/{_multiple_run}"
+                )
+                dp_system = load_structure(structure_file, index=struct_idx)
 
                 dp_atoms, dp_calc = setup_DeepPotential(
                     atoms=dp_system, model_path=dp_path, model_name=dp_model
@@ -682,7 +702,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     dyn=dyn_dp,
                     steps=MDsteps,
                     pace=writePace,
-                    log_filename=f"Iter0_dpmd_{i}.log",
+                    log_filename=f"Iter0_dpmd_s{struct_idx}_r{run_idx}.log",
                     trajfile=config.output.dptraj_file,
                     dir_name=iter_structure["dpmd_dir"],
                     distance_metrics=config.distance_metrics,
@@ -692,9 +712,11 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     temp_end=config.mlip_setup.temp_end,
                     restart=config.mlip_setup.restart,
                 )
+        timer.end_step(_mlmd_step)
 
         # Query by committee for active learning
         if config.active_learning:
+            _qbc_step = timer.start_step(0, "qbc", "02.dpmd")
             candidate_found_is, candidates_file, candidate_idx, latest_models = (
                 QueryByCommittee(
                     trajfile=iter_structure["dpmd_dir"] / config.output.dptraj_file,
@@ -706,8 +728,16 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     iteration=0,
                     rmsd_threshold=config.model_dev.rmsd_threshold,
                     exclude_hydrogen=config.model_dev.exclude_hydrogen,
+                    deal_config=config.deal if config.deal.enabled else None,
+                    structure_file=(
+                        config.general.structure_file[0]
+                        if isinstance(config.general.structure_file, list)
+                        else config.general.structure_file
+                    ),
+                    deepmd_input_json=config.mlip_setup.input_file,
                 )
             )
+            timer.end_step(_qbc_step)
             save_progress(
                 {
                     "state": str(iter_structure["dft_dir"]),
@@ -724,6 +754,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 )
                 SparcLog("End of Active Learning Loop")
                 SparcLog("=" * 80)
+                timer.log_summary()
                 return
 
     # ===========================================================================
@@ -763,6 +794,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
     SparcLog("")
 
     if not learning_is:
+        timer.log_summary()
         return
 
     # Handle restart
@@ -865,6 +897,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         # -----------------------------------------------------------------------
         iter_structure = create_iteration_dirs(iter_num=iter)
 
+        _dft_step = timer.start_step(iter, "dft", "00.dft", count=candidate_idx)
         # Before the loop, create calculator ONCE
         SparcLog("=" * 80)
         SparcLog(
@@ -906,6 +939,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                         "idx": idx,
                     }
                 )
+        timer.end_step(_dft_step)
 
         # -----------------------------------------------------------------------
         # Step 2: Model Retraining with Expanded Dataset
@@ -914,6 +948,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         SparcLog("Processing Data for MLIP Re-Training")
         SparcLog("=" * 80)
 
+        _train_step = timer.start_step(iter, "train", "01.train")
         combined_traj = combine_trajectories(
             trajfilename=config.output.aimdtraj_file,
             current_iter=iter_structure["iter_num"],
@@ -947,6 +982,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 datadir=datadir,
                 atom_types=atom_types,
             )
+        timer.end_step(_train_step)
 
         # -----------------------------------------------------------------------
         # Step 3: ML-MD with Updated Models
@@ -996,6 +1032,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         plumed_config = config.mlip_setup.plumed
         umbrella_enabled = plumed_config.umbrella_sampling.enabled
 
+        _mlmd_step = timer.start_step(iter, "mlmd", "02.dpmd")
         if umbrella_enabled:
             umbrella(
                 config=config,
@@ -1004,10 +1041,23 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 dp_model=al_dp_model,
             )
         else:
+            # Cross-product: n_structures × multiple_run
+            _multiple_run = config.mlip_setup.multiple_run or 1
             for i in range(n_sample):
+                struct_idx = i // _multiple_run  # which structure file
+                run_idx = i % _multiple_run  # which shoot for that structure
+                struct_name = (
+                    structure_file[struct_idx]
+                    if isinstance(structure_file, list)
+                    else structure_file
+                )
+                SparcLog(
+                    f"ML-MD Run {i + 1}/{n_sample} | Iter {iter} | Structure: {struct_name} (s{struct_idx}) | Shoot {run_idx + 1}/{_multiple_run}"
+                )
                 dp_system = get_initial_structure(
                     iter=iter,
-                    sample_idx=i,
+                    sample_idx=i,  # used as random seed — unique per run
+                    struct_idx=struct_idx,
                     config=config,
                     structure_file=structure_file,
                     parent_dir=parent_dir,
@@ -1034,7 +1084,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     dyn=dyn_dp,
                     steps=config.mlip_setup.md_steps,
                     pace=config.mlip_setup.log_frequency,
-                    log_filename=f"Iter{iter}_dpmd_{i}.log",
+                    log_filename=f"Iter{iter}_dpmd_s{struct_idx}_r{run_idx}.log",
                     trajfile=config.output.dptraj_file,
                     dir_name=iter_structure["dpmd_dir"],
                     distance_metrics=config.distance_metrics,
@@ -1044,9 +1094,11 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     temp_end=config.mlip_setup.temp_end,
                     restart=config.mlip_setup.restart,
                 )
+        timer.end_step(_mlmd_step)
         # -----------------------------------------------------------------------
         # Step 4: Query-by-Committee for New Candidates
         # -----------------------------------------------------------------------
+        _qbc_step = timer.start_step(iter, "qbc", "02.dpmd")
         candidate_found_is, candidates_file, candidate_idx, latest_models = (
             QueryByCommittee(
                 trajfile=iter_structure["dpmd_dir"] / config.output.dptraj_file,
@@ -1058,8 +1110,16 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 iteration=iter,
                 rmsd_threshold=config.model_dev.rmsd_threshold,
                 exclude_hydrogen=config.model_dev.exclude_hydrogen,
+                deal_config=config.deal if config.deal.enabled else None,
+                structure_file=(
+                    config.general.structure_file[0]
+                    if isinstance(config.general.structure_file, list)
+                    else config.general.structure_file
+                ),
+                deepmd_input_json=config.mlip_setup.input_file,
             )
         )
+        timer.end_step(_qbc_step)
 
         if candidate_idx < config.min_candidates:
             SparcLog("=" * 80)
@@ -1092,6 +1152,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
     SparcLog(f"Total iterations : {iter - 1}")
     SparcLog(f"Final models saved in : iter_{iter - 1:06d}/01.train")
     SparcLog("=" * 80)
+    timer.log_summary()
 
 
 if __name__ == "__main__":

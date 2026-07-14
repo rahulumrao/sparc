@@ -1,4 +1,6 @@
 def banner():
+    from sparc.src.utils.logger import SparcLog
+
     banner_text = """
          ######  ########     ###    ########   ######
         ##    ## ##     ##   ## ##   ##     ## ##    ##
@@ -9,7 +11,7 @@ def banner():
          ######  ##        ##     ## ##     ##  ######
          --v0.2
 """
-    print(banner_text)
+    SparcLog(banner_text)
 
 
 if __name__ == "__main__":
