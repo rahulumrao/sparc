@@ -424,7 +424,7 @@ def _add_parity_panel(
 ########################################################################################################
 
 
-def PlotLcurve(lcurve_file, save_fig=None):
+def PlotLcurve(lcurve_file, save_fig=None, return_fig=False):
     """
     Plot interactive learning curve from DeepMD training log.
 
@@ -434,11 +434,13 @@ def PlotLcurve(lcurve_file, save_fig=None):
         Path to lcurve.out file
     save_fig : str or None
         Path to save HTML file
+    return_fig : bool
+        If True, return the Plotly figure instead of displaying it.
     """
     _require_plotly_deps()
     if not os.path.isfile(lcurve_file):
         print(f"[ANALYSIS][ERROR] File not found: {lcurve_file}")
-        return
+        return None
 
     with open(lcurve_file) as f:
         headers = f.readline().split()[1:]
@@ -507,6 +509,8 @@ def PlotLcurve(lcurve_file, save_fig=None):
     if save_fig:
         fig.write_html(save_fig)
         print(f"[ANALYSIS][INFO] Saved to: {save_fig}")
+    elif return_fig:
+        return fig
     else:
         fig.show()
 
@@ -523,6 +527,7 @@ def PlotForceDeviation(
     dmin=0.05,
     dmax=0.5,
     save_fig=None,
+    return_fig=False,
 ):
     """
     Plot max force deviation from model_dev_*.out files.
@@ -539,6 +544,8 @@ def PlotForceDeviation(
         Lower and upper thresholds
     save_fig : str
         Path to save HTML file
+    return_fig : bool
+        If True, return the Plotly figure instead of displaying it.
     """
     _require_plotly_deps()
     data_dict = {}
@@ -565,11 +572,13 @@ def PlotForceDeviation(
             with open(model_file, "r") as f:
                 lines = f.readlines()
 
-            for line in lines[2:]:
+            for line in lines:
+                if line.startswith("#"):
+                    continue
                 cols = line.split()
                 if len(cols) >= 5:
                     try:
-                        steps.append(int(cols[0]))
+                        steps.append(int(float(cols[0])))
                         max_devi_f.append(float(cols[4]))
                     except ValueError:
                         continue
@@ -577,6 +586,10 @@ def PlotForceDeviation(
             if model_name not in data_dict:
                 data_dict[model_name] = []
             data_dict[model_name].append((iter_num, steps, max_devi_f))
+
+    if not data_dict:
+        print("[ANALYSIS][ERROR] No model_dev_*.out files found.")
+        return None
 
     # Plotting
     fig = go.Figure()
@@ -596,9 +609,10 @@ def PlotForceDeviation(
             )
 
     # Add threshold lines
-    max_steps = max(
-        [max(steps) for _, data in data_dict.items() for _, steps, _ in data]
-    )
+    all_steps = [
+        steps for _, data in data_dict.items() for _, steps, _ in data if steps
+    ]
+    max_steps = max((max(steps) for steps in all_steps), default=0)
 
     fig.add_hline(
         y=dmin,
@@ -646,6 +660,8 @@ def PlotForceDeviation(
     if save_fig:
         fig.write_html(save_fig)
         print(f"[ANALYSIS][INFO] Saved to: {save_fig}")
+    elif return_fig:
+        return fig
     else:
         fig.show()
 
@@ -653,6 +669,66 @@ def PlotForceDeviation(
 ########################################################################################################
 # Violin plot of force deviation error distribution across AL iterations
 ########################################################################################################
+
+
+def _load_model_deviation_data(root_dir, iteration_window, target_iteration):
+    """Load max force deviation series from model_dev_*.out files."""
+    import glob
+
+    data_dict = {}
+    selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
+
+    for iter_dir in selected_dirs:
+        iter_num = extract_iteration_number(iter_dir)
+        dpmd_dir = os.path.join(iter_dir, "02.dpmd")
+        if not os.path.isdir(dpmd_dir):
+            continue
+
+        model_files = sorted(glob.glob(os.path.join(dpmd_dir, "model_dev_*.out")))
+        for model_file in model_files:
+            model_name = os.path.basename(model_file)
+            steps = []
+            max_devi_f = []
+            with open(model_file, "r") as f:
+                lines = f.readlines()
+            for line in lines:
+                if line.startswith("#"):
+                    continue
+                cols = line.split()
+                if len(cols) >= 5:
+                    try:
+                        steps.append(int(float(cols[0])))
+                        max_devi_f.append(float(cols[4]))
+                    except ValueError:
+                        continue
+            if model_name not in data_dict:
+                data_dict[model_name] = []
+            data_dict[model_name].append((iter_num, steps, max_devi_f))
+
+    return data_dict
+
+
+def _sample_palette_colors(palette: str, positions: list[float]) -> list[str]:
+    """Sample colors from a Plotly or Matplotlib colormap name."""
+    try:
+        return pc.sample_colorscale(palette, positions)
+    except Exception:
+        pass
+
+    try:
+        import matplotlib.colors as mcolors
+
+        try:
+            from matplotlib import colormaps
+
+            cmap = colormaps[palette]
+        except Exception:
+            import matplotlib.pyplot as plt
+
+            cmap = plt.get_cmap(palette)
+        return [mcolors.to_hex(cmap(value)) for value in positions]
+    except Exception:
+        return pc.sample_colorscale("viridis", positions)
 
 
 def PlotForceError(
@@ -666,10 +742,19 @@ def PlotForceError(
     log_scale=False,
     palette="viridis",
     violin_alpha=0.85,
+    line_alpha=0.78,
+    marker_alpha=0.85,
+    show_markers=True,
+    marker_size=5,
+    panel="both",
     save_fig=None,
+    return_fig=False,
 ):
     """
-    Interactive violin plot of max force deviation distribution across AL iterations.
+    Line plot and violin plot of max force deviation across AL iterations.
+
+    The line and violin panels include all iterations loaded up to
+    ``target_iteration`` (or the full ``iteration_window`` when no target is set).
 
     Parameters
     ----------
@@ -693,8 +778,20 @@ def PlotForceError(
         Plotly colorscale name for violin colors (default: 'viridis').
     violin_alpha : float
         Opacity of violin bodies (default: 0.85).
+    line_alpha : float
+        Opacity of line-plot traces (default: 0.78).
+    marker_alpha : float
+        Opacity of line-plot markers (default: 0.85).
+    show_markers : bool
+        Draw point markers on the line plot (default: True).
+    marker_size : float
+        Marker size for the line plot when ``show_markers`` is True.
+    panel : str
+        ``both`` (default), ``line``, or ``violin`` — which subplot(s) to render.
     save_fig : str or None
         Path to save HTML file.
+    return_fig : bool
+        If True, return the Plotly figure instead of displaying it.
 
     Example
     -------
@@ -702,126 +799,294 @@ def PlotForceError(
     >>> PlotForceError(iteration_window=(0, 5), connect_means=True, dmin=0.05)
     """
     _require_plotly_deps()
-    import glob
 
-    data_dict = {}
-    selected_dirs = get_iteration_dirs(root_dir, iteration_window, target_iteration)
+    if target_iteration is not None:
+        load_window = (0, target_iteration)
+        load_target = None
+    else:
+        load_window = iteration_window
+        load_target = target_iteration
 
-    for iter_dir in selected_dirs:
-        iter_num = extract_iteration_number(iter_dir)
-        dpmd_dir = os.path.join(iter_dir, "02.dpmd")
-        if not os.path.isdir(dpmd_dir):
-            continue
+    data_dict = _load_model_deviation_data(root_dir, load_window, load_target)
+    if not data_dict:
+        print("[ANALYSIS][ERROR] No model_dev_*.out files found.")
+        return None
 
-        model_files = sorted(glob.glob(os.path.join(dpmd_dir, "model_dev_*.out")))
-        for model_file in model_files:
-            model_name = os.path.basename(model_file)
-            steps = []
-            max_devi_f = []
-            with open(model_file, "r") as f:
-                lines = f.readlines()
-            for line in lines[2:]:
-                cols = line.split()
-                if len(cols) >= 5:
-                    try:
-                        steps.append(int(cols[0]))
-                        max_devi_f.append(float(cols[4]))
-                    except ValueError:
-                        continue
-            if model_name not in data_dict:
-                data_dict[model_name] = []
-            data_dict[model_name].append((iter_num, steps, max_devi_f))
+    panel_key = str(panel).lower()
+    show_line = panel_key in {"both", "line"}
+    show_violin = panel_key in {"both", "violin"}
+    if not show_line and not show_violin:
+        raise ValueError("panel must be 'both', 'line', or 'violin'")
 
-    rows = []
-    for model, data in data_dict.items():
-        for iter_num, _steps, max_devi_f_list in sorted(data):
-            for v in max_devi_f_list:
-                if v > 0:
-                    rows.append({"iter_i": iter_num, "max_devi_f": float(v)})
-    df_violin = pd.DataFrame(rows)
-    n_iter = sorted(df_violin["iter_i"].unique())
-
-    colors = pc.sample_colorscale(
-        palette, [i / max(len(n_iter) - 1, 1) for i in range(len(n_iter))]
-    )
-
-    fig = go.Figure()
-
-    for idx, iter_num in enumerate(n_iter):
-        vals = df_violin[df_violin["iter_i"] == iter_num]["max_devi_f"].values
-        color = colors[idx]
-        fig.add_trace(
-            go.Violin(
-                x=[f"Iter {iter_num}"] * len(vals),
-                y=vals,
-                name=f"Iter {iter_num}",
-                fillcolor=color,
-                opacity=violin_alpha,
-                box_visible=True,
-                meanline_visible=False,
-                points=False,
-                line_color=color,
-            )
+    if show_line and show_violin:
+        fig = make_subplots(
+            rows=2,
+            cols=1,
+            shared_xaxes=False,
+            subplot_titles=(
+                "Force Deviation Trajectory",
+                "Force Deviation Distribution",
+            ),
+            vertical_spacing=0.14,
         )
-
-    if connect_means:
-        means = [
-            df_violin[df_violin["iter_i"] == i]["max_devi_f"].mean() for i in n_iter
-        ]
-        fig.add_trace(
-            go.Scatter(
-                x=[f"Iter {i}" for i in n_iter],
-                y=means,
-                mode="lines+markers",
-                name="Mean",
-                line=dict(color="black", width=2.5),
-                marker=dict(size=10, color="white", line=dict(color="black", width=2)),
-            )
+        line_row, violin_row = 1, 2
+        figure_height = 920
+        figure_title = "Force Deviation Analysis"
+    elif show_line:
+        fig = make_subplots(
+            rows=1,
+            cols=1,
+            subplot_titles=("Force Deviation Trajectory",),
         )
-
-    if connect_medians:
-        meds = [
-            df_violin[df_violin["iter_i"] == i]["max_devi_f"].median() for i in n_iter
-        ]
-        fig.add_trace(
-            go.Scatter(
-                x=[f"Iter {i}" for i in n_iter],
-                y=meds,
-                mode="lines+markers",
-                name="Median",
-                line=dict(color="gray", width=2, dash="dash"),
-                marker=dict(size=8, color="white", line=dict(color="gray", width=1.5)),
-            )
+        line_row, violin_row = 1, None
+        figure_height = 580
+        figure_title = "Force Deviation Trajectory"
+    else:
+        fig = make_subplots(
+            rows=1,
+            cols=1,
+            subplot_titles=("Force Deviation Distribution",),
         )
+        line_row, violin_row = None, 1
+        figure_height = 520
+        figure_title = "Force Deviation Distribution"
 
-    if dmin is not None:
+    max_steps = 0
+    if show_line:
+        line_mode = "lines+markers" if show_markers else "lines"
+        for _model, data in data_dict.items():
+            for iter_num, steps, max_devi_f in sorted(data):
+                if steps:
+                    max_steps = max(max_steps, max(steps))
+                fig.add_trace(
+                    go.Scatter(
+                        x=steps,
+                        y=max_devi_f,
+                        mode=line_mode,
+                        name=f"Iter {iter_num}",
+                        line=dict(width=2.5),
+                        marker=dict(size=marker_size),
+                        opacity=line_alpha,
+                        legendgroup=f"iter_{iter_num}",
+                        showlegend=True,
+                        hovertemplate=(
+                            "Candidate: %{x}<br>Max Deviation: %{y:.4f} eV/Å<extra></extra>"
+                        ),
+                    ),
+                    row=line_row,
+                    col=1,
+                )
+
+        if dmin is not None:
+            fig.add_hline(
+                y=dmin,
+                line_dash="dash",
+                line_color="black",
+                line_width=1.8,
+                opacity=0.85,
+                annotation_text=f"dmin={dmin}",
+                row=line_row,
+                col=1,
+            )
         fig.add_hline(
-            y=dmin,
+            y=dmax,
             line_dash="dash",
-            line_color="royalblue",
-            line_width=1.5,
-            annotation_text=f"dmin={dmin}",
+            line_color="black",
+            line_width=1.8,
+            opacity=0.85,
+            annotation_text=f"dmax={dmax}",
+            row=line_row,
+            col=1,
+        )
+        if max_steps > 0 and dmin is not None:
+            xref = "x" if line_row == 1 else f"x{line_row}"
+            yref = "y" if line_row == 1 else f"y{line_row}"
+            fig.add_shape(
+                type="rect",
+                x0=0,
+                x1=max_steps,
+                y0=dmin,
+                y1=dmax,
+                xref=xref,
+                yref=yref,
+                fillcolor="grey",
+                opacity=0.18,
+                line_width=0,
+                layer="below",
+            )
+
+    df_violin = None
+    n_iter: list = []
+    if show_violin:
+        rows = []
+        for _model, data in data_dict.items():
+            for iter_num, _steps, max_devi_f_list in sorted(data):
+                for value in max_devi_f_list:
+                    if value > 0:
+                        rows.append({"iter_i": iter_num, "max_devi_f": float(value)})
+        df_violin = pd.DataFrame(rows)
+        if df_violin.empty:
+            print("[ANALYSIS][ERROR] No force deviation values found.")
+            return None
+
+        n_iter = sorted(df_violin["iter_i"].unique())
+        colors = _sample_palette_colors(
+            palette, [i / max(len(n_iter) - 1, 1) for i in range(len(n_iter))]
+        )
+
+        for idx, iter_num in enumerate(n_iter):
+            vals = df_violin[df_violin["iter_i"] == iter_num]["max_devi_f"].values
+            color = colors[idx]
+            fig.add_trace(
+                go.Violin(
+                    x=[f"Iter {iter_num}"] * len(vals),
+                    y=vals,
+                    name=f"Iter {iter_num}",
+                    legendgroup=f"iter_{iter_num}",
+                    showlegend=False,
+                    fillcolor=color,
+                    opacity=violin_alpha,
+                    box_visible=True,
+                    meanline_visible=False,
+                    points=False,
+                    line_color=color,
+                ),
+                row=violin_row,
+                col=1,
+            )
+
+        if connect_means:
+            means = [
+                df_violin[df_violin["iter_i"] == i]["max_devi_f"].mean() for i in n_iter
+            ]
+            fig.add_trace(
+                go.Scatter(
+                    x=[f"Iter {i}" for i in n_iter],
+                    y=means,
+                    mode="lines+markers",
+                    name="Mean",
+                    line=dict(color="black", width=2.5),
+                    marker=dict(
+                        size=10,
+                        color="white",
+                        line=dict(color="black", width=2),
+                        opacity=marker_alpha,
+                    ),
+                    showlegend=False,
+                ),
+                row=violin_row,
+                col=1,
+            )
+
+        if connect_medians:
+            meds = [
+                df_violin[df_violin["iter_i"] == i]["max_devi_f"].median()
+                for i in n_iter
+            ]
+            fig.add_trace(
+                go.Scatter(
+                    x=[f"Iter {i}" for i in n_iter],
+                    y=meds,
+                    mode="lines+markers",
+                    name="Median",
+                    line=dict(color="gray", width=2, dash="dash"),
+                    marker=dict(
+                        size=8,
+                        color="white",
+                        line=dict(color="gray", width=1.5),
+                        opacity=marker_alpha,
+                    ),
+                    showlegend=False,
+                ),
+                row=violin_row,
+                col=1,
+            )
+
+        if dmin is not None:
+            fig.add_hline(
+                y=dmin,
+                line_dash="dash",
+                line_color="royalblue",
+                line_width=1.8,
+                opacity=0.9,
+                annotation_text=f"dmin={dmin}",
+                row=violin_row,
+                col=1,
+            )
+        fig.add_hline(
+            y=dmax,
+            line_dash="dash",
+            line_color="black",
+            line_width=1.8,
+            opacity=0.85,
+            annotation_text=f"dmax={dmax}",
+            row=violin_row,
+            col=1,
         )
 
     yaxis_cfg = dict(type="log") if log_scale else dict(range=[0, dmax])
 
+    if show_line:
+        fig.update_xaxes(title_text="Candidates", row=line_row, col=1, automargin=True)
+        fig.update_yaxes(
+            title_text="Max. Force Deviation (eV/Å)",
+            row=line_row,
+            col=1,
+            automargin=True,
+        )
+    if show_violin:
+        fig.update_xaxes(
+            title_text="AL Iterations",
+            row=violin_row,
+            col=1,
+            automargin=True,
+        )
+        fig.update_yaxes(
+            title_text="Max. Force Deviation (eV/Å)",
+            row=violin_row,
+            col=1,
+            automargin=True,
+            **yaxis_cfg,
+        )
+
+    if show_line and show_violin:
+        legend_y = -0.12
+        bottom_margin = 110
+    elif show_line:
+        legend_y = -0.30
+        bottom_margin = 140
+    else:
+        legend_y = -0.28
+        bottom_margin = 130
+
     fig.update_layout(
-        title="Force Deviation Distribution",
-        xaxis_title="AL Iterations",
-        yaxis_title="Max. Force Deviation (eV/Å)",
-        yaxis=yaxis_cfg,
-        width=1000,
-        height=500,
+        title=dict(
+            text=figure_title,
+            x=0.5,
+            xanchor="center",
+        ),
+        width=1200,
+        height=figure_height,
         template="plotly_white",
-        font=dict(size=16),
+        font=dict(size=18),
         violinmode="overlay",
+        legend=dict(
+            title="Iteration",
+            orientation="h",
+            yanchor="top",
+            y=legend_y,
+            x=0.5,
+            xanchor="center",
+        ),
+        margin=dict(t=90, b=bottom_margin),
+        hovermode="closest",
     )
-    fig.update_xaxes(automargin=True)
-    fig.update_yaxes(automargin=True)
 
     if save_fig:
         fig.write_html(save_fig)
         print(f"[ANALYSIS][INFO] Saved to: {save_fig}")
+    elif return_fig:
+        return fig
     else:
         fig.show()
 
@@ -837,6 +1102,7 @@ def PlotPotentialEnergy(
     target_iteration=None,
     traj_filename="AseMD.traj",
     save_fig=None,
+    return_fig=False,
 ):
     """
     Plot potential energy from labelled candidates.
@@ -853,6 +1119,8 @@ def PlotPotentialEnergy(
         Trajectory filename
     save_fig : str
         Path to save HTML file
+    return_fig : bool
+        If True, return the Plotly figure instead of displaying it.
     """
     _require_plotly_deps()
     energy_dict = {}
@@ -876,6 +1144,10 @@ def PlotPotentialEnergy(
         if iter_num not in energy_dict:
             energy_dict[iter_num] = []
         energy_dict[iter_num].extend(energies)
+
+    if not energy_dict:
+        print("[ANALYSIS][ERROR] No labelled candidate energies found.")
+        return None
 
     # Plotting
     fig = go.Figure()
@@ -909,6 +1181,8 @@ def PlotPotentialEnergy(
     if save_fig:
         fig.write_html(save_fig)
         print(f"[ANALYSIS][INFO] Saved to: {save_fig}")
+    elif return_fig:
+        return fig
     else:
         fig.show()
 

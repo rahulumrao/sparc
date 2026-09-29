@@ -66,7 +66,9 @@ from sparc.src.utils.timing import WorkflowTimer
 from sparc.src.utils.utils import (
     combine_trajectories,
     create_iteration_dirs,
+    flush_memory,
     get_initial_structure,
+    labelled_reference_energy,
     load_progress,
     remove_backup_files,
     restart_progress,
@@ -624,6 +626,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         SparcLog(f"{'Output Trajectory':<30} {config.output.dptraj_file}")
         SparcLog("")
 
+        _, backend = get_version()
         dp_path = iter_structure["train_dir"]
         # Auto-detect model file by checking what exists on disk
         pth_model = os.path.join(str(dp_path), "training_1", "frozen_model_1.pth")
@@ -633,8 +636,6 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         elif os.path.exists(pb_model):
             dp_model = "training_1/frozen_model_1.pb"
         else:
-            # Fall back to backend detection
-            _, backend = get_version()
             dp_model = (
                 "training_1/frozen_model_1.pth"
                 if backend == "pytorch"
@@ -712,6 +713,9 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     temp_end=config.mlip_setup.temp_end,
                     restart=config.mlip_setup.restart,
                 )
+
+                del dp_atoms, dp_calc, dyn_dp
+                flush_memory(backend)
         timer.end_step(_mlmd_step)
 
         # Query by committee for active learning
@@ -735,6 +739,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                         else config.general.structure_file
                     ),
                     deepmd_input_json=config.mlip_setup.input_file,
+                    qbc=config.model_dev.qbc,
                 )
             )
             timer.end_step(_qbc_step)
@@ -908,6 +913,28 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         # Create DFT calculator once (it will print setup automatically)
         dft_calc = dft_calculator(config)  # Remove printscreen parameter
 
+        # Acceptance window for the labels produced below. The reference is the
+        # minimum energy already in the training set, so the test is made on the
+        # DFT energy scale and is independent of the committee's extrapolation
+        # error — which is precisely what lets an unphysical frame through the
+        # ML-MD gate in the first place.
+        epot_threshold = getattr(config.mlip_setup, "epot_threshold", None)
+        epot_ref = labelled_reference_energy(config.output.aimdtraj_file, iter)
+        if epot_ref is not None and epot_threshold is not None:
+            SparcLog(f"  Reference energy E_ref : {epot_ref:.3f} eV")
+            SparcLog(
+                f"  Accepted window        : E <= {epot_ref + float(epot_threshold):.3f} eV "
+                f"(E_ref + {float(epot_threshold):.2f} eV)"
+            )
+        else:
+            SparcLog(
+                "  No labelled reference data or no epot_threshold set — "
+                "energy window disabled, finiteness checks only.",
+                level="WARNING",
+            )
+
+        n_accepted = n_rejected = 0
+
         # Read all candidate frames from the single trajectory file
         if not os.path.exists(candidates_file):
             SparcLog(
@@ -922,14 +949,18 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
             ):
                 NewCandidate.calc = dft_calc  # Reuse the same calculator
 
-                CalculateDFTEnergy(
+                accepted, _reason = CalculateDFTEnergy(
                     idx=idx,
                     header=(idx == 1),
                     system=NewCandidate,
                     log_filename=f"Iter_{iter}_{config.output.log_file}",
                     trajfile=config.output.aimdtraj_file,
                     dir_name=iter_structure["dft_dir"],
+                    epot_ref=epot_ref,
+                    epot_threshold=epot_threshold,
                 )
+                n_accepted += bool(accepted)
+                n_rejected += not accepted
 
                 save_progress(
                     {
@@ -939,7 +970,56 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                         "idx": idx,
                     }
                 )
+
+            # Zero attempts means the run resumed past the end of an already
+            # completed pool, not that every candidate failed.
+            if n_accepted + n_rejected > 0:
+                SparcLog("=" * 80)
+                SparcLog("Label Validation Summary:")
+                if epot_ref is not None and epot_threshold is not None:
+                    SparcLog(f"  Reference energy E_ref      : {epot_ref:.3f} eV")
+                    SparcLog(
+                        f"  Accepted window             : E <= "
+                        f"{epot_ref + float(epot_threshold):.3f} eV"
+                    )
+                SparcLog(f"  Candidates labelled         : {n_accepted + n_rejected}")
+                SparcLog(f"  Accepted (into training set): {n_accepted}")
+                SparcLog(f"  Rejected                    : {n_rejected}")
+                if n_rejected:
+                    SparcLog(
+                        f"  Rejected frames             : "
+                        f"{iter_structure['dft_dir']}/rejected.extxyz"
+                    )
+                    SparcLog(
+                        f"  Rejection reasons           : "
+                        f"{iter_structure['dft_dir']}/rejected_candidates.dat"
+                    )
+                if n_accepted == 0:
+                    SparcLog(
+                        "  No candidate produced a usable label — the exploration is "
+                        "confined to a region excluded by the energy window.",
+                        level="ERROR",
+                    )
+                SparcLog("=" * 80 + "\n")
         timer.end_step(_dft_step)
+
+        # Guard on the post-validation yield. The QbC count checked at the end of
+        # the previous iteration is a pre-labelling number and can overstate the
+        # useful yield by any amount — a pool can be large and still contribute
+        # nothing. Retraining on an unchanged dataset reproduces the same model
+        # and the same trajectory, so the loop cannot recover on its own.
+        # n_rejected == 0 alongside n_accepted == 0 means the run resumed past a
+        # completed pool, not that everything failed.
+        if n_rejected > 0 and n_accepted < config.min_candidates:
+            SparcLog("=" * 80)
+            SparcLog(
+                f"Accepted labels ({n_accepted}) below threshold "
+                f"({config.min_candidates}) after validation; "
+                f"{n_rejected} candidate(s) rejected. Stopping AL."
+            )
+            SparcLog("End of Active Learning Loop")
+            SparcLog("=" * 80)
+            break
 
         # -----------------------------------------------------------------------
         # Step 2: Model Retraining with Expanded Dataset
@@ -974,6 +1054,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 input_file=config.mlip_setup.input_file,
             )
         else:
+            prev_train_dir = create_iteration_dirs(iter_num=iter - 1)["train_dir"]
             deepmd_training(
                 active_learning=True,
                 training_dir=iter_structure["train_dir"],
@@ -981,6 +1062,8 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 input_file=config.mlip_setup.input_file,
                 datadir=datadir,
                 atom_types=atom_types,
+                refine_cfg=config.refine,
+                prev_training_dir=str(prev_train_dir),
             )
         timer.end_step(_train_step)
 
@@ -1006,6 +1089,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         SparcLog("=" * 80)
 
         # Use models trained in this iteration (mirrors pre-AL model detection)
+        _, backend = get_version()
         al_dp_path = iter_structure["train_dir"]
         al_pth = os.path.join(str(al_dp_path), "training_1", "frozen_model_1.pth")
         al_pb = os.path.join(str(al_dp_path), "training_1", "frozen_model_1.pb")
@@ -1014,10 +1098,9 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         elif os.path.exists(al_pb):
             al_dp_model = "training_1/frozen_model_1.pb"
         else:
-            _, _backend = get_version()
             al_dp_model = (
                 "training_1/frozen_model_1.pth"
-                if _backend == "pytorch"
+                if backend == "pytorch"
                 else "training_1/frozen_model_1.pb"
             )
 
@@ -1094,6 +1177,9 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     temp_end=config.mlip_setup.temp_end,
                     restart=config.mlip_setup.restart,
                 )
+
+                del dp_atoms, dp_calc, dyn_dp
+                flush_memory(backend)
         timer.end_step(_mlmd_step)
         # -----------------------------------------------------------------------
         # Step 4: Query-by-Committee for New Candidates
@@ -1117,6 +1203,7 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     else config.general.structure_file
                 ),
                 deepmd_input_json=config.mlip_setup.input_file,
+                qbc=config.model_dev.qbc,
             )
         )
         timer.end_step(_qbc_step)

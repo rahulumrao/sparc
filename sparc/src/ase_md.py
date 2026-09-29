@@ -32,7 +32,9 @@ from sparc.src.utils.utils import (
     load_checkpoint,
     log_md_setup,
     save_checkpoint,
+    save_rejected_frame,
     save_xyz,
+    validate_labelled_frame,
 )
 
 ################################################################
@@ -662,9 +664,22 @@ def CalculateDFTEnergy(
     log_filename: str,
     dir_name: str,
     trajfile: str,
+    epot_ref: Optional[float] = None,
+    epot_threshold: Optional[float] = None,
 ):
     """
     Calculate the DFT energy and forces for a candidate structure.
+
+    The labelled frame enters ``trajfile`` — and hence the training set built
+    from it — only if it passes :func:`validate_labelled_frame`. Rejected frames
+    are diverted to ``rejected.extxyz`` with the reason recorded alongside. The
+    candidate index is unaffected by rejection, so ``progress.json`` continues to
+    enumerate candidates attempted rather than frames written, and a resumed run
+    does not relabel a candidate that was already rejected.
+
+    A calculator that raises (SCF divergence, killed process, parser failure) is
+    treated as a rejection rather than an error: one unusable candidate must not
+    abort labelling of the remaining pool.
 
     Parameters
     ----------
@@ -680,19 +695,54 @@ def CalculateDFTEnergy(
         Directory where log and trajectory files are written
     trajfile : str
         Filename for the ASE trajectory file
-    """
-    epot = system.get_potential_energy()
-    epot = epot if not isinstance(epot, (list, np.ndarray)) else epot[0]
+    epot_ref : float, optional
+        Reference energy from ``labelled_reference_energy`` [eV]. None disables
+        the energy window, leaving the finiteness checks active.
+    epot_threshold : float, optional
+        Width of the accepted energy window above ``epot_ref`` [eV]
 
-    SparcLog(f"Candidate: {idx:5d} | Epot: {epot:10.6f} [eV]")
+    Returns
+    -------
+    tuple
+        ``(accepted, reason)``; *reason* is an empty string when accepted.
+    """
+    try:
+        epot = system.get_potential_energy()
+        forces = system.get_forces()
+    except Exception as exc:
+        epot, forces = None, None
+        SparcLog(f"Candidate: {idx:5d} | DFT calculation failed: {exc}", level="ERROR")
+
+    accepted, reason = validate_labelled_frame(
+        system, epot, forces, epot_ref=epot_ref, epot_threshold=epot_threshold
+    )
+
+    epot_str = f"{'n/a':>14}"
+    if epot is not None:
+        epot = float(np.ravel(epot)[0])
+        if np.isfinite(epot):
+            epot_str = f"{epot:14.6f}"
+
+    if accepted:
+        SparcLog(f"Candidate: {idx:5d} | Epot: {epot_str} [eV]")
+    else:
+        SparcLog(
+            f"Candidate: {idx:5d} | Epot: {epot_str} [eV] | REJECTED: {reason}",
+            level="WARNING",
+        )
 
     log_path = f"{dir_name}/{log_filename}"
     with open(log_path, "a") as f:
         if header:
-            f.write(f"{'Candidate':>12} {'Epot[eV]':>14}\n")
-        f.write(f"{idx:>12} {epot:>14.6f}\n")
+            f.write(f"{'Candidate':>12} {'Epot[eV]':>14} {'Status':>9}\n")
+        f.write(f"{idx:>12} {epot_str} {'ACCEPT' if accepted else 'REJECT':>9}\n")
 
-    save_xyz(system, trajfile, "a", dir_name)
+    if accepted:
+        save_xyz(system, trajfile, "a", dir_name)
+        return True, ""
+
+    save_rejected_frame(idx, system, epot, forces, reason, dir_name)
+    return False, reason
 
 
 ################################################################

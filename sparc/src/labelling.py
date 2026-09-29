@@ -13,6 +13,7 @@ Reference: https://doi.org/10.1016/j.cpc.2020.107206
 """
 
 import os
+import shutil
 from datetime import datetime
 
 ################################################################
@@ -160,8 +161,8 @@ def labelling(
     excluded_traj_file = os.path.join(output_dir, "excluded_frames.extxyz")
 
     # ── Build ordered candidate list; embed metadata in frame.info ────────────
-    # _step_index, max_devi_f, _avg_devi_f survive the deal_selected.xyz
-    # round-trip so labelling.py can recover per-frame stats without id() matching.
+    # _step_index, max_devi_f, _avg_devi_f survive the DEAL xyz round-trip
+    # so labelling.py can recover per-frame stats without id() matching.
     ordered_candidates = []
     for _, row in candidates.iterrows():
         frame_index = int(row["step"])
@@ -182,10 +183,9 @@ def labelling(
         candidate_pool = [f for _, _, _, f in ordered_candidates]
         is_periodic = bool(dptraj[0].pbc.any())
 
-        # run_deal_filter writes deal_selected.xyz directly into output_dir
-        # via DEALConfig.output_prefix — no post-run file move needed.
-        # _step_index / max_devi_f / _avg_devi_f embedded in frame.info above
-        # survive the xyz round-trip — no id() matching needed.
+        # run_deal_filter writes deal_selected.xyz into output_dir via
+        # DEALConfig.output_prefix; mirror it to candidates.extxyz for downstream
+        # resume/restart logic (utils.py, sparc.py).
         selected_frames = run_deal_filter(
             candidate_frames=candidate_pool,
             sparc_deal_cfg=deal_config,
@@ -195,9 +195,11 @@ def labelling(
             output_dir=output_dir,
         )
 
-        # DEAL already wrote deal_selected.xyz — use it directly as candidates_file
-        # so sparc.py reads the same file for DFT labelling. No duplicate write.
-        candidates_file = os.path.join(output_dir, "deal_selected.xyz")
+        deal_xyz = os.path.join(output_dir, "deal_selected.xyz")
+        if os.path.exists(deal_xyz):
+            shutil.copy2(deal_xyz, candidates_file)
+        elif selected_frames:
+            write(candidates_file, selected_frames, format="extxyz")
 
         for frame in selected_frames:
             frame_index = int(frame.info.get("_step_index", 0))

@@ -43,7 +43,7 @@ def _extract_rcut_from_deepmd_json(input_json_path: str) -> float:
     if not path.exists():
         SparcLog(
             f"WARNING [DEAL]: input JSON not found at '{input_json_path}'. "
-            f"Using default FLARE cutoff = {_DEAL_DEFAULT_CUTOFF} Å. "
+            f"Using default descriptor cutoff = {_DEAL_DEFAULT_CUTOFF} Å. "
             "Set mlip_setup.input_file correctly or add deal.cutoff explicitly."
         )
         return _DEAL_DEFAULT_CUTOFF
@@ -72,14 +72,14 @@ def _extract_rcut_from_deepmd_json(input_json_path: str) -> float:
     except Exception as e:
         SparcLog(
             f"WARNING [DEAL]: Could not parse cutoff from '{input_json_path}' ({e}). "
-            f"Using default FLARE cutoff = {_DEAL_DEFAULT_CUTOFF} Å."
+            f"Using default descriptor cutoff = {_DEAL_DEFAULT_CUTOFF} Å."
         )
         return _DEAL_DEFAULT_CUTOFF
 
 
 def _get_species(structure_file: str, candidate_frames: List[Atoms]) -> List[str]:
     """
-    Return sorted unique element list for FLARE species map.
+    Return sorted unique element list for the GP species map.
 
     Tries structure_file first (authoritative — covers elements not yet in
     candidate frames). Falls back to union of candidate frame symbols.
@@ -96,6 +96,45 @@ def _get_species(structure_file: str, candidate_frames: List[Atoms]) -> List[str
     for frame in candidate_frames:
         symbols.update(frame.get_chemical_symbols())
     return sorted(symbols)
+
+
+def add_vacuum_box(
+    frames: List[Atoms], cutoff: float, padding: float = 1.0
+) -> List[Atoms]:
+    """
+    Return copies of `frames` wrapped in a cubic vacuum box and centred.
+
+    The B2 descriptor builds its neighbour list from the cell, so a frame
+    with a zero cell (the ASE default for molecules / nopbc MD) yields an empty
+    neighbour list, all-zero descriptors and therefore exactly zero SGP
+    variance for every atom. DEAL then reports std_in_bound=True for every
+    frame and selects only the bootstrap frame.
+
+    The box edge is (largest molecular extent) + 2*cutoff + padding so periodic
+    images stay outside the descriptor cutoff of every atom. pbc is left False;
+    only the cell matters to the descriptor.
+
+    Frames that already carry a full-rank cell are copied unchanged.
+    Original frames are never mutated — info/arrays are preserved on the copies.
+    """
+    boxed: List[Atoms] = []
+    for frame in frames:
+        g = frame.copy()
+        g.calc = frame.calc
+        if g.cell.rank < 3:
+            extent = float(np.max(g.positions.max(axis=0) - g.positions.min(axis=0)))
+            edge = extent + 2.0 * cutoff + padding
+            g.set_cell([edge, edge, edge])
+            g.center()
+        boxed.append(g)
+    return boxed
+
+
+def strip_vacuum_box(frames: List[Atoms]) -> None:
+    """Drop the artificial DEAL vacuum cell so downstream DFT input stays molecular."""
+    for frame in frames:
+        frame.set_cell(None)
+        frame.set_pbc(False)
 
 
 def attach_dummy_calc(frames: List[Atoms], periodic: bool = False) -> None:

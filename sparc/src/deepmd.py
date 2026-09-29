@@ -314,6 +314,41 @@ def update_json(data: dict, datadir: str, atom_types: List[str]):
 
 
 ################################################################
+# Refine training (initialize from a previous checkpoint)
+################################################################
+
+
+def find_prev_checkpoint(
+    prev_training_dir: str, model_index: int, version: int
+) -> Optional[str]:
+    """Return the absolute checkpoint file path for `dp train --init-model`, or None.
+
+    Looks in ``{prev_training_dir}/training_{model_index}/`` for
+    ``model.ckpt.pt`` (v3/pytorch) or ``model.ckpt`` (v2/tensorflow).
+    """
+    train_dir = (Path(prev_training_dir) / f"training_{model_index}").resolve()
+    ckpt_name = "model.ckpt.pt" if version >= 3 else "model.ckpt"
+    ckpt_path = train_dir / ckpt_name
+    if not ckpt_path.exists():
+        return None
+    return str(ckpt_path)
+
+
+def build_refine_json(config_data: dict, refine_cfg) -> dict:
+    """Apply refine settings (steps, LR, loss prefactors) to a loaded input.json dict."""
+    config_data["training"]["numb_steps"] = refine_cfg.steps
+    config_data["learning_rate"]["start_lr"] = refine_cfg.start_lr
+
+    loss = config_data.get("loss", {})
+    if refine_cfg.force_pref_scale is not None and "start_pref_f" in loss:
+        loss["start_pref_f"] = loss["start_pref_f"] * refine_cfg.force_pref_scale
+    if refine_cfg.energy_pref_scale is not None and "start_pref_e" in loss:
+        loss["start_pref_e"] = loss["start_pref_e"] * refine_cfg.energy_pref_scale
+
+    return config_data
+
+
+################################################################
 # DeepMD Training
 ################################################################
 
@@ -326,6 +361,8 @@ def deepmd_training(
     num_models: int,
     input_file: str = "input.json",
     compress_models: bool = False,
+    refine_cfg=None,
+    prev_training_dir: Optional[str] = None,
 ):
     """
     Train DeepMD models for molecular potential energy surface representation.
@@ -349,6 +386,15 @@ def deepmd_training(
         Path to DeepMD input JSON file (default: 'input.json')
     compress_models : bool, optional
         Whether to compress trained models (default: True)
+    refine_cfg : RefineConfig, optional
+        Refine settings (see sparc.src.utils.read_input.RefineConfig). When
+        ``refine_cfg.enabled`` and a checkpoint is found under
+        ``prev_training_dir``, that model initializes from it instead of
+        random weights.
+    prev_training_dir : str, optional
+        Path to the previous AL iteration's training directory (its
+        ``01.train``), used to locate checkpoints for refine. None if there
+        is no previous iteration.
 
     Returns
     -------
@@ -430,22 +476,8 @@ def deepmd_training(
         try:
             logger.info(f"Training directory: {dir_name}")
 
-            # Load and update JSON configuration
-            input_path = os.path.join(original_dir, input_file)
-            if not os.path.exists(input_path):
-                raise FileNotFoundError(f"Input file not found: {input_path}")
-
-            with open(input_path, "r") as f:
-                config_data = json.load(f)
-
-            update_json(config_data, datadir, atom_types)
-
-            # Write updated config into training directory
-            config_output_path = os.path.join(dir_name, input_file)
-            with open(config_output_path, "w") as f:
-                json.dump(config_data, f, indent=4)
-
-            # Check for checkpoint
+            # Check for a checkpoint already in THIS iteration's own directory
+            # (an interrupted run of the current iteration, not a previous one)
             has_checkpoint = (
                 os.path.exists(os.path.join(dir_name, "checkpoint"))
                 or os.path.exists(os.path.join(dir_name, "model.ckpt"))
@@ -456,6 +488,46 @@ def deepmd_training(
                 SparcLog("*" * 80)
                 SparcLog(" Checkpoint found - Resuming training".center(80))
                 SparcLog("*" * 80)
+
+            # Refine: initialize from the previous AL iteration's checkpoint.
+            # Only applies when this iteration's own directory has no
+            # checkpoint yet (has_checkpoint above is a resume of *this* run
+            # and takes priority over refine).
+            refine_ckpt_prefix = None
+            if (
+                not has_checkpoint
+                and refine_cfg is not None
+                and refine_cfg.enabled
+                and prev_training_dir
+            ):
+                refine_ckpt_prefix = find_prev_checkpoint(prev_training_dir, i, version)
+                if refine_ckpt_prefix is None:
+                    SparcLog(
+                        f"Refine: no checkpoint found for model {i} in "
+                        f"{prev_training_dir}; training from scratch instead."
+                    )
+
+            # Load and update JSON configuration
+            input_path = os.path.join(original_dir, input_file)
+            if not os.path.exists(input_path):
+                raise FileNotFoundError(f"Input file not found: {input_path}")
+
+            with open(input_path, "r") as f:
+                config_data = json.load(f)
+
+            update_json(config_data, datadir, atom_types)
+
+            if refine_ckpt_prefix is not None:
+                build_refine_json(config_data, refine_cfg)
+                SparcLog("*" * 80)
+                SparcLog(" Refine - initializing from previous iteration".center(80))
+                SparcLog(f" Checkpoint: {refine_ckpt_prefix}")
+                SparcLog("*" * 80)
+
+            # Write updated config into training directory
+            config_output_path = os.path.join(dir_name, input_file)
+            with open(config_output_path, "w") as f:
+                json.dump(config_data, f, indent=4)
 
             # Build training command
             if version >= 3:
@@ -468,12 +540,15 @@ def deepmd_training(
                 # v2 doesn't use backend flags
                 train_cmd = ["dp", "train", input_file]
 
-            # Add restart flag if checkpoint exists
+            # Add restart flag if resuming this iteration's own interrupted run,
+            # or init-model if refining from the previous iteration's checkpoint
             if has_checkpoint:
                 if version >= 3:
                     train_cmd.extend(["--restart", "model.ckpt.pt"])
                 else:
                     train_cmd.extend(["--restart", "model.ckpt"])
+            elif refine_ckpt_prefix is not None:
+                train_cmd.extend(["--init-model", refine_ckpt_prefix])
 
             # Run training
             SparcLog(f" Training Model {i}/{num_models}")

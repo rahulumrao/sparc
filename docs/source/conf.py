@@ -5,10 +5,12 @@ sys.path.insert(0, os.path.abspath('../..'))  # Ensure sparc package is importab
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '_ext'))  # Custom extensions
 
 from sparc_lexer import SparcTemplateLexer
+from sparc_workflow_yaml_lexer import SparcWorkflowYamlLexer
 
 
 def setup(app):
     app.add_lexer('sparc-template', SparcTemplateLexer)
+    app.add_lexer('sparc-workflow-yaml', SparcWorkflowYamlLexer)
 
 project = 'SPARC'
 copyright = '2024'

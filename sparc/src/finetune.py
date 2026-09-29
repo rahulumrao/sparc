@@ -20,7 +20,7 @@ import subprocess
 from pathlib import Path
 from typing import List, Optional
 
-from sparc.src.deepmd import get_version, update_json
+from sparc.src.deepmd import evaluate_model_accuracy, get_version, update_json
 
 ################################################################
 # Local imports
@@ -135,37 +135,31 @@ def deepmd_finetune(
             with open(config_output_path, "w") as f:
                 json.dump(config_data, f, indent=4)
 
-            # Build fine-tune command
-            # DeePMD-kit v3: dp --pt train input.json --finetune model.pt
-            finetune_cmd = [
-                "dp",
-                "--pt",
-                "train",
-                input_file,
-                "--finetune",
-                pretrained_path,
-            ]
-            if model_branch:
-                finetune_cmd.extend(["--model-branch", model_branch])
+            # Check for checkpoint (resume interrupted fine-tuning)
+            has_checkpoint = (
+                os.path.exists(os.path.join(dir_name, "checkpoint"))
+                or os.path.exists(os.path.join(dir_name, "model.ckpt"))
+                or os.path.exists(os.path.join(dir_name, "model.ckpt.pt"))
+            )
+
+            if has_checkpoint:
+                SparcLog("*" * 80)
+                SparcLog(" Checkpoint found - Resuming fine-tuning".center(80))
+                SparcLog("*" * 80)
+
+            # Build train command
+            # Fresh: dp --pt train input.json --finetune model.pt [--model-branch BRANCH]
+            # Resume: dp --pt train input.json --restart model.ckpt.pt
+            finetune_cmd = ["dp", "--pt", "train", input_file]
+            if has_checkpoint:
+                finetune_cmd.extend(["--restart", "model.ckpt.pt"])
+            else:
+                finetune_cmd.extend(["--finetune", pretrained_path])
+                if model_branch:
+                    finetune_cmd.extend(["--model-branch", model_branch])
 
             SparcLog(f"  Command: {' '.join(finetune_cmd)}")
-            # Stream output live so user can monitor training progress
-            process = subprocess.Popen(
-                finetune_cmd,
-                cwd=dir_name,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-            )
-            output_lines = []
-            for line in process.stdout:
-                output_lines.append(line)
-                print(line, end="", flush=True)
-            process.wait()
-            if process.returncode != 0:
-                raise subprocess.CalledProcessError(
-                    process.returncode, finetune_cmd, output="".join(output_lines)
-                )
+            subprocess.run(finetune_cmd, check=True, cwd=dir_name)
             logger.info(f"DeePMD fine-tuning completed for model {i}")
 
             # Freeze the fine-tuned model
@@ -175,6 +169,10 @@ def deepmd_finetune(
             SparcLog(f"  Freezing: {' '.join(freeze_cmd)}")
             subprocess.run(freeze_cmd, check=True, cwd=dir_name)
             logger.info(f"Model {i} frozen: {frozen_model_name}")
+
+            model_path = os.path.join(dir_name, frozen_model_name)
+            test_data = os.path.join(datadir, "validation_data")
+            evaluate_model_accuracy(model_path, test_data, version, backend)
 
         except subprocess.CalledProcessError as e:
             error_output = (e.output or "") + str(e)

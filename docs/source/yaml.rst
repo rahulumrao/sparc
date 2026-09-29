@@ -163,8 +163,8 @@ Controls MLIP model training and ML-MD simulation.
       restart: false              # Resume ML-MD from checkpoint             [Optional]
 
       # ── Restart exploration ──
-      restart_exploration: false  # Start next iteration from a saved frame  [Optional]
-      restart_frame: "candidates" # Frame source: "last", "random", "candidates" [Optional]
+      restart_exploration: false  # Seed next iter ML-MD from QbC pool       [Optional]
+      restart_frame: "candidates" # "candidates", "last", or "random"         [Optional]
 
       thermostat:
         type: "Nose"
@@ -194,39 +194,10 @@ Controls MLIP model training and ML-MD simulation.
 Restart Exploration
 ~~~~~~~~~~~~~~~~~~~
 
-By default each AL iteration starts ML-MD from the original input structure.
-``restart_exploration`` changes this so each iteration seeds its MD from a
-frame saved in the **previous** iteration, helping the model explore new regions
-of phase space rather than re-sampling the same starting geometry.
-
-.. code-block:: yaml
-
-    mlip_setup:
-      restart_exploration: false   # Seed ML-MD from a previous-iteration frame [Optional, Default: false]
-      restart_frame: "candidates"  # Frame selection strategy                   [Optional, Default: "candidates"]
-
-Three strategies are available for ``restart_frame``:
-
-.. list-table::
-   :header-rows: 1
-   :widths: 20 80
-
-   * - Strategy
-     - Behaviour
-   * - ``"candidates"``
-     - Each run starts from a different randomly chosen DFT-labelled candidate
-       from the previous iteration. Safest — candidates are already validated by DFT.
-   * - ``"last"``
-     - All runs start from the last frame of the previous ML-MD trajectory.
-       Good when a single long run is used (``multiple_run: 1``).
-   * - ``"random"``
-     - Each run starts from a different random frame in the previous ML-MD trajectory.
-       Broadest phase-space coverage but frames are not DFT-validated.
-
-.. note::
-
-    ``restart_exploration`` has no effect in iteration 0 (no previous trajectory exists).
-    It activates from iteration 1 onward.
+``restart_exploration`` and ``restart_frame`` control whether subsequent AL
+iterations seed ML-MD from the previous iteration's QbC candidate pool instead
+of the input structure.  See :doc:`user_guide/active_learning` for strategy
+details (``"candidates"``, ``"last"``, ``"random"``).
 
 
 Fine-Tuning (Universal Models)
@@ -273,6 +244,20 @@ Structures with force deviation in ``[f_min_dev, f_max_dev]`` are selected as
 candidates. Structures below ``f_min_dev`` are well-described; above ``f_max_dev``
 are too uncertain and discarded.
 
+.. code-block:: yaml
+
+    refine:
+      enabled: false               # Train from the previous iteration's checkpoint instead of random weights [Optional, Default: false]
+      steps: 150000                # numb_steps for the refine run (overwrites input.json's numb_steps)       [Required if enabled]
+      start_lr: 1.0e-4              # Overwrites input.json's learning_rate.start_lr                          [Required if enabled]
+      force_pref_scale: 0.1        # Rescales loss.start_pref_f (omit to leave input.json's value untouched)  [Optional]
+      energy_pref_scale: 5.0       # Rescales loss.start_pref_e (omit to leave input.json's value untouched)  [Optional]
+
+When ``enabled: true``, each AL iteration's models initialize from the previous
+iteration's checkpoint instead of random weights. This is faster than training
+from scratch, but there is no automatic accuracy check — a refined model is
+accepted as-is, so verify model quality yourself before trusting it.
+
 The AL loop stops when ``iteration`` is reached **or** when the number of candidates
 found in an iteration falls below ``min_candidates``. The default is ``min_candidates: 1``, and stops only when zero candidates are found. Set a
 higher value to stop earlier when the model is converging and only a handful of
@@ -312,6 +297,48 @@ See :ref:`rmsd_analysis` for how to compute RMSD on a trajectory.
     Set ``rmsd_threshold: 0.0`` to disable RMSD filtering and accept all candidates
     within the force-deviation range. Use ``exclude_hydrogen: false`` to include H atoms
     in the RMSD calculation.
+
+
+DEAL Diversity Filter
+---------------------
+
+Replaces the geometric RMSD filter with a sparse Gaussian process trained on
+ACE descriptors. Requires DEAL >= 3.0 (its own native sparse-GP backend — no
+FLARE install). Optional; one line enables it.
+
+.. code-block:: yaml
+
+    deal:
+      enabled: true               # Use SGP filter instead of RMSD           [Optional, Default: false]
+      threshold: 0.01             # SGP posterior variance cut               [Optional, Default: 0.01]
+      max_selected: null          # Set an int → budget mode                 [Optional, Default: null]
+      cutoff: null                # Å; null auto-reads rcut / r_max          [Optional, Default: null]
+      mask: false                 # Restrict GP to flagged atoms             [Optional, Default: false]
+      advanced: {}                # Everything else — see the user guide     [Optional, Default: {}]
+
+``threshold`` mode makes one pass and selects whatever exceeds the variance cut.
+Setting ``max_selected: 20`` switches to **budget mode**: repeated passes with a
+decaying threshold, reusing the same GP, until 20 frames are collected. Use it
+when the DFT budget per iteration is the real constraint.
+
+Kernel, descriptor, mask and GP-training options live under ``advanced``; unknown
+keys raise an error rather than being ignored:
+
+.. code-block:: yaml
+
+    deal:
+      enabled: true
+      max_selected: 20
+      advanced:
+        nmax: 8                   # B2 radial channels        [Default: 8]
+        lmax: 4                   # B2 angular channels       [Default: 4]
+        threshold_factor: 0.7     # Budget mode decay         [Default: 0.7]
+        max_atoms_added: 0.2      # Environments per frame    [Default: 0.2]
+        save_full_trajectory: false
+
+If DEAL is missing or older than 3.0, SPARC warns and falls back to the RMSD
+filter. See :ref:`deal_filter` for the theory, the full ``advanced`` catalogue
+and the output files.
 
 
 Distance Metrics

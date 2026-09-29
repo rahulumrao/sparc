@@ -42,7 +42,6 @@ def _auto_name(kind, idx):
 
 
 def _ensure_atom_index(frames, props, key="atom_index"):
-    #
     if key in props:
         return
     frames = list(frames)
@@ -56,9 +55,7 @@ def _ensure_atom_index(frames, props, key="atom_index"):
 
 
 def _resolve_axis_name(properties, name):
-    """
-    resolve distance:0,7' -> ('distance', (0,7)) and return name key.
-    """
+    """Resolve a property key for map/axis selection."""
     if name in properties:
         return name
     candidates = [k for k in properties.keys() if k == name or k.startswith(name + "_")]
@@ -74,82 +71,8 @@ def _resolve_axis_name(properties, name):
     )
 
 
-# =========================
-# main ChemView function
-# =========================
-
-
-def ChemView(
-    *,
-    frames,  # sequence of ase.Atoms
-    specs,  # e.g. ["frame","energy","distance:0,7", "angle:0,1,2"]
-    x,  # axis property (structure)
-    y,  # axis property (structure)
-    z=None,  # [optional] axis property (structure)
-    names=None,  # rename keys for specs (same length as specs)
-    units_override=None,
-    **kwargs,  # meta_name, color_atoms, labels, show_index, env_cutoff, map_color, plot
-):
-    """
-    Build properties from user defined specs and launch a Chemiscope viewer.
-
-    Parameters
-    ----------
-    frames : sequence of ase.Atoms
-    specs  : list   ("frame", "energy", "distance:i,j", "angle:i,j,k", "dihedral:i,j,k,l")
-    x, y   : str    structure property names ('energy', 'distance',...)
-    z      : str or None
-    names  : list or None
-    units_override : dict or None
-
-    Other Parameters
-    ----------------
-    meta_name : str, optional
-        Dataset label shown in Chemiscope. Default ``"ChemView"``.
-    color_atoms : str or None, optional
-        Atom colouring in the 3-D viewer: ``"element"``, ``"atom_index"``, or ``None``.
-        Default ``"element"``.
-    labels : bool, optional
-        Show element symbols on atoms. Default ``False``.
-    show_index : bool, optional
-        Show atom index numbers on atoms. Default ``False``.
-    env_cutoff : float, optional
-        Cutoff radius (Å) for atom environment selection. Default ``3.5``.
-    map_color : str or None, optional
-        Property used to colour scatter-plot points. Must be one of ``x``, ``y``, or ``z``.
-        Default ``None``.
-    plot : bool, optional
-        Show the scatter-plot panel alongside the 3-D viewer. Default ``True``.
-
-    Examples
-    --------
-    Basic usage::
-
-        from sparc.src.utils.chemview import ChemView
-
-        ChemView(frames=traj,
-            specs=["frame", "energy", "angle:0,1,7"],
-            x="frame",
-            y="energy",
-            map_color='energy')
-
-    Show atom indices and click-to-select::
-
-        ChemView(frames=traj,
-            specs=["frame", "energy"],
-            x="frame", y="energy",
-            show_index=True,
-            color_atoms='atom_index')
-    """
-    _require_chemiscope()
-
-    frames = list(frames)
-    if not frames:
-        raise ValueError("`frames` is empty")
-    if names is not None and len(names) != len(specs):
-        raise ValueError("`names` length must match `specs` length")
-
-    # ---- build structure-level properties from specs ----
+def _build_properties(frames, specs, names=None, units_override=None):
+    """Build Chemiscope property dictionary from ChemView specs."""
     props = {}
     for k, spec in enumerate(specs):
         kind, idx = _parse_spec(spec)
@@ -190,7 +113,6 @@ def ChemView(
             param = {"cell_alpha": 3, "cell_beta": 4, "cell_gamma": 5}[kind]
             vals = [float(cell_to_cellpar(at.cell)[param]) for at in frames]
             unit = "deg"
-        # ---- atom-level specs (target="atom") ----
         elif kind in ("x_pos", "y_pos", "z_pos"):
             col = {"x_pos": 0, "y_pos": 1, "z_pos": 2}[kind]
             vals = [
@@ -243,40 +165,98 @@ def ChemView(
             unit = (units_override or {}).get(key, unit)
             props[key] = {"target": "atom", "values": vals, "units": unit}
             continue
+        elif kind in ("max_devi_f", "maxfdev"):
+            vals = [float(at.info.get("max_devi_f", float("nan"))) for at in frames]
+            unit = "eV/Å"
+        elif kind in ("avg_devi_f", "avgfdev"):
+            vals = [
+                float(
+                    at.info.get(
+                        "_avg_devi_f",
+                        at.info.get("avg_devi_f", float("nan")),
+                    )
+                )
+                for at in frames
+            ]
+            unit = "eV/Å"
+        elif kind in ("step_index", "md_frame"):
+            vals = [
+                int(at.info.get("_step_index", at.info.get("frame", index)))
+                for index, at in enumerate(frames)
+            ]
+            unit = ""
+        elif kind == "deal_uncertainty":
+            vals = [
+                float(at.info.get("max_atomic_uncertainty", float("nan")))
+                for at in frames
+            ]
+            unit = ""
+        elif kind in ("dft_energy", "labelled_energy"):
+            vals = [float(at.info.get("dft_energy", float("nan"))) for at in frames]
+            unit = "eV"
         else:
             raise ValueError(f"Unsupported spec kind: {kind!r}")
 
         unit = (units_override or {}).get(key, unit)
         props[key] = {"target": "structure", "values": vals, "units": unit}
 
-    # add atom_index for selection panel
     _ensure_atom_index(frames, props)
+    return props
 
-    # axis names ('distance')
+
+def build_chemview_dataset(
+    *,
+    frames,
+    specs,
+    x,
+    y,
+    z=None,
+    names=None,
+    units_override=None,
+    **kwargs,
+):
+    """
+    Build a Chemiscope dataset dict from ChemView-style arguments.
+
+    Returns
+    -------
+    dataset : dict
+        Chemiscope dataset suitable for ``chemiscope.show`` or Streamlit viewer.
+    mode : str
+        Chemiscope display mode (``default``, ``structure``, or ``map``).
+    """
+    _require_chemiscope()
+
+    frames = list(frames)
+    if not frames:
+        raise ValueError("`frames` is empty")
+    if names is not None and len(names) != len(specs):
+        raise ValueError("`names` length must match `specs` length")
+
+    props = _build_properties(frames, specs, names=names, units_override=units_override)
+
     x = _resolve_axis_name(props, x)
     y = _resolve_axis_name(props, y)
     if z is not None:
         z = _resolve_axis_name(props, z)
 
-    map_color = kwargs.get("map_color", None)
+    map_color = kwargs.get("map_color")
     if map_color is not None:
         map_color = _resolve_axis_name(props, map_color)
 
-    # ---- viewer settings / options ----
     meta_name = kwargs.get("meta_name", "ChemView")
     color_atoms = kwargs.get("color_atoms", "element")
     show_labels = bool(kwargs.get("labels", False))
     show_map = bool(kwargs.get("plot", True))
     env_cutoff = float(kwargs.get("env_cutoff", 3.5))
+    include_environments = bool(kwargs.get("include_environments", True))
 
-    # labels=True  → floating element symbols on atoms
-    # show_index   → atom_index property visible on click (no floating labels)
     structure_settings = {
         "unitCell": False,
         "spaceFilling": False,
         "atomLabels": show_labels,
         "environments": {
-            "activated": True,
+            "activated": include_environments,
             "center": False,
             "cutoff": env_cutoff,
             "bgColor": "grey",
@@ -293,26 +273,98 @@ def ChemView(
         map_settings = {"x": {"property": x}, "y": {"property": y}}
         if z:
             map_settings["z"] = {"property": z}
-        valid_colors = {x, y}
-        if z:
-            valid_colors.add(z)
-        if map_color in valid_colors:
+        if map_color is not None and map_color in props:
             map_settings["color"] = {"property": map_color}
         settings["map"] = map_settings
-        mode = "default"  # plot + structure
+        mode = "default"
 
-    import inspect
-
-    _show_params = inspect.signature(chemiscope.show).parameters
-    _frames_key = "structures" if "structures" in _show_params else "frames"
-    _meta_key = "metadata" if "metadata" in _show_params else "meta"
-    return chemiscope.show(
-        **{_frames_key: frames},
+    environments = (
+        chemiscope.all_atomic_environments(frames) if include_environments else None
+    )
+    dataset = chemiscope.create_input(
+        structures=frames,
         properties=props,
-        **{_meta_key: dict(name=meta_name)},
-        environments=chemiscope.all_atomic_environments(frames),
+        metadata={"name": meta_name},
+        environments=environments,
         settings=settings,
-        mode=mode,
+    )
+    return dataset, mode
+
+
+def _show_chemview_dataset(
+    dataset, mode, *, warning_timeout=10000, cache_structures=True
+):
+    """
+    Display a dataset already produced by ``create_input``.
+
+    ``chemiscope.show`` runs ``create_input`` again, which breaks when
+    ``environments`` are already normalized dicts (structure index becomes the
+    literal string ``'structure'``).  Pass the finalized dict straight to the
+    Jupyter widget instead.
+    """
+    from chemiscope.jupyter import ChemiscopeWidget, MapWidget, StructureWidget
+
+    widget_classes = {
+        "default": ChemiscopeWidget,
+        "structure": StructureWidget,
+        "map": MapWidget,
+    }
+    if mode not in widget_classes:
+        raise ValueError(
+            f"invalid ChemView mode {mode!r}; expected 'default', 'structure', or 'map'"
+        )
+
+    meta = dataset.get("meta") or {}
+    has_metadata = meta.get("name", " ") != " "
+
+    payload = dict(dataset)
+    properties = dict(payload.get("properties") or {})
+
+    if mode == "structure" and "index" not in properties:
+        properties["index"] = {
+            "target": "structure",
+            "values": list(range(len(payload.get("structures", [])))),
+        }
+        payload["properties"] = properties
+
+    if mode != "structure" and len(properties) < 2:
+        raise ValueError("Need at least two properties to visualize a map widget")
+
+    return widget_classes[mode](
+        payload,
+        has_metadata=has_metadata,
+        warning_timeout=warning_timeout,
+        cache_structures=cache_structures,
+    )
+
+
+def ChemView(
+    *,
+    frames,
+    specs,
+    x,
+    y,
+    z=None,
+    names=None,
+    units_override=None,
+    **kwargs,
+):
+    """Launch Chemiscope viewer in Jupyter using ChemView-style arguments."""
+    dataset, mode = build_chemview_dataset(
+        frames=frames,
+        specs=specs,
+        x=x,
+        y=y,
+        z=z,
+        names=names,
+        units_override=units_override,
+        **kwargs,
+    )
+    return _show_chemview_dataset(
+        dataset,
+        mode,
+        warning_timeout=kwargs.get("warning_timeout", 10000),
+        cache_structures=kwargs.get("cache_structures", True),
     )
 
 

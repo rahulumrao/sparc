@@ -9,8 +9,9 @@ for enhanced sampling techniques like metadynamics and umbrella sampling.
 """
 
 import os
+import re
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional, Union
 
 import ase.units
 import yaml
@@ -30,6 +31,88 @@ from sparc.src.deepmd import setup_DeepPotential
 from sparc.src.utils.logger import SparcLog
 
 ################################################################
+
+# Actions that write bare CWD filenames and support OUTDIR=
+OUTDIR_ACTIONS = frozenset({"FKERNELABF"})
+
+# OUTDIR= or any *FILE= keyword (FILE, STATE_WFILE, GRID_WFILE, ...)
+PATH_KW = re.compile(
+    r"(?<![A-Za-z0-9_])(OUTDIR|[A-Za-z0-9_]*FILE)=(\S+)",
+    re.IGNORECASE,
+)
+
+
+def read_block(lines: List[str]) -> List[str]:
+    """Join PLUMED '...' blocks into one plain action line (no '...' tokens)."""
+    out: List[str] = []
+    buf: Optional[List[str]] = None
+    for line in lines:
+        s = line.strip()
+        if not s or s.startswith("#"):
+            continue
+        if buf is not None:
+            if s == "...":
+                out.append(" ".join(buf))
+                buf = None
+            else:
+                buf.append(s)
+            continue
+        if s.endswith("...") and s != "...":
+            buf = [s[:-3].rstrip()]
+        else:
+            out.append(s)
+    if buf is not None:
+        raise ValueError("Unclosed PLUMED '...' block in input")
+    return out
+
+
+def rewrite_file_kwargs(
+    line: str,
+    out_dir: Union[str, Path],
+    *,
+    absolutize: bool = False,
+    plumed_dir: Optional[Path] = None,
+) -> str:
+    """Rewrite OUTDIR= and *FILE= values on a PLUMED action line."""
+    out_dir = Path(out_dir)
+
+    def repl(match: re.Match) -> str:
+        key, val = match.group(1), match.group(2)
+        key_upper = key.upper()
+        if absolutize and key_upper.endswith("FILE"):
+            new_vals = []
+            for v in val.split(","):
+                p = Path(v)
+                p = p if p.is_absolute() else (plumed_dir / p)
+                p = p.resolve()
+                if not p.is_file():
+                    raise FileNotFoundError(f"PLUMED LOAD library not found: {p}")
+                new_vals.append(str(p))
+            return f"{key}={','.join(new_vals)}"
+        if key_upper == "OUTDIR":
+            return f"{key}={out_dir}"
+        new_vals = [f"{out_dir}/{Path(v).name}" for v in val.split(",")]
+        return f"{key}={','.join(new_vals)}"
+
+    return PATH_KW.sub(repl, line)
+
+
+def plumed_block(line: str, plumed_dir: Path, out_dir: Union[str, Path]) -> str:
+    """Apply LOAD / OUTDIR / *FILE= path policy to one (collapsed) PLUMED line."""
+    upper = line.upper()
+    out_dir = Path(out_dir)
+
+    if upper.lstrip().startswith(("LOAD", "INCLUDE")):
+        return rewrite_file_kwargs(
+            line, out_dir, absolutize=True, plumed_dir=plumed_dir
+        )
+
+    if any(action in upper for action in OUTDIR_ACTIONS):
+        tokens = [t for t in line.split() if not t.upper().startswith("OUTDIR=")]
+        tokens.append(f"OUTDIR={out_dir}")
+        line = " ".join(tokens)
+
+    return rewrite_file_kwargs(line, out_dir)
 
 
 def modify_forces(
@@ -75,39 +158,24 @@ def modify_forces(
     ase.calculators.plumed.Plumed
         The PLUMED-wrapped ASE calculator
     """
-    # Ensure iteration directory exists
     out_dir = Path(iteration)
     out_dir.mkdir(parents=True, exist_ok=True)
     log_path = out_dir / Path(PlumedLog).name
+    plumed_dir = Path(plumed_input).resolve().parent
 
-    # Open the PLUMED input file and read its contents
-    setup = [
+    raw = [
         line
         for line in open(plumed_input, "r").read().splitlines()
-        if not line.startswith("#")
+        if not line.strip().startswith("#")
     ]
-
-    modified_setup = []
-    for line in setup:
-        if "FILE=" in line:
-            # Extract the part after FILE= and handle multiple filenames
-            parts = line.split("FILE=")
-            if len(parts) > 1:
-                filenames = parts[1].strip()  # Get the filenames
-                filenames = filenames.split(",")  # Handle multiple filenames
-                filenames = [
-                    f"{iteration}/{filename.strip()}" for filename in filenames
-                ]
-                new_filenames = ",".join(filenames)
-                line = parts[0] + f"FILE={new_filenames}"
-        modified_setup.append(line)
+    setup = read_block(raw)
+    modified_setup = [plumed_block(ln, plumed_dir, out_dir) for ln in setup]
 
     SparcLog(f"PLUMED output files will be written in {iteration}")
 
     if kT is None:
         kT = 8.617333e-5 * 300  # Boltzmann in eV/K at 300K
 
-    # Initialize PLUMED calculator
     plumed_calc = Plumed(
         calc=calculator,
         input=modified_setup,

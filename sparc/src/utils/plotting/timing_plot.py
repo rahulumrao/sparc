@@ -14,11 +14,31 @@ from __future__ import annotations
 
 from typing import Optional, Tuple
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.axes import Axes
-from matplotlib.patches import Patch
+
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib.axes import Axes
+    from matplotlib.patches import Patch
+
+    _MATPLOTLIB_AVAILABLE = True
+except ImportError as _matplotlib_import_err:
+    plt = None  # type: ignore[assignment]
+    Axes = None  # type: ignore[assignment]
+    Patch = None  # type: ignore[assignment]
+    _MATPLOTLIB_AVAILABLE = False
+    _matplotlib_import_err_msg = str(_matplotlib_import_err)
+
+
+def _require_matplotlib() -> None:
+    if not _MATPLOTLIB_AVAILABLE:
+        raise ImportError(
+            "Timing plots require matplotlib.\n"
+            "Install with: pip install matplotlib\n"
+            f"(original error: {_matplotlib_import_err_msg})"
+        )
+
 
 # ── Column / label / color definitions (post-merge) ──────────────────────────
 PLOT_COLS = ("dft_wall_h", "train_wall_h", "sampling_wall_h")
@@ -51,13 +71,15 @@ def _prepare_df(raw: pd.DataFrame, unit: str = "h") -> pd.DataFrame:
 
     mlmd + qbc are summed into sampling_wall_h so the three display columns
     match DFT Labelling / Training / Exploration.
-    """
-    duration_col = "duration_h" if unit == "h" else "duration_s"
 
+    Always pivots ``duration_h``, then scales to minutes when ``unit == "m"``.
+    (Previously ``unit="m"`` incorrectly used ``duration_s`` and multiplied by 60,
+    which produced seconds×60 instead of minutes.)
+    """
     wide = raw.pivot_table(
         index="iteration",
         columns="step",
-        values=duration_col,
+        values="duration_h",
         fill_value=0.0,
     )
 
@@ -82,6 +104,7 @@ def _prepare_df(raw: pd.DataFrame, unit: str = "h") -> pd.DataFrame:
     ).reset_index(drop=True)
 
     if unit == "m":
+        # hours → minutes
         for col in ("dft_wall_h", "train_wall_h", "sampling_wall_h"):
             df[col] = df[col] * 60.0
 
@@ -147,44 +170,71 @@ def _draw_bars(
     df: pd.DataFrame,
     threshold: float,
     x: np.ndarray,
-) -> Tuple[list, list]:
+    counts: np.ndarray,
+    unit: str = "h",
+) -> None:
     """
-    Draw all bars, routing each to ax_top if val > threshold else ax_bot.
+    Draw grouped bars on a broken y-axis.
 
-    Returns (dft_bars_on_top, dft_bars_on_bot) for count annotation.
+    Matplotlib ``bar(height=v)`` always starts at y=0. If a tall bar is drawn
+    *only* on the upper panel, the part below ``ylim[0]`` is clipped and the
+    visible stub looks like it is floating ("hanging") above the break.
+
+    Values that cross the break are therefore drawn on **both** panels: the
+    bottom panel shows 0 → break, the top panel shows break → value. Short
+    bars stay on the bottom panel only. Numeric labels are placed once, on
+    the panel that contains the bar top.
     """
-    dft_top: list = []
-    dft_bot: list = []
-
+    fmt = "%.1f" if unit == "m" else "%.2f"
     for offset, col, color in zip(BAR_OFFSETS, PLOT_COLS, PLOT_COLORS):
         vals = df[col].to_numpy()
         for i, val in enumerate(vals):
-            ax = ax_top if val > threshold else ax_bot
-            b = ax.bar(
-                x[i] + offset, val, BAR_WIDTH, color=color, edgecolor="white", lw=0.6
+            xpos = x[i] + offset
+            crosses = val > threshold
+
+            # Always draw on the bottom panel (clipped by ylim).
+            b_bot = ax_bot.bar(
+                xpos, val, BAR_WIDTH, color=color, edgecolor="white", lw=0.6
             )
-            if val > 1e-6:  # skip label on zero-height bars (e.g. iter 0 DFT/Training)
-                ax.bar_label(b, fmt="%.2f", padding=2, fontsize=10, color="0.25")
-            if col == "dft_wall_h":
-                (dft_top if val > threshold else dft_bot).append(b[0])
 
-    return dft_top, dft_bot
+            if crosses:
+                # Same bar on the top panel → only the tip above the break shows.
+                b_top = ax_top.bar(
+                    xpos, val, BAR_WIDTH, color=color, edgecolor="white", lw=0.6
+                )
+                if val > 1e-6:
+                    ax_top.bar_label(
+                        b_top, fmt=fmt, padding=3, fontsize=10, color="0.25"
+                    )
+                if col == "dft_wall_h":
+                    _annotate_counts(ax_top, [b_top[0]], [counts[i]])
+                    _annotate_counts(ax_bot, [b_bot[0]], [counts[i]])
+            else:
+                if val > 1e-6:
+                    ax_bot.bar_label(
+                        b_bot, fmt=fmt, padding=3, fontsize=10, color="0.25"
+                    )
+                if col == "dft_wall_h":
+                    _annotate_counts(ax_bot, [b_bot[0]], [counts[i]])
 
 
-def _annotate_counts(ax: Axes, bars: list, counts: np.ndarray) -> None:
-    """Write candidate count text inside DFT bars."""
+def _annotate_counts(ax: Axes, bars: list, counts) -> None:
+    """Write candidate count text inside the visible part of DFT bars."""
     lo, hi = ax.get_ylim()
     for bar, n in zip(bars, counts):
-        if n == 0:
+        if not n:
             continue
-        h = bar.get_height()
-        if not (lo < h <= hi):
+        h = float(bar.get_height())
+        # Visible segment of this bar inside the panel.
+        y_lo = max(lo, 0.0)
+        y_hi = min(hi, h)
+        if y_hi <= y_lo:
             continue
-        y = h / 2 if lo < h / 2 < hi else (lo + hi) / 2
+        y = 0.5 * (y_lo + y_hi)
         ax.text(
             bar.get_x() + bar.get_width() / 2,
             y,
-            f"{n:,}",
+            f"{int(n):,}",
             rotation=45,
             ha="center",
             va="center",
@@ -212,6 +262,7 @@ def PlotStepTimings(
     rcparams: Optional[dict] = None,
     Ycmin: Optional[Tuple[float, float]] = None,
     Ycmax: Optional[Tuple[float, float]] = None,
+    figsize: Tuple[float, float] = (9, 5),
     grid_ls: str = "-.",
     grid_alpha: float = 0.7,
 ) -> None:
@@ -237,7 +288,10 @@ def PlotStepTimings(
     Ycmax : (float, float), optional
         Explicit (lo, hi) for the top panel of the broken axis, e.g. (6, 16).
         Auto-computed when None.
+    figsize : (float, float)
+        Matplotlib figure size in inches (default ``(9, 5)``).
     """
+    _require_matplotlib()
     rc = dict(_DEFAULT_RC)
     if rcparams:
         rc.update(rcparams)
@@ -245,6 +299,7 @@ def PlotStepTimings(
 
     wdf = _prepare_df(df, unit=unit)
     ylabel = "Wall time (h)" if unit == "h" else "Wall time (min)"
+    fmt = "%.1f" if unit == "m" else "%.2f"
     x = np.arange(len(wdf))
     iters = wdf["iteration"].to_numpy()
     counts = wdf["n_configs_labeled"].to_numpy()
@@ -261,7 +316,7 @@ def PlotStepTimings(
             2,
             1,
             sharex=True,
-            figsize=(9, 5),
+            figsize=figsize,
             dpi=300,
             gridspec_kw={"height_ratios": [1, 2], "hspace": 0.05},
         )
@@ -275,14 +330,14 @@ def PlotStepTimings(
         ax1.tick_params(bottom=False)
         _break_marks(ax1, ax2)
 
-        dft_top, dft_bot = _draw_bars(ax1, ax2, wdf, threshold=b_hi, x=x)
-        _annotate_counts(ax1, dft_top, counts)
-        _annotate_counts(ax2, dft_bot, counts)
+        _draw_bars(ax1, ax2, wdf, threshold=b_hi, x=x, counts=counts, unit=unit)
 
         ax2.set_xticks(x)
         ax2.set_xticklabels(iters)
         ax2.set_xlabel("Iteration")
-        fig.supylabel(ylabel, x=0.04)
+        # Leave room so the shared ylabel does not sit on the y-tick labels.
+        fig.subplots_adjust(left=0.16, right=0.97, top=0.9, bottom=0.12)
+        fig.supylabel(ylabel, x=0.02)
         fig.legend(
             handles=patches,
             frameon=False,
@@ -290,10 +345,9 @@ def PlotStepTimings(
             loc="upper center",
             bbox_to_anchor=(0.65, 0.99),
         )
-        fig.subplots_adjust(left=0.1, right=0.97, top=0.9, bottom=0.1)
 
     else:
-        fig, ax = plt.subplots(figsize=(9, 5), dpi=300)
+        fig, ax = plt.subplots(figsize=figsize, dpi=300)
         _style_ax(ax, grid_ls=grid_ls, grid_alpha=grid_alpha)
         dft_bars: list = []
 
@@ -302,8 +356,8 @@ def PlotStepTimings(
             b = ax.bar(
                 x + offset, vals, BAR_WIDTH, color=color, edgecolor="white", lw=0.6
             )
-            labels = [f"{v:.2f}" if v > 1e-6 else "" for v in vals]
-            ax.bar_label(b, labels=labels, padding=2, fontsize=10, color="0.25")
+            labels = [fmt % v if v > 1e-6 else "" for v in vals]
+            ax.bar_label(b, labels=labels, padding=3, fontsize=10, color="0.25")
             if col == "dft_wall_h":
                 dft_bars = list(b)
 
@@ -337,8 +391,10 @@ def PlotStepTimingLine(
     save_fig: Optional[str] = None,
     show: bool = True,
     rcparams: Optional[dict] = None,
+    figsize: Tuple[float, float] = (9, 5),
 ) -> None:
     """Line plot of per-step wall time vs iteration."""
+    _require_matplotlib()
     rc = dict(_DEFAULT_RC)
     if rcparams:
         rc.update(rcparams)
@@ -348,7 +404,7 @@ def PlotStepTimingLine(
     ylabel = "Wall time (h)" if unit == "h" else "Wall time (min)"
     x = wdf["iteration"].to_numpy()
 
-    fig, ax = plt.subplots(figsize=(9, 5), dpi=300)
+    fig, ax = plt.subplots(figsize=figsize, dpi=300)
     _style_ax(ax)
 
     for col, label, color in zip(PLOT_COLS, PLOT_LABELS, PLOT_COLORS):

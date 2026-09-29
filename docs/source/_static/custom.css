@@ -24,5 +24,88 @@ code {
     font-family: Helvetica, Arial, sans-serif; /* Use Helvetica */
 }
 
+/* ── Workflow YAML: stage banners + syntax colours ───────────────────── */
+div.highlight-sparc-workflow-yaml .highlight pre {
+    color: #333;
+    line-height: 1.45;
+}
+
+div.highlight-sparc-workflow-yaml .highlight .cp {
+    /* [Stage 1 — 00.dft] */
+    display: block;
+    margin-top: 0.6em;
+    padding: 0.15em 0.5em;
+    color: #1a5276;
+    background: #d6eaf8;
+    font-weight: 600;
+}
+
+div.highlight-sparc-workflow-yaml .highlight .cs {
+    /* [Stage 2 — 01.train] */
+    display: block;
+    margin-top: 0.6em;
+    padding: 0.15em 0.5em;
+    color: #7d6608;
+    background: #fcf3cf;
+    font-weight: 600;
+}
+
+div.highlight-sparc-workflow-yaml .highlight .gh {
+    /* [Stage 3 — 02.dpmd] */
+    display: block;
+    margin-top: 0.6em;
+    padding: 0.15em 0.5em;
+    color: #145a32;
+    background: #d5f5e3;
+    font-weight: 600;
+}
+
+div.highlight-sparc-workflow-yaml .highlight .kt {
+    /* [Active Learning] */
+    display: block;
+    margin-top: 0.6em;
+    padding: 0.15em 0.5em;
+    color: #6c3483;
+    background: #ebdef0;
+    font-weight: 600;
+}
+
+div.highlight-sparc-workflow-yaml .highlight .c {
+    /* inline comments + [Optional] banners */
+    color: #7f8c8d;
+}
+
+div.highlight-sparc-workflow-yaml .highlight .nt {
+    color: #2980b9;
+}
+
+div.highlight-sparc-workflow-yaml .highlight .s,
+div.highlight-sparc-workflow-yaml .highlight .s2 {
+    color: #27ae60;
+}
+
+div.highlight-sparc-workflow-yaml .highlight .nb,
+div.highlight-sparc-workflow-yaml .highlight .m {
+    color: #d35400;
+}
+
+.workflow-yaml-legend {
+    margin: 0.5em 0 1em 0;
+    font-size: 0.92em;
+}
+
+.workflow-yaml-legend span {
+    display: inline-block;
+    margin-right: 1em;
+    padding: 0.1em 0.55em;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+.workflow-yaml-legend .stage1 { color: #1a5276; background: #d6eaf8; }
+.workflow-yaml-legend .stage2 { color: #7d6608; background: #fcf3cf; }
+.workflow-yaml-legend .stage3 { color: #145a32; background: #d5f5e3; }
+.workflow-yaml-legend .stageal { color: #6c3483; background: #ebdef0; }
+
 
 

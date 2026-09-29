@@ -2,15 +2,60 @@ import glob
 import os
 
 import dpdata
-import matplotlib.pyplot as plt
-import nglview as nv
 import numpy as np
 import pandas as pd
-import seaborn as sns
 from ase.io import read
-from matplotlib.ticker import FormatStrFormatter, MaxNLocator
 from scipy.interpolate import interp1d
 from scipy.stats import gaussian_kde
+
+# Plotting/viewer libraries are optional: a SPARC run never needs them.
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import FormatStrFormatter, MaxNLocator
+
+    _MATPLOTLIB_ERR = None
+except ImportError as _err:
+    plt = None
+    FormatStrFormatter = None
+    MaxNLocator = None
+    _MATPLOTLIB_ERR = str(_err)
+
+try:
+    import seaborn as sns
+
+    _SEABORN_ERR = None
+except ImportError as _err:
+    sns = None
+    _SEABORN_ERR = str(_err)
+
+try:
+    import nglview as nv
+
+    _NGLVIEW_ERR = None
+except ImportError as _err:
+    nv = None
+    _NGLVIEW_ERR = str(_err)
+
+
+def _require(name, err):
+    if err is not None:
+        raise ImportError(
+            f"This function requires {name}.\n"
+            f"Install with: pip install {name}\n"
+            f"(original error: {err})"
+        )
+
+
+def _require_matplotlib():
+    _require("matplotlib", _MATPLOTLIB_ERR)
+
+
+def _require_seaborn():
+    _require("seaborn", _SEABORN_ERR)
+
+
+def _require_nglview():
+    _require("nglview", _NGLVIEW_ERR)
 
 
 ########################################################################################################
@@ -63,6 +108,7 @@ def ParityPlot(
         >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="forces", force_mode="flatten")
         >>> ParityPlot("data_dir", "frozen_model.pb", per_atom=True, type="forces", force_mode="components")
     """
+    _require_matplotlib()
 
     if not os.path.exists(data_dir):
         print(f"[ANALYSIS][ERROR] Test data not found: {data_dir}")
@@ -258,6 +304,7 @@ def PlotLcurve(lcurve_file, save_fig=None):
     Example:
         >>> PlotLcurve(lcurve_file="iter_000000/01.train/training_1/lcurve.out")
     """
+    _require_matplotlib()
     if not os.path.isfile(lcurve_file):
         print(f"[ANALYSIS][ERROR] File not found: {lcurve_file}")
         return
@@ -317,6 +364,7 @@ def PlotForceDeviation(
         >>> PlotForceDeviation("/path/to/root", target_iteration=3)
         >>> PlotForceDeviation("/path/to/root", iteration_window="all")
     """
+    _require_matplotlib()
     data_dict = {}
 
     # Collect relevant iteration directories
@@ -356,11 +404,13 @@ def PlotForceDeviation(
                 lines = f.readlines()
 
             # Extract data from lines (skip header lines)
-            for line in lines[2:]:  # Skip first two header lines
+            for line in lines:
+                if line.startswith("#"):
+                    continue
                 cols = line.split()
                 if len(cols) >= 5:
                     try:
-                        steps.append(int(cols[0]))
+                        steps.append(int(float(cols[0])))
                         max_devi_f.append(float(cols[4]))  # Read: max_devi_f
                     except ValueError:
                         continue
@@ -431,6 +481,7 @@ def PlotPotentialEnergy(
         >>> plot_potential_energy("/path/to/root", target_iteration=3, traj_filename="AseMD.traj")
         >>> plot_potential_energy("/path/to/root", iteration_window="all", traj_filename="AseMD.traj")
     """
+    _require_matplotlib()
     if traj_filename is None:
         traj_filename = input("Enter the trajectory filename (e.g., AseMD.traj): ")
 
@@ -565,6 +616,8 @@ def PlotDistribution(
         # Customized markers for energy plot
         PlotDistribution(get="energy", type="line", color="red", marker="x", linestyle="--")
     """
+    _require_matplotlib()
+    _require_seaborn()
 
     property_dict = {}
     is_energy = get.lower() == "energy"
@@ -737,6 +790,9 @@ def PlotPES(
         # KDE plot with a custom colormap
         PlotPES(type="kde", cmap="mako")
     """
+    _require_matplotlib()
+    _require_seaborn()
+
     import glob
     import os
 
@@ -879,6 +935,7 @@ def PlotTemp(
         >>> plot_temperature("/path/to/root", target_iteration=3, traj_filename="dpmd.traj")
         >>> plot_temperature("/path/to/root", iteration_window="all", traj_filename="dpmd.traj")
     """
+    _require_matplotlib()
     if traj_filename is None:
         traj_filename = (
             input("Enter the trajectory filename (default: dpmd.traj): ") or "dpmd.traj"
@@ -1121,6 +1178,7 @@ def ViewTraj(traj, style="ball_and_stick", background="white", size=400):
     Returns:
         nglview.NGLWidget: Configured NGL viewer widget.
     """
+    _require_nglview()
     # If a string is passed, assume it's a file path
     if isinstance(traj, str):
         traj = read(traj, index=":")

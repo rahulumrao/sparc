@@ -524,13 +524,13 @@ def restart_progress(start_iteration):
     Args:
         start_iteration (dict): dictionary containing the current state which includes:
             - 'iteration': last AL iteration.
-            - 'idx': index of last processed candidates.
+            - 'idx': index of the last candidate that completed labelling.
             - 'candidate': total number of candidates.
 
     Returns:
         tuple: (iter, iddx, candidate_idx, candidate_found_is, candidates_file)
             - iter (int): Current iteration
-            - iddx (int): Index of last processed candidate
+            - iddx (int): Index of the first candidate still to be labelled
             - candidate_idx (int): Total number of candidates
             - candidate_found_is (bool): True/False
             - candidates_file (str): Path to candidates.extxyz trajectory
@@ -543,8 +543,11 @@ def restart_progress(start_iteration):
             "Error: 'iteration' key is missing or None in the progress file."
         )
 
-    # Retrieve candidate
-    iddx = start_iteration.get("idx")
+    # save_progress writes 'idx' after that candidate is labelled and written, so
+    # resume starts at idx + 1. Resuming at idx repeats one DFT calculation and
+    # duplicates its frame in the training set. Missing/null idx means none done.
+    last_completed = start_iteration.get("idx") or 0
+    iddx = last_completed + 1
     candidate_idx = start_iteration.get("candidate")
 
     # Check if candidate is found
@@ -558,7 +561,8 @@ def restart_progress(start_iteration):
     SparcLog(f" Resuming Active Learning from Iteration: {iter} ")
     SparcLog("-" * 80)
     SparcLog(f" Candidates file    | {candidates_file:<35}")
-    SparcLog(f" Starting Candidate | {iddx:<35}")
+    SparcLog(f" Last Completed     | {last_completed:<35}")
+    SparcLog(f" Resuming at        | {iddx:<35}")
     SparcLog(f" Total Candidates   | {candidate_idx:<35}")
     SparcLog("-" * 80)
 
@@ -570,6 +574,31 @@ def remove_backup_files(file_ext="bck.*"):
     backup_files = glob.glob(file_ext)
     for file in backup_files:
         os.remove(file)
+
+
+def flush_memory(backend: str = "pytorch"):
+    """
+    Best-effort cleanup of GPU memory after a calculator or model is released.
+    """
+    import gc
+
+    gc.collect()
+
+    if backend == "pytorch":
+        try:
+            import torch
+
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+        except ImportError:
+            pass
+    elif backend == "tensorflow":
+        try:
+            import tensorflow as tf
+
+            tf.keras.backend.clear_session()
+        except ImportError:
+            pass
 
 
 def check_physical_limits(atoms, distance_metrics):
@@ -615,8 +644,217 @@ def check_physical_limits(atoms, distance_metrics):
 
 
 # ---------------------------------------------------------------------------------------
-# Helper Function to Restart ML/MD exploration
+# Label validation — acceptance criteria for a newly labelled candidate frame
 # ---------------------------------------------------------------------------------------
+def labelled_reference_energy(
+    trajfilename: str, current_iter: int, parent_dir: Union[str, Path] = "."
+) -> Union[float, None]:
+    """
+    Return the minimum potential energy over frames already in the training set.
+
+    Serves as the anchor E_ref for the acceptance window applied to newly
+    labelled candidates. A separate anchor is required because the ML-MD gate in
+    ``ExecuteMlpDynamics`` tests E_ML(t) against E_ML(t=0) of the same run: both
+    terms carry the model's error, so the test is meaningful only while that
+    error is small. Outside the training manifold the error is unbounded — for a
+    dissociating molecule the committee under-predicts E by several eV, the frame
+    appears more stable than it is, and the window is never crossed. Referencing
+    the labelled energy against a fixed point of the reference energy scale
+    removes the model from the test.
+
+    The minimum is used rather than a mean or a first frame: it is invariant to
+    high-energy contamination already present in the set, and it is monotonic
+    under dataset growth, decreasing only when a more stable configuration is
+    labelled.
+
+    Parameters
+    ----------
+    trajfilename : str
+        Labelled-trajectory filename inside each ``iter_XXXXXX/00.dft/``.
+    current_iter : int
+        Iteration being labelled; only preceding iterations contribute.
+    parent_dir : str or Path
+        Root directory holding ``iter_XXXXXX/`` and ``TrajCombined.traj``.
+
+    Returns
+    -------
+    float or None
+        Reference energy in eV, or None when no labelled data exists yet.
+    """
+    parent_dir = Path(parent_dir)
+
+    sources = []
+    combined = parent_dir / "TrajCombined.traj"
+    if combined.exists():
+        # Rewritten after each labelling step; already spans iterations 0..N-1.
+        sources.append(combined)
+    else:
+        for i in range(current_iter):
+            traj = parent_dir / f"iter_{i:06d}" / "00.dft" / trajfilename
+            if traj.exists():
+                sources.append(traj)
+
+    energies = []
+    for src in sources:
+        try:
+            for atoms in read(str(src), index=":"):
+                energy = float(np.ravel(atoms.get_potential_energy())[0])
+                if np.isfinite(energy):
+                    energies.append(energy)
+        except Exception as exc:
+            SparcLog(
+                f" Warning: could not read reference energies from {src}: {exc}",
+                level="WARNING",
+            )
+
+    return min(energies) if energies else None
+
+
+def validate_labelled_frame(system, energy, forces, epot_ref=None, epot_threshold=None):
+    """
+    Test whether a labelled frame is admissible as a training label.
+
+    Two independent criteria are applied.
+
+    Finiteness of E, F and R. A non-finite value is not a large value but an
+    absent one: the SCF diverged, the run was killed, or the parser returned a
+    placeholder. Such a frame carries no information and propagates NaN through
+    the loss on the first training step.
+
+    Energy window E <= E_ref + epot_threshold. The bound is one-sided. An excess
+    above E_ref indicates either fragmentation of the system or an unconverged
+    SCF; in both cases the label is physically unwanted or numerically wrong. A
+    deficit below E_ref indicates a more stable configuration, which is the
+    intended product of biased exploration and must not be rejected.
+
+    No bound is placed on |F|. Over the labelled frames of this workflow |F|max
+    for fragmented configurations falls inside the range spanned by intact ones,
+    so force magnitude carries no discriminating power for this failure mode and
+    any cutoff would be arbitrary.
+
+    Parameters
+    ----------
+    system : ase.Atoms
+        The labelled structure.
+    energy : float or None
+        Potential energy [eV].
+    forces : numpy.ndarray or None
+        Forces [eV/Å]; None skips the force check.
+    epot_ref : float or None
+        Reference energy from :func:`labelled_reference_energy` [eV]. None
+        disables the energy window.
+    epot_threshold : float or None
+        Width of the accepted window above ``epot_ref`` [eV]. None disables the
+        energy window.
+
+    Returns
+    -------
+    tuple
+        ``(is_valid, reason)``; *reason* is an empty string when valid.
+    """
+    if energy is None:
+        return False, "calculator returned no energy"
+
+    energy = float(np.ravel(energy)[0])
+    if not np.isfinite(energy):
+        return False, f"non-finite energy ({energy})"
+
+    if forces is not None and not np.isfinite(np.asarray(forces, dtype=float)).all():
+        return False, "non-finite forces (NaN/Inf)"
+
+    if not np.isfinite(system.get_positions()).all():
+        return False, "non-finite atomic positions"
+
+    if epot_ref is not None and epot_threshold is not None:
+        epot_ref = float(epot_ref)
+        excess = energy - (epot_ref + float(epot_threshold))
+        if excess > 0.0:
+            return False, (
+                f"E = {energy:.3f} eV exceeds E_ref + threshold "
+                f"({epot_ref:.3f} + {float(epot_threshold):.2f} eV) by {excess:.3f} eV"
+            )
+
+    return True, ""
+
+
+def save_rejected_frame(idx, system, energy, forces, reason, dir_name):
+    """
+    Record a candidate rejected by :func:`validate_labelled_frame`.
+
+    The structure is appended to ``rejected.extxyz`` and the reason to
+    ``rejected_candidates.dat``, both inside *dir_name*.
+
+    Energy and forces are reattached through a SinglePointCalculator when both
+    are finite, so a frame rejected on the energy window alone remains a
+    complete labelled result and can be readmitted without recomputing it if the
+    window is later widened. Frames rejected for non-finite values are written
+    as geometry only: the numbers they carry are absent rather than large, and
+    would propagate to any reader that treats them as data.
+
+    Parameters
+    ----------
+    idx : int
+        Candidate index within ``candidates.extxyz``.
+    system : ase.Atoms
+        The rejected structure.
+    energy : float or None
+        Potential energy [eV], or None if the calculator returned nothing.
+    forces : numpy.ndarray or None
+        Forces [eV/Å], or None if the calculator returned nothing.
+    reason : str
+        Rejection reason from :func:`validate_labelled_frame`.
+    dir_name : str or Path
+        Directory holding the iteration's labelling output.
+    """
+    frame = system.copy()
+    frame.info["rejection_reason"] = reason
+    frame.info["candidate_index"] = idx
+
+    energy_finite = energy is not None and np.isfinite(energy)
+    forces_finite = forces is not None and np.isfinite(np.asarray(forces)).all()
+    if energy_finite and forces_finite:
+        frame.calc = SinglePointCalculator(
+            frame, energy=float(energy), forces=np.asarray(forces)
+        )
+
+    rejected_traj = os.path.join(str(dir_name), "rejected.extxyz")
+    rejected_log = os.path.join(str(dir_name), "rejected_candidates.dat")
+
+    try:
+        write(rejected_traj, frame, format="extxyz", append=True)
+    except Exception as exc:
+        SparcLog(
+            f"Warning: could not write rejected frame {idx} to {rejected_traj}: {exc}",
+            level="WARNING",
+        )
+
+    write_header = not os.path.exists(rejected_log)
+    with open(rejected_log, "a") as f:
+        if write_header:
+            f.write("# Candidates rejected before entering the training set\n")
+            f.write(f"# {'Candidate':>10} {'Epot[eV]':>14}  Reason\n")
+            f.write(f"#{'=' * 78}\n")
+        epot_col = f"{float(energy):14.6f}" if energy_finite else f"{'n/a':>14}"
+        f.write(f"{idx:>12} {epot_col}  {reason}\n")
+
+
+# ---------------------------------------------------------------------------------------
+# Restart exploration — seed ML-MD from the validated candidate ensemble
+# ---------------------------------------------------------------------------------------
+def _validated_pool(parent_dir: Path, iter: int, trajfilename: str) -> Path:
+    """
+    Frames of iteration *iter* that passed validation during labelling.
+
+    This is the QbC pool minus everything validate_labelled_frame rejected,
+    written by the labelling step of the same iteration, which runs before ML-MD.
+    Seeding from the raw QbC pool instead lets a rejected geometry start the next
+    trajectory: exploration continues inside the region the energy window
+    excludes, every candidate it yields is rejected in turn, and the run cannot
+    recover without intervention.
+    """
+    return parent_dir / f"iter_{iter:06d}" / "00.dft" / trajfilename
+
+
 def get_initial_structure(
     iter: int,
     sample_idx: int,
@@ -626,122 +864,109 @@ def get_initial_structure(
     struct_idx: int = None,
 ):
     """
-    Get initial structure for ML-MD run with optional restart exploration.
+    Return the initial atomic configuration for an ML-MD exploration run.
 
-    If restart_exploration is enabled and iter > 0, loads structure from previous
-    iteration based on restart_mode strategy. Otherwise, loads from original structure.
+    When ``restart_exploration`` is active (iteration > 0), the starting geometry
+    is drawn from the frames this iteration's labelling step accepted
+    (``00.dft/<aimdtraj_file>``).  These lie within the committee force-deviation
+    window, passed geometric deduplication, and carry a validated DFT label — so
+    they are locally distinct, model-uncertain configurations that are also
+    physically admissible.
 
     Parameters
     ----------
     iter : int
-        Current active learning iteration number
+        Current active-learning iteration index.
     sample_idx : int
-        Sample index for multiple parallel runs (0, 1, 2, ...)
+        Index of the parallel MD shoot (0, 1, …).
     config : SparcConfig
-        Full configuration object
+        Workflow configuration.
     structure_file : str, Path, or list of str
-        Path to original structure file(s)
+        Original input structure path(s).
     parent_dir : Path
-        Parent directory containing iteration folders
+        Root directory containing ``iter_XXXXXX/`` folders.
 
     Returns
     -------
-    atoms : ase.Atoms
-        Initial structure for MD simulation
+    ase.Atoms
+        Initial structure for the MD integrator.
 
     Notes
     -----
-    Restart strategies:
-    - "last": All runs start from last frame (best for single run)
-    - "random": Each run starts from different random frame from trajectory
-    - "candidates": Each run starts from different random DFT candidate (safest)
+    ``restart_frame`` strategies (source: accepted ``00.dft/<aimdtraj_file>``):
+
+    * ``"last"`` — final candidate in the pool; continues from the most
+      recently flagged uncertain configuration.
+    * ``"candidates"`` — deterministic round-robin over the pool; parallel
+      shoots seed from distinct committee-selected frames (no replacement
+      until the pool is exhausted).
+    * ``"random"`` — independent uniform draw from the pool; stochastic
+      resampling that may revisit the same configuration across shoots.
     """
     import random
 
-    # Check if restart exploration is enabled
     if config.mlip_setup.restart_exploration and iter > 0:
-        restart_mode = config.mlip_setup.restart_frame  # restart_frame
-        prev_iter = iter - 1
+        restart_mode = config.mlip_setup.restart_frame
+        candidate_file = _validated_pool(parent_dir, iter, config.output.aimdtraj_file)
 
-        # Path to previous iteration's trajectory
-        prev_traj_file = (
-            parent_dir / f"iter_{prev_iter:06d}" / "02.dpmd" / config.output.dptraj_file
-        )
-
-        if os.path.exists(prev_traj_file):
+        if candidate_file.exists():
             try:
+                candidates = read(str(candidate_file), index=":")
+                n_candidates = len(candidates)
+
+                if n_candidates == 0:
+                    raise ValueError(f"Empty validated pool: {candidate_file}")
+
                 if restart_mode == "last":
-                    # All runs use last frame (most equilibrated)
-                    atoms = read(prev_traj_file, index=-1)
+                    # Most recent frame in the committee-selected ensemble.
+                    atoms = candidates[-1]
                     SparcLog(
-                        f" Restart exploration: Using last frame from iteration {prev_iter}"
-                    )
-
-                elif restart_mode == "random":
-                    # Each run gets a DIFFERENT random frame from trajectory
-                    prev_traj = read(prev_traj_file, index=":")
-
-                    # Use sample_idx as seed to get different frames for each run
-                    random.seed(iter * 1000 + sample_idx)
-                    random_idx = random.randint(0, len(prev_traj) - 1)
-
-                    atoms = prev_traj[random_idx]
-                    SparcLog(
-                        f" Restart exploration: Run {sample_idx + 1} using frame {random_idx}/{len(prev_traj)} from iteration {prev_iter}"
+                        f" Restart exploration [{restart_mode}]: "
+                        f"candidate {n_candidates}/{n_candidates}, iter {iter}"
                     )
 
                 elif restart_mode == "candidates":
-                    # Each run starts from a DIFFERENT random DFT candidate (safest)
-                    candidate_file = (
-                        parent_dir
-                        / f"iter_{prev_iter:06d}"
-                        / "00.dft"
-                        / config.output.aimdtraj_file
+                    # Partition the QbC ensemble across parallel shoots.
+                    cand_idx = sample_idx % n_candidates
+                    atoms = candidates[cand_idx]
+                    SparcLog(
+                        f" Restart exploration [{restart_mode}]: "
+                        f"candidate {cand_idx + 1}/{n_candidates}, "
+                        f"shoot {sample_idx + 1}, iter {iter}"
                     )
 
-                    if os.path.exists(candidate_file):
-                        candidates = read(candidate_file, index=":")
-
-                        # Random selection with different seed for each run
-                        random.seed(iter * 1000 + sample_idx)
-                        random_candidates = random.sample(
-                            range(len(candidates)), min(len(candidates), 100)
-                        )
-                        cand_idx = random_candidates[
-                            sample_idx % len(random_candidates)
-                        ]
-
-                        atoms = candidates[cand_idx]
-                        SparcLog(
-                            f" Restart exploration: Run {sample_idx + 1} using DFT candidate {cand_idx + 1}/{len(candidates)} from iteration {prev_iter}"
-                        )
-                    else:
-                        SparcLog(
-                            " Candidates file not found, using last frame instead",
-                            level="WARNING",
-                        )
-                        atoms = read(prev_traj_file, index=-1)
+                elif restart_mode == "random":
+                    # Independent uniform resampling from the QbC pool.
+                    random.seed(iter * 1000 + sample_idx)
+                    cand_idx = random.randint(0, n_candidates - 1)
+                    atoms = candidates[cand_idx]
+                    SparcLog(
+                        f" Restart exploration [{restart_mode}]: "
+                        f"candidate {cand_idx + 1}/{n_candidates}, "
+                        f"shoot {sample_idx + 1}, iter {iter}"
+                    )
 
                 else:
                     raise ValueError(
-                        f"Invalid restart_mode: {restart_mode}. Options: 'last', 'random', 'candidates'"
+                        f"Invalid restart_frame: {restart_mode}. "
+                        "Options: 'last', 'candidates', 'random'"
                     )
 
                 return atoms
 
             except Exception as e:
                 SparcLog(
-                    f" Warning: Could not load from previous iteration: {e}",
+                    f" Warning: Could not load validated pool {candidate_file}: {e}",
                     level="WARNING",
                 )
-                SparcLog(" Falling back to original structure")
+                SparcLog(" Falling back to input structure")
 
         else:
             SparcLog(
-                f" Warning: Previous trajectory not found at {prev_traj_file}",
+                f" Warning: Validated pool not found: {candidate_file}",
                 level="WARNING",
             )
-            SparcLog(" Falling back to original structure")
+            SparcLog(" Falling back to input structure")
 
     # Default: Use original structure
     if isinstance(structure_file, list):

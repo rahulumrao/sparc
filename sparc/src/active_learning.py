@@ -164,6 +164,7 @@ def QueryByCommittee(
     deal_config=None,
     structure_file: str = "",
     deepmd_input_json: str = "",
+    qbc: str = "internal",
 ):
     """
     Find maximum deviation in atomic forces among multiple models using Query-by-Committee.
@@ -195,6 +196,9 @@ def QueryByCommittee(
         (default: 0.05)
     exclude_hydrogen : bool, optional
         Exclude hydrogen atoms when computing RMSD (default: True)
+    qbc : str, optional
+        Model deviation backend: "internal" (default, in-process) or
+        "deepmd" (shells out to `dp model-devi`)
 
     Returns
     -------
@@ -261,42 +265,68 @@ def QueryByCommittee(
         SparcLog(f"{Path(model).name}".center(72))
     SparcLog("=" * 80)
 
-    # ── Convert trajectory to DeePMD npy format ──────────────────────────────
-    # Universal models (e.g. DPA-3) use frame parameters (fparam). Read the
-    # model's own default_fparam and apply it before writing so that
-    # dp model-devi finds the required fparam.npy in every set directory.
-    dataset = dpdata.LabeledSystem(trajfile, fmt="ase/traj")
-
-    numb_fparam, default_fparam = _get_model_fparam_info(model_names[0])
-    if numb_fparam > 0:
-        SparcLog(
-            f"  Model requires fparam (numb_fparam={numb_fparam}), "
-            f"applying default_fparam={default_fparam}"
-        )
-        _apply_fparam_to_dataset(dataset, numb_fparam, default_fparam)
-
-    dataset.to_deepmd_npy(str(dpmd_data_path))
-
-    # ── Run dp model-devi ────────────────────────────────────────────────────
     outfile = f"{str(dpmd_data_path)}/model_dev_{iteration}.out"
-    command = (
-        ["dp", "model-devi", "-m"]
-        + model_names
-        + ["-s", str(dpmd_data_path), "-o", str(outfile)]
-    )
 
-    try:
-        subprocess.run(command, check=True)
-        SparcLog("=" * 80)
-        SparcLog("Model deviation calculation completed successfully!".center(72))
-        SparcLog(f"Results saved in: {outfile}".center(72))
-        SparcLog("=" * 80)
-    except subprocess.CalledProcessError as e:
-        SparcLog("=" * 80)
-        SparcLog("Error in dp model-devi command execution".center(72))
-        SparcLog(str(e).center(72))
-        SparcLog("=" * 80)
-        raise
+    if qbc == "deepmd":
+        # ── Convert trajectory to DeePMD npy format ──────────────────────────
+        # Universal models (e.g. DPA-3) use frame parameters (fparam). Read the
+        # model's own default_fparam and apply it before writing so that
+        # dp model-devi finds the required fparam.npy in every set directory.
+        dataset = dpdata.LabeledSystem(trajfile, fmt="ase/traj")
+
+        numb_fparam, default_fparam = _get_model_fparam_info(model_names[0])
+        if numb_fparam > 0:
+            SparcLog(
+                f"  Model requires fparam (numb_fparam={numb_fparam}), "
+                f"applying default_fparam={default_fparam}"
+            )
+            _apply_fparam_to_dataset(dataset, numb_fparam, default_fparam)
+
+        dataset.to_deepmd_npy(str(dpmd_data_path))
+
+        # ── Run dp model-devi ─────────────────────────────────────────────────
+        command = (
+            ["dp", "model-devi", "-m"]
+            + model_names
+            + ["-s", str(dpmd_data_path), "-o", str(outfile)]
+        )
+
+        try:
+            subprocess.run(command, check=True)
+            SparcLog("=" * 80)
+            SparcLog("Model deviation calculation completed successfully!".center(72))
+            SparcLog(f"Results saved in: {outfile}".center(72))
+            SparcLog("=" * 80)
+        except subprocess.CalledProcessError as e:
+            SparcLog("=" * 80)
+            SparcLog("Error in dp model-devi command execution".center(72))
+            SparcLog(str(e).center(72))
+            SparcLog("=" * 80)
+            raise
+    else:
+        # ── In-process model deviation (no dpdata write, no dp CLI) ──────────
+        from sparc.src.utils.model_qbc import compute_model_devi
+
+        numb_fparam, _ = _get_model_fparam_info(model_names[0])
+        if numb_fparam > 0:
+            SparcLog(
+                f"  Model uses fparam (numb_fparam={numb_fparam}); "
+                "DeepPot.eval falls back to the model's own baked-in default."
+            )
+
+        os.makedirs(str(dpmd_data_path), exist_ok=True)
+        try:
+            compute_model_devi(trajfile, model_names, "deepmd", "cuda", outfile)
+            SparcLog("=" * 80)
+            SparcLog("Model deviation calculation completed successfully!".center(72))
+            SparcLog(f"Results saved in: {outfile}".center(72))
+            SparcLog("=" * 80)
+        except Exception as e:
+            SparcLog("=" * 80)
+            SparcLog("Error in in-process model deviation calculation".center(72))
+            SparcLog(str(e).center(72))
+            SparcLog("=" * 80)
+            raise
 
     # ── Select candidates based on force deviation ───────────────────────────
     candidate_found, candidates_file, n_candidates = labelling(

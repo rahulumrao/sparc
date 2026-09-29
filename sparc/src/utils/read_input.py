@@ -247,6 +247,7 @@ class ModelDeviationConfig:
     f_max_dev: float = 0.8
     rmsd_threshold: float = 0.05
     exclude_hydrogen: bool = True
+    qbc: str = "internal"
 
     def __post_init__(self):
         if self.f_min_dev < 0 or self.f_max_dev < 0:
@@ -255,11 +256,33 @@ class ModelDeviationConfig:
             raise ValidationError("f_min_dev must be less than f_max_dev")
         if self.rmsd_threshold < 0:
             raise ValidationError("rmsd_threshold must be non-negative")
+        if self.qbc not in ("internal", "deepmd"):
+            raise ValidationError(
+                f"model_dev.qbc must be 'internal' (default, in-process) or "
+                f"'deepmd' (dp model-devi CLI), got {self.qbc!r}"
+            )
 
 
 @dataclass
 class DEALConfig:
     """DEAL sparse GP diversity filter — replaces RMSD when enabled.
+
+    Requires DEAL >= 3.0 (native sparse-GP backend; no FLARE install needed).
+
+    A working section needs one line::
+
+        deal:
+          enabled: true
+
+    Everything else has a default. Two selection modes:
+
+    threshold mode (default)
+        One pass at a fixed uncertainty ``threshold``; the trajectory decides
+        how many frames come out.
+    budget mode (``max_selected`` set)
+        Repeated passes reusing the same GP with a decaying threshold, until
+        ``max_selected`` frames are collected. Use when the DFT budget per AL
+        iteration is the real constraint.
 
     Parameters
     ----------
@@ -269,26 +292,60 @@ class DEALConfig:
         SGP local predictive variance threshold. Frames above threshold are
         selected (novel chemical environment). Not comparable to f_min_dev —
         different units and descriptor space. Start at 0.01, tune from output.
+        Ignored in budget mode, which decays its own threshold.
+    max_selected : int or None
+        None (default) → threshold mode. An int → budget mode targeting that
+        many frames per AL iteration.
     cutoff : float or None
-        FLARE descriptor cutoff in Å. None = auto-read from mlip_setup.input_file
-        (DeepMD rcut). Override only if auto-detection fails.
-    nmax : int
-        Radial basis functions for ACE B2 descriptor. Advanced — rarely change.
-    lmax : int
-        Angular channels for ACE B2 descriptor. Advanced — rarely change.
+        B2 descriptor cutoff in Å. None = auto-read from mlip_setup.input_file
+        (DeepMD ``rcut`` / MACE ``r_max``). Override only if detection fails.
+    mask : bool or str
+        Restrict GP evaluation to atoms flagged by a per-atom uncertainty
+        array — DEAL's speedup for reactive, interface and defect systems.
+        True → read ``atm_devi_f``; a string → read that array name. Frames
+        must already carry the array; when they do not, masking is skipped
+        with a warning.
+    advanced : dict
+        Escape hatch for the rest of the DEAL API — kernel, descriptor, budget
+        pacing, mask thresholds, GP training and output options. Keys are
+        validated against the installed DEAL when the filter runs, so nothing
+        needs a SPARC release to become reachable. See the user guide for the
+        catalogue; common ones::
+
+            advanced:
+              max_atoms_added: 0.2      # environments added per frame
+              threshold_factor: 0.7     # budget mode decay
+              max_iterations: 10        # budget mode passes
+              nmax: 8                   # B2 radial channels
+              lmax: 4                   # B2 angular channels
+              save_full_trajectory: true
     """
 
     enabled: bool = False
     threshold: float = 0.01
+    max_selected: Optional[int] = None
     cutoff: Optional[float] = None
-    nmax: int = 8
-    lmax: int = 4
+    mask: Union[bool, str] = False
+    advanced: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         if self.threshold <= 0:
             raise ValidationError("deal.threshold must be positive")
         if self.cutoff is not None and self.cutoff <= 0:
             raise ValidationError("deal.cutoff must be positive")
+        if self.max_selected is not None:
+            if isinstance(self.max_selected, bool) or not isinstance(
+                self.max_selected, int
+            ):
+                raise ValidationError("deal.max_selected must be an integer or null")
+            if self.max_selected <= 0:
+                raise ValidationError("deal.max_selected must be positive")
+        if isinstance(self.mask, str) and not self.mask:
+            raise ValidationError(
+                "deal.mask must be true/false or a per-atom array name"
+            )
+        if not isinstance(self.advanced, dict):
+            raise ValidationError("deal.advanced must be a mapping of DEAL options")
 
 
 @dataclass
@@ -325,6 +382,31 @@ class FineTuneConfig:
     learning_rate: float = 0.001  # Starting learning rate
     batch_size: int = 4  # Batch size for fine-tuning
     device: str = "cpu"  # "cpu" or "cuda"
+
+
+@dataclass
+class RefineConfig:
+    """Train from the previous AL iteration's checkpoint instead of random weights."""
+
+    enabled: bool = False
+    steps: int = (
+        150000  # absolute numb_steps for the refine run (not a fraction of scratch)
+    )
+    start_lr: float = 1.0e-4
+    # None = leave input.json's own loss.start_pref_f / start_pref_e untouched.
+    # Only rescale when the user explicitly sets these.
+    force_pref_scale: Optional[float] = None  # rescales loss.start_pref_f when set
+    energy_pref_scale: Optional[float] = None  # rescales loss.start_pref_e when set
+
+    def __post_init__(self):
+        if self.steps <= 0:
+            raise ValidationError("refine.steps must be positive")
+        if self.start_lr <= 0:
+            raise ValidationError("refine.start_lr must be positive")
+        if self.force_pref_scale is not None and self.force_pref_scale <= 0:
+            raise ValidationError("refine.force_pref_scale must be positive")
+        if self.energy_pref_scale is not None and self.energy_pref_scale <= 0:
+            raise ValidationError("refine.energy_pref_scale must be positive")
 
 
 @dataclass
@@ -419,6 +501,7 @@ class SparcConfig:
     iteration: int = 10
     min_candidates: int = 1
     model_dev: ModelDeviationConfig = field(default_factory=ModelDeviationConfig)
+    refine: RefineConfig = field(default_factory=RefineConfig)
 
     finetune: FineTuneConfig = field(default_factory=FineTuneConfig)
     deal: DEALConfig = field(default_factory=DEALConfig)
@@ -503,6 +586,10 @@ class SparcConfig:
             model_dev_data = data.get("model_dev", {})
             model_dev = ModelDeviationConfig(**model_dev_data)
 
+            # Parse refine directly
+            refine_data = data.get("refine", {})
+            refine = RefineConfig(**refine_data)
+
             # Parse distance metrics
             distance_metrics_data = data.get("distance_metrics", [])
             distance_metrics = [DistanceMetric(**dm) for dm in distance_metrics_data]
@@ -521,6 +608,7 @@ class SparcConfig:
                 iteration=data.get("iteration", 10),
                 min_candidates=data.get("min_candidates", 1),
                 model_dev=model_dev,
+                refine=refine,
                 finetune=finetune,
                 deal=deal,
                 distance_metrics=distance_metrics,
@@ -542,43 +630,205 @@ class SparcConfig:
         with open(yaml_file, "w") as f:
             yaml.dump(self.to_dict(), f, default_flow_style=False, sort_keys=False)
 
-    def validate_environment(self) -> bool:
-        """Validate that required files exist."""
-        validations = []
+    def environment_report(self) -> List[Dict[str, Any]]:
+        """
+        Enumerate everything this configuration needs in order to run.
 
-        # # Check structure file
-        # if not Path(self.general.structure_file).exists():
-        #     validations.append(f"Structure file missing: {self.general.structure_file}")
-        # Check structure file(s)
-        if isinstance(self.general.structure_file, list):
-            for sf in self.general.structure_file:
-                if not Path(sf).exists():
-                    validations.append(f"Structure file missing: {sf}")
-        else:
-            if not Path(self.general.structure_file).exists():
-                validations.append(
-                    f"Structure file missing: {self.general.structure_file}"
-                )
+        Covers three groups: input files referenced by the YAML, Python packages
+        imported by the code paths the YAML switches on, and external executables
+        invoked through ``subprocess``. Checks are derived from the configuration
+        rather than fixed, so a section that is disabled contributes a
+        ``"skipped"`` row instead of a spurious failure.
 
-        # Check template file
-        if not Path(self.dft_calculator.template_file).exists():
-            validations.append(
-                f"Template file missing: {self.dft_calculator.template_file}"
+        Package presence is resolved through the installed-distribution metadata
+        and the module finder; neither imports the package, so a heavyweight or
+        partially broken dependency cannot slow down or crash the report.
+
+        Returns
+        -------
+        list of dict
+            Each entry has ``group``, ``name``, ``target``, ``status``
+            (``"ok"`` | ``"missing"`` | ``"skipped"``), ``required`` and
+            ``detail``.
+        """
+        import importlib.metadata as _md
+        import importlib.util as _iu
+        import shlex
+        import shutil
+
+        rows: List[Dict[str, Any]] = []
+
+        def add(group, name, target, status, required=True, detail=""):
+            rows.append(
+                {
+                    "group": group,
+                    "name": name,
+                    "target": str(target),
+                    "status": status,
+                    "required": required,
+                    "detail": detail,
+                }
             )
 
-        # Check AIMD PLUMED if enabled
-        if self.aimd_setup.plumed.enabled:
-            if not Path(self.aimd_setup.plumed.plumed_file).exists():
-                validations.append(
-                    f"AIMD PLUMED file missing: {self.aimd_setup.plumed.plumed_file}"
-                )
+        def add_file(name, target, required=True, enabled=True, reason=""):
+            if not enabled:
+                add("File", name, target or "-", "skipped", required, reason)
+                return
+            exists = Path(target).exists()
+            add(
+                "File",
+                name,
+                target,
+                "ok" if exists else "missing",
+                required,
+                "found" if exists else "not found",
+            )
 
-        # Check MLIP PLUMED if enabled
-        if self.mlip_setup.plumed.enabled:
-            if not Path(self.mlip_setup.plumed.plumed_file).exists():
-                validations.append(
-                    f"MLIP PLUMED file missing: {self.mlip_setup.plumed.plumed_file}"
+        def add_package(name, module, required=True, enabled=True, reason=""):
+            if not enabled:
+                add("Package", name, module, "skipped", required, reason)
+                return
+            try:
+                version = _md.version(name)
+            except _md.PackageNotFoundError:
+                version = None
+            found = version is not None or _iu.find_spec(module) is not None
+            add(
+                "Package",
+                name,
+                module,
+                "ok" if found else "missing",
+                required,
+                f"v{version}"
+                if version
+                else ("importable" if found else "not installed"),
+            )
+
+        def add_executable(name, command, required=True, enabled=True, reason=""):
+            if not enabled or not command:
+                add("Executable", name, command or "-", "skipped", required, reason)
+                return
+            path = shutil.which(command) or (
+                command if Path(command).is_file() else None
+            )
+            add(
+                "Executable",
+                name,
+                command,
+                "ok" if path else "missing",
+                required,
+                path or "not on PATH",
+            )
+
+        # ── Input files ───────────────────────────────────────────────────────
+        structures = self.general.structure_file
+        for sf in structures if isinstance(structures, list) else [structures]:
+            add_file("Structure file", sf)
+
+        add_file("DFT template", self.dft_calculator.template_file)
+
+        needs_mlip = self.mlip_setup.training or self.mlip_setup.MdSimulation
+        add_file(
+            "MLIP input JSON",
+            self.mlip_setup.input_file,
+            enabled=needs_mlip,
+            reason="no training or ML-MD requested",
+        )
+
+        add_file(
+            "AIMD PLUMED input",
+            self.aimd_setup.plumed.plumed_file,
+            enabled=self.aimd_setup.plumed.enabled,
+            reason="aimd_setup.plumed disabled",
+        )
+        add_file(
+            "MLIP PLUMED input",
+            self.mlip_setup.plumed.plumed_file,
+            enabled=self.mlip_setup.plumed.enabled,
+            reason="mlip_setup.plumed disabled",
+        )
+
+        umbrella = self.mlip_setup.plumed.umbrella_sampling
+        add_file(
+            "Umbrella sampling config",
+            getattr(umbrella, "config_file", None),
+            enabled=bool(getattr(umbrella, "enabled", False)),
+            reason="umbrella sampling disabled",
+        )
+
+        # ── Python packages ───────────────────────────────────────────────────
+        for dist, module in (
+            ("ase", "ase"),
+            ("numpy", "numpy"),
+            ("scipy", "scipy"),
+            ("pandas", "pandas"),
+            ("PyYAML", "yaml"),
+            ("dpdata", "dpdata"),
+        ):
+            add_package(dist, module)
+
+        add_package(
+            "deepmd-kit",
+            "deepmd",
+            enabled=needs_mlip,
+            reason="no training or ML-MD requested",
+        )
+
+        plumed_on = self.aimd_setup.plumed.enabled or self.mlip_setup.plumed.enabled
+        add_package("plumed", "plumed", enabled=plumed_on, reason="PLUMED not enabled")
+
+        deal_on = bool(getattr(getattr(self, "deal", None), "enabled", False))
+        add_package("flare-pp", "flare", enabled=deal_on, reason="deal disabled")
+        add_package("deal", "deal", enabled=deal_on, reason="deal disabled")
+
+        # ── External executables ──────────────────────────────────────────────
+        # exe_command is a full command line ("mpirun -np 6 /path/vasp_std").
+        # The launcher is the first token and the engine binary the last; the
+        # tokens between them are launcher flags and their arguments.
+        command = self.dft_calculator.exe_command
+        if command:
+            tokens = [t for t in shlex.split(command) if not t.startswith("-")]
+            seen = []
+            for token in [tokens[0], tokens[-1]] if tokens else []:
+                if token not in seen and not token.isdigit():
+                    seen.append(token)
+            for token in seen:
+                label = (
+                    f"{self.dft_calculator.engine} binary"
+                    if token == seen[-1]
+                    else "MPI launcher"
                 )
+                add_executable(label, token)
+        else:
+            add_executable(
+                f"{self.dft_calculator.engine} binary",
+                None,
+                reason="no exe_command set; calculator default is used",
+            )
+
+        add_executable(
+            "dp (DeePMD CLI)",
+            "dp",
+            enabled=needs_mlip,
+            reason="no training or ML-MD requested",
+        )
+
+        return rows
+
+    def validate_environment(self) -> bool:
+        """
+        Validate that required input files exist.
+
+        Scope is deliberately limited to files: this runs on every load_config
+        call, and probing packages or executables there would emit warnings for
+        dependencies a given invocation never reaches. Use environment_report()
+        for the complete pre-flight picture.
+        """
+        validations = [
+            f"{row['name']} missing: {row['target']}"
+            for row in self.environment_report()
+            if row["group"] == "File" and row["required"] and row["status"] == "missing"
+        ]
 
         if validations:
             for warning in validations:

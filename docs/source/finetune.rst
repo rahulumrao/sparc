@@ -63,6 +63,26 @@ For each model ``i`` in ``1 … num_models``:
 
 The frozen models are saved inside ``01.train/training_i/frozen_model_i.pth``.
 
+**Checkpoint restart**
+
+If a previous fine-tuning run was interrupted, SPARC automatically detects
+checkpoints in ``01.train/training_i/`` (``checkpoint``, ``model.ckpt``, or
+``model.ckpt.pt``) and resumes with:
+
+.. code-block:: bash
+
+    dp --pt train input.json --restart model.ckpt.pt
+
+No extra YAML flag is required. When resuming, SPARC does **not** re-apply
+``--finetune`` or ``--model-branch``; the checkpoint already encodes the
+fine-tuning state.
+
+**Model validation**
+
+After freezing, SPARC runs ``dp test -m frozen_model_i.pth -s validation_data/``
+and prints the evaluation metrics to the log. This matches the behavior of
+from-scratch DeePMD training in SPARC.
+
 **Multi-task models (DPA-3)**
 
 DPA-3 is a multi-task model trained on several datasets simultaneously. Use

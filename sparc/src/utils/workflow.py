@@ -1,12 +1,44 @@
 import os
 import glob
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
 from ase.io import read
-import ipywidgets as widgets
-from IPython.display import display, clear_output
 import urllib.request
+
+# Plotting/notebook libraries are optional: a SPARC run never needs them.
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import ScalarFormatter
+    _MATPLOTLIB_ERR = None
+except ImportError as _err:
+    plt = None
+    ScalarFormatter = None
+    _MATPLOTLIB_ERR = str(_err)
+
+try:
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+    _NOTEBOOK_ERR = None
+except ImportError as _err:
+    widgets = None
+    display = None
+    clear_output = None
+    _NOTEBOOK_ERR = str(_err)
+
+def _require_matplotlib():
+    if _MATPLOTLIB_ERR is not None:
+        raise ImportError(
+            "This function requires matplotlib.\n"
+            "Install with: pip install matplotlib\n"
+            f"(original error: {_MATPLOTLIB_ERR})"
+        )
+
+def _require_notebook():
+    if _NOTEBOOK_ERR is not None:
+        raise ImportError(
+            "The interactive workflow analysis requires ipywidgets and IPython.\n"
+            "Install with: pip install ipywidgets ipython\n"
+            f"(original error: {_NOTEBOOK_ERR})"
+        )
 
 # ------------------------------------------------------------------------------
 # Load Custom Plot Style (Dark Theme)
@@ -41,7 +73,10 @@ def load_iteration_data(root, subfolder, traj_file, iterations, prop_fn):
             print(f"[Error] {traj_path} — {e}")
     return data_dict, max_len
 
-def plot_data(data_dict, max_len, ylabel, title=None, cmap=plt.cm.cool, print_means=False):
+def plot_data(data_dict, max_len, ylabel, title=None, cmap=None, print_means=False):
+    _require_matplotlib()
+    if cmap is None:
+        cmap = plt.cm.cool
     fig = plt.figure(figsize=(10, 5), dpi=150)
     colors = cmap(np.linspace(0.2, 0.9, len(data_dict)))
 
@@ -70,6 +105,7 @@ def plot_data(data_dict, max_len, ylabel, title=None, cmap=plt.cm.cool, print_me
 # Plot Tab Generator for Generic Properties
 # ------------------------------------------------------------------------------
 def make_plot_tab(label, prop_fn, ylabel):
+    _require_notebook()
     print_means = label == "Temperature"  # Only show means for Temperature
 
     root_input = widgets.Text(value=".", description="Root:", layout=widgets.Layout(width="45%"))
@@ -115,6 +151,8 @@ def make_plot_tab(label, prop_fn, ylabel):
 # Geometry Plot Tab (Bond / Angle)
 # ------------------------------------------------------------------------------
 def make_geometry_tab():
+    _require_notebook()
+    _require_matplotlib()
     root_input = widgets.Text(value=".", description="Root:", layout=widgets.Layout(width="45%"))
     subfolder_input = widgets.Text(value="02.dpmd", description="Subfolder:", layout=widgets.Layout(width="30%"))
     traj_input = widgets.Text(value="dpmd.traj", description="Trajectory:", layout=widgets.Layout(width="25%"))
@@ -203,6 +241,7 @@ def make_geometry_tab():
 # Launch the Viewer
 # ------------------------------------------------------------------------------
 def WorkFlowAnalysis():
+    _require_notebook()
     tab_defs = [
         ("Temperature", lambda a: a.get_temperature(), "Temperature (K)"),
         ("Total Energy", lambda a: a.get_total_energy(), "Total Energy (eV)"),

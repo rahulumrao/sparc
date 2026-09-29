@@ -17,25 +17,48 @@ from .main import (
     get_iteration_dirs,
 )
 
+_missing_plot_deps: list[str] = []
+
 try:
-    import dpdata
     import matplotlib.pyplot as plt
     import pandas as pd
-    import seaborn as sns
     from matplotlib.ticker import FormatStrFormatter, MaxNLocator
 
-    _MATPLOT_AVAILABLE = True
-except ImportError as _matplot_import_err:
-    _MATPLOT_AVAILABLE = False
-    _matplot_import_err_msg = str(_matplot_import_err)
+    _CORE_PLOT_AVAILABLE = True
+except ImportError as _core_plot_import_err:
+    _CORE_PLOT_AVAILABLE = False
+    _missing_plot_deps.append(f"matplotlib/pandas ({_core_plot_import_err})")
+
+try:
+    import seaborn as sns
+except ImportError as _seaborn_import_err:
+    sns = None  # type: ignore[assignment]
+    _missing_plot_deps.append(f"seaborn ({_seaborn_import_err})")
+
+try:
+    import dpdata
+except ImportError as _dpdata_import_err:
+    dpdata = None  # type: ignore[assignment]
+    _missing_plot_deps.append(f"dpdata ({_dpdata_import_err})")
+
+_MATPLOT_AVAILABLE = not _missing_plot_deps
+
+
+def _require_core_plot_deps():
+    """Gate for plots that only need matplotlib and pandas."""
+    if not _CORE_PLOT_AVAILABLE:
+        raise ImportError(
+            "Plotting requires: matplotlib, pandas.\n"
+            "Install with: pip install matplotlib pandas"
+        )
 
 
 def _require_matplot_deps():
     if not _MATPLOT_AVAILABLE:
         raise ImportError(
             "Matplotlib plotting requires: matplotlib, seaborn, pandas, dpdata.\n"
-            f"Install with: pip install matplotlib seaborn pandas dpdata\n"
-            f"(original error: {_matplot_import_err_msg})"
+            "Install with: pip install matplotlib seaborn pandas dpdata\n"
+            f"(missing: {'; '.join(_missing_plot_deps)})"
         )
 
 
@@ -367,11 +390,13 @@ def PlotForceDeviation(
                 lines = f.readlines()
 
             # Extract data from lines (skip header lines)
-            for line in lines[2:]:  # Skip first two header lines
+            for line in lines:
+                if line.startswith("#"):
+                    continue
                 cols = line.split()
                 if len(cols) >= 5:
                     try:
-                        steps.append(int(cols[0]))
+                        steps.append(int(float(cols[0])))
                         max_devi_f.append(float(cols[4]))  # Read: max_devi_f
                     except ValueError:
                         continue
@@ -474,11 +499,13 @@ def PlotForceError(
             max_devi_f = []
             with open(model_file, "r") as f:
                 lines = f.readlines()
-            for line in lines[2:]:
+            for line in lines:
+                if line.startswith("#"):
+                    continue
                 cols = line.split()
                 if len(cols) >= 5:
                     try:
-                        steps.append(int(cols[0]))
+                        steps.append(int(float(cols[0])))
                         max_devi_f.append(float(cols[4]))
                     except ValueError:
                         continue
@@ -1052,6 +1079,7 @@ def PlotWorkflowTiming(
     save_fig=None,
     Ycmin=None,
     Ycmax=None,
+    figsize=(9, 5),
 ):
     """
     Plot per-step wall-clock times from ``timings.csv``.
@@ -1070,8 +1098,10 @@ def PlotWorkflowTiming(
         Explicit (lo, hi) for the bottom panel of broken axis, e.g. (0, 4).
     Ycmax : (float, float), optional
         Explicit (lo, hi) for the top panel of broken axis, e.g. (6, 16).
+    figsize : (float, float)
+        Figure size in inches (default ``(9, 5)``).
     """
-    _require_matplot_deps()
+    _require_core_plot_deps()
     from sparc.src.utils.plotting.timing_plot import PlotStepTimingLine, PlotStepTimings
     from sparc.src.utils.timing import load_workflow_timing
 
@@ -1086,7 +1116,9 @@ def PlotWorkflowTiming(
         return
 
     if plot_type == "line":
-        PlotStepTimingLine(df, unit=unit, save_fig=save_fig, show=save_fig is None)
+        PlotStepTimingLine(
+            df, unit=unit, save_fig=save_fig, show=save_fig is None, figsize=figsize
+        )
     else:
         PlotStepTimings(
             df,
@@ -1095,6 +1127,7 @@ def PlotWorkflowTiming(
             show=save_fig is None,
             Ycmin=Ycmin,
             Ycmax=Ycmax,
+            figsize=figsize,
         )
 
 
