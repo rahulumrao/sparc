@@ -22,7 +22,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "ase==3.24.0",
+  "ase>=3.22",
   "numpy",
   "pandas",
   "scipy",
@@ -41,15 +41,26 @@ docs = [
   "nbsphinx",
   "pandoc",
 ]
+deal = [
+  "deal @ git+https://github.com/luigibonati/DEAL",
+]
+gui = [
+  "streamlit>=1.33",
+  "plotly>=5.18",
+  "chemiscope[streamlit]>=1.0",
+  "ipykernel",
+  "jupyter_client",
+]
 
 [project.scripts]
 sparc = "sparc.sparc:main"
+sparc-gui = "sparc_gui.cli:main"
 
 [tool.ruff]
 line-length = 88
 target-version = "py310"
 
-src = ["sparc"]
+src = ["sparc", "sparc-gui"]
 exclude = [
   ".git",
   ".venv",
@@ -82,6 +93,14 @@ indent-style = "space"
 [tool.setuptools]
 include-package-data = true
 
+[tool.setuptools.package-data]
+sparc_gui = [
+    "static/styles/*.css",
+    "components/yaml_editor/index.html",
+    "components/yaml_editor/*.js",
+    "components/yaml_editor/*.css",
+]
+
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["sparc", "sparc.*"]
+where = [".", "sparc-gui"]
+include = ["sparc", "sparc.*", "sparc_gui", "sparc_gui.*"]
