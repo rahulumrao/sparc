@@ -9,7 +9,7 @@
   <title>Analysis &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -81,7 +81,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory Structure</a></li>
@@ -117,14 +121,33 @@
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#committee-evaluation-backend">Committee Evaluation Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
@@ -186,8 +209,10 @@
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -251,6 +276,9 @@
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -260,6 +288,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -398,6 +427,30 @@ A large deviation means the model is uncertain and that more training data is re
 </section>
 <section id="function">
 <h3>Function:<a class="headerlink" href="#function" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="sparc.src.utils.plot_utils.PlotForceDeviation">
+<span class="sig-prename descclassname"><span class="pre">sparc.src.utils.plot_utils.</span></span><span class="sig-name descname"><span class="pre">PlotForceDeviation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_iteration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/utils/plotting/plot_utils.html#PlotForceDeviation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.utils.plot_utils.PlotForceDeviation" title="Link to this definition"></a></dt>
+<dd><p>Parses model_dev_*.out files from iter_* directories (or a specific range/iteration/all),
+extracts max force deviation, and plots the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root_dir</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Root directory containing iter_* folders.</p></li>
+<li><p><strong>iteration_window</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A tuple (start, end) to specify a range of iterations, or “all” to process all iterations.</p></li>
+<li><p><strong>target_iteration</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – A specific iteration number to analyze.</p></li>
+<li><p><strong>dmin</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Lower threshold for candidate force deviation (default: 0.05).</p></li>
+<li><p><strong>dmax</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Upper threshold for candidate force deviation (default: 0.5).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PlotForceDeviation</span><span class="p">(</span><span class="s2">"/path/to/root"</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PlotForceDeviation</span><span class="p">(</span><span class="s2">"/path/to/root"</span><span class="p">,</span> <span class="n">target_iteration</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PlotForceDeviation</span><span class="p">(</span><span class="s2">"/path/to/root"</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <a class="reference external image-reference" href="_static/model_devi.jpg"><img alt="Visualization of force model deviation" class="align-center" src="_images/model_devi.jpg" style="width: 700px;" />
 </a>
 <div class="toctree-wrapper compound">
@@ -419,18 +472,18 @@ accept or reject each frame at a given threshold:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.rmsd</span><span class="w"> </span><span class="kn">import</span> <span class="n">kabsch_rmsd</span>
 
-<span class="n">frames</span>  <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;AseTraj.xyz&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<span class="n">frames</span>  <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">"AseTraj.xyz"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">":"</span><span class="p">)</span>
 <span class="n">ref</span>     <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_positions</span><span class="p">()</span>
 <span class="n">symbols</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span>
 <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.25</span>   <span class="c1"># Å — same value as model_dev.rmsd_threshold in input.yaml</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Frame&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;RMSD (Å)&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;Status&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Frame'</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'RMSD (Å)'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'Status'</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">kabsch_rmsd</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">get_positions</span><span class="p">(),</span> <span class="n">ref</span><span class="p">,</span> <span class="n">noH</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">symbols</span><span class="o">=</span><span class="n">symbols</span><span class="p">)</span>
-    <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;ACCEPT&quot;</span> <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="n">threshold</span> <span class="k">else</span> <span class="s2">&quot;SKIP&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">&gt;10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s2">"ACCEPT"</span> <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="n">threshold</span> <span class="k">else</span> <span class="s2">"SKIP"</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">&gt;10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">noH=True</span></code> excludes hydrogen atoms from the RMSD calculation, matching the

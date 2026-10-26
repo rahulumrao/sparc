@@ -8,7 +8,7 @@
   <title>sparc.src.plumed_wrapper &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=568f582d" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
@@ -76,7 +76,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../yaml.html#directory-structure">Directory Structure</a></li>
@@ -112,14 +116,33 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#edge-cases-and-error-handling">Edge Cases and Error Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
@@ -181,8 +204,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -246,6 +271,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -255,6 +283,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -280,17 +309,23 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../ChemView.html">ChemView</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../chemview.html">ChemView</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Load-a-trajectory">Load a trajectory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Atom-level-forces">Atom-level forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Cell-parameters">Cell parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Single-structure">Single structure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Custom-property-names">Custom property names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chemview.html">ChemView — Interactive Trajectory Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Glycine-atom-indices">Glycine atom indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Load-the-trajectory">Load the trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Example-1-—-Energy-landscape">Example 1 — Energy landscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">Example 2 — Carbonyl and hydroxyl bond dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Example-3-—-Conformational-landscape-(Ramachandran-style)">Example 3 — Conformational landscape (Ramachandran-style)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Example-4-—-Bond-length-correlations">Example 4 — Bond-length correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Example-5-—-Atom-level-forces-and-index-colouring">Example 5 — Atom-level forces and index colouring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Example-6-—-Single-structure-viewer">Example 6 — Single-structure viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../chemview.html#Tips-and-reference">Tips and reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../chemview.html#Supported-specs">Supported specs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../chemview.html#Key-parameters">Key parameters</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#interactive-demo">Interactive Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#parameters">Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../ChemView.html#property-specs">Property Specs</a><ul>
@@ -353,16 +388,17 @@
 <span></span><span class="ch">#!/usr/bin/python3</span>
 <span class="c1"># plumed_wrapper.py</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">PLUMED wrapper module for enhanced sampling MD simulations.</span>
 
 <span class="sd">This module provides integration between ASE calculators and PLUMED</span>
 <span class="sd">for enhanced sampling techniques like metadynamics and umbrella sampling.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">ase.units</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
@@ -383,6 +419,97 @@
 
 <span class="c1">################################################################</span>
 
+<span class="c1"># Actions that write bare CWD filenames and support OUTDIR=</span>
+<span class="n">OUTDIR_ACTIONS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">"FKERNELABF"</span><span class="p">})</span>
+
+<span class="c1"># OUTDIR= or any *FILE= keyword (FILE, STATE_WFILE, GRID_WFILE, ...)</span>
+<span class="n">PATH_KW</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">"(?&lt;![A-Za-z0-9_])(OUTDIR|[A-Za-z0-9_]*FILE)=(\S+)"</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="read_block">
+<a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.read_block">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_block</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Join PLUMED '...' blocks into one plain action line (no '...' tokens)."""</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">buf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">buf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">"..."</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
+                <span class="n">buf</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span> <span class="ow">and</span> <span class="n">s</span> <span class="o">!=</span> <span class="s2">"..."</span><span class="p">:</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">buf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Unclosed PLUMED '...' block in input"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="rewrite_file_kwargs">
+<a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rewrite_file_kwargs</span><span class="p">(</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">absolutize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">plumed_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Rewrite OUTDIR= and *FILE= values on a PLUMED action line."""</span>
+    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">repl</span><span class="p">(</span><span class="n">match</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">Match</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">key_upper</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">absolutize</span> <span class="ow">and</span> <span class="n">key_upper</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"FILE"</span><span class="p">):</span>
+            <span class="n">new_vals</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">):</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span> <span class="k">else</span> <span class="p">(</span><span class="n">plumed_dir</span> <span class="o">/</span> <span class="n">p</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PLUMED LOAD library not found: </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">new_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_vals</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="n">key_upper</span> <span class="o">==</span> <span class="s2">"OUTDIR"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">out_dir</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">new_vals</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">out_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_vals</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="k">return</span> <span class="n">PATH_KW</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="plumed_block">
+<a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plumed_block</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plumed_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Apply LOAD / OUTDIR / *FILE= path policy to one (collapsed) PLUMED line."""</span>
+    <span class="n">upper</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">upper</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"LOAD"</span><span class="p">,</span> <span class="s2">"INCLUDE"</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">rewrite_file_kwargs</span><span class="p">(</span>
+            <span class="n">line</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">absolutize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plumed_dir</span><span class="o">=</span><span class="n">plumed_dir</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">action</span> <span class="ow">in</span> <span class="n">upper</span> <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">OUTDIR_ACTIONS</span><span class="p">):</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"OUTDIR="</span><span class="p">)]</span>
+        <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"OUTDIR=</span><span class="si">{</span><span class="n">out_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rewrite_file_kwargs</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span></div>
+
+
 
 <div class="viewcode-block" id="modify_forces">
 <a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces">[docs]</a>
@@ -394,9 +521,9 @@
     <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">plumed_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">iteration</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">PlumedLog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PLUMED.log&quot;</span><span class="p">,</span>
+    <span class="n">PlumedLog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"PLUMED.log"</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Set up and return a PLUMED wrapped ASE calculator for molecular dynamics.</span>
 
 <span class="sd">    This function reads a PLUMED input file and wraps an existing ASE calculator</span>
@@ -418,50 +545,35 @@
 <span class="sd">    restart : bool</span>
 <span class="sd">        Restart option for PLUMED</span>
 <span class="sd">    plumed_input : str</span>
-<span class="sd">        Path to the PLUMED input file (e.g., &quot;plumed.dat&quot;)</span>
+<span class="sd">        Path to the PLUMED input file (e.g., "plumed.dat")</span>
 <span class="sd">    iteration : str</span>
 <span class="sd">        Directory name for PLUMED output files</span>
 <span class="sd">    PlumedLog : str, optional</span>
-<span class="sd">        PLUMED log filename (default: &#39;PLUMED.log&#39;)</span>
+<span class="sd">        PLUMED log filename (default: 'PLUMED.log')</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ase.calculators.plumed.Plumed</span>
 <span class="sd">        The PLUMED-wrapped ASE calculator</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Ensure iteration directory exists</span>
+<span class="sd">    """</span>
     <span class="n">out_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span>
     <span class="n">out_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">log_path</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="n">PlumedLog</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">plumed_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">plumed_input</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span>
 
-    <span class="c1"># Open the PLUMED input file and read its contents</span>
-    <span class="n">setup</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">line</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">plumed_input</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">plumed_input</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span>
     <span class="p">]</span>
+    <span class="n">setup</span> <span class="o">=</span> <span class="n">read_block</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+    <span class="n">modified_setup</span> <span class="o">=</span> <span class="p">[</span><span class="n">plumed_block</span><span class="p">(</span><span class="n">ln</span><span class="p">,</span> <span class="n">plumed_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span> <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">setup</span><span class="p">]</span>
 
-    <span class="n">modified_setup</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">setup</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;FILE=&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-            <span class="c1"># Extract the part after FILE= and handle multiple filenames</span>
-            <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;FILE=&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">filenames</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># Get the filenames</span>
-                <span class="n">filenames</span> <span class="o">=</span> <span class="n">filenames</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>  <span class="c1"># Handle multiple filenames</span>
-                <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span>
-                <span class="p">]</span>
-                <span class="n">new_filenames</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;FILE=</span><span class="si">{</span><span class="n">new_filenames</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">modified_setup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
-    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PLUMED output files will be written in </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PLUMED output files will be written in </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">kT</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">kT</span> <span class="o">=</span> <span class="mf">8.617333e-5</span> <span class="o">*</span> <span class="mi">300</span>  <span class="c1"># Boltzmann in eV/K at 300K</span>
 
-    <span class="c1"># Initialize PLUMED calculator</span>
     <span class="n">plumed_calc</span> <span class="o">=</span> <span class="n">Plumed</span><span class="p">(</span>
         <span class="n">calc</span><span class="o">=</span><span class="n">calculator</span><span class="p">,</span>
         <span class="nb">input</span><span class="o">=</span><span class="n">modified_setup</span><span class="p">,</span>
@@ -482,7 +594,7 @@
 <div class="viewcode-block" id="umbrella">
 <a class="viewcode-back" href="../../../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">umbrella</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">us_dir</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">dp_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dp_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Set up and run umbrella sampling simulations with PLUMED biasing.</span>
 
 <span class="sd">    This function reads a configuration file defining umbrella sampling windows</span>
@@ -494,12 +606,12 @@
 <span class="sd">    config : SparcConfig or dict</span>
 <span class="sd">        Configuration object or dictionary from input.yaml</span>
 <span class="sd">    us_dir : dict</span>
-<span class="sd">        Dictionary with &#39;dpmd_dir&#39; key specifying base directory for windows</span>
+<span class="sd">        Dictionary with 'dpmd_dir' key specifying base directory for windows</span>
 <span class="sd">    dp_path : str</span>
 <span class="sd">        Path to DeepMD model directory</span>
 <span class="sd">    dp_model : str</span>
 <span class="sd">        Name of the DeepMD model file</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Handle both SparcConfig dataclass and dict</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.read_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparcConfig</span>
 
@@ -511,7 +623,7 @@
         <span class="n">MDSteps</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">md_steps</span>
         <span class="n">timestep_fs</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">timestep_fs</span>
         <span class="n">log_frequency</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">log_frequency</span>
-        <span class="n">epot_threshold</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="p">,</span> <span class="s2">&quot;epot_threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">epot_threshold</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="p">,</span> <span class="s2">"epot_threshold"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">plumed_kT</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">plumed</span><span class="o">.</span><span class="n">kT</span>
         <span class="n">plumed_restart</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">plumed</span><span class="o">.</span><span class="n">restart</span>
         <span class="n">dptraj_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dptraj_file</span>
@@ -521,57 +633,57 @@
         <span class="n">temp_start</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">temperature</span>
         <span class="n">temp_end</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mlip_setup</span><span class="o">.</span><span class="n">temp_end</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mlip_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mlip_setup&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">thermostat_config</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;thermostat&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">us_config_file</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="p">[</span><span class="s2">&quot;plumed&quot;</span><span class="p">][</span><span class="s2">&quot;umbrella_sampling&quot;</span><span class="p">][</span><span class="s2">&quot;config_file&quot;</span><span class="p">]</span>
-        <span class="n">ensemble</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;NVT&quot;</span><span class="p">)</span>
-        <span class="n">temperature</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
-        <span class="n">thermostat_type</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;Nose&quot;</span><span class="p">)</span>
-        <span class="n">MDSteps</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;md_steps&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">timestep_fs</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestep_fs&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-        <span class="n">log_frequency</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log_frequency&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="n">epot_threshold</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;epot_threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">plumed_kT</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plumed&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kT&quot;</span><span class="p">,</span> <span class="mf">0.02585</span><span class="p">)</span>
-        <span class="n">plumed_restart</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plumed&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;restart&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">dptraj_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dptraj_file&quot;</span><span class="p">,</span> <span class="s2">&quot;dpmd.traj&quot;</span><span class="p">)</span>
-        <span class="n">distance_metrics</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">tdamp</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tdamp&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">friction</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;friction&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">mlip_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mlip_setup"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">thermostat_config</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"thermostat"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">us_config_file</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="p">[</span><span class="s2">"plumed"</span><span class="p">][</span><span class="s2">"umbrella_sampling"</span><span class="p">][</span><span class="s2">"config_file"</span><span class="p">]</span>
+        <span class="n">ensemble</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"ensemble"</span><span class="p">,</span> <span class="s2">"NVT"</span><span class="p">)</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"temperature"</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+        <span class="n">thermostat_type</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">,</span> <span class="s2">"Nose"</span><span class="p">)</span>
+        <span class="n">MDSteps</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"md_steps"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">timestep_fs</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"timestep_fs"</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">log_frequency</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"log_frequency"</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">epot_threshold</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"epot_threshold"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">plumed_kT</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"plumed"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"kT"</span><span class="p">,</span> <span class="mf">0.02585</span><span class="p">)</span>
+        <span class="n">plumed_restart</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"plumed"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"restart"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">dptraj_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"output"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dptraj_file"</span><span class="p">,</span> <span class="s2">"dpmd.traj"</span><span class="p">)</span>
+        <span class="n">distance_metrics</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"distance_metrics"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">tdamp</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tdamp"</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">friction</span> <span class="o">=</span> <span class="n">thermostat_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"friction"</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
         <span class="n">temp_start</span> <span class="o">=</span> <span class="n">temperature</span>
-        <span class="n">temp_end</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;temp_end&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">temp_end</span> <span class="o">=</span> <span class="n">mlip_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"temp_end"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="c1"># Load umbrella sampling configuration</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">us_config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">umbrella_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Umbrella Sampling: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">umbrella_config</span><span class="p">[</span><span class="s1">&#39;umbrella_windows&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> windows&quot;</span><span class="p">)</span>
+    <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Umbrella Sampling: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">umbrella_config</span><span class="p">[</span><span class="s1">'umbrella_windows'</span><span class="p">])</span><span class="si">}</span><span class="s2"> windows"</span><span class="p">)</span>
     <span class="n">SparcLog</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Ensemble: </span><span class="si">{</span><span class="n">ensemble</span><span class="si">}</span><span class="s2"> | Thermostat: </span><span class="si">{</span><span class="n">thermostat_type</span><span class="si">}</span><span class="s2"> | Temperature: </span><span class="si">{</span><span class="n">temperature</span><span class="si">}</span><span class="s2"> K</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">"Ensemble: </span><span class="si">{</span><span class="n">ensemble</span><span class="si">}</span><span class="s2"> | Thermostat: </span><span class="si">{</span><span class="n">thermostat_type</span><span class="si">}</span><span class="s2"> | Temperature: </span><span class="si">{</span><span class="n">temperature</span><span class="si">}</span><span class="s2"> K</span><span class="se">\n</span><span class="s2">"</span>
     <span class="p">)</span>
 
     <span class="c1"># Loop over umbrella windows</span>
-    <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">window</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">umbrella_config</span><span class="p">[</span><span class="s2">&quot;umbrella_windows&quot;</span><span class="p">]):</span>
-        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running Umbrella Sampling for window </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">window</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">umbrella_config</span><span class="p">[</span><span class="s2">"umbrella_windows"</span><span class="p">]):</span>
+        <span class="n">SparcLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Running Umbrella Sampling for window </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">struct_file</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="s2">&quot;structure&quot;</span><span class="p">]</span>
-        <span class="n">plumed_file</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="s2">&quot;plumed_file&quot;</span><span class="p">]</span>
-        <span class="n">window_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">us_dir</span><span class="p">[</span><span class="s2">&quot;dpmd_dir&quot;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">struct_file</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="s2">"structure"</span><span class="p">]</span>
+        <span class="n">plumed_file</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="s2">"plumed_file"</span><span class="p">]</span>
+        <span class="n">window_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">us_dir</span><span class="p">[</span><span class="s2">"dpmd_dir"</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">window_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">usmd_log</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;usmd.log&quot;</span><span class="p">)</span>
+        <span class="n">usmd_log</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"window_</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"usmd.log"</span><span class="p">)</span>
 
         <span class="c1"># Load structure and re-initialize system and calculator</span>
         <span class="n">dp_atoms</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">struct_file</span><span class="p">)</span>
-        <span class="n">dp_atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">window_dir</span><span class="p">,</span> <span class="s2">&quot;input.xyz&quot;</span><span class="p">))</span>
+        <span class="n">dp_atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">window_dir</span><span class="p">,</span> <span class="s2">"input.xyz"</span><span class="p">))</span>
 
         <span class="n">dp_atoms</span><span class="p">,</span> <span class="n">dp_calc</span> <span class="o">=</span> <span class="n">setup_DeepPotential</span><span class="p">(</span>
             <span class="n">atoms</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">dp_path</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="n">dp_model</span>
         <span class="p">)</span>
 
         <span class="c1"># Create dynamics object based on ensemble</span>
-        <span class="k">if</span> <span class="n">ensemble</span> <span class="o">==</span> <span class="s2">&quot;NVE&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ensemble</span> <span class="o">==</span> <span class="s2">"NVE"</span><span class="p">:</span>
             <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">NVE</span><span class="p">(</span><span class="n">system</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">timestep_fs</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">ensemble</span> <span class="o">==</span> <span class="s2">&quot;NPT&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">ensemble</span> <span class="o">==</span> <span class="s2">"NPT"</span><span class="p">:</span>
             <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">NPT</span><span class="p">(</span>
                 <span class="n">system</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
                 <span class="n">timestep</span><span class="o">=</span><span class="n">timestep_fs</span><span class="p">,</span>
@@ -582,7 +694,7 @@
                 <span class="n">restart</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># NVT</span>
-            <span class="k">if</span> <span class="n">thermostat_type</span> <span class="o">==</span> <span class="s2">&quot;Nose&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">thermostat_type</span> <span class="o">==</span> <span class="s2">"Nose"</span><span class="p">:</span>
                 <span class="n">dyn_dp</span> <span class="o">=</span> <span class="n">NoseNVT</span><span class="p">(</span>
                     <span class="n">atoms</span><span class="o">=</span><span class="n">dp_atoms</span><span class="p">,</span>
                     <span class="n">timestep</span><span class="o">=</span><span class="n">timestep_fs</span><span class="p">,</span>
@@ -601,7 +713,7 @@
 
         <span class="c1"># Wrap with PLUMED (timestep needs to be in ASE units for PLUMED)</span>
         <span class="n">SparcLog</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot; → Window </span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2"> | Structure: </span><span class="si">{</span><span class="n">struct_file</span><span class="si">}</span><span class="s2"> | PLUMED: </span><span class="si">{</span><span class="n">plumed_file</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">" → Window </span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2"> | Structure: </span><span class="si">{</span><span class="n">struct_file</span><span class="si">}</span><span class="s2"> | PLUMED: </span><span class="si">{</span><span class="n">plumed_file</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
 
         <span class="n">dp_atoms</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">modify_forces</span><span class="p">(</span>
@@ -612,7 +724,7 @@
             <span class="n">restart</span><span class="o">=</span><span class="n">plumed_restart</span><span class="p">,</span>
             <span class="n">plumed_input</span><span class="o">=</span><span class="n">plumed_file</span><span class="p">,</span>
             <span class="n">iteration</span><span class="o">=</span><span class="n">window_dir</span><span class="p">,</span>
-            <span class="n">PlumedLog</span><span class="o">=</span><span class="s2">&quot;PLUMED.log&quot;</span><span class="p">,</span>
+            <span class="n">PlumedLog</span><span class="o">=</span><span class="s2">"PLUMED.log"</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># Run MD</span>
@@ -623,9 +735,9 @@
             <span class="n">pace</span><span class="o">=</span><span class="n">log_frequency</span><span class="p">,</span>
             <span class="n">log_filename</span><span class="o">=</span><span class="n">usmd_log</span><span class="p">,</span>
             <span class="n">trajfile</span><span class="o">=</span><span class="n">dptraj_file</span><span class="p">,</span>
-            <span class="n">dir_name</span><span class="o">=</span><span class="n">us_dir</span><span class="p">[</span><span class="s2">&quot;dpmd_dir&quot;</span><span class="p">],</span>
+            <span class="n">dir_name</span><span class="o">=</span><span class="n">us_dir</span><span class="p">[</span><span class="s2">"dpmd_dir"</span><span class="p">],</span>
             <span class="n">distance_metrics</span><span class="o">=</span><span class="n">distance_metrics</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ensemble</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">thermostat_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">ensemble</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">thermostat_type</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="n">epot_threshold</span><span class="o">=</span><span class="n">epot_threshold</span><span class="p">,</span>
             <span class="n">temp_start</span><span class="o">=</span><span class="n">temp_start</span><span class="p">,</span>
             <span class="n">temp_end</span><span class="o">=</span><span class="n">temp_end</span><span class="p">,</span>

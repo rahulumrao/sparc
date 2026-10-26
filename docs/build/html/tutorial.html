@@ -9,7 +9,7 @@
   <title>Tutorial &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -81,7 +81,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory Structure</a></li>
@@ -117,14 +121,33 @@
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#committee-evaluation-backend">Committee Evaluation Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
@@ -186,8 +209,10 @@
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -251,6 +276,9 @@
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -260,6 +288,7 @@
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -285,15 +314,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChemView.html">ChemView</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-a-trajectory">Load a trajectory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Atom-level-forces">Atom-level forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Cell-parameters">Cell parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Single-structure">Single structure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Custom-property-names">Custom property names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView — Interactive Trajectory Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Glycine-atom-indices">Glycine atom indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-the-trajectory">Load the trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-1-—-Energy-landscape">Example 1 — Energy landscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">Example 2 — Carbonyl and hydroxyl bond dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-3-—-Conformational-landscape-(Ramachandran-style)">Example 3 — Conformational landscape (Ramachandran-style)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-4-—-Bond-length-correlations">Example 4 — Bond-length correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-5-—-Atom-level-forces-and-index-colouring">Example 5 — Atom-level forces and index colouring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-6-—-Single-structure-viewer">Example 6 — Single-structure viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Tips-and-reference">Tips and reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chemview.html#Supported-specs">Supported specs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chemview.html#Key-parameters">Key parameters</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ChemView.html#interactive-demo">Interactive Demo</a></li>
@@ -436,36 +470,36 @@ $<span class="w"> </span>tree<span class="w"> </span>iter_000000
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># YAML configuration file for SPARC package</span>
 <span class="c1"># General settings</span>
 <span class="nt">general</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;POSCAR&quot;</span><span class="w">           </span><span class="c1"># Input structure</span>
+<span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">"POSCAR"</span><span class="w">           </span><span class="c1"># Input structure</span>
 
 <span class="c1"># DFT calculator settings</span>
 <span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;VASP&quot;</span><span class="w">                     </span><span class="c1"># DFT engine name</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;INCAR&quot;</span><span class="w">            </span><span class="c1"># Path to INCAR file</span>
-<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">16</span><span class="nv"> </span><span class="s">/path/to/VASP/bin/vasp_std&quot;</span><span class="w">  </span><span class="c1"># VASP executable</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"VASP"</span><span class="w">                     </span><span class="c1"># DFT engine name</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"INCAR"</span><span class="w">            </span><span class="c1"># Path to INCAR file</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">16</span><span class="nv"> </span><span class="s">/path/to/VASP/bin/vasp_std"</span><span class="w">  </span><span class="c1"># VASP executable</span>
 
 <span class="c1"># Ab initio MD settings</span>
 <span class="nt">aimd_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span><span class="w">                    </span><span class="c1"># Ensemble for MD simulation</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVT"</span><span class="w">                    </span><span class="c1"># Ensemble for MD simulation</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">350.0</span><span class="w">                 </span><span class="c1"># Temperature in Kelvin</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">                   </span><span class="c1"># Timestep for MD simulation (fs)</span>
 <span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">                           </span><span class="c1"># Number of AIMD steps (0 = skip AIMD)</span>
 <span class="w">  </span><span class="nt">log_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">                   </span><span class="c1"># Output frequency in steps</span>
 <span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                     </span><span class="c1"># Resume from checkpoint</span>
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span><span class="w">                     </span><span class="c1"># Nose-Hoover thermostat</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"Nose"</span><span class="w">                     </span><span class="c1"># Nose-Hoover thermostat</span>
 <span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span><span class="w">                      </span><span class="c1"># Damping time (fs)</span>
 <span class="w">  </span><span class="nt">plumed</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                   </span><span class="c1"># Enable PLUMED for AIMD</span>
-<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed_dft.dat&quot;</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">"plumed_dft.dat"</span>
 <span class="w">    </span><span class="nt">kT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.02585</span>
 <span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 
 <span class="c1"># MLIP training + ML-MD settings</span>
 <span class="nt">mlip_setup</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                    </span><span class="c1"># Enable MLIP training</span>
-<span class="w">  </span><span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Training_Data&quot;</span><span class="w">         </span><span class="c1"># Directory for training data</span>
-<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;input.json&quot;</span><span class="w">          </span><span class="c1"># DeepMD training input JSON</span>
+<span class="w">  </span><span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="s">"Training_Data"</span><span class="w">         </span><span class="c1"># Directory for training data</span>
+<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">"input.json"</span><span class="w">          </span><span class="c1"># DeepMD training input JSON</span>
 <span class="w">  </span><span class="nt">skip_min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">                        </span><span class="c1"># Skip first N frames</span>
 <span class="w">  </span><span class="nt">skip_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                     </span><span class="c1"># Skip frames beyond this index</span>
 <span class="w">  </span><span class="nt">num_models</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">                      </span><span class="c1"># Number of committee models</span>
@@ -475,11 +509,11 @@ $<span class="w"> </span>tree<span class="w"> </span>iter_000000
 <span class="w">  </span><span class="nt">multiple_run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">                    </span><span class="c1"># Independent MD runs</span>
 <span class="w">  </span><span class="nt">log_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w">                  </span><span class="c1"># Output frequency in steps</span>
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"Nose"</span>
 <span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span>
 <span class="w">  </span><span class="nt">plumed</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">                    </span><span class="c1"># Enable PLUMED for ML-MD</span>
-<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed_dp.dat&quot;</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">"plumed_dp.dat"</span>
 <span class="w">    </span><span class="nt">kT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.02585</span>
 <span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 
@@ -506,79 +540,79 @@ $<span class="w"> </span>tree<span class="w"> </span>iter_000000
 
 <span class="c1"># Output file names (all optional)</span>
 <span class="nt">output</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">log_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AseMD.log&quot;</span>
-<span class="w">  </span><span class="nt">xyz_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AseTraj.xyz&quot;</span>
-<span class="w">  </span><span class="nt">aimdtraj_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AseMD.traj&quot;</span>
-<span class="w">  </span><span class="nt">dptraj_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dpmd.traj&quot;</span>
+<span class="w">  </span><span class="nt">log_file</span><span class="p">:</span><span class="w"> </span><span class="s">"AseMD.log"</span>
+<span class="w">  </span><span class="nt">xyz_file</span><span class="p">:</span><span class="w"> </span><span class="s">"AseTraj.xyz"</span>
+<span class="w">  </span><span class="nt">aimdtraj_file</span><span class="p">:</span><span class="w"> </span><span class="s">"AseMD.traj"</span>
+<span class="w">  </span><span class="nt">dptraj_file</span><span class="p">:</span><span class="w"> </span><span class="s">"dpmd.traj"</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">input.json</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="w">   </span><span class="p">{</span>
-<span class="w">   </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; model parameters&quot;</span><span class="p">,</span>
-<span class="w">   </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type_map&quot;</span><span class="p">:</span><span class="w">     </span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;N&quot;</span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;descriptor&quot;</span><span class="w"> </span><span class="p">:{</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w">             </span><span class="s2">&quot;se_e2_a&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;sel&quot;</span><span class="p">:</span><span class="w">              </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;rcut_smth&quot;</span><span class="p">:</span><span class="w">        </span><span class="mf">0.50</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;rcut&quot;</span><span class="p">:</span><span class="w">             </span><span class="mf">6.00</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;neuron&quot;</span><span class="p">:</span><span class="w">           </span><span class="p">[</span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;resnet_dt&quot;</span><span class="p">:</span><span class="w">        </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;axis_neuron&quot;</span><span class="p">:</span><span class="w">      </span><span class="mi">16</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w">             </span><span class="mi">12123</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot; that&#39;s all&quot;</span>
+<span class="w">   </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">" model parameters"</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"type_map"</span><span class="p">:</span><span class="w">     </span><span class="p">[</span><span class="s2">"B"</span><span class="p">,</span><span class="w"> </span><span class="s2">"H"</span><span class="p">,</span><span class="w"> </span><span class="s2">"N"</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"descriptor"</span><span class="w"> </span><span class="p">:{</span>
+<span class="w">            </span><span class="nt">"type"</span><span class="p">:</span><span class="w">             </span><span class="s2">"se_e2_a"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"sel"</span><span class="p">:</span><span class="w">              </span><span class="s2">"auto"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"rcut_smth"</span><span class="p">:</span><span class="w">        </span><span class="mf">0.50</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"rcut"</span><span class="p">:</span><span class="w">             </span><span class="mf">6.00</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"neuron"</span><span class="p">:</span><span class="w">           </span><span class="p">[</span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">"resnet_dt"</span><span class="p">:</span><span class="w">        </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"axis_neuron"</span><span class="p">:</span><span class="w">      </span><span class="mi">16</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"seed"</span><span class="p">:</span><span class="w">             </span><span class="mi">12123</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">         </span><span class="s2">" that's all"</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;fitting_net&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;neuron&quot;</span><span class="p">:</span><span class="w">           </span><span class="p">[</span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;resnet_dt&quot;</span><span class="p">:</span><span class="w">        </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w">             </span><span class="mi">12123</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot; that&#39;s all&quot;</span>
+<span class="w">      </span><span class="nt">"fitting_net"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"neuron"</span><span class="p">:</span><span class="w">           </span><span class="p">[</span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">"resnet_dt"</span><span class="p">:</span><span class="w">        </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"seed"</span><span class="p">:</span><span class="w">             </span><span class="mi">12123</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">         </span><span class="s2">" that's all"</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot; that&#39;s all&quot;</span>
+<span class="w">      </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">     </span><span class="s2">" that's all"</span>
 <span class="w">   </span><span class="p">},</span>
 
-<span class="w">   </span><span class="nt">&quot;learning_rate&quot;</span><span class="w"> </span><span class="p">:{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;exp&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;decay_steps&quot;</span><span class="p">:</span><span class="w">  </span><span class="mi">5000</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;start_lr&quot;</span><span class="p">:</span><span class="w">     </span><span class="mf">0.001</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;stop_lr&quot;</span><span class="p">:</span><span class="w">      </span><span class="mf">3.51e-8</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">   </span><span class="nt">"learning_rate"</span><span class="w"> </span><span class="p">:{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w">         </span><span class="s2">"exp"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"decay_steps"</span><span class="p">:</span><span class="w">  </span><span class="mi">5000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"start_lr"</span><span class="p">:</span><span class="w">     </span><span class="mf">0.001</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"stop_lr"</span><span class="p">:</span><span class="w">      </span><span class="mf">3.51e-8</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">     </span><span class="s2">"that's all"</span>
 <span class="w">   </span><span class="p">},</span>
 
-<span class="w">   </span><span class="nt">&quot;loss&quot;</span><span class="w"> </span><span class="p">:{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;ener&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;start_pref_e&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.02</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;limit_pref_e&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;start_pref_f&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;limit_pref_f&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;start_pref_v&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;limit_pref_v&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot; that&#39;s all&quot;</span>
+<span class="w">   </span><span class="nt">"loss"</span><span class="w"> </span><span class="p">:{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w">         </span><span class="s2">"ener"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"start_pref_e"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.02</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"limit_pref_e"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"start_pref_f"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"limit_pref_f"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"start_pref_v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"limit_pref_v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">     </span><span class="s2">" that's all"</span>
 <span class="w">   </span><span class="p">},</span>
 
-<span class="w">   </span><span class="nt">&quot;training&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;training_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;systems&quot;</span><span class="p">:</span><span class="w">          </span><span class="p">[</span><span class="s2">&quot;training_data&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;batch_size&quot;</span><span class="p">:</span><span class="w">       </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">   </span><span class="nt">"training"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"training_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"systems"</span><span class="p">:</span><span class="w">          </span><span class="p">[</span><span class="s2">"training_data"</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">"batch_size"</span><span class="p">:</span><span class="w">       </span><span class="s2">"auto"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">         </span><span class="s2">"that's all"</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;validation_data&quot;</span><span class="p">:{</span>
-<span class="w">            </span><span class="nt">&quot;systems&quot;</span><span class="p">:</span><span class="w">          </span><span class="p">[</span><span class="s2">&quot;validation_data&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;batch_size&quot;</span><span class="p">:</span><span class="w">       </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;numb_btch&quot;</span><span class="p">:</span><span class="w">        </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">      </span><span class="nt">"validation_data"</span><span class="p">:{</span>
+<span class="w">            </span><span class="nt">"systems"</span><span class="p">:</span><span class="w">          </span><span class="p">[</span><span class="s2">"validation_data"</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">"batch_size"</span><span class="p">:</span><span class="w">       </span><span class="s2">"auto"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"numb_btch"</span><span class="p">:</span><span class="w">        </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">         </span><span class="s2">"that's all"</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;numb_steps&quot;</span><span class="p">:</span><span class="w">   </span><span class="mi">500000</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w">         </span><span class="mi">12123</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;disp_file&quot;</span><span class="p">:</span><span class="w">    </span><span class="s2">&quot;lcurve.out&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;disp_freq&quot;</span><span class="p">:</span><span class="w">    </span><span class="mi">1000</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;save_freq&quot;</span><span class="p">:</span><span class="w">    </span><span class="mi">10000</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">      </span><span class="nt">"numb_steps"</span><span class="p">:</span><span class="w">   </span><span class="mi">500000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"seed"</span><span class="p">:</span><span class="w">         </span><span class="mi">12123</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"disp_file"</span><span class="p">:</span><span class="w">    </span><span class="s2">"lcurve.out"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"disp_freq"</span><span class="p">:</span><span class="w">    </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"save_freq"</span><span class="p">:</span><span class="w">    </span><span class="mi">10000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">     </span><span class="s2">"that's all"</span>
 <span class="w">   </span><span class="p">},</span>
 
-<span class="w">   </span><span class="nt">&quot;_comment&quot;</span><span class="p">:</span><span class="w">         </span><span class="s2">&quot;that&#39;s all&quot;</span>
+<span class="w">   </span><span class="nt">"_comment"</span><span class="p">:</span><span class="w">         </span><span class="s2">"that's all"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -718,7 +752,7 @@ $<span class="w"> </span>tree<span class="w"> </span>iter_000000/02.dpmd/dft_can
 <h3><a class="toc-backref" href="#id13" role="doc-backlink">Monitor Workflow</a><a class="headerlink" href="#monitor-workflow" title="Link to this heading"></a></h3>
 <p>SPARC provides utilities for monitoring the workflow. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotForceDeviation</span>
-<span class="n">PlotForceDeviation</span><span class="p">(</span><span class="s2">&quot;iter_000000/02.dpmd/&quot;</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="n">PlotForceDeviation</span><span class="p">(</span><span class="s2">"iter_000000/02.dpmd/"</span><span class="p">,</span> <span class="n">iteration_window</span><span class="o">=</span><span class="s1">'all'</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -739,7 +773,7 @@ $<span class="w"> </span>tree<span class="w"> </span>iter_000000/02.dpmd/dft_can
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mlip_setup</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">plumed</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plumed_dp.dat&quot;</span>
+<span class="w">    </span><span class="nt">plumed_file</span><span class="p">:</span><span class="w"> </span><span class="s">"plumed_dp.dat"</span>
 </pre></div>
 </div>
 <p>An example PLUMED input file (<code class="docutils literal notranslate"><span class="pre">plumed_dp.dat</span></code>) is provided in this tutorial. It defines

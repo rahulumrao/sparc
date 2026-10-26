@@ -9,7 +9,7 @@
   <title>Molecular Dynamics &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -79,7 +79,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory Structure</a></li>
@@ -115,14 +119,33 @@
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#committee-evaluation-backend">Committee Evaluation Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
@@ -184,8 +207,10 @@
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -249,6 +274,9 @@
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -258,6 +286,7 @@
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -283,15 +312,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChemView.html">ChemView</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-a-trajectory">Load a trajectory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Atom-level-forces">Atom-level forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Cell-parameters">Cell parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Single-structure">Single structure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Custom-property-names">Custom property names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView — Interactive Trajectory Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Glycine-atom-indices">Glycine atom indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-the-trajectory">Load the trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-1-—-Energy-landscape">Example 1 — Energy landscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">Example 2 — Carbonyl and hydroxyl bond dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-3-—-Conformational-landscape-(Ramachandran-style)">Example 3 — Conformational landscape (Ramachandran-style)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-4-—-Bond-length-correlations">Example 4 — Bond-length correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-5-—-Atom-level-forces-and-index-colouring">Example 5 — Atom-level forces and index colouring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-6-—-Single-structure-viewer">Example 6 — Single-structure viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Tips-and-reference">Tips and reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chemview.html#Supported-specs">Supported specs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chemview.html#Key-parameters">Key parameters</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ChemView.html#interactive-demo">Interactive Demo</a></li>
@@ -386,31 +420,31 @@ Time<span class="o">[</span>ps<span class="o">]</span><span class="w">      </sp
 blocks in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>.  The Python API mirrors those settings directly.</p>
 <p><strong>NVT — Nose-Hoover thermostat</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">aimd_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVT"</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
 <span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"Nose"</span>
 <span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.ase_md</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoseNVT</span>
 
-<span class="n">atoms</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;POSCAR&quot;</span><span class="p">)</span>
+<span class="n">atoms</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
 <span class="n">dyn</span> <span class="o">=</span> <span class="n">NoseNVT</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">tdamp</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>NVT — Langevin thermostat</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">aimd_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVT"</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
 <span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Langevin&quot;</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"Langevin"</span>
 <span class="w">    </span><span class="nt">friction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
 </pre></div>
 </div>
@@ -424,13 +458,13 @@ blocks in <code class="docutils literal notranslate"><span class="pre">input.yam
 <p>Temperature ramping linearly from <code class="docutils literal notranslate"><span class="pre">temperature</span></code> to <code class="docutils literal notranslate"><span class="pre">temp_end</span></code> over the
 run. Nose-Hoover resists rapid temperature changes; use Langevin for ramping.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">aimd_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVT"</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">temp_end</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000.0</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
 <span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Langevin&quot;</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"Langevin"</span>
 <span class="w">    </span><span class="nt">friction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
 </pre></div>
 </div>
@@ -443,7 +477,7 @@ run. Nose-Hoover resists rapid temperature changes; use Langevin for ramping.</p
 </div>
 <p><strong>NVE — microcanonical ensemble</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">aimd_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVE&quot;</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVE"</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
 <span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
@@ -455,8 +489,8 @@ run. Nose-Hoover resists rapid temperature changes; use Langevin for ramping.</p
 
 <span class="n">dyn</span> <span class="o">=</span> <span class="n">VelocityVerlet</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span><span class="p">)</span>
 <span class="n">ExecuteAbInitioDynamics</span><span class="p">(</span><span class="n">system</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">dyn</span><span class="o">=</span><span class="n">dyn</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">pace</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                        <span class="n">log_filename</span><span class="o">=</span><span class="s2">&quot;aimd.log&quot;</span><span class="p">,</span> <span class="n">trajfile</span><span class="o">=</span><span class="s2">&quot;aimd.traj&quot;</span><span class="p">,</span>
-                        <span class="n">dir_name</span><span class="o">=</span><span class="s2">&quot;aimd_results&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;NVE_AIMD&quot;</span><span class="p">)</span>
+                        <span class="n">log_filename</span><span class="o">=</span><span class="s2">"aimd.log"</span><span class="p">,</span> <span class="n">trajfile</span><span class="o">=</span><span class="s2">"aimd.traj"</span><span class="p">,</span>
+                        <span class="n">dir_name</span><span class="o">=</span><span class="s2">"aimd_results"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"NVE_AIMD"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>NPT — isothermal-isobaric ensemble</strong></p>
@@ -464,7 +498,7 @@ run. Nose-Hoover resists rapid temperature changes; use Langevin for ramping.</p
 ASE’s <code class="docutils literal notranslate"><span class="pre">units.bar</span></code> convention (<code class="docutils literal notranslate"><span class="pre">pressure_au</span> <span class="pre">=</span> <span class="pre">pressure</span> <span class="pre">*</span> <span class="pre">units.bar</span></code>,
 <code class="docutils literal notranslate"><span class="pre">compressibility_au</span> <span class="pre">=</span> <span class="pre">compressibility</span> <span class="pre">/</span> <span class="pre">units.bar</span></code>).</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">aimd_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NPT&quot;</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NPT"</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
 <span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
@@ -526,18 +560,36 @@ handles both temperature and pressure coupling via <code class="docutils literal
 supporting various ensembles (NVE, NVT, NPT) with different thermostats.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="sparc.src.ase_md.CalculateDFTEnergy">
-<span class="sig-prename descclassname"><span class="pre">sparc.src.ase_md.</span></span><span class="sig-name descname"><span class="pre">CalculateDFTEnergy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/ase_md.html#CalculateDFTEnergy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.ase_md.CalculateDFTEnergy" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sparc.src.ase_md.</span></span><span class="sig-name descname"><span class="pre">CalculateDFTEnergy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epot_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epot_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/ase_md.html#CalculateDFTEnergy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.ase_md.CalculateDFTEnergy" title="Link to this definition"></a></dt>
 <dd><p>Calculate the DFT energy and forces for a candidate structure.</p>
+<p>The labelled frame enters <code class="docutils literal notranslate"><span class="pre">trajfile</span></code> — and hence the training set built
+from it — only if it passes <code class="xref py py-func docutils literal notranslate"><span class="pre">validate_labelled_frame()</span></code>. Rejected frames
+are diverted to <code class="docutils literal notranslate"><span class="pre">rejected.extxyz</span></code> with the reason recorded alongside. The
+candidate index is unaffected by rejection, so <code class="docutils literal notranslate"><span class="pre">progress.json</span></code> continues to
+enumerate candidates attempted rather than frames written, and a resumed run
+does not relabel a candidate that was already rejected.</p>
+<p>A calculator that raises (SCF divergence, killed process, parser failure) is
+treated as a rejection rather than an error: one unusable candidate must not
+abort labelling of the remaining pool.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Candidate index (used in log output)</p></li>
-<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, write column header to log file</p></li>
-<li><p><strong>system</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – Candidate structure with DFT calculator attached</p></li>
-<li><p><strong>log_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Filename for the per-candidate energy log</p></li>
-<li><p><strong>dir_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Directory where log and trajectory files are written</p></li>
-<li><p><strong>trajfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Filename for the ASE trajectory file</p></li>
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Candidate index (used in log output)</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, write column header to log file</p></li>
+<li><p><strong>system</strong> (<em>ase.Atoms</em>) – Candidate structure with DFT calculator attached</p></li>
+<li><p><strong>log_filename</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Filename for the per-candidate energy log</p></li>
+<li><p><strong>dir_name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Directory where log and trajectory files are written</p></li>
+<li><p><strong>trajfile</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Filename for the ASE trajectory file</p></li>
+<li><p><strong>epot_ref</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Reference energy from <code class="docutils literal notranslate"><span class="pre">labelled_reference_energy</span></code> [eV]. None disables
+the energy window, leaving the finiteness checks active.</p></li>
+<li><p><strong>epot_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Width of the accepted energy window above <code class="docutils literal notranslate"><span class="pre">epot_ref</span></code> [eV]</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(accepted,</span> <span class="pre">reason)</span></code>; <em>reason</em> is an empty string when accepted.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -549,16 +601,16 @@ supporting various ensembles (NVE, NVT, NPT) with different thermostats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>system</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – The ASE Atoms object representing the system</p></li>
+<li><p><strong>system</strong> (<em>ase.Atoms</em>) – The ASE Atoms object representing the system</p></li>
 <li><p><strong>dyn</strong> (<em>dynamics object</em>) – The initialized MD dynamics object</p></li>
-<li><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The number of MD steps to run</p></li>
-<li><p><strong>pace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The interval (in steps) for logging and saving checkpoints</p></li>
-<li><p><strong>log_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The filename for the MD log file</p></li>
-<li><p><strong>trajfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The filename for the trajectory file</p></li>
-<li><p><strong>dir_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The directory where log and trajectory files will be saved</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A label for the simulation (e.g., thermostat type)</p></li>
-<li><p><strong>temp_start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
-<li><p><strong>temp_end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The number of MD steps to run</p></li>
+<li><p><strong>pace</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The interval (in steps) for logging and saving checkpoints</p></li>
+<li><p><strong>log_filename</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The filename for the MD log file</p></li>
+<li><p><strong>trajfile</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The filename for the trajectory file</p></li>
+<li><p><strong>dir_name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The directory where log and trajectory files will be saved</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A label for the simulation (e.g., thermostat type)</p></li>
+<li><p><strong>temp_start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>temp_end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -572,19 +624,19 @@ supporting various ensembles (NVE, NVT, NPT) with different thermostats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>system</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – The ASE Atoms object representing the system</p></li>
+<li><p><strong>system</strong> (<em>ase.Atoms</em>) – The ASE Atoms object representing the system</p></li>
 <li><p><strong>dyn</strong> (<em>dynamics object</em>) – The initialized MD dynamics object</p></li>
-<li><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The number of MD steps to run</p></li>
-<li><p><strong>pace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The interval (in steps) for logging</p></li>
-<li><p><strong>log_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The filename for the MD log file</p></li>
-<li><p><strong>trajfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The filename for the trajectory file</p></li>
-<li><p><strong>dir_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The directory where log, trajectory and checkpoint files are saved</p></li>
-<li><p><strong>distance_metrics</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em> or </em><em>None</em>) – Metrics used to check physical limits during simulation</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A label for the simulation (e.g., thermostat type)</p></li>
-<li><p><strong>epot_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Maximum allowed energy deviation from reference (eV)</p></li>
-<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, resume from checkpoint in dir_name (default: False)</p></li>
-<li><p><strong>temp_start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
-<li><p><strong>temp_end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The number of MD steps to run</p></li>
+<li><p><strong>pace</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The interval (in steps) for logging</p></li>
+<li><p><strong>log_filename</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The filename for the MD log file</p></li>
+<li><p><strong>trajfile</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The filename for the trajectory file</p></li>
+<li><p><strong>dir_name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The directory where log, trajectory and checkpoint files are saved</p></li>
+<li><p><strong>distance_metrics</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em> or </em><em>None</em>) – Metrics used to check physical limits during simulation</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A label for the simulation (e.g., thermostat type)</p></li>
+<li><p><strong>epot_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Maximum allowed energy deviation from reference (eV)</p></li>
+<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, resume from checkpoint in dir_name (default: False)</p></li>
+<li><p><strong>temp_start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>temp_end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -597,11 +649,11 @@ supporting various ensembles (NVE, NVT, NPT) with different thermostats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – The ASE Atoms object representing the system</p></li>
-<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The simulation timestep in femtoseconds (default: 1 fs)</p></li>
-<li><p><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The target temperature in Kelvin (default: 300 K)</p></li>
-<li><p><strong>friction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The friction coefficient in fs^-1 (default: 0.01)</p></li>
-<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
+<li><p><strong>atoms</strong> (<em>ase.Atoms</em>) – The ASE Atoms object representing the system</p></li>
+<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The simulation timestep in femtoseconds (default: 1 fs)</p></li>
+<li><p><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The target temperature in Kelvin (default: 300 K)</p></li>
+<li><p><strong>friction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The friction coefficient in fs^-1 (default: 0.01)</p></li>
+<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -620,16 +672,16 @@ supporting various ensembles (NVE, NVT, NPT) with different thermostats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>system</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – The ASE Atoms object representing the system</p></li>
-<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – MD integration timestep in femtoseconds</p></li>
-<li><p><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target temperature in Kelvin</p></li>
-<li><p><strong>tau_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Thermostat time constant in femtoseconds</p></li>
-<li><p><strong>pressure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target pressure in bar</p></li>
-<li><p><strong>tau_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Barostat time constant in femtoseconds</p></li>
-<li><p><strong>compressibility</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Isothermal compressibility in 1/bar. If None, uses the default
+<li><p><strong>system</strong> (<em>ase.Atoms</em>) – The ASE Atoms object representing the system</p></li>
+<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – MD integration timestep in femtoseconds</p></li>
+<li><p><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Target temperature in Kelvin</p></li>
+<li><p><strong>tau_t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Thermostat time constant in femtoseconds</p></li>
+<li><p><strong>pressure</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Target pressure in bar</p></li>
+<li><p><strong>tau_p</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Barostat time constant in femtoseconds</p></li>
+<li><p><strong>compressibility</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Isothermal compressibility in 1/bar. If None, uses the default
 for Cu (~7.1e-7 bar⁻¹)</p></li>
-<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Extra ASE MD options</p></li>
+<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a>) – Extra ASE MD options</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -648,9 +700,9 @@ for Cu (~7.1e-7 bar⁻¹)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>system</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – The ASE Atoms object representing the system</p></li>
-<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – MD integration timestep in femtoseconds</p></li>
-<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
+<li><p><strong>system</strong> (<em>ase.Atoms</em>) – The ASE Atoms object representing the system</p></li>
+<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – MD integration timestep in femtoseconds</p></li>
+<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -669,11 +721,11 @@ for Cu (~7.1e-7 bar⁻¹)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – The ASE Atoms object representing the system</p></li>
-<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The simulation timestep in femtoseconds (default: 1 fs)</p></li>
-<li><p><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The target temperature in Kelvin (default: 300 K)</p></li>
-<li><p><strong>tdamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The damping time for the thermostat in femtoseconds (default: 10 fs)</p></li>
-<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
+<li><p><strong>atoms</strong> (<em>ase.Atoms</em>) – The ASE Atoms object representing the system</p></li>
+<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The simulation timestep in femtoseconds (default: 1 fs)</p></li>
+<li><p><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The target temperature in Kelvin (default: 300 K)</p></li>
+<li><p><strong>tdamp</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The damping time for the thermostat in femtoseconds (default: 10 fs)</p></li>
+<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -698,12 +750,12 @@ for Cu (~7.1e-7 bar⁻¹)</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dyn</strong> (<em>dynamics object</em>) – MD dynamics object (NoseHooverChainNVT, Langevin, NPTBerendsen)</p></li>
-<li><p><strong>atoms</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – ASE Atoms object</p></li>
-<li><p><strong>current_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Current MD step</p></li>
-<li><p><strong>total_steps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Total MD steps</p></li>
-<li><p><strong>temp_start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Starting temperature (K). If None, no ramping applied</p></li>
-<li><p><strong>temp_end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Ending temperature (K). If None, no ramping applied</p></li>
-<li><p><strong>ensemble</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – MD ensemble (‘NVT’, ‘NPT’, ‘NVE’). Default: ‘NVT’</p></li>
+<li><p><strong>atoms</strong> (<em>ase.Atoms</em>) – ASE Atoms object</p></li>
+<li><p><strong>current_step</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Current MD step</p></li>
+<li><p><strong>total_steps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Total MD steps</p></li>
+<li><p><strong>temp_start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Starting temperature (K). If None, no ramping applied</p></li>
+<li><p><strong>temp_end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Ending temperature (K). If None, no ramping applied</p></li>
+<li><p><strong>ensemble</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – MD ensemble (‘NVT’, ‘NPT’, ‘NVE’). Default: ‘NVT’</p></li>
 </ul>
 </dd>
 </dl>
@@ -718,11 +770,11 @@ checkpoint loading, and dynamics object creation for all ensemble types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – The ASE Atoms object representing the system</p></li>
-<li><p><strong>dyn_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a>) – The MD dynamics class (NoseHooverChainNVT, Langevin, NPTBerendsen, VelocityVerlet)</p></li>
-<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The simulation timestep in ASE internal units (already converted)</p></li>
-<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Additional parameters for specific ensemble types</p></li>
+<li><p><strong>atoms</strong> (<em>ase.Atoms</em>) – The ASE Atoms object representing the system</p></li>
+<li><p><strong>dyn_class</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><em>type</em></a>) – The MD dynamics class (NoseHooverChainNVT, Langevin, NPTBerendsen, VelocityVerlet)</p></li>
+<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The simulation timestep in ASE internal units (already converted)</p></li>
+<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, restart from checkpoint (default: False)</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a>) – Additional parameters for specific ensemble types</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -741,9 +793,9 @@ checkpoint loading, and dynamics object creation for all ensemble types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>system</strong> (<a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>ase.Atoms</em></a>) – The ASE Atoms object representing the system</p></li>
-<li><p><strong>model_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The path to the model files required by LAMMPS</p></li>
-<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The name of the model to be used in the simulation</p></li>
+<li><p><strong>system</strong> (<em>ase.Atoms</em>) – The ASE Atoms object representing the system</p></li>
+<li><p><strong>model_path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The path to the model files required by LAMMPS</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the model to be used in the simulation</p></li>
 </ul>
 </dd>
 </dl>

@@ -9,7 +9,7 @@
   <title>Active Learning &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=568f582d" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -18,6 +18,8 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -79,7 +81,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../yaml.html#directory-structure">Directory Structure</a></li>
@@ -115,14 +121,33 @@
 <li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#committee-evaluation-backend">Committee Evaluation Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dft_engines.html">Choosing a DFT Engine</a><ul>
@@ -184,8 +209,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -249,6 +276,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -258,6 +288,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -283,15 +314,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ChemView.html">ChemView</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../chemview.html">ChemView</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Load-a-trajectory">Load a trajectory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Atom-level-forces">Atom-level forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Cell-parameters">Cell parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Single-structure">Single structure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Custom-property-names">Custom property names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chemview.html">ChemView — Interactive Trajectory Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Glycine-atom-indices">Glycine atom indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Load-the-trajectory">Load the trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-1-—-Energy-landscape">Example 1 — Energy landscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">Example 2 — Carbonyl and hydroxyl bond dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-3-—-Conformational-landscape-(Ramachandran-style)">Example 3 — Conformational landscape (Ramachandran-style)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-4-—-Bond-length-correlations">Example 4 — Bond-length correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-5-—-Atom-level-forces-and-index-colouring">Example 5 — Atom-level forces and index colouring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-6-—-Single-structure-viewer">Example 6 — Single-structure viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Tips-and-reference">Tips and reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../chemview.html#Supported-specs">Supported specs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../chemview.html#Key-parameters">Key parameters</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../ChemView.html#interactive-demo">Interactive Demo</a></li>
@@ -361,7 +397,7 @@ to send for DFT labelling. An ensemble of <code class="docutils literal notransl
 models is used; configurations where the models <em>disagree</em> are the most
 informative for improving the potential.</p>
 <section id="force-deviation-thresholds">
-<h2>Force deviation thresholds<a class="headerlink" href="#force-deviation-thresholds" title="Link to this heading"></a></h2>
+<h2>Force Deviation Thresholds<a class="headerlink" href="#force-deviation-thresholds" title="Link to this heading"></a></h2>
 <p>The key tuning parameters are in the <code class="docutils literal notranslate"><span class="pre">model_dev</span></code> block:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model_dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">f_min_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w">    </span><span class="c1"># eV/Å — lower bound</span>
@@ -396,32 +432,578 @@ across the model committee:</p>
 <code class="docutils literal notranslate"><span class="pre">f_max_dev:</span> <span class="pre">0.3–0.8</span></code> eV/Å. Tighten the range in later iterations as the
 model matures.</p>
 </section>
+<section id="committee-evaluation-backend">
+<h2>Committee Evaluation Backend<a class="headerlink" href="#committee-evaluation-backend" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">model_dev.qbc</span></code> picks how force deviation across the committee is
+computed. Two backends produce the same 8-column <code class="docutils literal notranslate"><span class="pre">model_dev_N.out</span></code> format
+(<code class="docutils literal notranslate"><span class="pre">step,</span> <span class="pre">max_devi_e,</span> <span class="pre">min_devi_f,</span> <span class="pre">max_devi_f,</span> <span class="pre">avg_devi_f,</span> <span class="pre">...</span></code>) that feeds
+the thresholds above — only the evaluation path differs.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model_dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">qbc</span><span class="p">:</span><span class="w"> </span><span class="s">"internal"</span><span class="w">    </span><span class="c1"># "internal" (default) or "deepmd"</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">qbc</span></code></p></th>
+<th class="head"><p>How it evaluates</p></th>
+<th class="head"><p>Framework support</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;internal&quot;</span></code> (default)</p></td>
+<td><p>In-process: one batched <code class="docutils literal notranslate"><span class="pre">DeepPot.eval</span></code> call per committee member
+for the whole trajectory.</p></td>
+<td><p>DeepMD only</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;deepmd&quot;</span></code></p></td>
+<td><p>Converts the trajectory to DeePMD npy format with <code class="docutils literal notranslate"><span class="pre">dpdata</span></code> and
+shells out to the <code class="docutils literal notranslate"><span class="pre">dp</span> <span class="pre">model-devi</span></code> CLI.</p></td>
+<td><p>DeepMD only</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;internal&quot;</span></code> skips the <code class="docutils literal notranslate"><span class="pre">dpdata</span></code> → npy conversion and the <code class="docutils literal notranslate"><span class="pre">dp</span></code>
+subprocess entirely. Its deviation formulas match <code class="docutils literal notranslate"><span class="pre">dp</span> <span class="pre">model-devi</span></code> and
+deepmd-kit’s own <code class="docutils literal notranslate"><span class="pre">calc_model_devi_{f,v,e}</span></code> exactly — verified against <cite>dp
+model-devi</cite> output to the float32 noise floor (~1e-6).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The underlying <code class="xref py py-func docutils literal notranslate"><span class="pre">sparc.src.utils.model_qbc.compute_model_devi()</span></code> also
+has an ASE-calculator-loop path for nequip, allegro and mace committees,
+and a configurable device. Neither is reachable yet through
+<code class="docutils literal notranslate"><span class="pre">model_dev.qbc</span></code> — the only call site
+(<code class="docutils literal notranslate"><span class="pre">active_learning.py:QueryByCommittee</span></code>) hardcodes
+<code class="docutils literal notranslate"><span class="pre">compute_model_devi(trajfile,</span> <span class="pre">model_names,</span> <span class="pre">&quot;deepmd&quot;,</span> <span class="pre">&quot;cuda&quot;,</span> <span class="pre">outfile)</span></code>.
+Multi-framework support needs that call wired to the model’s actual
+framework before it is usable from <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Universal models with frame parameters (<code class="docutils literal notranslate"><span class="pre">fparam</span></code>, e.g. DPA-3) are
+handled differently by each backend. <code class="docutils literal notranslate"><span class="pre">&quot;deepmd&quot;</span></code> reads the model’s
+<code class="docutils literal notranslate"><span class="pre">default_fparam</span></code> and writes it explicitly into the <code class="docutils literal notranslate"><span class="pre">fparam.npy</span></code> of
+every converted data set. <code class="docutils literal notranslate"><span class="pre">&quot;internal&quot;</span></code> has no such write step — for
+these models <code class="docutils literal notranslate"><span class="pre">DeepPot.eval</span></code> falls back to the model’s own baked-in
+default fparam instead.</p>
+</div>
+</section>
 <section id="number-of-models">
-<h2>Number of models<a class="headerlink" href="#number-of-models" title="Link to this heading"></a></h2>
+<h2>Number of Models<a class="headerlink" href="#number-of-models" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">mlip_setup.num_models</span></code> controls committee size. A minimum of 2 is required;
 4 is recommended for reliable uncertainty estimates. More models increase
 training cost but improve candidate selection quality.</p>
 </section>
 <section id="restarting-an-interrupted-run">
-<h2>Restarting an interrupted run<a class="headerlink" href="#restarting-an-interrupted-run" title="Link to this heading"></a></h2>
-<p>If the workflow is killed mid-run, set:</p>
+<h2>Restarting an Interrupted Run<a class="headerlink" href="#restarting-an-interrupted-run" title="Link to this heading"></a></h2>
+<p>SPARC writes a <code class="docutils literal notranslate"><span class="pre">progress.json</span></code> file after every DFT candidate in Step 1 of
+each AL iteration. If the workflow crashes — during training, ML-MD, or
+mid-DFT — set <code class="docutils literal notranslate"><span class="pre">learning_restart:</span> <span class="pre">true</span></code> to resume automatically:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">active_learning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">learning_restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">latest_model</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;iter_000005/01.train/training_1/frozen_model_1.pb&quot;</span>
 </pre></div>
 </div>
-<p>SPARC will skip already-completed iterations and resume from the checkpoint.</p>
+<p><code class="docutils literal notranslate"><span class="pre">latest_model</span></code> is <strong>deprecated</strong> and ignored. The model used for ML-MD is
+always auto-detected from the current iteration’s training directory
+(<code class="docutils literal notranslate"><span class="pre">iter_N/01.train</span></code>) after retraining completes. It can be omitted.</p>
+<p>SPARC reads <code class="docutils literal notranslate"><span class="pre">progress.json</span></code> to determine which AL iteration was in progress
+and how many candidates had been labelled, then:</p>
+<ol class="arabic simple">
+<li><p>Re-runs the last DFT candidate (minor redundancy — identical result).</p></li>
+<li><p>Retrains models from the combined trajectory.</p></li>
+<li><p>Runs ML-MD with the freshly retrained models for that iteration.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">progress.json</span></code> is only updated during the DFT labelling step. A crash
+during ML-MD causes a restart from the beginning of that iteration’s DFT
+labelling — already-labelled candidates are re-processed from the last
+saved index.</p>
+</div>
 </section>
 <section id="restart-exploration">
-<h2>Restart exploration<a class="headerlink" href="#restart-exploration" title="Link to this heading"></a></h2>
-<p>To start the next ML-MD from a specific saved frame (e.g., a candidate
-structure) rather than the initial structure, use:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mlip_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">restart_exploration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">restart_frame</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;candidates&quot;</span><span class="w">   </span><span class="c1"># use last saved candidate frame</span>
+<h2>Restart Exploration<a class="headerlink" href="#restart-exploration" title="Link to this heading"></a></h2>
+<p>By default, every active-learning iteration seeds ML-MD from the input
+structure.  With <code class="docutils literal notranslate"><span class="pre">restart_exploration:</span> <span class="pre">true</span></code>, iteration ≥ 1 draws its
+initial geometry from the <strong>QbC candidate pool</strong> of the previous iteration:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>iter_{N-1}/02.dpmd/dft_candidates/candidates.extxyz
 </pre></div>
 </div>
-<p>This is useful for directed exploration of transition-state regions.</p>
+<section id="what-is-a-qbc-candidate">
+<h3>What is a QbC candidate?<a class="headerlink" href="#what-is-a-qbc-candidate" title="Link to this heading"></a></h3>
+<p>After ML-MD, SPARC evaluates each trajectory frame with Query-by-Committee
+(QbC): an ensemble of models predicts atomic forces and their spread
+(force deviation) is recorded.  Per frame:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Force deviation</p></th>
+<th class="head"><p>Outcome</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Below <code class="docutils literal notranslate"><span class="pre">f_min_dev</span></code></p></td>
+<td><p>Models agree – frame discarded (already learned)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Within <code class="docutils literal notranslate"><span class="pre">[f_min_dev,</span> <span class="pre">f_max_dev]</span></code></p></td>
+<td><p><strong>Kept as candidate</strong> – moderate disagreement, worth labeling</p></td>
+</tr>
+<tr class="row-even"><td><p>Above <code class="docutils literal notranslate"><span class="pre">f_max_dev</span></code></p></td>
+<td><p>Models diverge catastrophically – discarded (likely unphysical)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Surviving frames are scanned by the RMSD filter and stored in
+<code class="docutils literal notranslate"><span class="pre">candidates.extxyz</span></code>. This list contains locally distinct, and
+model-uncertain configurations along the MD trajectory.</p>
+</section>
+<section id="why-restart-from-the-qbc-pool">
+<h3>Why restart from the QbC pool?<a class="headerlink" href="#why-restart-from-the-qbc-pool" title="Link to this heading"></a></h3>
+<p>Without restart exploration, every iteration begins from the same input
+geometry.  The model keeps re-sampling the same region of phase space.
+Seeding from the QbC pool directs each new ML-MD run outward from
+configurations the committee already flagged as uncertain but not yet
+fully learned.</p>
+</section>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mlip_setup</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">restart_exploration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">   </span><span class="c1"># Seed from QbC pool [Optional, Default: false]</span>
+<span class="w">  </span><span class="nt">restart_frame</span><span class="p">:</span><span class="w"> </span><span class="s">"candidates"</span><span class="w">  </span><span class="c1"># Selection strategy [Optional, Default: "candidates"]</span>
+</pre></div>
+</div>
+</section>
+<section id="selection-strategies">
+<h3>Selection strategies<a class="headerlink" href="#selection-strategies" title="Link to this heading"></a></h3>
+<p>All three modes read from the same QbC pool.  They differ in how parallel
+MD shoots (<code class="docutils literal notranslate"><span class="pre">multiple_run</span></code>) are mapped to pool entries:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 82.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">restart_frame</span></code></p></th>
+<th class="head"><p>Behaviour</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;candidates&quot;</span></code></p></td>
+<td><p><strong>Round-robin (default).</strong>  Shoot <em>k</em> → candidate <em>k mod N</em>.  Each
+parallel trajectory seeds from a different pool entry; the list wraps
+when <code class="docutils literal notranslate"><span class="pre">multiple_run</span> <span class="pre">&gt;</span> <span class="pre">N</span></code>.  Deterministic.  Recommended for
+<code class="docutils literal notranslate"><span class="pre">multiple_run</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;last&quot;</span></code></p></td>
+<td><p>All shoots seed from the <strong>final</strong> pool entry – the most recently
+flagged uncertain configuration.  Suitable for <code class="docutils literal notranslate"><span class="pre">multiple_run:</span> <span class="pre">1</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code></p></td>
+<td><p><strong>Stochastic resampling.</strong>  Each shoot draws a uniform random entry
+from the pool.  The same frame may seed multiple trajectories.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="worked-example">
+<h3>Worked example<a class="headerlink" href="#worked-example" title="Link to this heading"></a></h3>
+<p>Suppose iteration 1 produces five QbC candidates <code class="docutils literal notranslate"><span class="pre">[A,</span> <span class="pre">B,</span> <span class="pre">C,</span> <span class="pre">D,</span> <span class="pre">E]</span></code>.
+Iteration 2 runs with <code class="docutils literal notranslate"><span class="pre">restart_exploration:</span> <span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">multiple_run:</span> <span class="pre">4</span></code>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">restart_frame</span></code></p></th>
+<th class="head"><p>Shoot assignments</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;candidates&quot;</span></code></p></td>
+<td><p>1→A, 2→B, 3→C, 4→D</p></td>
+<td><p>Systematic coverage of the shortlist</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;last&quot;</span></code></p></td>
+<td><p>1→E, 2→E, 3→E, 4→E</p></td>
+<td><p>All continue from the same geometry</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code></p></td>
+<td><p>1→C, 2→A, 3→C, 4→E</p></td>
+<td><p>Draws may repeat (e.g. shoots 1 and 3 both → C)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Active from iteration 1 onward.  Falls back to the input structure if
+<code class="docutils literal notranslate"><span class="pre">candidates.extxyz</span></code> is absent.</p>
+</div>
+</section>
+</section>
+<section id="deal-sparse-gp-diversity-filter">
+<span id="deal-filter"></span><h2>DEAL: Sparse GP Diversity Filter<a class="headerlink" href="#deal-sparse-gp-diversity-filter" title="Link to this heading"></a></h2>
+<p>After the QbC force-deviation gate, a second filter removes redundant
+candidates before DFT labelling. By default this uses a geometric RMSD check
+(Kabsch algorithm). When <code class="docutils literal notranslate"><span class="pre">deal.enabled:</span> <span class="pre">true</span></code>, the geometric filter is
+replaced by a <strong>Sparse Gaussian Process</strong> (SGP) posterior-variance filter
+operating in ACE descriptor space.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>SPARC targets <strong>DEAL &gt;= 3.0</strong>, which carries its own native sparse-GP
+extension (<code class="docutils literal notranslate"><span class="pre">FlareConfig</span></code> was renamed <code class="docutils literal notranslate"><span class="pre">SGPConfig</span></code>). Older DEAL releases are refused
+with a warning and the run falls back to the RMSD filter.</p>
+</div>
+<section id="mathematical-foundation">
+<h3>Mathematical Foundation<a class="headerlink" href="#mathematical-foundation" title="Link to this heading"></a></h3>
+<p><strong>Local environment descriptors (B2 / ACE).</strong>
+Each atom <span class="math notranslate nohighlight">\(i\)</span> in a candidate frame is mapped to a descriptor vector
+<span class="math notranslate nohighlight">\(\mathbf{d}_i \in \mathbb{R}^{n_\mathrm{feat}}\)</span> by the Atomic Cluster
+Expansion B2 basis:</p>
+<div class="math notranslate nohighlight">
+\[B_i^{nl} = \sum_{j \in \mathcal{N}(i)}
+            R_n(r_{ij})\, Y_l(\hat{\mathbf{r}}_{ij})\]</div>
+<p>where <span class="math notranslate nohighlight">\(R_n\)</span> are Chebyshev radial basis functions up to order
+<code class="docutils literal notranslate"><span class="pre">nmax</span></code>, <span class="math notranslate nohighlight">\(Y_l\)</span> are real spherical harmonics up to degree <code class="docutils literal notranslate"><span class="pre">lmax</span></code>,
+and <span class="math notranslate nohighlight">\(\mathcal{N}(i)\)</span> denotes neighbours within the cutoff radius.
+Descriptors are normalised by the NormalizedDotProduct kernel with
+hyper-parameters <span class="math notranslate nohighlight">\(\sigma=2\)</span> and power <span class="math notranslate nohighlight">\(p=2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[K(\mathbf{d}, \mathbf{d}') =
+  \sigma^2 \left(\frac{\mathbf{d} \cdot \mathbf{d}'}
+                      {|\mathbf{d}||\mathbf{d}'|}\right)^p\]</div>
+<p><strong>Sparse Gaussian Process.</strong>
+Given a set of inducing-point descriptors
+<span class="math notranslate nohighlight">\(\mathbf{Z} = \{\mathbf{d}_1, \ldots, \mathbf{d}_M\}\)</span> accumulated
+from selected frames, the SGP posterior variance for a new local environment
+<span class="math notranslate nohighlight">\(\mathbf{d}^*\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[\sigma^2(\mathbf{d}^*)
+= K(\mathbf{d}^*, \mathbf{d}^*)
+- \mathbf{k}^{\top}(\mathbf{d}^*)\,
+  \mathbf{K}_{ZZ}^{-1}\,
+  \mathbf{k}(\mathbf{d}^*)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{k}(\mathbf{d}^*) = [K(\mathbf{d}^*, \mathbf{d}_j)]_{j=1}^{M}\)</span>
+is the cross-covariance vector and <span class="math notranslate nohighlight">\(\mathbf{K}_{ZZ}\)</span> is the
+<span class="math notranslate nohighlight">\(M \times M\)</span> kernel matrix over inducing points. A frame is selected
+when any of its atomic environments has variance above <code class="docutils literal notranslate"><span class="pre">deal.threshold</span></code>;
+upon selection its descriptors are added to <span class="math notranslate nohighlight">\(\mathbf{Z}\)</span> (expanding the
+inducing set for subsequent candidates).</p>
+<p>This greedy sequential selection guarantees that no two selected frames share
+a novel environment — unlike RMSD, which is purely geometric and
+coordinate-frame-dependent.</p>
+</section>
+<section id="selection-modes">
+<h3>Selection Modes<a class="headerlink" href="#selection-modes" title="Link to this heading"></a></h3>
+<p><strong>Threshold mode</strong> (default) makes one pass at a fixed <code class="docutils literal notranslate"><span class="pre">deal.threshold</span></code>. The
+number of surviving frames is whatever the trajectory happens to yield.</p>
+<p><strong>Budget mode</strong> (<code class="docutils literal notranslate"><span class="pre">deal.max_selected:</span> <span class="pre">N</span></code>) instead targets a frame count. It
+runs repeated passes over the candidates, lowering the threshold as
+<span class="math notranslate nohighlight">\(f^{i+1}\)</span> (<code class="docutils literal notranslate"><span class="pre">threshold_factor</span></code>, default 0.7) on pass <span class="math notranslate nohighlight">\(i\)</span>, and stops
+as soon as <em>N</em> frames are collected or <code class="docutils literal notranslate"><span class="pre">max_iterations</span></code> passes are spent:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pass 1  threshold 0.700   pool 120 frames   →  4 selected
+pass 2  threshold 0.490   pool 116 frames   →  9 selected
+pass 3  threshold 0.343   pool 111 frames   → 20 selected   → budget reached
+</pre></div>
+</div>
+<p>The <strong>same GP object is reused across passes</strong> (<code class="docutils literal notranslate"><span class="pre">DEAL.configure_run</span></code>), so the
+inducing set keeps growing and a frame rejected in pass 1 is re-judged against
+everything learned since. Already-selected frames leave the pool; from pass 2
+on the remaining pool is shuffled so trajectory order does not bias which
+frames win the lowered threshold. Frames carry their trajectory index in
+<code class="docutils literal notranslate"><span class="pre">info['original_frame']</span></code> so bookkeeping survives that shuffle.</p>
+</section>
+<section id="per-atom-candidate-mask">
+<h3>Per-Atom Candidate Mask<a class="headerlink" href="#per-atom-candidate-mask" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">deal.mask</span></code> restricts GP evaluation to atoms flagged by a per-atom
+uncertainty array. Atoms outside the mask get uncertainty <span class="math notranslate nohighlight">\(-1\)</span>, so they
+can neither trigger a selection nor enter the sparse set. On reactive,
+interface and defect systems — where a handful of atoms drive the chemistry and
+the rest are well-known bulk — this both cuts prediction time and stops
+thermal noise in the bulk from spending DFT slots.</p>
+<p>The mask is derived from a per-atom array in <code class="docutils literal notranslate"><span class="pre">frame.arrays</span></code>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Level</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_devi_f</span></code></p></td>
+<td><p>frame (<code class="docutils literal notranslate"><span class="pre">info</span></code>)</p></td>
+<td><p>Scalar QbC force deviation; drives the <code class="docutils literal notranslate"><span class="pre">[f_min_dev,</span> <span class="pre">f_max_dev]</span></code> gate</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">per_atom_devi_f</span></code></p></td>
+<td><p>atom (<code class="docutils literal notranslate"><span class="pre">arrays</span></code>)</p></td>
+<td><p>One force deviation per atom; source for the mask</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">deal_mask</span></code></p></td>
+<td><p>atom (<code class="docutils literal notranslate"><span class="pre">arrays</span></code>)</p></td>
+<td><p>Boolean eligibility array DEAL actually reads</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>SPARC does not produce <code class="docutils literal notranslate"><span class="pre">per_atom_devi_f</span></code> yet — it needs
+<code class="docutils literal notranslate"><span class="pre">dp</span> <span class="pre">model-devi</span> <span class="pre">--atomic</span></code>, which is not wired into
+<code class="xref py py-func docutils literal notranslate"><span class="pre">QueryByCommittee()</span></code>. Until it is, enable the mask only if you attach
+the array yourself; frames missing it disable masking with a warning
+instead of failing the run. Set <code class="docutils literal notranslate"><span class="pre">deal.mask</span></code> to a string to read a
+differently named array.</p>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">mask_threshold</span></code> unset, DEAL picks thresholds automatically: per frame,
+<code class="docutils literal notranslate"><span class="pre">mask_fraction</span> <span class="pre">×</span> <span class="pre">frame_max</span></code> (default 0.3), and frames whose maximum falls
+outside <code class="docutils literal notranslate"><span class="pre">[1.1</span> <span class="pre">×</span> <span class="pre">mean,</span> <span class="pre">4.0</span> <span class="pre">×</span> <span class="pre">mean]</span></code> across the trajectory get an empty mask —
+those frames can then never be selected.</p>
+</section>
+<section id="data-flow-through-the-pipeline">
+<h3>Data Flow Through the Pipeline<a class="headerlink" href="#data-flow-through-the-pipeline" title="Link to this heading"></a></h3>
+<p>The figure below traces how array shapes transform at each stage.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>dpmd.traj  (ASE binary, N frames, 3×n_at forces per frame)
+    │
+    ▼  dpdata.LabeledSystem  →  npy sets (coords, forces, energies)
+    │
+    ▼  dp model-devi  →  model_dev_K.out  (N rows × 4 columns)
+       columns: step | max_devi_e | min_devi_f | max_devi_f
+    │
+    ▼  Force-deviation gate  [min_lim, max_lim]
+       keeps C frames  (C &lt;&lt; N)
+       → candidates.extxyz  (C × (3n_at + 1) per frame)
+    │
+    ├──(RMSD path)──────────────────────────────────────────┐
+    │  Kabsch RMSD vs. reference + accepted set             │
+    │  drop if RMSD &lt; rmsd_threshold                        │
+    │  → candidates.extxyz  (C' ≤ C frames)                │
+    └──(DEAL path)──────────────────────────────────────────┘
+       attach_dummy_calc: zeros energy/forces on each frame
+       DataConfig(images=C frames)
+       SGPConfig: B2 descriptors, NDP kernel
+           nmax × lmax  radial × angular channels
+           cutoff auto-read from DeepMD input.json rcut
+       optional mask: deal_mask marks eligible atoms
+       DEAL.run():
+           for each frame in order:
+               compute d* for every eligible atom
+               if max σ²(d*) &gt; threshold:
+                   select frame
+                   add d* to inducing set Z
+       budget mode: repeat with threshold ×= threshold_factor,
+           same GP, pool minus already-selected frames
+       → selected frames list  (S ≤ C frames)
+    │
+    ▼  CalculateDFTEnergy × S
+       appends to  iter_N/00.dft/AseMD.traj
+</pre></div>
+</div>
+<p><strong>Array shapes at the DEAL stage</strong> (<code class="docutils literal notranslate"><span class="pre">n_at</span></code> = atoms per frame, <code class="docutils literal notranslate"><span class="pre">C</span></code> = QbC
+candidates):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Shape</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">candidate_frames</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list[Atoms]</span></code>, length <em>C</em></p></td>
+<td><p>Each frame: positions <code class="docutils literal notranslate"><span class="pre">(n_at,</span> <span class="pre">3)</span></code>, symbols <code class="docutils literal notranslate"><span class="pre">(n_at,)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>B2 descriptor per atom</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(n_feat,)</span></code> where <code class="docutils literal notranslate"><span class="pre">n_feat</span> <span class="pre">≈</span> <span class="pre">nmax</span> <span class="pre">×</span> <span class="pre">(lmax+1)²</span></code></p></td>
+<td><p>Computed inside DEAL’s native sparse-GP extension (C++/pybind11)</p></td>
+</tr>
+<tr class="row-even"><td><p>Kernel matrix <span class="math notranslate nohighlight">\(K_{ZZ}\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">M)</span></code> growing as frames are selected</p></td>
+<td><p>Cholesky-updated in-place; <span class="math notranslate nohighlight">\(M\)</span> starts at 0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">selected</span></code> (output)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list[Atoms]</span></code>, length <em>S ≤ C</em></p></td>
+<td><p>Returned to <code class="docutils literal notranslate"><span class="pre">QueryByCommittee</span></code>; written to <code class="docutils literal notranslate"><span class="pre">candidates.extxyz</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="parallelization-constraints">
+<h3>Parallelization Constraints<a class="headerlink" href="#parallelization-constraints" title="Link to this heading"></a></h3>
+<p>DEAL’s SGP is <strong>sequential by design</strong>: each frame’s variance is evaluated
+against the inducing set built from all previously accepted frames. There is
+no embarrassingly parallel variant — the order of evaluation affects which
+frames are selected. Do not attempt to batch or shuffle <code class="docutils literal notranslate"><span class="pre">candidate_frames</span></code>
+before calling <code class="docutils literal notranslate"><span class="pre">run_deal_filter</span></code>.</p>
+<p>DEAL’s native kernel evaluations are multi-threaded internally (OpenMP). The
+adapter caps threads at <code class="docutils literal notranslate"><span class="pre">min(half</span> <span class="pre">the</span> <span class="pre">CPUs,</span> <span class="pre">4)</span></code> so the GP does not starve
+concurrent DFT jobs; override with <code class="docutils literal notranslate"><span class="pre">advanced.omp_threads</span></code> or by exporting
+<code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> before launching SPARC (an existing value always wins):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">4</span>
+sparc<span class="w"> </span>-i<span class="w"> </span>input.yaml
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">MKL_THREADING_LAYER=GNU</span></code> is set for the same reason as before: DEAL’s
+extension links Eigen, which compiles with <code class="docutils literal notranslate"><span class="pre">EIGEN_USE_MKL_ALL</span></code> whenever
+LAPACK resolves to MKL, and some conda builds ship an inconsistent
+<code class="docutils literal notranslate"><span class="pre">libmkl_avx512.so</span></code> that aborts at load.</p>
+<p>The surrounding SPARC workflow (DFT labelling, DeepMD training) is
+single-process; parallelism there comes from MPI-parallel VASP / CP2K and
+the multi-GPU training launched by <code class="docutils literal notranslate"><span class="pre">dp</span> <span class="pre">train</span></code>.</p>
+</section>
+<section id="enabling-deal">
+<h3>Enabling DEAL<a class="headerlink" href="#enabling-deal" title="Link to this heading"></a></h3>
+<p>One line is enough:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">deal</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>The full user-facing surface is five keys — everything else has a default:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 14.0%" />
+<col style="width: 68.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> → SGP filter; <code class="docutils literal notranslate"><span class="pre">false</span></code> → Kabsch RMSD filter</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">threshold</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0.01</span></code></p></td>
+<td><p>SGP posterior variance cut (threshold mode only)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_selected</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">null</span></code></p></td>
+<td><p>Set an integer to switch to budget mode and target that frame count</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cutoff</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">null</span></code></p></td>
+<td><p>Descriptor cutoff in Å; <code class="docutils literal notranslate"><span class="pre">null</span></code> auto-reads <code class="docutils literal notranslate"><span class="pre">rcut</span></code> / <code class="docutils literal notranslate"><span class="pre">r_max</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mask</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> (or an array name) to restrict the GP to flagged atoms</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">deal.threshold</span></code> is dimensionless SGP posterior variance in ACE descriptor
+space. It is <strong>not</strong> comparable to <code class="docutils literal notranslate"><span class="pre">f_min_dev</span></code> (eV/Å). Start at <code class="docutils literal notranslate"><span class="pre">0.01</span></code>;
+lower values retain more frames, higher values are more aggressive. In budget
+mode it is ignored — the decaying threshold is used instead:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">deal</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">max_selected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w">    </span><span class="c1"># 20 DFT calculations per AL iteration, no tuning</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-options">
+<h3>Advanced Options<a class="headerlink" href="#advanced-options" title="Link to this heading"></a></h3>
+<p>The rest of the DEAL API lives under <code class="docutils literal notranslate"><span class="pre">deal.advanced</span></code>. Keys are routed to the
+object each belongs to and validated on entry, so a typo raises instead of
+being silently ignored:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">deal</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">max_selected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="w">  </span><span class="nt">advanced</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">threshold_factor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.6</span><span class="w">       </span><span class="c1"># faster decay → more frames per pass</span>
+<span class="w">    </span><span class="nt">max_atoms_added</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w">        </span><span class="c1"># cap environments added per frame</span>
+<span class="w">    </span><span class="nt">save_full_trajectory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># per-atom uncertainty for every frame</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16.0%" />
+<col style="width: 26.0%" />
+<col style="width: 20.0%" />
+<col style="width: 38.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Group</p></th>
+<th class="head"><p>Keys</p></th>
+<th class="head"><p>Defaults</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>GP selection</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">update_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">max_atoms_added</span></code>, <code class="docutils literal notranslate"><span class="pre">min_steps_with_model</span></code>,
+<code class="docutils literal notranslate"><span class="pre">initial_atoms</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">null</span></code>, <code class="docutils literal notranslate"><span class="pre">0.2</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">null</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">update_threshold:</span> <span class="pre">null</span></code> tracks <code class="docutils literal notranslate"><span class="pre">0.8</span> <span class="pre">×</span> <span class="pre">threshold</span></code>, so it keeps
+following the decay in budget mode</p></td>
+</tr>
+<tr class="row-odd"><td><p>Descriptor</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nmax</span></code>, <code class="docutils literal notranslate"><span class="pre">lmax</span></code>, <code class="docutils literal notranslate"><span class="pre">radial_basis</span></code>, <code class="docutils literal notranslate"><span class="pre">cutoff_function</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">8</span></code>, <code class="docutils literal notranslate"><span class="pre">4</span></code>, <code class="docutils literal notranslate"><span class="pre">chebyshev</span></code>, <code class="docutils literal notranslate"><span class="pre">cosine</span></code></p></td>
+<td><p>B2 basis size; cost grows as <code class="docutils literal notranslate"><span class="pre">nmax</span> <span class="pre">×</span> <span class="pre">(lmax+1)²</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Kernel</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sigma</span></code>, <code class="docutils literal notranslate"><span class="pre">power</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2.0</span></code>, <code class="docutils literal notranslate"><span class="pre">2</span></code></p></td>
+<td><p>NormalizedDotProduct hyper-parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p>GP</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">variance_type</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">local</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">local</span></code> is the only value that keeps DEAL’s fast path</p></td>
+</tr>
+<tr class="row-even"><td><p>Mask</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mask_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">mask_upper_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">mask_mode</span></code>,
+<code class="docutils literal notranslate"><span class="pre">mask_fraction</span></code>, <code class="docutils literal notranslate"><span class="pre">mask_plot</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">null</span></code>, <code class="docutils literal notranslate"><span class="pre">null</span></code>, <code class="docutils literal notranslate"><span class="pre">above</span></code>, <code class="docutils literal notranslate"><span class="pre">0.3</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+<td><p>Used only when <code class="docutils literal notranslate"><span class="pre">deal.mask</span></code> is set</p></td>
+</tr>
+<tr class="row-odd"><td><p>Training/output</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">train_hyps</span></code>, <code class="docutils literal notranslate"><span class="pre">save_gp</span></code>, <code class="docutils literal notranslate"><span class="pre">save_full_trajectory</span></code>, <code class="docutils literal notranslate"><span class="pre">verbose</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code>, <code class="docutils literal notranslate"><span class="pre">true</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">train_hyps</span></code> and <code class="docutils literal notranslate"><span class="pre">save_gp</span></code> both disable the local-uncertainty fast
+path — expect a slower run</p></td>
+</tr>
+<tr class="row-even"><td><p>Budget/runtime</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">max_iterations</span></code>, <code class="docutils literal notranslate"><span class="pre">threshold_factor</span></code>, <code class="docutils literal notranslate"><span class="pre">seed</span></code>, <code class="docutils literal notranslate"><span class="pre">omp_threads</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">10</span></code>, <code class="docutils literal notranslate"><span class="pre">0.7</span></code>, <code class="docutils literal notranslate"><span class="pre">24</span></code>, <code class="docutils literal notranslate"><span class="pre">null</span></code></p></td>
+<td><p>Handled by SPARC’s budget loop, not passed to DEAL</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">max_selected</span></code>, <code class="docutils literal notranslate"><span class="pre">cutoff</span></code> and <code class="docutils literal notranslate"><span class="pre">mask</span></code> are rejected inside
+<code class="docutils literal notranslate"><span class="pre">advanced</span></code> — they belong at the top level.</p>
+<p>Extra output files land next to <code class="docutils literal notranslate"><span class="pre">candidates.extxyz</span></code>:
+<code class="docutils literal notranslate"><span class="pre">deal_selected.xyz</span></code> always, plus <code class="docutils literal notranslate"><span class="pre">deal_sgp.json</span></code> (<code class="docutils literal notranslate"><span class="pre">save_gp</span></code>),
+<code class="docutils literal notranslate"><span class="pre">deal_trajectory_uncertainty.xyz</span></code> with a per-atom <code class="docutils literal notranslate"><span class="pre">atomic_uncertainty</span></code>
+array (<code class="docutils literal notranslate"><span class="pre">save_full_trajectory</span></code>) and <code class="docutils literal notranslate"><span class="pre">deal_mask.png</span></code> (<code class="docutils literal notranslate"><span class="pre">mask_plot:</span> <span class="pre">true</span></code>).</p>
+<p>To disable (default), omit the block or set <code class="docutils literal notranslate"><span class="pre">enabled:</span> <span class="pre">false</span></code> — the RMSD
+filter is active:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model_dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">rmsd_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.025</span><span class="w">   </span><span class="c1"># Å — RMSD filter used when DEAL is off</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 

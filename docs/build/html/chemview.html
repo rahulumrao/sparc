@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -82,7 +82,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory Structure</a></li>
@@ -118,14 +122,33 @@
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#committee-evaluation-backend">Committee Evaluation Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
@@ -187,8 +210,10 @@
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -252,6 +277,9 @@
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -261,6 +289,7 @@
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -423,26 +452,32 @@
 <blockquote>
 <div><p><strong>Static viewers:</strong> Interactive panels below use pre-generated data. In your own Jupyter session <code class="docutils literal notranslate"><span class="pre">ChemView(...)</span></code> returns a live widget linked to your kernel.</p>
 </div></blockquote>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.chemview</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChemView</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f1cd134e7e444defa5ac166e060ddfc4", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 <section id="Load-the-trajectory">
 <h2>Load the trajectory<a class="headerlink" href="#Load-the-trajectory" title="Link to this heading"></a></h2>
 <p>Any ASE-readable format works (<code class="docutils literal notranslate"><span class="pre">.traj</span></code>, <code class="docutils literal notranslate"><span class="pre">.xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">.extxyz</span></code>, VASP <code class="docutils literal notranslate"><span class="pre">OUTCAR</span></code>, …).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;_static/TrajCombined.traj&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frames: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span><span class="si">}</span><span class="s2">,  atoms/frame: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">,  &quot;</span>
-      <span class="sa">f</span><span class="s2">&quot;symbols: </span><span class="si">{</span><span class="n">traj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">traj</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'_static/TrajCombined.traj'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">':'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Frames: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span><span class="si">}</span><span class="s2">,  atoms/frame: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">,  "</span>
+      <span class="sa">f</span><span class="s2">"symbols: </span><span class="si">{</span><span class="n">traj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -461,26 +496,27 @@ Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;
 <p>The simplest usage: plot <strong>potential energy vs frame index</strong> to monitor thermalisation, drift, or phase transitions over the simulation.</p>
 <p><code class="docutils literal notranslate"><span class="pre">map_color</span></code> sets the scatter-plot colour property — here energy itself gives a continuous colour gradient from low (blue) to high (red).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
     <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
-    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">],</span>
-    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">],</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
-    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
-    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Energy landscape&quot;</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">,</span> <span class="s2">"energy"</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">,</span> <span class="s2">"energy"</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"frame"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"energy"</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">"energy"</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">"Glycine AIMD — Energy landscape"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex1widget", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c4ab633cbb7b4339bae448dd093b48b9", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <iframe src="_static/gly_ex1.html"
         width="100%" height="520"
@@ -492,26 +528,27 @@ Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;
 <p>Track the <strong>C=O</strong> (atoms 2→3) and <strong>C–OH</strong> (atoms 2→4) bond lengths simultaneously. Scatter-plot axes are frame vs C=O distance, coloured by energy. Clicking a point in the scatter plot highlights the corresponding frame in the 3-D viewer.</p>
 <p>When the same spec type appears more than once, use <code class="docutils literal notranslate"><span class="pre">names</span></code> to assign distinct, human-readable keys.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
     <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
-    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;distance:2,3&quot;</span><span class="p">,</span> <span class="s2">&quot;distance:2,4&quot;</span><span class="p">],</span>
-    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;d_CO&quot;</span><span class="p">,</span> <span class="s2">&quot;d_COH&quot;</span><span class="p">],</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;d_CO&quot;</span><span class="p">,</span>
-    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
-    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Carboxyl bond dynamics&quot;</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">,</span> <span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"distance:2,3"</span><span class="p">,</span> <span class="s2">"distance:2,4"</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">,</span> <span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"d_CO"</span><span class="p">,</span> <span class="s2">"d_COH"</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"frame"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"d_CO"</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">"energy"</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">"Glycine AIMD — Carboxyl bond dynamics"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex2widget", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ab940adda9214234b1530c4be50285de", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <iframe src="_static/gly_ex2.html"
         width="100%" height="520"
@@ -523,26 +560,27 @@ Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;
 <p>Map the <strong>N–Cα–C angle</strong> (atoms 0,1,2) against the <strong>N–Cα–C–O dihedral</strong> (atoms 0,1,2,3) — a Ramachandran-style projection that reveals which conformations are sampled during the AIMD run.</p>
 <p>Each scatter-plot point is one MD frame. Clustering or gaps in this plot indicate preferred conformations or energy barriers.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
     <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
-    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;angle:0,1,2&quot;</span><span class="p">,</span> <span class="s2">&quot;dihedral:0,1,2,3&quot;</span><span class="p">],</span>
-    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;ang_NCaC&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">],</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;ang_NCaC&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span>
-    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
-    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Conformational landscape&quot;</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"angle:0,1,2"</span><span class="p">,</span> <span class="s2">"dihedral:0,1,2,3"</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"ang_NCaC"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"ang_NCaC"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">"energy"</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">"Glycine AIMD — Conformational landscape"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex3widget", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "88d2581d5a93491fb8b765629c553bbe", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <iframe src="_static/gly_ex3.html"
         width="100%" height="520"
@@ -554,30 +592,31 @@ Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;
 <p>Plot <strong>C–N</strong> vs <strong>C=O</strong> bond lengths to expose their dynamical correlation. Resonance effects in the carboxyl group couple these two bonds: elongation of one tends to shorten the other. Colour by <strong>C–OH</strong> bond length to add a third dimension.</p>
 <p>All four bond distances are computed in a single <code class="docutils literal notranslate"><span class="pre">ChemView</span></code> call; the axes and colour can be changed interactively in the viewer.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
     <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
-    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;distance:0,1&quot;</span><span class="p">,</span>   <span class="c1"># N–Cα</span>
-           <span class="s2">&quot;distance:1,2&quot;</span><span class="p">,</span>   <span class="c1"># Cα–C</span>
-           <span class="s2">&quot;distance:2,3&quot;</span><span class="p">,</span>   <span class="c1"># C=O</span>
-           <span class="s2">&quot;distance:2,4&quot;</span><span class="p">],</span>  <span class="c1"># C–OH</span>
-    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;d_NCa&quot;</span><span class="p">,</span> <span class="s2">&quot;d_CaC&quot;</span><span class="p">,</span> <span class="s2">&quot;d_CO&quot;</span><span class="p">,</span> <span class="s2">&quot;d_COH&quot;</span><span class="p">],</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;d_NCa&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;d_CO&quot;</span><span class="p">,</span>
-    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;d_COH&quot;</span><span class="p">,</span>
-    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Bond-length correlations&quot;</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">,</span> <span class="s2">"energy"</span><span class="p">,</span>
+           <span class="s2">"distance:0,1"</span><span class="p">,</span>   <span class="c1"># N–Cα</span>
+           <span class="s2">"distance:1,2"</span><span class="p">,</span>   <span class="c1"># Cα–C</span>
+           <span class="s2">"distance:2,3"</span><span class="p">,</span>   <span class="c1"># C=O</span>
+           <span class="s2">"distance:2,4"</span><span class="p">],</span>  <span class="c1"># C–OH</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">,</span> <span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"d_NCa"</span><span class="p">,</span> <span class="s2">"d_CaC"</span><span class="p">,</span> <span class="s2">"d_CO"</span><span class="p">,</span> <span class="s2">"d_COH"</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"d_NCa"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"d_CO"</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">"d_COH"</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">"Glycine AIMD — Bond-length correlations"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex4widget", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d7a8c46ad07845c997275bb589ac51b6", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <iframe src="_static/gly_ex4.html"
         width="100%" height="520"
@@ -593,28 +632,29 @@ Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;
 </ul>
 <p>Click any atom in the structure panel to see its <code class="docutils literal notranslate"><span class="pre">force_norm</span></code>, <code class="docutils literal notranslate"><span class="pre">atom_index</span></code>, and any other per-atom properties in the info panel.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ChemView</span><span class="p">(</span>
     <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>
-    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;force_norm&quot;</span><span class="p">],</span>
-    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;force_norm&quot;</span><span class="p">],</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
-    <span class="n">map_color</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>
-    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">&quot;atom_index&quot;</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">,</span> <span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"force_norm"</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">,</span> <span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"force_norm"</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"frame"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"energy"</span><span class="p">,</span>
+    <span class="n">map_color</span><span class="o">=</span><span class="s2">"energy"</span><span class="p">,</span>
+    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">"atom_index"</span><span class="p">,</span>
     <span class="n">show_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine AIMD — Atom forces&quot;</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">"Glycine AIMD — Atom forces"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex5widget", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "edd891fc79d94b0880fb4414ea128cba", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <iframe src="_static/gly_ex5.html"
         width="100%" height="520"
@@ -626,10 +666,10 @@ Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;
 <p>A single <code class="docutils literal notranslate"><span class="pre">ase.Atoms</span></code> object can be passed directly — useful for inspecting an optimised geometry or the lowest-energy frame of a trajectory.</p>
 <p>Set <code class="docutils literal notranslate"><span class="pre">plot=False</span></code> to suppress the scatter plot and show only the 3-D viewer. Atom-level position specs (<code class="docutils literal notranslate"><span class="pre">x_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">y_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">z_pos</span></code>) let you colour atoms by their Cartesian coordinates.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># pick the minimum-energy frame</span>
 <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">())</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">]</span>
@@ -637,23 +677,24 @@ Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;
 
 <span class="n">ChemView</span><span class="p">(</span>
     <span class="n">frames</span><span class="o">=</span><span class="p">[</span><span class="n">min_frame</span><span class="p">],</span>
-    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;y_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;z_pos&quot;</span><span class="p">],</span>
-    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">],</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
+    <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="s2">"x_pos"</span><span class="p">,</span> <span class="s2">"y_pos"</span><span class="p">,</span> <span class="s2">"z_pos"</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">,</span> <span class="s2">"z"</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"y"</span><span class="p">,</span>
     <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">&quot;atom_index&quot;</span><span class="p">,</span>
+    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">"atom_index"</span><span class="p">,</span>
     <span class="n">show_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;Glycine — lowest-energy frame&quot;</span><span class="p">,</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">"Glycine — lowest-energy frame"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ex6widget", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "621456d121f74a898b2a62084cbb3bcf", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 <hr class="docutils" />
@@ -745,16 +786,16 @@ Frames: 3624,  atoms/frame: 10,  symbols: [&#39;N&#39;, &#39;C&#39;, &#39;C&#39;
     <span class="n">frames</span><span class="o">=</span><span class="n">traj</span><span class="p">,</span>           <span class="c1"># list of ase.Atoms</span>
     <span class="n">specs</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># property specs to compute</span>
     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># optional: rename keys (same length as specs)</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>             <span class="c1"># scatter-plot x axis</span>
-    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span>            <span class="c1"># scatter-plot y axis</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"frame"</span><span class="p">,</span>             <span class="c1"># scatter-plot x axis</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"energy"</span><span class="p">,</span>            <span class="c1"># scatter-plot y axis</span>
     <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># optional: 3-D scatter z axis</span>
     <span class="n">map_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># scatter-plot colour property</span>
-    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">&quot;element&quot;</span><span class="p">,</span> <span class="c1"># 3-D viewer colouring: &quot;element&quot; | &quot;atom_index&quot; | None</span>
+    <span class="n">color_atoms</span><span class="o">=</span><span class="s2">"element"</span><span class="p">,</span> <span class="c1"># 3-D viewer colouring: "element" | "atom_index" | None</span>
     <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>          <span class="c1"># show element labels on atoms</span>
     <span class="n">show_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>      <span class="c1"># show integer index on atoms</span>
     <span class="n">env_cutoff</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>        <span class="c1"># environment sphere radius (Å)</span>
     <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>             <span class="c1"># show scatter-plot panel</span>
-    <span class="n">meta_name</span><span class="o">=</span><span class="s2">&quot;ChemView&quot;</span><span class="p">,</span>  <span class="c1"># dataset label</span>
+    <span class="n">meta_name</span><span class="o">=</span><span class="s2">"ChemView"</span><span class="p">,</span>  <span class="c1"># dataset label</span>
 <span class="p">)</span>
 </pre></div>
 </div>

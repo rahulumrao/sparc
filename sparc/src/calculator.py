@@ -10,8 +10,11 @@ reads its parameters from an engine-specific template file defined in the
 """
 
 import argparse
+import contextlib
+import io
 import os
 import shutil
+import warnings
 from pathlib import Path
 
 import yaml
@@ -324,6 +327,21 @@ class SetupDFTCalculator:
                 orcasimpleinput=orcasimpleinput,
                 orcablocks=orcablocks,
             )
+
+            read_results = calc.template.read_results
+
+            def read_result(directory):
+                """ORCA throws a convergence warning when reading the output file."""
+                with (
+                    warnings.catch_warnings(),
+                    contextlib.redirect_stdout(io.StringIO()),
+                ):
+                    warnings.filterwarnings(
+                        "ignore", message="Geometry optimization did not converge"
+                    )
+                    return read_results(directory)
+
+            calc.template.read_results = read_result
 
             if self.print_screen:
                 SparcLog("-" * 50)

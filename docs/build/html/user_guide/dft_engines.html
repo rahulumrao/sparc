@@ -9,7 +9,7 @@
   <title>Choosing a DFT Engine &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=568f582d" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -79,7 +79,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../yaml.html#directory-structure">Directory Structure</a></li>
@@ -115,14 +119,33 @@
 <li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="active_learning.html#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="active_learning.html#committee-evaluation-backend">Committee Evaluation Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="active_learning.html#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="active_learning.html#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="active_learning.html#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="active_learning.html#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Choosing a DFT Engine</a><ul>
@@ -184,8 +207,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -249,6 +274,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -258,6 +286,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -283,15 +312,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ChemView.html">ChemView</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../chemview.html">ChemView</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Load-a-trajectory">Load a trajectory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Atom-level-forces">Atom-level forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Cell-parameters">Cell parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Single-structure">Single structure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Custom-property-names">Custom property names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chemview.html">ChemView — Interactive Trajectory Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Glycine-atom-indices">Glycine atom indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Load-the-trajectory">Load the trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-1-—-Energy-landscape">Example 1 — Energy landscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">Example 2 — Carbonyl and hydroxyl bond dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-3-—-Conformational-landscape-(Ramachandran-style)">Example 3 — Conformational landscape (Ramachandran-style)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-4-—-Bond-length-correlations">Example 4 — Bond-length correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-5-—-Atom-level-forces-and-index-colouring">Example 5 — Atom-level forces and index colouring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Example-6-—-Single-structure-viewer">Example 6 — Single-structure viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../chemview.html#Tips-and-reference">Tips and reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../chemview.html#Supported-specs">Supported specs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../chemview.html#Key-parameters">Key parameters</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../ChemView.html#interactive-demo">Interactive Demo</a></li>
@@ -369,9 +403,9 @@ reference.</p>
 </ul>
 <p><strong>Template file:</strong> <code class="docutils literal notranslate"><span class="pre">INCAR</span></code></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;VASP&quot;</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;INCAR&quot;</span>
-<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">16</span><span class="nv"> </span><span class="s">vasp_std&quot;</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"VASP"</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"INCAR"</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">16</span><span class="nv"> </span><span class="s">vasp_std"</span>
 </pre></div>
 </div>
 </section>
@@ -384,8 +418,8 @@ reference.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">cp2k_template.inp</span></code> in the project root</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CP2K&quot;</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cp2k_template.inp&quot;</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"CP2K"</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"cp2k_template.inp"</span>
 </pre></div>
 </div>
 </section>
@@ -395,9 +429,9 @@ reference.</p>
 (e.g., CCSD(T), hybrid DFT). Non-periodic; SPARC automatically removes
 periodic boundary conditions from the structure.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ORCA&quot;</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;orca_template.inp&quot;</span>
-<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/path/to/orca&quot;</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"ORCA"</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"orca_template.inp"</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"/path/to/orca"</span>
 </pre></div>
 </div>
 </section>
@@ -414,8 +448,8 @@ periodic cell to compute stress and apply volume coupling. Use NVE or
 NVT instead. SPARC will raise an error if NPT is requested with xTB.</p>
 </div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;xTB&quot;</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;xtb_template.inp&quot;</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"xTB"</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"xtb_template.inp"</span>
 </pre></div>
 </div>
 </section>
@@ -424,9 +458,9 @@ NVT instead. SPARC will raise an error if NPT is requested with xTB.</p>
 <p>Open-source plane-wave DFT for periodic systems. k-points default to
 Gamma-only sampling; override by specifying <code class="docutils literal notranslate"><span class="pre">kpts</span></code> in the template.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;QE&quot;</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;qe_template.in&quot;</span>
-<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">pw.x&quot;</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"QE"</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"qe_template.in"</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">pw.x"</span>
 </pre></div>
 </div>
 </section>
@@ -435,9 +469,9 @@ Gamma-only sampling; override by specifying <code class="docutils literal notran
 <p>For molecular (non-periodic) systems. Periodicity is auto-removed. Uses a
 <code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">=</span> <span class="pre">value</span></code> template file.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Gaussian&quot;</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gaussian_template.inp&quot;</span>
-<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;g16&quot;</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"Gaussian"</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"gaussian_template.inp"</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"g16"</span>
 </pre></div>
 </div>
 </section>

@@ -41,6 +41,61 @@ Typical starting values: ``f_min_dev: 0.05–0.1`` eV/Å,
 model matures.
 
 
+Committee Evaluation Backend
+-----------------------------
+
+``model_dev.qbc`` picks how force deviation across the committee is
+computed. Two backends produce the same 8-column ``model_dev_N.out`` format
+(``step, max_devi_e, min_devi_f, max_devi_f, avg_devi_f, ...``) that feeds
+the thresholds above — only the evaluation path differs.
+
+.. code-block:: yaml
+
+    model_dev:
+      qbc: "internal"    # "internal" (default) or "deepmd"
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 40 40
+
+   * - ``qbc``
+     - How it evaluates
+     - Framework support
+   * - ``"internal"`` (default)
+     - In-process: one batched ``DeepPot.eval`` call per committee member
+       for the whole trajectory.
+     - DeepMD only
+   * - ``"deepmd"``
+     - Converts the trajectory to DeePMD npy format with ``dpdata`` and
+       shells out to the ``dp model-devi`` CLI.
+     - DeepMD only
+
+``"internal"`` skips the ``dpdata`` → npy conversion and the ``dp``
+subprocess entirely. Its deviation formulas match ``dp model-devi`` and
+deepmd-kit's own ``calc_model_devi_{f,v,e}`` exactly — verified against `dp
+model-devi` output to the float32 noise floor (~1e-6).
+
+.. note::
+
+   The underlying :func:`sparc.src.utils.model_qbc.compute_model_devi` also
+   has an ASE-calculator-loop path for nequip, allegro and mace committees,
+   and a configurable device. Neither is reachable yet through
+   ``model_dev.qbc`` — the only call site
+   (``active_learning.py:QueryByCommittee``) hardcodes
+   ``compute_model_devi(trajfile, model_names, "deepmd", "cuda", outfile)``.
+   Multi-framework support needs that call wired to the model's actual
+   framework before it is usable from ``input.yaml``.
+
+.. note::
+
+   Universal models with frame parameters (``fparam``, e.g. DPA-3) are
+   handled differently by each backend. ``"deepmd"`` reads the model's
+   ``default_fparam`` and writes it explicitly into the ``fparam.npy`` of
+   every converted data set. ``"internal"`` has no such write step — for
+   these models ``DeepPot.eval`` falls back to the model's own baked-in
+   default fparam instead.
+
+
 Number of Models
 ----------------
 
@@ -105,16 +160,15 @@ After ML-MD, SPARC evaluates each trajectory frame with Query-by-Committee
    * - Force deviation
      - Outcome
    * - Below ``f_min_dev``
-     - Models agree — frame discarded (already learned)
+     - Models agree -- frame discarded (already learned)
    * - Within ``[f_min_dev, f_max_dev]``
-     - **Kept as candidate** — moderate disagreement, worth labeling
+     - **Kept as candidate** -- moderate disagreement, worth labeling
    * - Above ``f_max_dev``
-     - Models diverge catastrophically — discarded (likely unphysical)
+     - Models diverge catastrophically -- discarded (likely unphysical)
 
-Surviving frames are deduplicated by RMSD and collected in
-``candidates.extxyz``.  This shortlist contains locally distinct,
-model-uncertain configurations — not arbitrary points along the MD
-trajectory.
+Surviving frames are scanned by the RMSD filter and stored in
+``candidates.extxyz``. This list contains locally distinct, and
+model-uncertain configurations along the MD trajectory.
 
 Why restart from the QbC pool?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -152,7 +206,7 @@ MD shoots (``multiple_run``) are mapped to pool entries:
        when ``multiple_run > N``.  Deterministic.  Recommended for
        ``multiple_run > 1``.
    * - ``"last"``
-     - All shoots seed from the **final** pool entry — the most recently
+     - All shoots seed from the **final** pool entry -- the most recently
        flagged uncertain configuration.  Suitable for ``multiple_run: 1``.
    * - ``"random"``
      - **Stochastic resampling.**  Each shoot draws a uniform random entry
@@ -201,15 +255,8 @@ operating in ACE descriptor space.
 .. note::
 
    SPARC targets **DEAL >= 3.0**, which carries its own native sparse-GP
-   extension — ``flare`` / ``flare-pp`` is no longer a dependency and
-   ``FlareConfig`` was renamed ``SGPConfig``. Older DEAL releases are refused
-   with a warning and the run falls back to the RMSD filter. Install with:
-
-   .. code-block:: bash
-
-      git clone https://github.com/luigibonati/DEAL.git && cd DEAL
-      conda env create -f environment-deal.yml && conda activate deal
-      python -m pip install -e . --no-build-isolation
+   extension (``FlareConfig`` was renamed ``SGPConfig``). Older DEAL releases are refused
+   with a warning and the run falls back to the RMSD filter.
 
 Mathematical Foundation
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -265,8 +312,7 @@ Selection Modes
 ^^^^^^^^^^^^^^^
 
 **Threshold mode** (default) makes one pass at a fixed ``deal.threshold``. The
-number of surviving frames is whatever the trajectory happens to yield, which
-is awkward when the DFT budget per AL iteration is the real constraint.
+number of surviving frames is whatever the trajectory happens to yield.
 
 **Budget mode** (``deal.max_selected: N``) instead targets a frame count. It
 runs repeated passes over the candidates, lowering the threshold as
@@ -393,57 +439,6 @@ candidates):
    * - ``selected`` (output)
      - ``list[Atoms]``, length *S ≤ C*
      - Returned to ``QueryByCommittee``; written to ``candidates.extxyz``
-
-Edge Cases and Error Handling
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-**DEAL missing or older than 3.0.**
-``run_deal_filter`` warns, prints the install recipe and returns the original
-``candidate_frames`` list unchanged, falling back to the RMSD filter. A DEAL
-2.x install is detected from its package version *before* the import is
-attempted, so its ``import flare`` failure never reaches the user as a
-traceback. No crash either way.
-
-**Empty candidate list (C = 0).**
-``run_deal_filter`` returns ``[]`` immediately. ``QueryByCommittee`` logs
-zero candidates and sets ``candidate_found = False``, ending the AL loop
-if ``candidate_idx < min_candidates``.
-
-**``deal_selected.xyz`` missing.**
-DEAL writes its selection to ``<output_prefix>_selected.xyz``, which the
-adapter reads back with ``ase.io.read`` — the round-trip is what preserves
-``frame.info`` metadata for the summary CSV. If the file is absent, all
-candidate frames are returned with a warning.
-
-**Unknown key in ``deal.advanced``.**
-Raises ``ValueError`` listing the accepted names, before any GP work starts. A
-silently ignored typo would change the selection science, so this one fails
-loudly rather than warning.
-
-**cutoff auto-detection fails.**
-If ``mlip_setup.input_file`` is missing or contains no ``rcut`` / ``r_max``
-key, ``_extract_rcut_from_deepmd_json`` warns and falls back to
-``_DEAL_DEFAULT_CUTOFF = 5.0`` Å. Override explicitly with ``deal.cutoff``.
-
-**Species mismatch.**
-``_get_species`` reads the reference structure file first (authoritative —
-covers elements not yet appearing in candidate frames). If the file cannot be
-read, it falls back to the union of species in ``candidate_frames``. This
-ensures the GP species map is always complete.
-
-**Periodic vs. molecular systems.**
-``is_periodic`` is derived from the DFT engine:
-``GAUSSIAN / ORCA / XTB → False``, all others ``→ True``.
-When ``is_periodic = False``, ``DEALConfig(force_only=True)`` trains on forces
-alone, and molecular frames are wrapped in a vacuum box for the duration of
-the descriptor evaluation — a zero cell yields an empty neighbour list and
-therefore zero variance on every atom. The box is stripped again before the
-frames reach the DFT stage.
-
-**Budget overshoot.**
-The final budget pass can push past ``max_selected``; the adapter keeps the
-first *N* frames (selection order is uncertainty-driven) and rewrites
-``deal_selected.xyz`` to match.
 
 Parallelization Constraints
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

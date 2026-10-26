@@ -16,12 +16,12 @@ enabled or disabled independently.
 General Settings
 ~~~~~~~~~~~~~~~~
 
-Specifies the input structure file. Supports a single file or a list of files
-(used for multiple independent MD runs).
+Specifies the input structure file. Supports a single file or a `list` of files
+(good for multiple independent MD runs).
 
 .. code-block:: yaml
 
-    general:
+    general:  
       structure_file: "POSCAR"             # single file         [Required]
       # structure_file:                    # or a list of files
       #   - "POSCAR_1"
@@ -29,7 +29,7 @@ Specifies the input structure file. Supports a single file or a list of files
 
 .. note::
 
-    VASP ``POSCAR``, ``xyz``, ``cif``, and any other format supported by ASE can be used.
+    VASP ``POSCAR``, ``xyz``, ``cif``, or any other format supported by [ASE](https://docs.ase-lib.org/ase/io/io.html) can be used.
     For Gaussian and ORCA, periodicity is automatically removed if present.
 
 
@@ -46,7 +46,7 @@ Supported engines: ``VASP``, ``CP2K``, ``ORCA``, ``xTB``, ``QE``, ``Gaussian``.
       template_file: "INCAR"               # Engine-specific template file     [Required]
       exe_command: "mpirun -np 4 vasp_std" # Executable command (auto-detect if omitted) [Optional]
 
-Each engine reads its template differently:
+Each DFT calculator reads a different template file:
 
 .. list-table::
    :header-rows: 1
@@ -60,16 +60,16 @@ Each engine reads its template differently:
      - Standard VASP INCAR format
    * - ``CP2K``
      - ``cp2k_template.inp``
-     - CP2K input file (comments stripped)
+     - CP2K input file (comments are stripped)
    * - ``ORCA``
      - ``orca_template.inp``
-     - ORCA simple input format
+     - ORCA input file
    * - ``xTB``
      - ``xtb_template.inp``
      - ``key = value`` file
    * - ``QE``
      - ``qe_template.in``
-     - Quantum ESPRESSO ``pw.x`` input; k-points default to Gamma
+     - Quantum ESPRESSO ``pw.x`` input file; k-points default to ``Gamma``
    * - ``Gaussian``
      - ``gaussian_template.inp``
      - ``key = value`` file; always non-periodic
@@ -84,7 +84,7 @@ Set ``steps: 0`` (default) to skip AIMD entirely.
 .. code-block:: yaml
 
     aimd_setup:
-      ensemble: "NVT"            # Ensemble: NVT, NVE, or NPT               [Required]
+      ensemble: "NVT"            # Ensemble: NVT, NVE, or NPT                [Required]
       temperature: 300.0         # Temperature in Kelvin                     [Required]
       temp_end: null             # Ramp temperature to this value (optional) [Optional]
       timestep_fs: 1.0           # MD timestep in femtoseconds               [Optional, Default: 1.0]
@@ -106,11 +106,10 @@ Set ``steps: 0`` (default) to skip AIMD entirely.
 .. note::
 
     **Bias force correction** (``aimd_setup.plumed.force_correction``) is available for
-    PLUMED-biased AIMD trajectories. When PLUMED applies a bias (e.g. metadynamics or
-    umbrella sampling), the recorded forces include the bias contribution. Force correction
-    subtracts the PLUMED bias forces from each frame before the trajectory is used for
+    AIMD trajectories. When PLUMED is attached to the AIMD simulation for enhanced sampling the applied bias potential (e.g. metadynamics or
+    umbrella sampling), modifies the potential energy surface. Thus by biasing the recorded forces. 
+    Force correction module corrects these biased forces to their true values from each frame before the trajectory is used for
     MLIP training, ensuring models are trained on physical (unbiased) forces only.
-    Full documentation will be added in a future release.
 
 **NPT ensemble** requires additional parameters:
 
@@ -126,8 +125,8 @@ Set ``steps: 0`` (default) to skip AIMD entirely.
 
 .. note::
 
-    Temperature ramping (``temp_end``) is supported for NVT/Langevin.
-    Nose-Hoover thermostat resists rapid temperature changes — use Langevin for ramping.
+    Temperature ramping (``temp_end``) is supported only for NVT[Langevin] ensembles.
+    Nose-Hoover thermostat resists rapid temperature changes - use Langevin only for temperature ramping.
 
 
 .. _deepmd_section:
@@ -169,7 +168,6 @@ Controls MLIP model training and ML-MD simulation.
       thermostat:
         type: "Nose"
         tdamp: 2.0
-        # friction: 0.01
 
       plumed:
         enabled: false
@@ -185,17 +183,16 @@ Controls MLIP model training and ML-MD simulation.
 .. note::
 
     **Delayed PLUMED activation** (``mlip_setup.plumed.start_iteration``) lets the first
-    AL iterations run as plain ML-MD to build a reliable base model, then switches on
-    PLUMED-biased sampling (e.g. umbrella sampling or metadynamics) from the specified
-    iteration onward. For example, ``start_iteration: 1`` skips PLUMED in iteration 0
-    and enables it from iteration 1. Default ``0`` applies PLUMED from the start.
-
+    AL iterations run as plain ML-MD to build a stable starting model, then switches on
+    enhanced sampling bias from a specified iteration onward. 
+    For example, ``start_iteration: 1`` skips enhanced sampling in iteration 0
+    and enables it from iteration 1. Default ``0`` applies enhanced sampling bias from the start.
 
 Restart Exploration
 ~~~~~~~~~~~~~~~~~~~
 
-``restart_exploration`` and ``restart_frame`` control whether subsequent AL
-iterations seed ML-MD from the previous iteration's QbC candidate pool instead
+``restart_exploration`` and ``restart_frame`` controls whether subsequent AL
+iterations seed the input configuration for ML-MD from the previous iteration's QbC candidate pool instead
 of the input structure.  See :doc:`user_guide/active_learning` for strategy
 details (``"candidates"``, ``"last"``, ``"random"``).
 
@@ -235,14 +232,21 @@ label them with DFT, and retrain the models.
     min_candidates: 1             # Stop if candidates found < this value    [Optional, Default: 1]
 
     model_dev:
-      f_min_dev: 0.1              # Lower force deviation threshold (eV/Å)  [Required]
-      f_max_dev: 0.8              # Upper force deviation threshold (eV/Å)  [Required]
-      rmsd_threshold: 0.05        # RMSD duplicate filter (Å)               [Optional, Default: 0.05]
-      exclude_hydrogen: true      # Exclude H atoms from RMSD calculation   [Optional, Default: true]
+      qbc: "internal"              # Deviation backend: "internal" or "deepmd" [Optional, Default: "internal"]
+      f_min_dev: 0.1               # Lower force deviation threshold (eV/Å)  [Required]
+      f_max_dev: 0.8               # Upper force deviation threshold (eV/Å)  [Required]
+      rmsd_threshold: 0.05         # RMSD duplicate filter (Å)               [Optional, Default: 0.05]
+      exclude_hydrogen: true       # Exclude H atoms from RMSD calculation   [Optional, Default: true]
 
 Structures with force deviation in ``[f_min_dev, f_max_dev]`` are selected as
 candidates. Structures below ``f_min_dev`` are well-described; above ``f_max_dev``
 are too uncertain and discarded.
+
+``model_dev.qbc`` picks how the committee force deviation is computed:
+``"internal"`` (default) evaluates in-process; ``"deepmd"`` shells out to
+the ``dp model-devi`` CLI. See :doc:`user_guide/active_learning` for details.
+
+Independently, ``refine`` controls how each AL iteration's models are initialized:
 
 .. code-block:: yaml
 

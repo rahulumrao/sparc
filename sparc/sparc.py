@@ -463,7 +463,8 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
         else:
             SparcLog(f"Ab-initio MD using {ensemble_name} at {temperature}K".center(80))
         SparcLog(f"{'MD Ensemble':<30} {config.aimd_setup.ensemble}")
-        SparcLog(f"{'Temperature':<30} {config.aimd_setup.temperature:.1f} K")
+        if ensemble != "NVE":
+            SparcLog(f"{'Temperature':<30} {config.aimd_setup.temperature:.1f} K")
         if config.aimd_setup.temp_end is not None:
             SparcLog(
                 f"{'Temperature Ramping':<30} {config.aimd_setup.temperature:.1f} K --> {config.aimd_setup.temp_end:.1f} K"
@@ -484,7 +485,8 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     level="WARNING",
                 )
                 SparcLog("")
-        SparcLog(f"{'MD Thermostat':<30} {config.aimd_setup.thermostat.type}")
+        if ensemble != "NVE":
+            SparcLog(f"{'MD Thermostat':<30} {config.aimd_setup.thermostat.type}")
         SparcLog(f"{'Timestep':<30} {config.aimd_setup.timestep_fs:.2f} fs")
         SparcLog(f"{'AIMD Steps':<30} {config.aimd_setup.steps}")
         SparcLog(f"{'Output Trajectory':<30} {config.output.aimdtraj_file}")
@@ -599,7 +601,8 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 )
             )
         SparcLog(f"{'MD Ensemble':<30} {config.mlip_setup.ensemble}")
-        SparcLog(f"{'Temperature':<30} {config.mlip_setup.temperature:.1f} K")
+        if config.mlip_setup.ensemble != "NVE":
+            SparcLog(f"{'Temperature':<30} {config.mlip_setup.temperature:.1f} K")
         if config.mlip_setup.temp_end is not None:
             SparcLog(
                 f"{'Temperature Ramping':<30} {config.mlip_setup.temperature:.1f} K --> {config.mlip_setup.temp_end:.1f} K"
@@ -620,7 +623,8 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                     level="WARNING",
                 )
                 SparcLog("")
-        SparcLog(f"{'MD Thermostat':<30} {config.mlip_setup.thermostat.type}")
+        if config.mlip_setup.ensemble != "NVE":
+            SparcLog(f"{'MD Thermostat':<30} {config.mlip_setup.thermostat.type}")
         SparcLog(f"{'Timestep':<30} {config.mlip_setup.timestep_fs:.2f} fs")
         SparcLog(f"{'ML-MD Steps':<30} {config.mlip_setup.md_steps}")
         SparcLog(f"{'Output Trajectory':<30} {config.output.dptraj_file}")

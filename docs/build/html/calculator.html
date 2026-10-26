@@ -9,7 +9,7 @@
   <title>DFT Calculator &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -79,7 +79,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory Structure</a></li>
@@ -115,14 +119,33 @@
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#committee-evaluation-backend">Committee Evaluation Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
@@ -184,8 +207,10 @@
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -249,6 +274,9 @@
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -258,6 +286,7 @@
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -283,15 +312,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChemView.html">ChemView</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-a-trajectory">Load a trajectory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Atom-level-forces">Atom-level forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Cell-parameters">Cell parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Single-structure">Single structure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Custom-property-names">Custom property names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView — Interactive Trajectory Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Glycine-atom-indices">Glycine atom indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-the-trajectory">Load the trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-1-—-Energy-landscape">Example 1 — Energy landscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">Example 2 — Carbonyl and hydroxyl bond dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-3-—-Conformational-landscape-(Ramachandran-style)">Example 3 — Conformational landscape (Ramachandran-style)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-4-—-Bond-length-correlations">Example 4 — Bond-length correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-5-—-Atom-level-forces-and-index-colouring">Example 5 — Atom-level forces and index colouring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-6-—-Single-structure-viewer">Example 6 — Single-structure viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Tips-and-reference">Tips and reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chemview.html#Supported-specs">Supported specs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chemview.html#Key-parameters">Key parameters</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ChemView.html#interactive-demo">Interactive Demo</a></li>
@@ -402,9 +436,9 @@ from the <code class="docutils literal notranslate"><span class="pre">dft_calcul
 <section id="configuration-input-yaml">
 <h2>Configuration (<code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>)<a class="headerlink" href="#configuration-input-yaml" title="Link to this heading"></a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;VASP&quot;</span><span class="w">                       </span><span class="c1"># Engine name (required)</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;INCAR&quot;</span><span class="w">               </span><span class="c1"># Engine-specific input template (required)</span>
-<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">vasp_std&quot;</span><span class="w"> </span><span class="c1"># Executable command (optional; auto-detected if omitted)</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"VASP"</span><span class="w">                       </span><span class="c1"># Engine name (required)</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"INCAR"</span><span class="w">               </span><span class="c1"># Engine-specific input template (required)</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">vasp_std"</span><span class="w"> </span><span class="c1"># Executable command (optional; auto-detected if omitted)</span>
 </pre></div>
 </div>
 <p>Each engine reads its template file differently:</p>
@@ -538,15 +572,15 @@ Settings controlled entirely by the template (<code class="docutils literal notr
 <code class="docutils literal notranslate"><span class="pre">pseudo_potential</span></code>) default to <code class="docutils literal notranslate"><span class="pre">null</span></code> so that ASE does not inject
 conflicting values.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CP2K&quot;</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cp2k_template.inp&quot;</span>
-<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">cp2k.psmp&quot;</span><span class="w">  </span><span class="c1"># optional</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"CP2K"</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"cp2k_template.inp"</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">cp2k.psmp"</span><span class="w">  </span><span class="c1"># optional</span>
 
 <span class="nt">cp2k</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">xc</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;PBE&quot;</span><span class="w">                        </span><span class="c1"># XC functional</span>
+<span class="w">  </span><span class="nt">xc</span><span class="p">:</span><span class="w"> </span><span class="s">"PBE"</span><span class="w">                        </span><span class="c1"># XC functional</span>
 <span class="w">  </span><span class="nt">max_scf</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span><span class="w">                      </span><span class="c1"># Max SCF iterations</span>
-<span class="w">  </span><span class="nt">basis_set_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;BASIS_MOLOPT&quot;</span><span class="w">    </span><span class="c1"># Basis set library file</span>
-<span class="w">  </span><span class="nt">potential_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;GTH_POTENTIALS&quot;</span><span class="w">  </span><span class="c1"># Pseudopotential library file</span>
+<span class="w">  </span><span class="nt">basis_set_file</span><span class="p">:</span><span class="w"> </span><span class="s">"BASIS_MOLOPT"</span><span class="w">    </span><span class="c1"># Basis set library file</span>
+<span class="w">  </span><span class="nt">potential_file</span><span class="p">:</span><span class="w"> </span><span class="s">"GTH_POTENTIALS"</span><span class="w">  </span><span class="c1"># Pseudopotential library file</span>
 </pre></div>
 </div>
 <table class="docutils align-default" id="id1">
@@ -645,19 +679,19 @@ SPARC to <code class="docutils literal notranslate"><span class="pre">scf</span>
 included in the template for clarity but have no effect.</p>
 </div>
 <div class="highlight-sparc-template notranslate"><div class="highlight"><pre><span></span><span class="k">&amp;CONTROL</span>
-  <span class="na">calculation</span><span class="o">  = </span><span class="s">&#39;scf&#39;</span>
+  <span class="na">calculation</span><span class="o">  = </span><span class="s">'scf'</span>
   <span class="na">tprnfor</span><span class="o">      = </span><span class="s">.true.</span>
   <span class="na">tstress</span><span class="o">      = </span><span class="s">.true.</span>
-  <span class="na">pseudo_dir</span><span class="o">   = </span><span class="s">&#39;/path/to/pseudo&#39;</span>
-  <span class="na">outdir</span><span class="o">       = </span><span class="s">&#39;./qe_out&#39;</span>
-  <span class="na">verbosity</span><span class="o">    = </span><span class="s">&#39;low&#39;</span>
+  <span class="na">pseudo_dir</span><span class="o">   = </span><span class="s">'/path/to/pseudo'</span>
+  <span class="na">outdir</span><span class="o">       = </span><span class="s">'./qe_out'</span>
+  <span class="na">verbosity</span><span class="o">    = </span><span class="s">'low'</span>
 <span class="k">/</span>
 
 <span class="k">&amp;SYSTEM</span>
   <span class="na">ibrav</span><span class="o">            = </span><span class="s">0</span>
   <span class="na">ecutwfc</span><span class="o">          = </span><span class="s">40</span>
   <span class="na">ecutrho</span><span class="o">          = </span><span class="s">320</span>
-  <span class="na">occupations</span><span class="o">      = </span><span class="s">&#39;fixed&#39;</span>
+  <span class="na">occupations</span><span class="o">      = </span><span class="s">'fixed'</span>
 <span class="k">/</span>
 
 <span class="k">&amp;ELECTRONS</span>
@@ -698,7 +732,7 @@ reads its parameters from an engine-specific template file defined in the
 <dl class="py exception">
 <dt class="sig sig-object py" id="sparc.src.calculator.CalculatorError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sparc.src.calculator.</span></span><span class="sig-name descname"><span class="pre">CalculatorError</span></span><a class="reference internal" href="_modules/sparc/src/calculator.html#CalculatorError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.calculator.CalculatorError" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#Exception" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Exception raised when calculator setup or execution fails.</p>
 <p>This exception is raised for issues such as:
 - Missing required configuration parameters
@@ -710,7 +744,7 @@ reads its parameters from an engine-specific template file defined in the
 <dl class="py class">
 <dt class="sig sig-object py" id="sparc.src.calculator.SetupDFTCalculator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sparc.src.calculator.</span></span><span class="sig-name descname"><span class="pre">SetupDFTCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/calculator.html#SetupDFTCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.calculator.SetupDFTCalculator" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Class to set up DFT calculators for VASP, CP2K, ORCA, and xTB using ASE.</p>
 <p>This class provides a unified interface for configuring different DFT engines
 based on template files and configuration dictionaries. It handles parsing
@@ -718,9 +752,9 @@ of engine-specific input files and creates appropriate ASE calculator objects.</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em> or </em><em>SparcConfig</em>) – Configuration dictionary or SparcConfig object containing calculator settings.
+<li><p><strong>input_config</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em> or </em><em>SparcConfig</em>) – Configuration dictionary or SparcConfig object containing calculator settings.
 Must include a ‘dft_calculator’ key with engine-specific parameters.</p></li>
-<li><p><strong>print_screen</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to print calculator configuration details to log. Default is False.</p></li>
+<li><p><strong>print_screen</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to print calculator configuration details to log. Default is False.</p></li>
 </ul>
 </dd>
 </dl>
@@ -730,7 +764,7 @@ Must include a ‘dft_calculator’ key with engine-specific parameters.</p></li
 <dd><p>Processed configuration dictionary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -741,7 +775,7 @@ Must include a ‘dft_calculator’ key with engine-specific parameters.</p></li
 <dd><p>DFT calculator specific configuration</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -752,7 +786,7 @@ Must include a ‘dft_calculator’ key with engine-specific parameters.</p></li
 <dd><p>Flag for verbose output</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -766,7 +800,7 @@ Must include a ‘dft_calculator’ key with engine-specific parameters.</p></li
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dft_calculator&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;engine&#39;</span><span class="p">:</span> <span class="s1">&#39;VASP&#39;</span><span class="p">,</span> <span class="s1">&#39;template_file&#39;</span><span class="p">:</span> <span class="s1">&#39;INCAR&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">}}</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'dft_calculator'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'engine'</span><span class="p">:</span> <span class="s1">'VASP'</span><span class="p">,</span> <span class="s1">'template_file'</span><span class="p">:</span> <span class="s1">'INCAR'</span><span class="p">,</span> <span class="o">...</span><span class="p">}}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calc_setup</span> <span class="o">=</span> <span class="n">SetupDFTCalculator</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">print_screen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calculator</span> <span class="o">=</span> <span class="n">calc_setup</span><span class="o">.</span><span class="n">vasp</span><span class="p">()</span>
 </pre></div>
@@ -826,9 +860,9 @@ appropriate ASE calculator object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em> or </em><em>SparcConfig</em>) – Configuration dictionary or SparcConfig object containing calculator
+<li><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em> or </em><em>SparcConfig</em>) – Configuration dictionary or SparcConfig object containing calculator
 settings. Must include ‘dft_calculator’ section with ‘engine’ key.</p></li>
-<li><p><strong>print_screen</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to print calculator configuration details to log. Default is False.</p></li>
+<li><p><strong>print_screen</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to print calculator configuration details to log. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -842,7 +876,7 @@ settings. Must include ‘dft_calculator’ section with ‘engine’ key.</p></
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;input.yaml&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s1">'input.yaml'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="n">dft_calculator</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">print_screen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atoms</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">calc</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">energy</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">()</span>

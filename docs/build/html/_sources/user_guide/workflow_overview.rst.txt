@@ -80,6 +80,81 @@ How sections in ``input.yaml`` map to stages
      - Custom output filenames
 
 
+Example ``input.yaml`` (color-coded by stage)
+---------------------------------------------
+
+The block below uses the same section names as a real SPARC input file.  Stage
+banners match the ``iter_xxxxxx/`` sub-directories created at runtime.  See
+:doc:`yaml` for every available key.
+
+.. raw:: html
+
+   <p class="workflow-yaml-legend">
+     <span class="stage1">Stage 1 — 00.dft</span>
+     <span class="stage2">Stage 2 — 01.train</span>
+     <span class="stage3">Stage 3 — 02.dpmd</span>
+     <span class="stageal">Active Learning</span>
+   </p>
+
+.. code-block:: sparc-workflow-yaml
+
+    # [Stage 1 — 00.dft] DFT / AIMD labelling
+    general:
+      structure_file: "POSCAR"
+
+    dft_calculator:
+      engine: "VASP"
+      template_file: "INCAR"
+      exe_command: "mpirun -np 4 vasp_std"
+
+    aimd_setup:
+      ensemble: "NVT"
+      temperature: 300.0
+      timestep_fs: 1.0
+      steps: 100                    # set 0 to skip AIMD and use existing traj
+      log_frequency: 1
+      thermostat:
+        type: "Nose"
+        tdamp: 2.0
+
+    # [Stage 2 — 01.train] MLIP ensemble training
+    mlip_setup:
+      training: true
+      data_dir: "Dataset"
+      input_file: "input.json"
+      num_models: 4                 # committee size for QbC
+      train_ratio: 0.8
+
+    # [Stage 3 — 02.dpmd] ML-MD exploration + QbC selection
+      MdSimulation: true
+      ensemble: "NVT"
+      temperature: 300.0
+      timestep_fs: 1.0
+      md_steps: 2000
+      log_frequency: 5
+      multiple_run: 1
+      restart_exploration: false    # seed later iters from QbC pool
+      restart_frame: "candidates"
+
+    # [Active Learning] loop control and candidate filtering
+    active_learning: true
+    iteration: 10
+    min_candidates: 1
+    model_dev:
+      f_min_dev: 0.05               # eV/Å — below: model confident
+      f_max_dev: 0.30               # eV/Å — above: discard as unphysical
+      rmsd_threshold: 0.05          # Å — duplicate filter
+
+    # [Optional] geometry guards during ML-MD
+    distance_metrics:
+      - pair: [0, 3]
+        min_distance: 1.2
+        max_distance: 5.0
+
+    output:
+      dptraj_file: "dpmd.traj"
+
+
 Loop termination
 ----------------
 

@@ -114,51 +114,101 @@ Sample Output (``Sparc.log``)
 
 .. code-block:: text
 
-    ================================================================================
-    BEGIN CALCULATION - 2025-04-08 22:30:32
-    ================================================================================
+    [SPARC][INFO]================================================================================
+    [SPARC][INFO]BEGIN CALCULATION - 2026-10-14 11:39:55
+    [SPARC][INFO]================================================================================
+          ######    ########     ###    ########   ######
+        ##     ##   ##     ##   ## ##   ##     ## ##    ##
+        ##          ##     ##  ##   ##  ##     ## ##
+          ######    ########  ##     ## ########  ##
+                ##  ##        ######### ##   ##   ##
+        ##      ##  ##        ##     ## ##    ##  ##    ##
+          ######    ##        ##     ## ##     ##  ######
+          --v0.2
 
-            ######  ########     ###    ########   ######
-            ##    ## ##     ##   ## ##   ##     ## ##    ##
-            ##       ##     ##  ##   ##  ##     ## ##
-            ######  ########  ##     ## ########  ##
-                  ## ##        ######### ##   ##   ##
-            ##    ## ##        ##     ## ##    ##  ##    ##
-            ######  ##        ##     ## ##     ##  ######
-            --v0.2.0
+    [SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events & Continuous Learning
+    [SPARC][INFO] Version: 0.2
 
-    ================================================================================
-    Creating Directories for Iteration: 000000
-    ================================================================================
-    ├── iter_000000
-    │   ├── 00.dft
-    │   ├── 01.train
-    │   └── 02.dpmd
-
-    ================================================================================
-    Starting AIMD Simulation [Nose-Hoover]
-    ================================================================================
-    Step     Epot (eV)    Ekin (eV)    Temp (K)
-    --------------------------------------------------------------------------------
-    0           -36.0932      0.3102    300.00
-    1           -36.1182      0.4385    424.04
-    2           -36.1058      0.4062    392.84
-
-    ================================================================================
-    MLIP Training — 4 models
-    ================================================================================
-    RUNNING TRAINING IN FOLDER (iter_000000/01.train/training_1)
-    ...
-    frozen_model_1.pth saved
-
-    ================================================================================
-    Starting ML-MD Simulation
-    ================================================================================
-    Step     Epot (eV)    Ekin (eV)    Temp (K)
-    --------------------------------------------------------------------------------
-    0           -29.8049      0.1939    300.00
-    5           -29.7611      0.1458    225.61
-    10          -29.7915      0.1711    264.75
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] Working directory: /home/rverma7/My_Calc/NCSU_Work/DeePMD/sparc/PET_decomposition/sparc_V2/Trail_2
+    [SPARC][INFO] Configuration file: input.yaml
+    [SPARC][INFO]
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO]                     YAML configuration loaded successfully!
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] Creating Directories for Iteration: 000000
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] ├── iter_000000
+    [SPARC][INFO] │   ├── 00.dft
+    [SPARC][INFO] │   ├── 01.train
+    [SPARC][INFO] │   └── 02.dpmd
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] Creating Directories for Iteration: 000000
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO]├── iter_000000
+    [SPARC][INFO] │   ├── 00.dft
+    [SPARC][INFO] │   ├── 01.train
+    [SPARC][INFO] │   └── 02.dpmd
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] Creating Directories for Iteration: 000000
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] MLIP Training — 4 models
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] Running Training in Folder (iter_000000/01.train/training_1)
+    [SPARC][INFO] ...
+    [SPARC][INFO] frozen_model_1.pth saved
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]
+    [SPARC][INFO] Output Logfile: iter_000000/02.dpmd/Iter0_dpmd_s0_r0.log
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3)
+    [SPARC][INFO] --------------------------------------------------------------------------------
+    [SPARC][INFO] ***********************************************************
+    [SPARC][INFO] Reference Potential Energy (Step 0): -112.906507 eV
+    [SPARC][INFO] Threshold limit: +/- 3.50 eV
+    [SPARC][INFO] ***********************************************************
+    [SPARC][INFO] 0          -112.9065      0.9501    350.00
+    [SPARC][INFO] 400        -112.3256      0.9020    332.30
+    [SPARC][INFO] 800        -112.1378      1.0138    373.47
+    [SPARC][INFO] 1200       -112.3223      0.8234    303.35
+    [SPARC][INFO] 1600       -112.3493      1.0422    383.94
+    [SPARC][INFO] 2000       -112.1704      1.0746    395.89
+    [SPARC][INFO] QUERY-BY-COMMITTEE: MODEL DEVIATION ANALYSIS
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO]                            frozen_model_1.pth
+    [SPARC][INFO]                            frozen_model_2.pth
+    [SPARC][INFO]                            frozen_model_3.pth
+    [SPARC][INFO]                            frozen_model_4.pth
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO]           Model deviation calculation completed successfully!
+    [SPARC][INFO]          Results saved in: iter_000000/02.dpmd/model_dev_0.out
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] Candidate summary saved to: iter_000000/02.dpmd/dft_candidates/candidates_summary.csv
+    [SPARC][INFO] --------------------------------------------------------------------------------
+    [SPARC][INFO]                         ACTIVE LEARNING CYCLE : ENABLED
+    [SPARC][INFO] --------------------------------------------------------------------------------
+    [SPARC][INFO] Maximum Iterations: 20
+    [SPARC][INFO] Force Deviation Thresholds: [0.05, 0.4] eV/Å
+    [SPARC][INFO] MLIP Ensemble Size: 4 models
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] --------------------------------------------------------------------------------
+    [SPARC][INFO]                             WORKFLOW TIMING SUMMARY
+    [SPARC][INFO] --------------------------------------------------------------------------------
+    [SPARC][INFO]   iter 0 | total 6.2 min | mlmd=4.5 min
+    [SPARC][INFO]   iter 1 | total 985.2 min | dft=319.4 min, train=611.1 min, mlmd=35.2 min
+    [SPARC][INFO]   iter 2 | total 1249.4 min | dft=618.9 min, train=594.6 min, mlmd=27.8 min
+    [SPARC][INFO]   iter 3 | total 1119.7 min | dft=486.0 min, train=600.2 min, mlmd=27.5 min
+    [SPARC][INFO]   iter 4 | total 1068.4 min | dft=445.6 min, train=591.4 min, mlmd=27.2 min
+    [SPARC][INFO]   iter 5 | total 1504.1 min | dft=420.5 min, train=937.9 min, mlmd=120.2 min
+    [SPARC][INFO]   iter 6 | total 1358.2 min | dft=624.5 min, train=592.8 min, mlmd=121.5 min
+    [SPARC][INFO]   iter 7 | total 1310.2 min | dft=577.8 min, train=591.5 min, mlmd=121.3 min
+    [SPARC][INFO]   Saved to: /home/rverma7/My_Calc/NCSU_Work/DeePMD/sparc/PET_decomposition/sparc_V2/timings.csv
+    [SPARC][INFO] --------------------------------------------------------------------------------
+    [SPARC][INFO] ================================================================================
+    [SPARC][INFO] END CALCULATION - 2026-10-02 11:04:29
+    [SPARC][INFO] Total Runtime: 1:44:30.786859
+    [SPARC][INFO] ================================================================================
 
 Core Components
 ---------------

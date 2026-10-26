@@ -9,7 +9,7 @@
   <title>Quick Start Guide &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7b18df9" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -79,7 +79,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="yaml.html#restart-exploration">Restart Exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#fine-tuning-universal-models">Fine-Tuning (Universal Models)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#active-learning">Active Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="yaml.html#restarting-a-crashed-run">Restarting a Crashed Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="yaml.html#deal-diversity-filter">DEAL Diversity Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#distance-metrics">Distance Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#output">Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="yaml.html#directory-structure">Directory Structure</a></li>
@@ -115,14 +119,33 @@
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-2-mlip-training-01-train">Stage 2 — MLIP Training (<code class="docutils literal notranslate"><span class="pre">01.train</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#stage-3-ml-md-query-by-committee-02-dpmd">Stage 3 — ML-MD + Query-by-Committee (<code class="docutils literal notranslate"><span class="pre">02.dpmd</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#how-sections-in-input-yaml-map-to-stages">How sections in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> map to stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#example-input-yaml-color-coded-by-stage">Example <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> (color-coded by stage)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/workflow_overview.html#loop-termination">Loop termination</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/active_learning.html">Active Learning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force deviation thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an interrupted run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#committee-evaluation-backend">Committee Evaluation Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#number-of-models">Number of Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#restart-exploration">Restart Exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#what-is-a-qbc-candidate">What is a QbC candidate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#why-restart-from-the-qbc-pool">Why restart from the QbC pool?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-strategies">Selection strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/active_learning.html#deal-sparse-gp-diversity-filter">DEAL: Sparse GP Diversity Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#mathematical-foundation">Mathematical Foundation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#selection-modes">Selection Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#enabling-deal">Enabling DEAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/active_learning.html#advanced-options">Advanced Options</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dft_engines.html">Choosing a DFT Engine</a><ul>
@@ -184,8 +207,10 @@
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#usage-example">Usage Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#supported-backends">Supported Backends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deepmd.html#module-contents">Module Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.build_refine_json"><code class="docutils literal notranslate"><span class="pre">build_refine_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.deepmd_training"><code class="docutils literal notranslate"><span class="pre">deepmd_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.evaluate_model_accuracy"><code class="docutils literal notranslate"><span class="pre">evaluate_model_accuracy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.find_prev_checkpoint"><code class="docutils literal notranslate"><span class="pre">find_prev_checkpoint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_backend"><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepmd.html#sparc.src.deepmd.setup_DeepPotential"><code class="docutils literal notranslate"><span class="pre">setup_DeepPotential()</span></code></a></li>
@@ -249,6 +274,9 @@
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#umbrella-sampling">Umbrella Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plumed_wrapper.html#module-sparc.src.plumed_wrapper">Module Contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.modify_forces"><code class="docutils literal notranslate"><span class="pre">modify_forces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.plumed_block"><code class="docutils literal notranslate"><span class="pre">plumed_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.read_block"><code class="docutils literal notranslate"><span class="pre">read_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.rewrite_file_kwargs"><code class="docutils literal notranslate"><span class="pre">rewrite_file_kwargs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="plumed_wrapper.html#sparc.src.plumed_wrapper.umbrella"><code class="docutils literal notranslate"><span class="pre">umbrella()</span></code></a></li>
 </ul>
 </li>
@@ -258,6 +286,7 @@
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#model-deviation-in-forces">Model deviation in Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis.html#function">Function:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#sparc.src.utils.plot_utils.PlotForceDeviation"><code class="docutils literal notranslate"><span class="pre">PlotForceDeviation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html">[1] Workflow Analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="notebooks/analysisAmmoniaBorate.html#[2]-Free-Energy-Analysis">[2] Free Energy Analysis</a></li>
 </ul>
@@ -283,15 +312,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChemView.html">ChemView</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-a-trajectory">Load a trajectory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Energy-vs.-frame">Energy vs. frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Geometric-properties-with-colour-mapping">Geometric properties with colour mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Atom-level-forces">Atom-level forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Cell-parameters">Cell parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Single-structure">Single structure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Custom-property-names">Custom property names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chemview.html#Periodic-bulk-structure">Periodic bulk structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemview.html">ChemView — Interactive Trajectory Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Glycine-atom-indices">Glycine atom indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Load-the-trajectory">Load the trajectory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-1-—-Energy-landscape">Example 1 — Energy landscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-2-—-Carbonyl-and-hydroxyl-bond-dynamics">Example 2 — Carbonyl and hydroxyl bond dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-3-—-Conformational-landscape-(Ramachandran-style)">Example 3 — Conformational landscape (Ramachandran-style)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-4-—-Bond-length-correlations">Example 4 — Bond-length correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-5-—-Atom-level-forces-and-index-colouring">Example 5 — Atom-level forces and index colouring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Example-6-—-Single-structure-viewer">Example 6 — Single-structure viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chemview.html#Tips-and-reference">Tips and reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chemview.html#Supported-specs">Supported specs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chemview.html#Key-parameters">Key parameters</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ChemView.html#interactive-demo">Interactive Demo</a></li>
@@ -364,8 +398,8 @@ simulation.</p>
 </pre></div>
 </div>
 <p>If PLUMED was installed from source (skip if you used <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code>):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PLUMED_KERNEL</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CONDA_PREFIX</span><span class="s2">/lib/libplumedKernel.so&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CONDA_PREFIX</span><span class="s2">/lib/plumed/python:</span><span class="nv">$PYTHONPATH</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PLUMED_KERNEL</span><span class="o">=</span><span class="s2">"</span><span class="nv">$CONDA_PREFIX</span><span class="s2">/lib/libplumedKernel.so"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$CONDA_PREFIX</span><span class="s2">/lib/plumed/python:</span><span class="nv">$PYTHONPATH</span><span class="s2">"</span>
 </pre></div>
 </div>
 </section>
@@ -378,29 +412,29 @@ calculator, MD settings, and active learning parameters.</p>
 <h2>Example Input File<a class="headerlink" href="#example-input-file" title="Link to this heading"></a></h2>
 <p>The example below shows a complete active learning workflow using VASP:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">general</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;POSCAR&quot;</span>
+<span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">"POSCAR"</span>
 
 <span class="nt">dft_calculator</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;VASP&quot;</span>
-<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;INCAR&quot;</span>
-<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">vasp_std&quot;</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">"VASP"</span>
+<span class="w">  </span><span class="nt">template_file</span><span class="p">:</span><span class="w"> </span><span class="s">"INCAR"</span>
+<span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">vasp_std"</span>
 
 <span class="nt">aimd_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVT"</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
 <span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Nose&quot;</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"Nose"</span>
 <span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
 
 <span class="nt">mlip_setup</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dataset&quot;</span>
-<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;input.json&quot;</span>
+<span class="w">  </span><span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="s">"Dataset"</span>
+<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">"input.json"</span>
 <span class="w">  </span><span class="nt">num_models</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
 <span class="w">  </span><span class="nt">MdSimulation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NVT&quot;</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVT"</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
 <span class="w">  </span><span class="nt">md_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000</span>
@@ -451,51 +485,101 @@ calculator, MD settings, and active learning parameters.</p>
 </section>
 <section id="sample-output-sparc-log">
 <h2>Sample Output (<code class="docutils literal notranslate"><span class="pre">Sparc.log</span></code>)<a class="headerlink" href="#sample-output-sparc-log" title="Link to this heading"></a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>================================================================================
-BEGIN CALCULATION - 2025-04-08 22:30:32
-================================================================================
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[SPARC][INFO]================================================================================
+[SPARC][INFO]BEGIN CALCULATION - 2026-10-14 11:39:55
+[SPARC][INFO]================================================================================
+      ######    ########     ###    ########   ######
+    ##     ##   ##     ##   ## ##   ##     ## ##    ##
+    ##          ##     ##  ##   ##  ##     ## ##
+      ######    ########  ##     ## ########  ##
+            ##  ##        ######### ##   ##   ##
+    ##      ##  ##        ##     ## ##    ##  ##    ##
+      ######    ##        ##     ## ##     ##  ######
+      --v0.2
 
-        ######  ########     ###    ########   ######
-        ##    ## ##     ##   ## ##   ##     ## ##    ##
-        ##       ##     ##  ##   ##  ##     ## ##
-        ######  ########  ##     ## ########  ##
-              ## ##        ######### ##   ##   ##
-        ##    ## ##        ##     ## ##    ##  ##    ##
-        ######  ##        ##     ## ##     ##  ######
-        --v0.2.0
+[SPARC][INFO] SPARC: Smart Potential with Atomistic Rare Events &amp; Continuous Learning
+[SPARC][INFO] Version: 0.2
 
-================================================================================
-Creating Directories for Iteration: 000000
-================================================================================
-├── iter_000000
-│   ├── 00.dft
-│   ├── 01.train
-│   └── 02.dpmd
-
-================================================================================
-Starting AIMD Simulation [Nose-Hoover]
-================================================================================
-Step     Epot (eV)    Ekin (eV)    Temp (K)
---------------------------------------------------------------------------------
-0           -36.0932      0.3102    300.00
-1           -36.1182      0.4385    424.04
-2           -36.1058      0.4062    392.84
-
-================================================================================
-MLIP Training — 4 models
-================================================================================
-RUNNING TRAINING IN FOLDER (iter_000000/01.train/training_1)
-...
-frozen_model_1.pth saved
-
-================================================================================
-Starting ML-MD Simulation
-================================================================================
-Step     Epot (eV)    Ekin (eV)    Temp (K)
---------------------------------------------------------------------------------
-0           -29.8049      0.1939    300.00
-5           -29.7611      0.1458    225.61
-10          -29.7915      0.1711    264.75
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Working directory: /home/rverma7/My_Calc/NCSU_Work/DeePMD/sparc/PET_decomposition/sparc_V2/Trail_2
+[SPARC][INFO] Configuration file: input.yaml
+[SPARC][INFO]
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                     YAML configuration loaded successfully!
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]├── iter_000000
+[SPARC][INFO] │   ├── 00.dft
+[SPARC][INFO] │   ├── 01.train
+[SPARC][INFO] │   └── 02.dpmd
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Creating Directories for Iteration: 000000
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] MLIP Training — 4 models
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Running Training in Folder (iter_000000/01.train/training_1)
+[SPARC][INFO] ...
+[SPARC][INFO] frozen_model_1.pth saved
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]             MACHINE LEARNING POTENTIAL MD SIMULATION FOR [NVT-Nose]
+[SPARC][INFO] Output Logfile: iter_000000/02.dpmd/Iter0_dpmd_s0_r0.log
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Step     Epot (eV)    Ekin (eV)    Temp (K)   P (GPa)    V (Ang^3)
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] Reference Potential Energy (Step 0): -112.906507 eV
+[SPARC][INFO] Threshold limit: +/- 3.50 eV
+[SPARC][INFO] ***********************************************************
+[SPARC][INFO] 0          -112.9065      0.9501    350.00
+[SPARC][INFO] 400        -112.3256      0.9020    332.30
+[SPARC][INFO] 800        -112.1378      1.0138    373.47
+[SPARC][INFO] 1200       -112.3223      0.8234    303.35
+[SPARC][INFO] 1600       -112.3493      1.0422    383.94
+[SPARC][INFO] 2000       -112.1704      1.0746    395.89
+[SPARC][INFO] QUERY-BY-COMMITTEE: MODEL DEVIATION ANALYSIS
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]                            frozen_model_1.pth
+[SPARC][INFO]                            frozen_model_2.pth
+[SPARC][INFO]                            frozen_model_3.pth
+[SPARC][INFO]                            frozen_model_4.pth
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] ================================================================================
+[SPARC][INFO]           Model deviation calculation completed successfully!
+[SPARC][INFO]          Results saved in: iter_000000/02.dpmd/model_dev_0.out
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] Candidate summary saved to: iter_000000/02.dpmd/dft_candidates/candidates_summary.csv
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                         ACTIVE LEARNING CYCLE : ENABLED
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] Maximum Iterations: 20
+[SPARC][INFO] Force Deviation Thresholds: [0.05, 0.4] eV/Å
+[SPARC][INFO] MLIP Ensemble Size: 4 models
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]                             WORKFLOW TIMING SUMMARY
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO]   iter 0 | total 6.2 min | mlmd=4.5 min
+[SPARC][INFO]   iter 1 | total 985.2 min | dft=319.4 min, train=611.1 min, mlmd=35.2 min
+[SPARC][INFO]   iter 2 | total 1249.4 min | dft=618.9 min, train=594.6 min, mlmd=27.8 min
+[SPARC][INFO]   iter 3 | total 1119.7 min | dft=486.0 min, train=600.2 min, mlmd=27.5 min
+[SPARC][INFO]   iter 4 | total 1068.4 min | dft=445.6 min, train=591.4 min, mlmd=27.2 min
+[SPARC][INFO]   iter 5 | total 1504.1 min | dft=420.5 min, train=937.9 min, mlmd=120.2 min
+[SPARC][INFO]   iter 6 | total 1358.2 min | dft=624.5 min, train=592.8 min, mlmd=121.5 min
+[SPARC][INFO]   iter 7 | total 1310.2 min | dft=577.8 min, train=591.5 min, mlmd=121.3 min
+[SPARC][INFO]   Saved to: /home/rverma7/My_Calc/NCSU_Work/DeePMD/sparc/PET_decomposition/sparc_V2/timings.csv
+[SPARC][INFO] --------------------------------------------------------------------------------
+[SPARC][INFO] ================================================================================
+[SPARC][INFO] END CALCULATION - 2026-10-02 11:04:29
+[SPARC][INFO] Total Runtime: 1:44:30.786859
+[SPARC][INFO] ================================================================================
 </pre></div>
 </div>
 </section>
