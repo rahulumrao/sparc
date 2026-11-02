@@ -530,6 +530,10 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                 cv_force_file=fc.cv_force_file,
                 cv_derivs_file=fc.cv_derivs_file,
             )
+        # Release the DFT backend (e.g. cp2k_shell MPI ranks, which otherwise
+        # busy-wait on their cores until SPARC exits).
+        if hasattr(dft_calc, "close"):
+            dft_calc.close()
         timer.end_step(_dft_step)
 
     # ===========================================================================
@@ -1005,6 +1009,10 @@ run 'sparc --analysis -h' or 'sparc --forcecorrect -h' for mode-specific options
                         level="ERROR",
                     )
                 SparcLog("=" * 80 + "\n")
+        # A new calculator is built every iteration; close this one so its
+        # cp2k_shell MPI ranks do not keep spinning through train/ML-MD.
+        if hasattr(dft_calc, "close"):
+            dft_calc.close()
         timer.end_step(_dft_step)
 
         # Guard on the post-validation yield. The QbC count checked at the end of
