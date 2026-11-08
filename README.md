@@ -36,7 +36,7 @@ SPARC is a Python toolkit for active-learning (AL) workflow to build a reactive 
 
 ### Core Dependencies
 - Python 3.10 recommended
-- [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit) (version: 2.2.10)
+- [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit) (v2 or v3, both TensorFlow and PyTorch backends supported)
 - [ASE](https://wiki.fysik.dtu.dk/ase/) (Atomic Simulation Environment)
 - [PLUMED](https://www.plumed.org/) (PES Exploration)
 - `ase`, `numpy`, `pandas`, `scipy`, `dpdata`, `cython`
@@ -338,7 +338,18 @@ If you use this software or the dataset in your research, please cite:
   url     = {https://doi.org/10.21105/joss.09468}
 }
 
-@software{sparc,
+@article{apl-ml,
+  author  = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
+  title   = {A systematic framework for constructing reactive machine learning interatomic potentials},
+  journal = {APL Machine Learning},
+  volume  = {4},
+  pages   = {046107},
+  year    = {2026},
+  doi     = {10.1063/5.0344922},
+  url     = {https://doi.org/10.1063/5.0344922}
+}
+
+@software{software,
   author = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
   doi    = {https://doi.org/10.5281/zenodo.19389278},
   license = {MIT},
@@ -348,7 +359,7 @@ If you use this software or the dataset in your research, please cite:
   year   = {2026}
 }
 
-@dataset{sparc,
+@dataset{dataset,
   author = {Verma, Rahul and Joshi, Nisarg and Pfaendtner, Jim},
   doi    = {https://doi.org/10.5281/zenodo.18261342},
   license = {MIT},
