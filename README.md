@@ -16,8 +16,8 @@
 
 For More Information, Please Visit [SPARC Documentation](https://docs-sparc.readthedocs.io/en/latest/).
 
-Try SPARC [Tutorial](https://github.com/rahulumrao/sparc/blob/main/examples/SPARC_Tutorial.ipynb)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rahulumrao/sparc/blob/main/examples/SPARC_Tutorial.ipynb)
+Try SPARC [Tutorial](https://github.com/rahulumrao/sparc/blob/0.1.0/examples/SPARC_Tutorial.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rahulumrao/sparc/blob/0.1.0/examples/SPARC_Tutorial.ipynb)
 
 ## Overview
 
