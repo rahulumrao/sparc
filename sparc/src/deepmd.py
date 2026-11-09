@@ -13,6 +13,7 @@ This module contains functions for:
 Supports DeePMD-kit v2 and v3 with automatic backend detection.
 """
 
+import importlib
 import json
 import logging
 import os
@@ -106,6 +107,7 @@ def get_backend():
     """
     # Try PyTorch backend first
     try:
+        importlib.import_module("deepmd.pt")
         SparcLog("PyTorch backend is functional")
         return "pytorch"
     except Exception:
@@ -113,6 +115,7 @@ def get_backend():
 
     # Try TensorFlow backend
     try:
+        importlib.import_module("deepmd.tf")
         SparcLog("TensorFlow backend is functional")
         return "tensorflow"
     except Exception:
@@ -319,19 +322,27 @@ def update_json(data: dict, datadir: str, atom_types: List[str]):
 
 
 def find_prev_checkpoint(
-    prev_training_dir: str, model_index: int, version: int
+    prev_training_dir: str, model_index: int, version: int, backend: str
 ) -> Optional[str]:
-    """Return the absolute checkpoint file path for `dp train --init-model`, or None.
+    """Return the absolute checkpoint path for `dp train --init-model`, or None.
 
-    Looks in ``{prev_training_dir}/training_{model_index}/`` for
-    ``model.ckpt.pt`` (v3/pytorch) or ``model.ckpt`` (v2/tensorflow).
+    Looks in ``{prev_training_dir}/training_{model_index}/``. PyTorch (v3)
+    checkpoints are a single ``model.ckpt.pt`` file. TensorFlow checkpoints
+    (v2, or v3 TF backend) are never a literal ``model.ckpt`` file — only
+    ``model.ckpt.index``/``.meta``/``.data-*`` exist — so existence is
+    checked via ``.index`` while the bare prefix is what gets returned/passed.
     """
     train_dir = (Path(prev_training_dir) / f"training_{model_index}").resolve()
-    ckpt_name = "model.ckpt.pt" if version >= 3 else "model.ckpt"
-    ckpt_path = train_dir / ckpt_name
-    if not ckpt_path.exists():
+    if version >= 3 and backend == "pytorch":
+        ckpt_path = train_dir / "model.ckpt.pt"
+        if not ckpt_path.exists():
+            return None
+        return str(ckpt_path)
+
+    ckpt_prefix = train_dir / "model.ckpt"
+    if not (train_dir / "model.ckpt.index").exists():
         return None
-    return str(ckpt_path)
+    return str(ckpt_prefix)
 
 
 def build_refine_json(config_data: dict, refine_cfg) -> dict:
@@ -500,7 +511,9 @@ def deepmd_training(
                 and refine_cfg.enabled
                 and prev_training_dir
             ):
-                refine_ckpt_prefix = find_prev_checkpoint(prev_training_dir, i, version)
+                refine_ckpt_prefix = find_prev_checkpoint(
+                    prev_training_dir, i, version, backend
+                )
                 if refine_ckpt_prefix is None:
                     SparcLog(
                         f"Refine: no checkpoint found for model {i} in "
@@ -543,7 +556,7 @@ def deepmd_training(
             # Add restart flag if resuming this iteration's own interrupted run,
             # or init-model if refining from the previous iteration's checkpoint
             if has_checkpoint:
-                if version >= 3:
+                if version >= 3 and backend == "pytorch":
                     train_cmd.extend(["--restart", "model.ckpt.pt"])
                 else:
                     train_cmd.extend(["--restart", "model.ckpt"])
