@@ -73,7 +73,7 @@ def rewrite_file_kwargs(
     absolutize: bool = False,
     plumed_dir: Optional[Path] = None,
 ) -> str:
-    """Rewrite OUTDIR= and *FILE= values on a PLUMED action line."""
+    r"""Rewrite OUTDIR= and \*FILE= values on a PLUMED action line."""
     out_dir = Path(out_dir)
 
     def repl(match: re.Match) -> str:
@@ -98,7 +98,7 @@ def rewrite_file_kwargs(
 
 
 def plumed_block(line: str, plumed_dir: Path, out_dir: Union[str, Path]) -> str:
-    """Apply LOAD / OUTDIR / *FILE= path policy to one (collapsed) PLUMED line."""
+    r"""Apply LOAD / OUTDIR / \*FILE= path policy to one (collapsed) PLUMED line."""
     upper = line.upper()
     out_dir = Path(out_dir)
 

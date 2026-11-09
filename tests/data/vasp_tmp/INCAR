@@ -1,0 +1,38 @@
+#################### Global Parameters ###########################
+SYSTEM = Water 
+ISTART = 0
+ICHARG = 2
+ISPIN  = 1
+ENCUT  = 300
+LCHARG = .FALSE.
+LWAVE  = .FALSE.
+###################### Electronic Relaxation ######################
+ISMEAR = 0
+SIGMA  = 0.05
+EDIFF  = 1E-05
+
+###################### Parallelization over  k-points ######################
+LPLANE = .TRUE.
+NCORE  = 2
+LSCALU = .FALSE.
+NSIM   = 4
+
+######################### Ionic Relaxation ########################
+## ionic relaxation
+#IBRION = 2
+#ISIF = 3
+#NSW = 100
+#EDIFFG = 1E-02
+#
+######################## MD Parameters ########################
+#IBRION = 0 # Molecular Dynamics
+#MDALGO = 2 # Using Nose-Hoover Thermostat
+#ISYM = 0
+#ISIF = 2   # Compute stress tensor but do not change box volume/shape
+#NSW  = 10000 # Number of time steps
+#POTIM = 1.0  # time step in femto seconds 
+#TEBEG = 500  # set temperature#
+#SMASS = 0.0  # setting the virtual mass for the Nose-Hoover thermostat 
+########################### Output ############################
+NWRITE = 2
+# 

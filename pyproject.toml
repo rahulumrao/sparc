@@ -40,6 +40,7 @@ docs = [
   "sphinx-autodoc-typehints",
   "nbsphinx",
   "pandoc",
+  "ipython",
 ]
 deal = [
   "deal @ git+https://github.com/luigibonati/DEAL",

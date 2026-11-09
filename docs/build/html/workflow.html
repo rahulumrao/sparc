@@ -9,15 +9,18 @@
   <title>Workflow &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=10f1778b"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -419,7 +422,7 @@ The script is especially useful for to inspect energetics and geometric properti
 <h3>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h3>
 <ol class="arabic">
 <li><p>Launch a Jupyter Notebook.</p></li>
-<li><p>Import and call the <cite>WorkFlowAnalysis()</cite> function from sparc library:</p>
+<li><p>Import and call the <span class="math notranslate nohighlight">\(WorkFlowAnalysis()\)</span> function from sparc library:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparc.src.utils.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">WorkFlowAnalysis</span>
 <span class="n">WorkFlowAnalysis</span><span class="p">()</span>
 </pre></div>
@@ -436,8 +439,8 @@ The script is especially useful for to inspect energetics and geometric properti
 </li>
 <li><p>For each tab:</p>
 <ul class="simple">
-<li><p>Set the root directory containing <cite>iter_xxxxxx</cite> folders.</p></li>
-<li><p>Specify subfolder (default: <cite>02.dpmd</cite>) and trajectory file (default: <cite>dpmd.traj</cite>).</p></li>
+<li><p>Set the root directory containing <span class="math notranslate nohighlight">\(iter_xxxxxx\)</span> folders.</p></li>
+<li><p>Specify subfolder (default: <span class="math notranslate nohighlight">\(02.dpmd\)</span>) and trajectory file (default: <span class="math notranslate nohighlight">\(dpmd.traj\)</span>).</p></li>
 <li><p>Click “Refresh Iterations” to load available folders.</p></li>
 <li><p>Select iterations to plot.</p></li>
 <li><p>Click the plot button (e.g., “Plot Temperature”).</p></li>
@@ -464,10 +467,10 @@ The script is especially useful for to inspect energetics and geometric properti
 <h3>Geometry Tab Details<a class="headerlink" href="#geometry-tab-details" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Choose “Bond” or “Angle” type.</p></li>
-<li><p>Provide indices for atoms (e.g., <cite>0 1</cite> or <cite>0 1 2</cite>).</p></li>
+<li><p>Provide indices for atoms (e.g., <span class="math notranslate nohighlight">\(0 1\)</span> or <span class="math notranslate nohighlight">\(0 1 2\)</span>).</p></li>
 <li><p>The y-axis label will automatically render the proper bond/angle symbols with subscripts.</p></li>
 </ul>
-<a class="reference internal image-reference" href="_static/WorkflowAnalysis.gif"><img alt="Workflow Analysis Animation" src="_static/WorkflowAnalysis.gif" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/WorkflowAnalysis.gif"><img alt="Workflow Analysis Animation" src="_images/WorkflowAnalysis.gif" style="width: 600px;" />
 </a>
 </section>
 </section>

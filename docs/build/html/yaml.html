@@ -9,15 +9,18 @@
   <title>Input File &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=10f1778b"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -398,8 +401,8 @@ enabled or disabled independently.</p>
 </div>
 <section id="general-settings">
 <h2>General Settings<a class="headerlink" href="#general-settings" title="Link to this heading"></a></h2>
-<p>Specifies the input structure file. Supports a single file or a list of files
-(used for multiple independent MD runs).</p>
+<p>Specifies the input structure file. Supports a single file or a <span class="math notranslate nohighlight">\(list\)</span> of files
+(good for multiple independent MD runs).</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">general</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">structure_file</span><span class="p">:</span><span class="w"> </span><span class="s">"POSCAR"</span><span class="w">             </span><span class="c1"># single file         [Required]</span>
 <span class="w">  </span><span class="c1"># structure_file:                    # or a list of files</span>
@@ -409,7 +412,7 @@ enabled or disabled independently.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>VASP <code class="docutils literal notranslate"><span class="pre">POSCAR</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">cif</span></code>, and any other format supported by ASE can be used.
+<p>VASP <code class="docutils literal notranslate"><span class="pre">POSCAR</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">cif</span></code>, or any other format supported by [ASE](<a class="reference external" href="https://docs.ase-lib.org/ase/io/io.html">https://docs.ase-lib.org/ase/io/io.html</a>) can be used.
 For Gaussian and ORCA, periodicity is automatically removed if present.</p>
 </div>
 <section id="dft-calculator">
@@ -422,7 +425,7 @@ Supported engines: <code class="docutils literal notranslate"><span class="pre">
 <span class="w">  </span><span class="nt">exe_command</span><span class="p">:</span><span class="w"> </span><span class="s">"mpirun</span><span class="nv"> </span><span class="s">-np</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">vasp_std"</span><span class="w"> </span><span class="c1"># Executable command (auto-detect if omitted) [Optional]</span>
 </pre></div>
 </div>
-<p>Each engine reads its template differently:</p>
+<p>Each DFT calculator reads a different template file:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15.0%" />
@@ -442,11 +445,11 @@ Supported engines: <code class="docutils literal notranslate"><span class="pre">
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CP2K</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">cp2k_template.inp</span></code></p></td>
-<td><p>CP2K input file (comments stripped)</p></td>
+<td><p>CP2K input file (comments are stripped)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ORCA</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">orca_template.inp</span></code></p></td>
-<td><p>ORCA simple input format</p></td>
+<td><p>ORCA input file</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xTB</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xtb_template.inp</span></code></p></td>
@@ -454,7 +457,7 @@ Supported engines: <code class="docutils literal notranslate"><span class="pre">
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QE</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">qe_template.in</span></code></p></td>
-<td><p>Quantum ESPRESSO <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> input; k-points default to Gamma</p></td>
+<td><p>Quantum ESPRESSO <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> input file; k-points default to <code class="docutils literal notranslate"><span class="pre">Gamma</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Gaussian</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">gaussian_template.inp</span></code></p></td>
@@ -468,7 +471,7 @@ Supported engines: <code class="docutils literal notranslate"><span class="pre">
 <p>Controls the ab initio MD run driven by the DFT calculator.
 Set <code class="docutils literal notranslate"><span class="pre">steps:</span> <span class="pre">0</span></code> (default) to skip AIMD entirely.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">aimd_setup</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVT"</span><span class="w">            </span><span class="c1"># Ensemble: NVT, NVE, or NPT               [Required]</span>
+<span class="w">  </span><span class="nt">ensemble</span><span class="p">:</span><span class="w"> </span><span class="s">"NVT"</span><span class="w">            </span><span class="c1"># Ensemble: NVT, NVE, or NPT                [Required]</span>
 <span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300.0</span><span class="w">         </span><span class="c1"># Temperature in Kelvin                     [Required]</span>
 <span class="w">  </span><span class="nt">temp_end</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">             </span><span class="c1"># Ramp temperature to this value (optional) [Optional]</span>
 <span class="w">  </span><span class="nt">timestep_fs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">           </span><span class="c1"># MD timestep in femtoseconds               [Optional, Default: 1.0]</span>
@@ -491,11 +494,10 @@ Set <code class="docutils literal notranslate"><span class="pre">steps:</span> <
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Bias force correction</strong> (<code class="docutils literal notranslate"><span class="pre">aimd_setup.plumed.force_correction</span></code>) is available for
-PLUMED-biased AIMD trajectories. When PLUMED applies a bias (e.g. metadynamics or
-umbrella sampling), the recorded forces include the bias contribution. Force correction
-subtracts the PLUMED bias forces from each frame before the trajectory is used for
-MLIP training, ensuring models are trained on physical (unbiased) forces only.
-Full documentation will be added in a future release.</p>
+AIMD trajectories. When PLUMED is attached to the AIMD simulation for enhanced sampling the applied bias potential (e.g. metadynamics or
+umbrella sampling), modifies the potential energy surface. Thus by biasing the recorded forces.
+Force correction module corrects these biased forces to their true values from each frame before the trajectory is used for
+MLIP training, ensuring models are trained on physical (unbiased) forces only.</p>
 </div>
 <p><strong>NPT ensemble</strong> requires additional parameters:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">aimd_setup</span><span class="p">:</span>
@@ -509,8 +511,8 @@ Full documentation will be added in a future release.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Temperature ramping (<code class="docutils literal notranslate"><span class="pre">temp_end</span></code>) is supported for NVT/Langevin.
-Nose-Hoover thermostat resists rapid temperature changes — use Langevin for ramping.</p>
+<p>Temperature ramping (<code class="docutils literal notranslate"><span class="pre">temp_end</span></code>) is supported only for NVT[Langevin] ensembles.
+Nose-Hoover thermostat resists rapid temperature changes - use Langevin only for temperature ramping.</p>
 </div>
 </section>
 <section id="mlip-setup">
@@ -546,7 +548,6 @@ Nose-Hoover thermostat resists rapid temperature changes — use Langevin for ra
 <span class="w">  </span><span class="nt">thermostat</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"Nose"</span>
 <span class="w">    </span><span class="nt">tdamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
-<span class="w">    </span><span class="c1"># friction: 0.01</span>
 
 <span class="w">  </span><span class="nt">plumed</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
@@ -563,17 +564,17 @@ Nose-Hoover thermostat resists rapid temperature changes — use Langevin for ra
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Delayed PLUMED activation</strong> (<code class="docutils literal notranslate"><span class="pre">mlip_setup.plumed.start_iteration</span></code>) lets the first
-AL iterations run as plain ML-MD to build a reliable base model, then switches on
-PLUMED-biased sampling (e.g. umbrella sampling or metadynamics) from the specified
-iteration onward. For example, <code class="docutils literal notranslate"><span class="pre">start_iteration:</span> <span class="pre">1</span></code> skips PLUMED in iteration 0
-and enables it from iteration 1. Default <code class="docutils literal notranslate"><span class="pre">0</span></code> applies PLUMED from the start.</p>
+AL iterations run as plain ML-MD to build a stable starting model, then switches on
+enhanced sampling bias from a specified iteration onward.
+For example, <code class="docutils literal notranslate"><span class="pre">start_iteration:</span> <span class="pre">1</span></code> skips enhanced sampling in iteration 0
+and enables it from iteration 1. Default <code class="docutils literal notranslate"><span class="pre">0</span></code> applies enhanced sampling bias from the start.</p>
 </div>
 </section>
 </section>
 <section id="restart-exploration">
 <h2>Restart Exploration<a class="headerlink" href="#restart-exploration" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">restart_exploration</span></code> and <code class="docutils literal notranslate"><span class="pre">restart_frame</span></code> control whether subsequent AL
-iterations seed ML-MD from the previous iteration’s QbC candidate pool instead
+<p><code class="docutils literal notranslate"><span class="pre">restart_exploration</span></code> and <code class="docutils literal notranslate"><span class="pre">restart_frame</span></code> controls whether subsequent AL
+iterations seed the input configuration for ML-MD from the previous iteration’s QbC candidate pool instead
 of the input structure.  See <a class="reference internal" href="user_guide/active_learning.html"><span class="doc">Active Learning</span></a> for strategy
 details (<code class="docutils literal notranslate"><span class="pre">&quot;candidates&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;last&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code>).</p>
 <section id="fine-tuning-universal-models">

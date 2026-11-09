@@ -85,7 +85,7 @@ Example ``input.yaml`` (color-coded by stage)
 
 The block below uses the same section names as a real SPARC input file.  Stage
 banners match the ``iter_xxxxxx/`` sub-directories created at runtime.  See
-:doc:`yaml` for every available key.
+:doc:`/yaml` for every available key.
 
 .. raw:: html
 

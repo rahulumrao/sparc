@@ -9,17 +9,18 @@
   <title>Plumed &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=568f582d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=10f1778b"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -552,21 +553,21 @@ to apply biasing forces during MD. Useful for enhanced sampling simulations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>calculator</strong> (<em>ase.calculators.Calculator</em>) – The underlying ASE calculator for the system (e.g., DeepMD, VASP, CP2K)</p></li>
-<li><p><strong>system</strong> (<em>ase.Atoms</em>) – The atomic configuration to which the calculator is applied</p></li>
-<li><p><strong>timestep</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Integration timestep used in the MD simulation (already in ASE units)</p></li>
-<li><p><strong>kT</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Thermal energy (k_B * T) in eV. If None, defaults to 300 K (0.02585 eV)</p></li>
-<li><p><strong>restart</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Restart option for PLUMED</p></li>
-<li><p><strong>plumed_input</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Path to the PLUMED input file (e.g., “plumed.dat”)</p></li>
-<li><p><strong>iteration</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Directory name for PLUMED output files</p></li>
-<li><p><strong>PlumedLog</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – PLUMED log filename (default: ‘PLUMED.log’)</p></li>
+<li><p><strong>calculator</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.ase-lib.org/development/calculators.html#ase.calculators.calculator.Calculator" title="(in ASE)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Calculator</span></code></a></span>) – The underlying ASE calculator for the system (e.g., DeepMD, VASP, CP2K)</p></li>
+<li><p><strong>system</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a></span>) – The atomic configuration to which the calculator is applied</p></li>
+<li><p><strong>timestep</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – Integration timestep used in the MD simulation (already in ASE units)</p></li>
+<li><p><strong>kT</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span>) – Thermal energy (k_B * T) in eV. If None, defaults to 300 K (0.02585 eV)</p></li>
+<li><p><strong>restart</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Restart option for PLUMED</p></li>
+<li><p><strong>plumed_input</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path to the PLUMED input file (e.g., “plumed.dat”)</p></li>
+<li><p><strong>iteration</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Directory name for PLUMED output files</p></li>
+<li><p><strong>PlumedLog</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – PLUMED log filename (default: ‘PLUMED.log’)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The PLUMED-wrapped ASE calculator</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ase.calculators.plumed.Plumed</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.ase-lib.org/ase/calculators/plumed.html#ase.calculators.plumed.Plumed" title="(in ASE)">ase.calculators.plumed.Plumed</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -574,7 +575,7 @@ to apply biasing forces during MD. Useful for enhanced sampling simulations.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="sparc.src.plumed_wrapper.plumed_block">
 <span class="sig-prename descclassname"><span class="pre">sparc.src.plumed_wrapper.</span></span><span class="sig-name descname"><span class="pre">plumed_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plumed_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/plumed_wrapper.html#plumed_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.plumed_wrapper.plumed_block" title="Link to this definition"></a></dt>
-<dd><p>Apply LOAD / OUTDIR / <a href="#id1"><span class="problematic" id="id2">*</span></a>FILE= path policy to one (collapsed) PLUMED line.</p>
+<dd><p>Apply LOAD / OUTDIR / *FILE= path policy to one (collapsed) PLUMED line.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
@@ -605,8 +606,8 @@ to apply biasing forces during MD. Useful for enhanced sampling simulations.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sparc.src.plumed_wrapper.rewrite_file_kwargs">
-<span class="sig-prename descclassname"><span class="pre">sparc.src.plumed_wrapper.</span></span><span class="sig-name descname"><span class="pre">rewrite_file_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolutize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plumed_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/plumed_wrapper.html#rewrite_file_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.plumed_wrapper.rewrite_file_kwargs" title="Link to this definition"></a></dt>
-<dd><p>Rewrite OUTDIR= and <a href="#id3"><span class="problematic" id="id4">*</span></a>FILE= values on a PLUMED action line.</p>
+<span class="sig-prename descclassname"><span class="pre">sparc.src.plumed_wrapper.</span></span><span class="sig-name descname"><span class="pre">rewrite_file_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolutize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plumed_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sparc/src/plumed_wrapper.html#rewrite_file_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sparc.src.plumed_wrapper.rewrite_file_kwargs" title="Link to this definition"></a></dt>
+<dd><p>Rewrite OUTDIR= and *FILE= values on a PLUMED action line.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
@@ -633,9 +634,9 @@ Supports NVE, NVT (Nose-Hoover, Langevin), and NPT ensembles.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config</strong> (<em>SparcConfig</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a>) – Configuration object or dictionary from input.yaml</p></li>
-<li><p><strong>us_dir</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a>) – Dictionary with ‘dpmd_dir’ key specifying base directory for windows</p></li>
-<li><p><strong>dp_path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Path to DeepMD model directory</p></li>
-<li><p><strong>dp_model</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Name of the DeepMD model file</p></li>
+<li><p><strong>us_dir</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span>) – Dictionary with ‘dpmd_dir’ key specifying base directory for windows</p></li>
+<li><p><strong>dp_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path to DeepMD model directory</p></li>
+<li><p><strong>dp_model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Name of the DeepMD model file</p></li>
 </ul>
 </dd>
 </dl>

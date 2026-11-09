@@ -1,10 +1,12 @@
-# Igonre files
+# Ignore files
 __pycache__/
 *.py[cod]
 *.egg
 *.egg-info/
 dist/
 build/
+docs/build/
+.ruff_cache/
 scripts/
 docs/tests
 .vscode
@@ -13,4 +15,16 @@ examples
 Sparc.log*
 sparc.log*
 .pytest_cache
-.gitignore
+out
+*:Zone.Identifier
+dev_push
+environment.yml
+env.portable.yml
+
+# Chemiscope bundle staged from the installed package at runtime
+sparc-gui/static/chemiscope.min.js
+sparc-gui/static/chemiscope-sphinx.css
+
+# Per-run artifacts the GUI writes into the project directory it is watching
+.sparc-gui/
+jupyter.log

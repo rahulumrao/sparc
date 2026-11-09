@@ -8,14 +8,15 @@
   <title>sparc.src.deepmd &mdash; SPARC 0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=568f582d" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=10f1778b"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -122,6 +123,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/active_learning.html">Active Learning</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#force-deviation-thresholds">Force Deviation Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#committee-evaluation-backend">Committee Evaluation Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#number-of-models">Number of Models</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restarting-an-interrupted-run">Restarting an Interrupted Run</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/active_learning.html#restart-exploration">Restart Exploration</a><ul>
@@ -137,7 +139,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#selection-modes">Selection Modes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#per-atom-candidate-mask">Per-Atom Candidate Mask</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#data-flow-through-the-pipeline">Data Flow Through the Pipeline</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#edge-cases-and-error-handling">Edge Cases and Error Handling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#parallelization-constraints">Parallelization Constraints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#enabling-deal">Enabling DEAL</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/active_learning.html#advanced-options">Advanced Options</a></li>
@@ -400,6 +401,7 @@
 <span class="sd">Supports DeePMD-kit v2 and v3 with automatic backend detection.</span>
 <span class="sd">"""</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -498,6 +500,7 @@
 <span class="sd">    """</span>
     <span class="c1"># Try PyTorch backend first</span>
     <span class="k">try</span><span class="p">:</span>
+        <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">"deepmd.pt"</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">"PyTorch backend is functional"</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">"pytorch"</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -505,6 +508,7 @@
 
     <span class="c1"># Try TensorFlow backend</span>
     <span class="k">try</span><span class="p">:</span>
+        <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">"deepmd.tf"</span><span class="p">)</span>
         <span class="n">SparcLog</span><span class="p">(</span><span class="s2">"TensorFlow backend is functional"</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">"tensorflow"</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -723,19 +727,27 @@
 <div class="viewcode-block" id="find_prev_checkpoint">
 <a class="viewcode-back" href="../../../deepmd.html#sparc.src.deepmd.find_prev_checkpoint">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_prev_checkpoint</span><span class="p">(</span>
-    <span class="n">prev_training_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">prev_training_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Return the absolute checkpoint file path for `dp train --init-model`, or None.</span>
+<span class="w">    </span><span class="sd">"""Return the absolute checkpoint path for `dp train --init-model`, or None.</span>
 
-<span class="sd">    Looks in ``{prev_training_dir}/training_{model_index}/`` for</span>
-<span class="sd">    ``model.ckpt.pt`` (v3/pytorch) or ``model.ckpt`` (v2/tensorflow).</span>
+<span class="sd">    Looks in ``{prev_training_dir}/training_{model_index}/``. PyTorch (v3)</span>
+<span class="sd">    checkpoints are a single ``model.ckpt.pt`` file. TensorFlow checkpoints</span>
+<span class="sd">    (v2, or v3 TF backend) are never a literal ``model.ckpt`` file — only</span>
+<span class="sd">    ``model.ckpt.index``/``.meta``/``.data-*`` exist — so existence is</span>
+<span class="sd">    checked via ``.index`` while the bare prefix is what gets returned/passed.</span>
 <span class="sd">    """</span>
     <span class="n">train_dir</span> <span class="o">=</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">prev_training_dir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"training_</span><span class="si">{</span><span class="n">model_index</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-    <span class="n">ckpt_name</span> <span class="o">=</span> <span class="s2">"model.ckpt.pt"</span> <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="k">else</span> <span class="s2">"model.ckpt"</span>
-    <span class="n">ckpt_path</span> <span class="o">=</span> <span class="n">train_dir</span> <span class="o">/</span> <span class="n">ckpt_name</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ckpt_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">"pytorch"</span><span class="p">:</span>
+        <span class="n">ckpt_path</span> <span class="o">=</span> <span class="n">train_dir</span> <span class="o">/</span> <span class="s2">"model.ckpt.pt"</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ckpt_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ckpt_path</span><span class="p">)</span>
+
+    <span class="n">ckpt_prefix</span> <span class="o">=</span> <span class="n">train_dir</span> <span class="o">/</span> <span class="s2">"model.ckpt"</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">train_dir</span> <span class="o">/</span> <span class="s2">"model.ckpt.index"</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ckpt_path</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ckpt_prefix</span><span class="p">)</span></div>
 
 
 
@@ -910,7 +922,9 @@
                 <span class="ow">and</span> <span class="n">refine_cfg</span><span class="o">.</span><span class="n">enabled</span>
                 <span class="ow">and</span> <span class="n">prev_training_dir</span>
             <span class="p">):</span>
-                <span class="n">refine_ckpt_prefix</span> <span class="o">=</span> <span class="n">find_prev_checkpoint</span><span class="p">(</span><span class="n">prev_training_dir</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
+                <span class="n">refine_ckpt_prefix</span> <span class="o">=</span> <span class="n">find_prev_checkpoint</span><span class="p">(</span>
+                    <span class="n">prev_training_dir</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">backend</span>
+                <span class="p">)</span>
                 <span class="k">if</span> <span class="n">refine_ckpt_prefix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">SparcLog</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"Refine: no checkpoint found for model </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> in "</span>
@@ -953,7 +967,7 @@
             <span class="c1"># Add restart flag if resuming this iteration's own interrupted run,</span>
             <span class="c1"># or init-model if refining from the previous iteration's checkpoint</span>
             <span class="k">if</span> <span class="n">has_checkpoint</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">"pytorch"</span><span class="p">:</span>
                     <span class="n">train_cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"--restart"</span><span class="p">,</span> <span class="s2">"model.ckpt.pt"</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">train_cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"--restart"</span><span class="p">,</span> <span class="s2">"model.ckpt"</span><span class="p">])</span>

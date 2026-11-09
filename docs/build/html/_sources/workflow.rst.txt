@@ -74,7 +74,7 @@ Geometry Tab Details
 - The y-axis label will automatically render the proper bond/angle symbols with subscripts.
 
 
-.. image:: _static/WorkflowAnalysis.gif
+.. image:: images/WorkflowAnalysis.gif
    :alt: Workflow Analysis Animation
    :width: 600px
 

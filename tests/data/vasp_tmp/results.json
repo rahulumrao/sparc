@@ -1,0 +1,6 @@
+{
+        "energy_ev": -14.257470110000,
+        "energy_tol_ev": 1e-5,
+        "max_force_evA": 0.108431585418,
+        "max_force_tol_evA": 1e-4
+}
