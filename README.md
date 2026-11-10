@@ -4,7 +4,6 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![GitHub stars](https://img.shields.io/github/stars/rahulumrao/sparc?style=social)](https://github.com/rahulumrao/sparc/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/rahulumrao/sparc?style=social)](https://github.com/rahulumrao/sparc/network/members)
-[![Visitors](https://api.visitorbadge.io/api/VisitorHit?user=rahulumrao&repo=sparc&countColor=%237B1E7A)](https://github.com/rahulumrao/sparc/graphs/traffic)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Documentation Status](https://readthedocs.org/projects/sparc/badge/)](https://docs-sparc.readthedocs.io/en/latest/)
 [![CI](https://github.com/rahulumrao/sparc/actions/workflows/ci.yaml/badge.svg)](https://github.com/rahulumrao/sparc/actions)
