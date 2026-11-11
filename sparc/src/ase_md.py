@@ -298,6 +298,7 @@ def LangevinNVT(
         restart=restart,
         temperature=temperature,
         friction=friction / units.fs,
+        fixcm=False,  # fixcm=True overheats small systems (ASE >= 3.28 warning)
     )
 
 

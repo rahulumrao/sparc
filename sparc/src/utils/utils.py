@@ -18,6 +18,7 @@ from ase.calculators.singlepoint import SinglePointCalculator
 # Third party import
 from ase.io import read, write
 from ase.io.trajectory import TrajectoryWriter
+from ase.stress import voigt_6_to_full_3x3_stress
 
 ################################################################
 # Local Import
@@ -138,6 +139,16 @@ def create_iteration_dirs(iter_num):
 
 
 # ---------------------------------------------------------------------------------------------------#
+def cached_stress(atoms):
+    """3x3 stress from the calculator cache, or None; never recalculates (PLUMED)."""
+    calc = atoms.calc
+    stress = None if calc is None else calc.results.get("stress")
+    if stress is None:
+        return None
+    stress = np.asarray(stress)
+    return voigt_6_to_full_3x3_stress(stress) if stress.shape == (6,) else stress
+
+
 def log_md_setup(dyn, atoms, dir_name, write_dist=False):
     """
     Log molecular dynamics simulation details including energies, temperature, and NPT properties.
@@ -172,13 +183,13 @@ def log_md_setup(dyn, atoms, dir_name, write_dist=False):
     volume = None
 
     try:
-        # Try to get stress tensor (only available in NPT)
-        stress = atoms.get_stress(voigt=False)  # 3x3 stress tensor in eV/A^3
-        # Pressure is negative trace of stress tensor / 3
-        # Convert from eV/A^3 to GPa: 1 eV/A^3 = 160.21766208 GPa
-        pressure_gpa = -np.trace(stress) / 3.0 * 160.21766208
-        volume = atoms.get_volume()
-        is_npt = True
+        # Stress only if the dynamics already computed it (NPT)
+        stress = cached_stress(atoms)
+        if stress is not None:
+            # Pressure = -trace/3; 1 eV/A^3 = 160.21766208 GPa
+            pressure_gpa = -np.trace(stress) / 3.0 * 160.21766208
+            volume = atoms.get_volume()
+            is_npt = True
     except (RuntimeError, NotImplementedError, AttributeError):
         # Stress not available - standard NVT/NVE ensemble
         pass
@@ -321,11 +332,7 @@ def save_checkpoint(dyn, atoms, filename="md_checkpoint.pkl"):
     step = dyn.get_number_of_steps()
 
     # Only for NPT - try to get stress if available
-    stress = None
-    try:
-        stress = atoms.get_stress(voigt=False)
-    except (RuntimeError, NotImplementedError, AttributeError):
-        pass
+    stress = cached_stress(atoms)
 
     state = {
         "positions": positions,
