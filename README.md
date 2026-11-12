@@ -19,8 +19,8 @@
 
 For More Information, Please Visit [SPARC Documentation](https://docs-sparc.readthedocs.io/en/latest/).
 
-Try SPARC [Tutorial](https://github.com/rahulumrao/sparc/blob/0.1.0/examples/SPARC_Tutorial.ipynb)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rahulumrao/sparc/blob/0.1.0/examples/SPARC_Tutorial.ipynb)
+Try SPARC [Tutorial](https://github.com/rahulumrao/SPARC-Examples/blob/main/SPARC_Tutorial.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rahulumrao/SPARC-Examples/blob/main/SPARC_Tutorial.ipynb)
 
 ## Overview
 
@@ -155,7 +155,7 @@ export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
 2. **Prepare input files** — you need `input.yaml`, `input.json`, and DFT engine specific files (e.g., `INCAR`, `POSCAR` for VASP).
 
    > [!NOTE]
-   > A minimal example is shown below. For the complete input schema — including PLUMED, distance metrics, DEAL, and output options — see `examples/` and `scripts/input.yaml`, or the documentation page.
+   > A minimal example is shown below. For the complete input schema — including PLUMED, distance metrics, DEAL, and output options — see [SPARC Examples](https://github.com/rahulumrao/SPARC-Examples) and `scripts/input.yaml`, or the documentation page.
 
 3. **Run SPARC:**
 
@@ -172,7 +172,7 @@ Monitor logs and outputs in `iter_xxxxxx/` directories.
 # SPARC INPUT Example [VASP]
 # ============================================================
 # VASP requires POTCAR files for each element. Ensure VASP is licensed.
-# Full template: examples/ and scripts/input.yaml
+# Full template: https://github.com/rahulumrao/SPARC-Examples and scripts/input.yaml
 
 general:
   structure_file: ["POSCAR"]
