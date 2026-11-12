@@ -39,7 +39,7 @@ SPARC is a Python toolkit for active-learning (AL) workflow to build a reactive 
 
 ### Core Dependencies
 - Python 3.10 recommended
-- [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit) (v2 or v3, both TensorFlow and PyTorch backends supported)
+- [DeepMD-kit](https://github.com/deepmodeling/deepmd-kit) (v2 or v3, both TensorFlow and PyTorch backends supported) - see the official [installation guide](https://docs.deepmodeling.com/projects/deepmd/en/stable/install/easy-install.html) for backend/GPU-specific install commands
 - [ASE](https://wiki.fysik.dtu.dk/ase/) (Atomic Simulation Environment)
 - [PLUMED](https://www.plumed.org/) (PES Exploration)
 - `ase`, `numpy`, `pandas`, `scipy`, `dpdata`, `cython`
@@ -129,8 +129,12 @@ Verification:
 ```bash
 python -c "import deepmd, plumed; print('deepmd', deepmd.__version__)"
 python -c "import plumed; plumed.Plumed(); print('PLUMED OK')"
+python -c "import torch; print('GPU:', torch.cuda.is_available())"
 sparc --help
 ```
+
+> [!IMPORTANT]  
+> The command above can silently resolve to a **CPU-only** build (no GPU, no warning) depending on conda-forge's current package solve. Always check `torch.cuda.is_available()` after install. If it prints `False` and you expected GPU, see DeepMD-kit's [installation docs](https://docs.deepmodeling.com/projects/deepmd/en/stable/install/easy-install.html) for pinning a CUDA-enabled build.
 
 ## Environment Setup
 
@@ -220,6 +224,19 @@ Project Root/
 └── iter_000001/
     └── ...
 ```
+
+## Examples
+
+Some examples, with inputs, outputs and analysis notebooks, are available at **[SPARC Examples](https://github.com/rahulumrao/SPARC-Examples)**.
+
+| Category | Examples |
+|---|---|
+| *Ab initio* MD | NVE, NVT, NPT and temperature ramp with CP2K, ORCA, Quantum ESPRESSO, VASP, Gaussian and xTB |
+| Enhanced sampling | Metadynamics, PbMetaD on SPRINT coordinates, umbrella sampling, 1D and 2D FK-eABF |
+| Active learning | Full CP2K workflow, MACE models, force-corrected biased AIMD with a moving restraint, multiple starting configurations |
+| Model training | `refine` vs. training from scratch, fine-tuning a pretrained DPA-3 model |
+| Candidate selection | DEAL vs. RMSD filter, stopping on `min_candidates` |
+
 ## Core Components
 
 ### MD Simulation
@@ -267,12 +284,16 @@ Project Root/
 
 ## Known Issue
 > [!IMPORTANT]  
-> - We have noticed Deepmd-kit `pip install tensorflow[and-cuda]` installation sometimes does not detect GPU.  
+> - We have noticed `pip install deepmd-kit[gpu,cu12]` sometimes does not detect GPU. its pip-installed `nvidia-*-cu12` libraries aren't on `LD_LIBRARY_PATH` by default.  
 > - To verify if TensorFlow detects your GPU, run the following command:  
 >   ```bash
 >   python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
 >   ```
-> Check [TensorFlow pip installation](https://www.tensorflow.org/install/pip) page to fix this. \
+> If it prints `[]`, locate the installed NVIDIA libraries and add them to `LD_LIBRARY_PATH`, e.g.:
+>   ```bash
+>   export LD_LIBRARY_PATH="$(python -c 'import nvidia.cudnn, os; print(os.path.dirname(nvidia.cudnn.__file__))')/lib:$LD_LIBRARY_PATH"
+>   ```
+> Check [TensorFlow pip installation](https://www.tensorflow.org/install/pip) page for further troubleshooting. \
 > 
 > Some hardware have also shown issues with `conda` channels
 > ```bash

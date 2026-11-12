@@ -207,7 +207,6 @@ def _draw_bars(
                         b_top, fmt=fmt, padding=3, fontsize=10, color="0.25"
                     )
                 if col == "dft_wall_h":
-                    _annotate_counts(ax_top, [b_top[0]], [counts[i]])
                     _annotate_counts(ax_bot, [b_bot[0]], [counts[i]])
             else:
                 if val > 1e-6:
@@ -218,21 +217,34 @@ def _draw_bars(
                     _annotate_counts(ax_bot, [b_bot[0]], [counts[i]])
 
 
-def _annotate_counts(ax: Axes, bars: list, counts) -> None:
-    """Write candidate count text inside the visible part of DFT bars."""
+def _annotate_counts(ax: Axes, bars: list, counts, min_frac: float = 0.12) -> None:
+    """Write candidate count inside DFT bars, or above the value label if the bar is too short."""
     lo, hi = ax.get_ylim()
     for bar, n in zip(bars, counts):
         if not n:
             continue
         h = float(bar.get_height())
+        xc = bar.get_x() + bar.get_width() / 2
         # Visible segment of this bar inside the panel.
         y_lo = max(lo, 0.0)
         y_hi = min(hi, h)
         if y_hi <= y_lo:
             continue
+        if (y_hi - y_lo) < min_frac * (hi - lo):
+            ax.annotate(
+                f"n={int(n):,}",
+                xy=(xc, h),
+                xytext=(0, 15),
+                textcoords="offset points",
+                ha="center",
+                va="bottom",
+                color="0.25",
+                fontsize=9,
+            )
+            continue
         y = 0.5 * (y_lo + y_hi)
         ax.text(
-            bar.get_x() + bar.get_width() / 2,
+            xc,
             y,
             f"{int(n):,}",
             rotation=45,
