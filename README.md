@@ -152,10 +152,10 @@ export PYTHONPATH="$CONDA_PREFIX/lib/plumed/python:$PYTHONPATH"
 
 1. **Set environment variables** (see [Environment Setup](#environment-setup) above).
 
-2. **Prepare input files** — you need `input.yaml`, `input.json`, and DFT engine specific files (e.g., `INCAR`, `POSCAR` for VASP).
+2. **Prepare input files** - `input.yaml`, `input.json`, and DFT engine specific files (e.g., `INCAR`, `POSCAR` for VASP).
 
    > [!NOTE]
-   > A minimal example is shown below. For the complete input schema — including PLUMED, distance metrics, DEAL, and output options — see [SPARC Examples](https://github.com/rahulumrao/SPARC-Examples) and `scripts/input.yaml`, or the documentation page.
+   > A minimal example is shown below. For the complete input schema, including PLUMED, distance metrics, DEAL, and output options; see [SPARC Examples](https://github.com/rahulumrao/SPARC-Examples) , and the documentation page.
 
 3. **Run SPARC:**
 
