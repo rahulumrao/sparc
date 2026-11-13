@@ -392,8 +392,8 @@ def combine_trajectories(trajfilename, current_iter):
     """
     Combine trajectory files from all iterations up to current_iter.
 
-    Uses incremental append: reads the existing combined trajectory (if present)
-    and only adds frames from the latest iteration, avoiding O(N^2) re-reads.
+    The combined trajectory is rebuilt from ``iter_*/00.dft/<trajfilename>``
+    on every call, so restarting an iteration never appends its frames twice.
 
     Args:
         trajfilename (str): Name of the trajectory file to combine
@@ -404,36 +404,18 @@ def combine_trajectories(trajfilename, current_iter):
     """
     combined_traj = Path("TrajCombined.traj")
 
-    # If combined file exists from a previous iteration, only append the new one
-    if combined_traj.exists() and current_iter > 0:
-        all_frames = read(str(combined_traj), index=":")
-        SparcLog(f"  Loaded {len(all_frames)} existing frames from {combined_traj}")
-
-        # Only read the current iteration's trajectory
-        iter_name = f"iter_{current_iter:06d}"
+    all_frames = []
+    for i in range(current_iter + 1):
+        iter_name = f"iter_{i:06d}"
         dft_traj = Path(iter_name) / "00.dft" / trajfilename
 
-        SparcLog(f"  Iteration [{current_iter}]")
+        SparcLog(f"  Iteration [{i}]")
         SparcLog(f"   → Checking File : {dft_traj}")
 
         if dft_traj.exists():
-            new_frames = read(dft_traj, index=":")
-            all_frames.extend(new_frames)
-            SparcLog(f"   → Added Frames  : {len(new_frames)}\n")
-    else:
-        # First iteration or no existing combined file - read everything
-        all_frames = []
-        for i in range(current_iter + 1):
-            iter_name = f"iter_{i:06d}"
-            dft_traj = Path(iter_name) / "00.dft" / trajfilename
-
-            SparcLog(f"  Iteration [{i}]")
-            SparcLog(f"   → Checking File : {dft_traj}")
-
-            if dft_traj.exists():
-                frames = read(dft_traj, index=":")
-                all_frames.extend(frames)
-                SparcLog(f"   → Added Frames  : {len(frames)}\n")
+            frames = read(dft_traj, index=":")
+            all_frames.extend(frames)
+            SparcLog(f"   → Added Frames  : {len(frames)}\n")
 
     if not all_frames:
         raise ValueError("No trajectory data found from any iteration")
